@@ -16,10 +16,10 @@ function ForCustomer() {
         <div data-layername="headingAndSupportingText" className="flex flex-col w-full max-md:max-w-full">
           <div data-layername="headingAndSubheading" className="flex flex-col w-full max-md:max-w-full">
             <p data-layername="subheading" className="text-sm font-semibold text-neutral-500 max-md:max-w-full">
-              We've helped hundreds of companies
+              We have helped hundreds of companies
             </p>
             <h2 data-layername="heading" className="mt-3 text-5xl font-bold text-black max-md:max-w-full max-md:text-4xl">
-              We're only just getting started on our journey
+              We are only just getting started on our journey
             </h2>
           </div>
         </div>
