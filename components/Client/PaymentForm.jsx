@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link'; // Import Link from next/link
 import InputField from './InputField';
 import SelectField from './PaymentOption';
 
@@ -15,13 +16,13 @@ const labelStyle = {
 
 function PaymentForm() {
   return (
-    <form className="flex flex-col flex-1 justify-center items-center p-6 w-full bg-white rounded-2xl max-md:px-5 max-md:max-w-full"
-    style={{marginTop:"-70px"}}>
-      <div className="flex flex-col flex-1 justify-center max-w-full rounded-xl w-[477px]"
-      style={{marginTop:"-50px"}}>
+    <form
+      className="flex flex-col flex-1 justify-center items-center p-6 w-full bg-white rounded-2xl max-md:px-5 max-md:max-w-full"
+      style={{ marginTop: "-70px" }}
+    >
+      <div className="flex flex-col flex-1 justify-center max-w-full rounded-xl w-[477px]" style={{ marginTop: "-50px" }}>
         <header className="flex flex-col w-full">
-          <h1 className="text-4xl font-semibold text-green-900 max-md:max-w-full"
-          style={{color:"#005E1E"}}>
+          <h1 className="text-4xl font-semibold text-green-900 max-md:max-w-full" style={{ color: "#005E1E" }}>
             New Payment
           </h1>
           <p className="mt-3 text-base text-neutral-500 max-md:max-w-full">
@@ -60,12 +61,14 @@ function PaymentForm() {
 
           {/* Submit Button */}
           <div className="flex flex-col mt-6 w-full text-sm font-medium text-center text-white whitespace-nowrap max-md:max-w-full">
-            <button
-              type="submit"
-              className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] max-md:max-w-full"
-              style={{background:"#08AA3B"}}>
-              Proceed
-            </button>
+            <Link href="/client/verify">
+              <a
+                className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] max-md:max-w-full"
+                style={{ background: "#08AA3B" }}
+              >
+                Proceed
+              </a>
+            </Link>
           </div>
         </div>
       </div>
