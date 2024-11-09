@@ -49,7 +49,7 @@ function PaymentOption() {
         {/* Dropdown Icon */}
         <div className="absolute right-4 flex items-center pointer-events-none">
           <img
-            src={isOpen ? '/up.png' : '/down.png'}
+            src={isOpen ? '/down.png' : '/down.png'}
             alt="Toggle"
             className="w-4 h-4"
           />
