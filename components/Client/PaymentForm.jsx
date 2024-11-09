@@ -61,13 +61,12 @@ function PaymentForm() {
 
           {/* Submit Button */}
           <div className="flex flex-col mt-6 w-full text-sm font-medium text-center text-white whitespace-nowrap max-md:max-w-full">
-            <Link href="/client/verify">
-              <a
-                className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] max-md:max-w-full"
-                style={{ background: "#08AA3B" }}
-              >
-                Proceed
-              </a>
+            <Link
+              href="/client/verify"
+              className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] max-md:max-w-full"
+              style={{ background: "#08AA3B" }}
+            >
+              Proceed
             </Link>
           </div>
         </div>
