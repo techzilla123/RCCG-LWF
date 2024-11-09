@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('/TextFonts/Inter/static/Inter_18pt-Italic.ttf') 
+      
+   
+  }
+  
+
+  .title-text{
+    font-family: 'Inter';
+  }
