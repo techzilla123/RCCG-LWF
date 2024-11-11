@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react'; // Import necessary hooks
 import Link from 'next/link'; // Import Link from next/link
-import TransactionModal from './popup'; // Import the TransactionModal
+// import TransactionModal from './popup'; // Import the TransactionModal
 
 // Reusable InputField Component
 function InputField({ label, placeholder, type = 'text' }) {
@@ -68,26 +68,24 @@ function InputField({ label, placeholder, type = 'text' }) {
 
 // LoginForm Component
 function LoginForm() {
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [isClient, setIsClient] = useState(false); // State to check if the component is mounted on the client
 
-  // Function to handle login click
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    setShowModal(true); // Show the modal on login click
-  };
+  // This effect runs after the component is mounted (on the client-side)
+  useEffect(() => {
+    setIsClient(true); // Set isClient to true after mount
+  }, []);
 
-  // Function to close the modal
-  const closeModal = () => setShowModal(false);
+  if (!isClient) {
+    // If the component is not mounted on the client yet, return null to avoid using useRouter on the server
+    return null;
+  }
 
   return (
     <section className="flex flex-col justify-center px-10 py-6 max-w-full bg-white rounded-2xl w-[464px] max-md:px-5">
       <div className="flex w-full min-h-[18px]" />
       <form className="flex flex-col self-center w-full rounded-xl">
         <div className="flex flex-col items-start self-start text-center">
-          <h1
-            className="text-4xl font-semibold text-green-900"
-            style={{ color: "#005E1E" }}
-          >
+          <h1 className="text-4xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
             Login
           </h1>
           <p className="mt-3 text-base text-neutral-500">
@@ -121,14 +119,15 @@ function LoginForm() {
 
         {/* Submit Button and Forgot Password Link */}
         <div className="flex flex-col mt-6 w-full font-medium">
-          <button
-            type="button"
-            onClick={handleLoginClick}
-            className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-sm text-center text-white whitespace-nowrap bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px]"
-            style={{ background: "#08AA3B" }}
-          >
-            Login
-          </button>
+          <Link href="/dashboard/dashboard-overview">
+            <button
+              type="button"
+              className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-sm text-center text-white whitespace-nowrap bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px]"
+              style={{ background: "#08AA3B" }}
+            >
+              Login
+            </button>
+          </Link>
 
           {/* Use Next.js Link for Forgot Password */}
           <Link href="/auth/forgot-password" className="self-stretch mt-4 w-full text-xs text-center text-neutral-500">
@@ -136,9 +135,6 @@ function LoginForm() {
           </Link>
         </div>
       </form>
-
-      {/* Show the modal when state is true */}
-      {showModal && <TransactionModal onClose={closeModal} />}
     </section>
   );
 }

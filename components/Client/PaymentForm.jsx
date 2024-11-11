@@ -5,9 +5,9 @@ import SelectField from './PaymentOption';
 
 // Add custom styles for the input labels
 const labelStyle = {
-  fontFamily: 'Roboto, sans-serif',
+  color:"#717171",
   fontSize: '16px',
-  fontWeight: '400',
+  fontWeight: '200',
   lineHeight: '18.75px',
   textAlign: 'left',
   textUnderlinePosition: 'from-font',
