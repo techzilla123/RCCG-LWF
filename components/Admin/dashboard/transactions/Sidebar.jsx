@@ -5,7 +5,7 @@ import MenuItem from './MenuItem';
 
 function Sidebar() {
   // State to keep track of the active menu item
-  const [activeItem, setActiveItem] = useState('Dashboard');
+  const [activeItem, setActiveItem] = useState('Transactions');
 
   const menuItems = [
     { defaultIcon: "/group.png", activeIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/169987296379ebd575c944ee818f34f7c4db28a62f4cce8b76efbb3ccfc1c480?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", title: "Dashboard", href: "/dashboard/dashboard-overview" },
