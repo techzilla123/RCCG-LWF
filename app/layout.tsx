@@ -30,6 +30,7 @@ export default function RootLayout({
     "/dashboard/transactions",
     "/dashboard/settings",
     "/dashboard/users",
+    "/dashboard/payments",
     "/admin",
   ];
 
