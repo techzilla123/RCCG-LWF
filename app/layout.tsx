@@ -28,6 +28,8 @@ export default function RootLayout({
   const hideNavbarPaths = [
     "/dashboard/dashboard-overview",
     "/dashboard/transactions",
+    "/dashboard/settings",
+    "/dashboard/users",
     "/admin",
   ];
 

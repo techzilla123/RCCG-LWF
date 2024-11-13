@@ -31,7 +31,7 @@ function TransactionPage() {
                   <div className="flex flex-1 shrink gap-1 items-center px-3 py-1 basis-0 size-full">
                     <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/a0ef8ace7bbc668bb00179d7b1dfdaada068fd86e034114713f279c2eba8a97e?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a" alt="" className="object-contain self-stretch my-auto w-3 aspect-square" />
                     <div className="flex flex-1 shrink gap-0.5 self-stretch px-px my-auto basis-0">
-                    <label htmlFor="searchInput" className="sr-only">Search</label>
+                    <label htmlFor="searchInput" className=" sr-only ">Search</label>
                       <input
                         id="searchInput"
                         type="text"

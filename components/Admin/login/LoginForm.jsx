@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'; // Import necessary hooks
 import Link from 'next/link'; // Import Link from next/link
-// import TransactionModal from './popup'; // Import the TransactionModal
+// Import the TransactionModal
 
 // Reusable InputField Component
 function InputField({ label, placeholder, type = 'text' }) {
