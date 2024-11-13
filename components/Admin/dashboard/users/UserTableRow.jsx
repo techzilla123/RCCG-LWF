@@ -35,13 +35,14 @@ function UserTableRow({ id, name, email, phone, lastTransaction, totalTransactio
         <br />
         <span className="text-xs leading-5">{phone}</span>
       </div>
-      <div className="overflow-hidden flex-1 shrink p-2 text-xs font-medium leading-5 basis-4 min-w-[160px] text-neutral-500">
+      <div className="overflow-hidden flex-1 shrink p-2 text-xs font-medium leading-5 basis-4 min-w-[160px] text-neutral-500"
+      style={{marginLeft:"23px"}}>
         <span className="text-xs leading-4 text-black">{lastTransaction.type}</span>
         <br />
         <span className="text-xs leading-5">{lastTransaction.date}</span>
       </div>
       <div className="overflow-hidden flex-1 shrink p-2 text-sm text-black whitespace-nowrap basis-4"
-      style={{marginLeft:"100px"}}>
+      style={{marginLeft:"90px"}}>
         {totalTransactions}
       </div>
       <div className="flex overflow-hidden flex-col flex-1 shrink justify-center items-center p-2 basis-4"
