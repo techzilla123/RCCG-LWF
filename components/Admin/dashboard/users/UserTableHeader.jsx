@@ -1,13 +1,20 @@
 import React from 'react';
 
-function UserTableHeader() {
+function UserTableHeader({ isAllSelected, onSelectAll }) {
   return (
     <div className="flex overflow-hidden flex-wrap px-0 py-0.5 w-full rounded-lg bg-neutral-100 max-md:max-w-full">
       <div className="flex gap-1 items-center px-4 py-2 w-12 h-full">
         <div className="flex gap-1 items-center self-stretch my-auto w-4">
           <div className="flex overflow-hidden flex-col justify-center items-center self-stretch my-auto w-4 h-4 bg-white bg-opacity-0">
             <div className="flex flex-col justify-center items-center w-full rounded-sm">
-              <div className="flex w-4 h-4 bg-white rounded-sm border border-solid border-zinc-300 min-h-[16px]" />
+            <input
+  type="checkbox"
+  className="flex w-4 h-4 rounded-sm border border-solid border-zinc-300 cursor-pointer"
+  style={{ accentColor: '#08AA3B' }}
+  checked={isAllSelected}
+                onChange={onSelectAll}
+/>
+
             </div>
           </div>
         </div>

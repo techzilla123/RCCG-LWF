@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UserTableHeader from './UserTableHeader';
 import UserTableRow from './UserTableRow';
 
@@ -42,15 +42,45 @@ const userData = [
 ];
 
 function UserTable({ searchQuery }) {
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+
   const filteredData = userData.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Handle select all checkboxes
+  const handleSelectAll = () => {
+    if (selectedUserIds.length === filteredData.length) {
+      setSelectedUserIds([]); // Deselect all
+    } else {
+      setSelectedUserIds(filteredData.map((user) => user.id)); // Select all
+    }
+  };
+
+  // Handle individual checkbox click
+  const handleCheckboxChange = (id) => {
+    setSelectedUserIds((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((userId) => userId !== id) // Deselect
+        : [...prevSelected, id] // Select
+    );
+  };
+
   return (
     <div className="flex flex-col flex-1 mt-4 w-full rounded-xl max-md:max-w-full">
-      <UserTableHeader />
+      <UserTableHeader
+        isAllSelected={selectedUserIds.length === filteredData.length}
+        onSelectAll={handleSelectAll}
+      />
       {filteredData.length > 0 ? (
-        filteredData.map((user) => <UserTableRow key={user.id} {...user} />)
+        filteredData.map((user) => (
+          <UserTableRow
+            key={user.id}
+            {...user}
+            isChecked={selectedUserIds.includes(user.id)}
+            onCheckboxChange={() => handleCheckboxChange(user.id)}
+          />
+        ))
       ) : (
         <div className="flex justify-center p-4">No users found</div>
       )}

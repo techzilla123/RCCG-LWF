@@ -1,6 +1,6 @@
 import React from 'react';
 
-function UserTableRow({ id, name, email, phone, lastTransaction, totalTransactions, status }) {
+function UserTableRow({ id, name, email, phone, lastTransaction, totalTransactions, status, isChecked, onCheckboxChange }) {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Active':
@@ -20,7 +20,15 @@ function UserTableRow({ id, name, email, phone, lastTransaction, totalTransactio
         <div className="flex gap-1 items-center self-stretch my-auto w-4">
           <div className="flex overflow-hidden flex-col justify-center items-center self-stretch my-auto w-4 h-4 bg-white bg-opacity-0">
             <div className="flex flex-col justify-center items-center w-full rounded-sm">
-              <div className="flex w-4 h-4 bg-white rounded-sm border border-solid border-zinc-300 min-h-[16px]" />
+            <input
+  type="checkbox"
+   style={{ accentColor: '#08AA3B' }}
+  className="flex w-4 h-4 rounded-sm border border-solid border-zinc-300 cursor-pointer"
+  checked={isChecked}
+  onChange={onCheckboxChange}
+        
+/>
+
             </div>
           </div>
         </div>
