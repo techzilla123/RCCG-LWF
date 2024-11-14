@@ -45,7 +45,13 @@ function UserTable({ searchQuery }) {
   const [selectedUserIds, setSelectedUserIds] = useState([]);
 
   const filteredData = userData.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    // Check if search query matches any user field (name, email, phone, status, last transaction, etc.)
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.phone.includes(searchQuery) ||
+    user.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.lastTransaction.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.lastTransaction.date.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Handle select all checkboxes
