@@ -1,14 +1,24 @@
 "use client"; // Mark this as a Client Component
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 function PaymentHistoryForm() {
-  const router = useRouter(); // Initialize useRouter from next/navigation
+  const router = useRouter();
+
+  const [emailPhone, setEmailPhone] = useState(""); // Input field state
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // If form passes validation, navigate to the verification page
+    // Email and Phone validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Email pattern
+    const phoneRegex = /^[0-9]{10,15}$/; // Phone pattern (10-15 digits, adjust as needed)
+
+    if (!emailRegex.test(emailPhone) && !phoneRegex.test(emailPhone)) {
+      return; // Prevent form submission if input is invalid
+    }
+
+    // Navigate to the verification page
     router.push("/client/history/verify");
   };
 
@@ -27,30 +37,48 @@ function PaymentHistoryForm() {
       </div>
 
       <div className="flex flex-col mt-6 w-full">
-        <div className="flex flex-col w-full text-base whitespace-nowrap min-h-[100px]">
+        <div className="flex flex-col w-full text-base whitespace-nowrap min-h-[100px] relative">
           <label htmlFor="emailPhone" className="gap-2.5 self-start text-neutral-500">
             Email/Phone
           </label>
-          <div className="inputemail" style={{ marginTop: "10px" }}>
+          <div className="inputemail" style={{ marginTop: "10px", position: "relative" }}>
             <input
               id="emailPhone"
-              type="email" // Use type="email" for built-in email validation
-              placeholder="Input email"
-              required // Enforces built-in validation
-              className="w-full h-12 px-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              type="text"
+              placeholder="Input email or phone number"
+              value={emailPhone}
+              onChange={(e) => setEmailPhone(e.target.value)} // Update input value
+              className={`w-full h-12 px-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500`}
               style={{ color: "#000000" }}
+              required // Mark input as required
+              pattern="(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)|(^[0-9]{10,15}$)" // Regex pattern for email or phone
+              title="Please enter a valid email or phone number" // Tooltip text
             />
+            {/* Tooltip-style error message */}
+            <div
+              className="hidden peer-invalid:block absolute top-[65px] left-0 w-full text-sm text-red-500 bg-white border border-red-500 rounded-md p-2 shadow-lg"
+              style={{ zIndex: 10 }}
+            >
+              <div className="flex items-center">
+                <span
+                  className="bg-orange-500 text-white font-bold rounded-full w-4 h-4 flex items-center justify-center"
+                  style={{ marginRight: "8px" }}
+                >
+                  !
+                </span>
+                Please fill out this field.
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Checkbox Section */}
         <div className="flex items-center w-full mt-4">
           <label className="flex gap-2 items-center">
             <input
               type="checkbox"
               className="w-4 h-4 bg-white rounded border border-solid border-zinc-300"
               style={{ accentColor: "#08AA3B" }}
-              required // Enforces built-in validation
+              required // Checkbox is required
             />
             <span className="text-xs font-medium text-neutral-500">
               Agree to Terms of Service
