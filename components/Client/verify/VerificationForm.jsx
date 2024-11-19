@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import VerificationInput from "./VerificationInput";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import TransactionModal from "@/components/Client/popup";
 
@@ -11,6 +10,9 @@ function VerificationForm() {
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(10); // Countdown timer set to 10 seconds initially
   const [showModal, setShowModal] = useState(false);
+
+  // Refs for each input field
+  const inputRefs = useRef([]);
 
   // Handle input change for the verification code
   const handleInputChange = (index, value) => {
@@ -22,26 +24,12 @@ function VerificationForm() {
 
     // Automatically move to the next input if a valid digit is entered
     if (value && index < verificationCode.length - 1) {
-      const nextInput = document.getElementById(`input-${index + 1}`);
-      if (nextInput) nextInput.focus();
+      inputRefs.current[index + 1]?.focus(); // Focus the next input
     }
 
     // Move back if cleared
     if (!value && index > 0) {
-      const prevInput = document.getElementById(`input-${index - 1}`);
-      if (prevInput) prevInput.focus();
-    }
-  };
-
-  // Ensure the user cannot focus on random input fields
-  const handleInputFocus = (index) => {
-    // Prevent skipping inputs by ensuring all previous inputs are filled
-    for (let i = 0; i < index; i++) {
-      if (verificationCode[i] === "") {
-        const firstEmptyInput = document.getElementById(`input-${i}`);
-        if (firstEmptyInput) firstEmptyInput.focus();
-        return;
-      }
+      inputRefs.current[index - 1]?.focus(); // Focus the previous input if cleared
     }
   };
 
@@ -82,14 +70,8 @@ function VerificationForm() {
   };
 
   return (
-    <div
-      className="flex flex-col items-center w-full max-md:w-full px-4"
-      style={{ marginTop: "100px" }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col flex-1 self-center max-w-full rounded-xl w-[420px] max-md:w-full"
-      >
+    <div className="flex flex-col items-center w-full max-md:w-full px-4" style={{ marginTop: "100px" }}>
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 self-center max-w-full rounded-xl w-[420px] max-md:w-full">
         {/* Header Section */}
         <div className="flex flex-col max-w-full w-[314px] max-md:w-full">
           <h1 className="text-4xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
@@ -101,19 +83,26 @@ function VerificationForm() {
         </div>
 
         {/* Verification Inputs Section */}
-        <div
-          className="flex flex-col justify-center mt-6 w-full text-6xl font-medium tracking-tighter leading-tight text-center whitespace-nowrap min-h-[96px] text-zinc-300 max-md:text-4xl"
-          style={{ color: "#000000" }}
-        >
+        <div className="flex flex-col justify-center mt-6 w-full text-6xl font-medium tracking-tighter leading-tight text-center whitespace-nowrap min-h-[96px] text-zinc-300 max-md:text-4xl" style={{ color: "#000000" }}>
           <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center">
             {verificationCode.map((digit, index) => (
-              <VerificationInput
-                key={index}
-                id={`input-${index}`}
-                value={digit}
-                onChange={(value) => handleInputChange(index, value)}
-                onFocus={() => handleInputFocus(index)} // Prevent skipping inputs
-              />
+              <div className="flex flex-col w-20 rounded-lg max-md:w-16 max-md:text-4xl" key={index}>
+                <input
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Backspace' && !digit && inputRefs.current[index - 1]) {
+                      e.preventDefault();
+                      inputRefs.current[index - 1].focus();
+                    }
+                  }}
+                  ref={(el) => inputRefs.current[index] = el} // Assign refs dynamically
+                  className="flex-1 shrink gap-2 self-stretch px-2 py-3 w-20 h-20 rounded-lg border border-solid shadow-sm bg-neutral-100 border-zinc-300 min-h-[80px] max-md:w-16 max-md:h-16 max-md:text-4xl text-center"
+                  aria-label="Verification code digit"
+                />
+              </div>
             ))}
           </div>
         </div>

@@ -1,37 +1,51 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import VerificationInput from "./VerificationInput";
-import { useRouter } from "next/navigation"; // Import useRouter
-import TransactionModal from "@/components/Client/history/popup"; // Import the modal
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import TransactionModal from "@/components/Client/popup";
 
 function VerificationForm() {
-  const router = useRouter(); // Initialize useRouter
-  const [verificationCode, setVerificationCode] = useState(['', '', '', '']);
+  const router = useRouter();
+  const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(10); // Countdown timer set to 10 seconds initially
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [showModal, setShowModal] = useState(false);
+
+  // Refs for each input field
+  const inputRefs = useRef([]);
 
   // Handle input change for the verification code
   const handleInputChange = (index, value) => {
+    if (!/^\d$/.test(value) && value !== "") return; // Only allow single digits or empty value
+
     const newCode = [...verificationCode];
     newCode[index] = value;
     setVerificationCode(newCode);
+
+    // Automatically move to the next input if a valid digit is entered
+    if (value && index < verificationCode.length - 1) {
+      inputRefs.current[index + 1]?.focus(); // Focus the next input
+    }
+
+    // Move back if cleared
+    if (!value && index > 0) {
+      inputRefs.current[index - 1]?.focus(); // Focus the previous input if cleared
+    }
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const code = verificationCode.join('');
-    console.log("Submitted code:", code);
+    const code = verificationCode.join("");
+    if (code.length === 4) {
+      console.log("Submitted code:", code);
 
-    // Show the transaction modal
-    setShowModal(true);
+      setShowModal(true);
 
-    // Optionally, you can navigate after a delay or based on some condition
-    setTimeout(() => {
-      router.push("/client/history/verify/success");
-    }, 3000); // Example delay of 3 seconds before navigation
+      setTimeout(() => {
+        router.push("/client/history/verify/success");
+      }, 3000);
+    }
   };
 
   // Countdown timer for the Resend Code button
@@ -51,20 +65,13 @@ function VerificationForm() {
     return () => clearInterval(countdown);
   }, [timer, isResendDisabled]);
 
-  // Handle Resend Code button click
   const handleResendCode = () => {
-    router.push("/client");
+    router.push("/client/history");
   };
 
   return (
-    <div
-      className="flex flex-col items-center w-full max-md:w-full px-4"
-      style={{ marginTop: "100px" }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col flex-1 self-center max-w-full rounded-xl w-[420px] max-md:w-full"
-      >
+    <div className="flex flex-col items-center w-full max-md:w-full px-4" style={{ marginTop: "100px" }}>
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 self-center max-w-full rounded-xl w-[420px] max-md:w-full">
         {/* Header Section */}
         <div className="flex flex-col max-w-full w-[314px] max-md:w-full">
           <h1 className="text-4xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
@@ -76,17 +83,26 @@ function VerificationForm() {
         </div>
 
         {/* Verification Inputs Section */}
-        <div
-          className="flex flex-col justify-center mt-6 w-full text-6xl font-medium tracking-tighter leading-tight text-center whitespace-nowrap min-h-[96px] text-zinc-300 max-md:text-4xl"
-          style={{ color: "#000000" }}
-        >
+        <div className="flex flex-col justify-center mt-6 w-full text-6xl font-medium tracking-tighter leading-tight text-center whitespace-nowrap min-h-[96px] text-zinc-300 max-md:text-4xl" style={{ color: "#000000" }}>
           <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center">
-            {[0, 1, 2, 3].map((index) => (
-              <VerificationInput
-                key={index}
-                value={verificationCode[index]}
-                onChange={(value) => handleInputChange(index, value)}
-              />
+            {verificationCode.map((digit, index) => (
+              <div className="flex flex-col w-20 rounded-lg max-md:w-16 max-md:text-4xl" key={index}>
+                <input
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Backspace' && !digit && inputRefs.current[index - 1]) {
+                      e.preventDefault();
+                      inputRefs.current[index - 1].focus();
+                    }
+                  }}
+                  ref={(el) => inputRefs.current[index] = el} // Assign refs dynamically
+                  className="flex-1 shrink gap-2 self-stretch px-2 py-3 w-20 h-20 rounded-lg border border-solid shadow-sm bg-neutral-100 border-zinc-300 min-h-[80px] max-md:w-16 max-md:h-16 max-md:text-4xl text-center"
+                  aria-label="Verification code digit"
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -96,12 +112,17 @@ function VerificationForm() {
           <button
             type="submit"
             className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-white bg-green-600 border border-transparent rounded-full hover:bg-green-700 transition-all duration-200"
-            style={{ background: "#08AA3B" }}
+            style={{
+              background: "#08AA3B",
+              cursor: verificationCode.includes("") ? "not-allowed" : "pointer",
+              opacity: verificationCode.includes("") ? 0.7 : 1,
+            }}
+            disabled={verificationCode.includes("")} // Disable if any input is empty
           >
             Verify
           </button>
 
-          {/* Resend Code Button with Navigation to /client */}
+          {/* Resend Code Button */}
           <button
             type="button"
             onClick={handleResendCode}
