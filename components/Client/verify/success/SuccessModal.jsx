@@ -1,15 +1,21 @@
-// Add this at the top of the file to mark it as a Client Component
 'use client';
 
 import React, { useState } from 'react';
-import Receipt from './Receipt'; // Make sure to adjust the path if necessary
+import { useRouter } from 'next/navigation'; 
+import Receipt from './Receipt'; 
 
 function SuccessModal() {
+  const router = useRouter(); 
   const [showReceipt, setShowReceipt] = useState(false);
 
-  // Handle button click to show the receipt
+  // Show the receipt modal
   const handleViewReceiptClick = () => {
     setShowReceipt(true);
+  };
+
+  // Navigate to the home page
+  const handleFinishClick = () => {
+    router.push('/');
   };
 
   return (
@@ -21,7 +27,7 @@ function SuccessModal() {
       <div className="flex gap-2.5 justify-center items-center" style={{ width: '120px', height: '120px' }}>
         <img
           loading="lazy"
-          src="/success-0u6rqMvimp.png"
+          src="/success-0u6rqMvimp.png" // Ensure this image is available in your public folder
           alt="Success Icon"
           style={{
             width: '100%',
@@ -31,7 +37,7 @@ function SuccessModal() {
         />
       </div>
 
-      {/* Transaction Success Heading */}
+      {/* Heading */}
       <h2
         className="self-stretch pb-4 mt-4 w-full text-4xl font-semibold text-black text-center"
         style={{ color: "#000000" }}
@@ -39,30 +45,29 @@ function SuccessModal() {
         Transaction successful!
       </h2>
 
-      {/* Buttons Container */}
+      {/* Buttons */}
       <div className="flex gap-2.5 items-center justify-center mt-4 w-full text-sm font-medium text-center max-w-[400px]">
-        
         {/* Finish Button */}
         <button
-          className="overflow-hidden flex-1 shrink gap-2 self-stretch px-4 py-3 h-10 text-black whitespace-nowrap border border-solid bg-black bg-opacity-0 border-neutral-500 min-h-[40px] rounded-[1000px] flex items-center justify-center"
+          onClick={handleFinishClick}
+          className="overflow-hidden flex-1 px-4 py-3 h-10 text-black whitespace-nowrap border border-solid bg-black bg-opacity-0 border-neutral-500 min-h-[40px] rounded-[1000px] flex items-center justify-center"
         >
           Finish
         </button>
 
         {/* View Receipt Button */}
         <button
-          onClick={handleViewReceiptClick} // Show the receipt when clicked
-          className="overflow-hidden flex-1 shrink gap-2 self-stretch px-4 py-3 h-10 text-white bg-green-600 border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] flex items-center justify-center text-base max-md:text-sm"
+          onClick={handleViewReceiptClick}
+          className="overflow-hidden flex-1 px-4 py-3 h-10 text-white bg-green-600 border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] flex items-center justify-center text-base max-md:text-sm"
           style={{ background: "#08AA3B" }}
         >
-          {/* Success Icon */}
           <span style={{ fontSize: '20px', marginRight: '8px' }}>✔</span>
           <span>View Receipt</span>
         </button>
       </div>
 
-      {/* Conditionally render Receipt Component */}
-      {showReceipt && <Receipt />}
+      {/* Render Receipt Component */}
+      {showReceipt && <Receipt onClose={() => setShowReceipt(false)} />}
     </div>
   );
 }

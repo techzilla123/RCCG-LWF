@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -86,13 +87,13 @@ const SupportMessage = () => (
 const CallToAction = ({ onSave, onClose }) => (
   <div className="flex gap-2 pb-4 text-sm font-medium text-center">
     <button
-      onClick={onClose}
+      onClick={onClose} // Close the popup on "Done" button click
       className="flex-1 px-3 py-2 border border-neutral-500 rounded-full"
     >
       Done
     </button>
     <button
-      onClick={onSave}
+      onClick={onSave} // Trigger save functionality on "Save" button click
       className="flex-1 px-3 py-2 text-white rounded-full"
       style={{ background: '#08AA3B' }}
     >
