@@ -2,7 +2,15 @@
 
 import React, { useState, useRef } from "react";
 
-function InputField({ label, placeholder, type = "text", textarea = false, value, onChange, error }) {
+function InputField({
+  label,
+  placeholder,
+  type = "text",
+  textarea = false,
+  value,
+  onChange,
+  error,
+}) {
   const inputRef = useRef(null);
 
   const handleClearInput = () => {
@@ -77,13 +85,8 @@ function ContactFormSection() {
 
     setFormData(newFormData);
 
-    // Clear the error if the input is now valid
-    if (!newErrors[name]) {
-      const { [name]: removedError, ...restErrors } = newErrors;
-      setErrors(restErrors);
-    } else {
-      setErrors(newErrors);
-    }
+    // Directly update the errors object
+    setErrors(newErrors);
   };
 
   const validateForm = () => {
@@ -107,9 +110,7 @@ function ContactFormSection() {
   };
 
   return (
-    <section
-      className="flex z-0 gap-2.5 justify-center items-center px-32 py-20 w-full bg-white max-md:px-5 max-md:max-w-full"
-    >
+    <section className="flex z-0 gap-2.5 justify-center items-center px-32 py-20 w-full bg-white max-md:px-5 max-md:max-w-full">
       <div className="flex flex-col self-stretch my-auto min-w-[240px] w-[605px]">
         <div className="flex flex-col justify-center items-center w-full max-md:max-w-full">
           <h2 className="text-4xl font-semibold tracking-tighter leading-none" style={{ color: "#005E1E" }}>
