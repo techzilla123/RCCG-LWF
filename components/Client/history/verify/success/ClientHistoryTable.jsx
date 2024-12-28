@@ -18,20 +18,26 @@ const clientHistoryData = [
 
 function ClientHistoryTable() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('All Type');
-  const [selectedStatus, setSelectedStatus] = useState('All Status');
+  const [selectedType, setSelectedType] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false); // State to show/hide receipt popup
   const [selectedReceiptData, setSelectedReceiptData] = useState(null); // State to store selected item data
 
-  // Filter data based on search term
-  const filteredData = clientHistoryData.filter(item =>
-    item.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.amount.includes(searchTerm) ||
-    item.date.includes(searchTerm)
-  );
+  // Filter data based on search term, type, and status
+  const filteredData = clientHistoryData.filter(item => {
+    const matchesSearch =
+      item.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.amount.includes(searchTerm) ||
+      item.date.includes(searchTerm);
+
+    const matchesType = selectedType === 'All' || item.type === selectedType;
+    const matchesStatus = selectedStatus === 'All' || item.status === selectedStatus;
+
+    return matchesSearch && matchesType && matchesStatus;
+  });
 
   // Search form submission handler
   const handleSearch = (event) => {
@@ -74,22 +80,21 @@ function ClientHistoryTable() {
   };
 
   return (
-    <section className="flex flex-col flex-1 gap-6 justify-center items-center p-6 w-full bg-white rounded-2xl max-md:px-5 max-md:max-w-full">
-      <div className="flex flex-col justify-center max-w-full w-[600px]">
-      <h2 className="py-2 w-full text-2xl font-bold text-left" style={{ color: '#005E1E' }}>
-  History
-</h2>
+    <section className="flex flex-col gap-6 justify-center items-center p-6 w-full bg-white rounded-2xl max-md:px-5 max-md:max-w-full">
+      <div className="flex flex-col justify-center w-full max-w-[600px]">
+        <h2 className="py-2 w-full text-2xl font-bold text-left" style={{ color: '#005E1E' }}>
+          History
+        </h2>
 
-        
         {/* Search and Filter Section */}
-        <div className="flex gap-4 items-center w-full">
-          <div className="relative">
-            <button onClick={toggleTypeDropdown} className="px-4 py-2 bg-gray-200 rounded-lg">
+        <div className="flex flex-col sm:flex-row gap-4 items-center w-full">
+          <div className="relative w-full sm:w-auto">
+            <button onClick={toggleTypeDropdown} className="px-4 py-2 bg-gray-200 rounded-lg w-full sm:w-auto">
               {selectedType} <span>▼</span>
             </button>
             {showTypeDropdown && (
-              <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full z-10">
-                {['All', 'BEDC', 'Insurance', 'NHIS', 'WAEC/NECO e-Pin'].map((type, index) => (
+              <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
+                {['All', 'BEDC Payment', 'Insurance', 'NHIS', 'WAEC/NECO e-Pin'].map((type, index) => (
                   <li
                     key={index}
                     onClick={() => handleTypeSelect(type)}
@@ -102,12 +107,12 @@ function ClientHistoryTable() {
             )}
           </div>
 
-          <div className="relative">
-            <button onClick={toggleStatusDropdown} className="px-4 py-2 bg-gray-200 rounded-lg">
+          <div className="relative w-full sm:w-auto">
+            <button onClick={toggleStatusDropdown} className="px-4 py-2 bg-gray-200 rounded-lg w-full sm:w-auto">
               {selectedStatus} <span>▼</span>
             </button>
             {showStatusDropdown && (
-              <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full z-10">
+              <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
                 {['All', 'Successful', 'Pending', 'Failed', 'Reversed'].map((status, index) => (
                   <li
                     key={index}

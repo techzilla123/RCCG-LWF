@@ -10,7 +10,7 @@ function HeroSection() {
       {/* Hero Image */}
       <img
         loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/1af3b371d83b957d622093f1a47bd6a0857cc8e458682deceaae4766f3c532c5?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+        src="/herod.png"
         alt=""
         className="object-contain absolute inset-x-0 z-0 self-start aspect-[3.39] bottom-[137px] top-[200px] w-[1280px] max-md:max-w-full max-md:top-[150px]"
       />

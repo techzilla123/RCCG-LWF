@@ -30,7 +30,7 @@ function VerifyID() {
             >
               <img
                 loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/fe109507244c2c1e02678c8236aa99b51e6356bffd4eb839005947f56c0c93fc?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+                src="/backbutton.svg"
                 alt=""
                 className="object-contain self-stretch my-auto w-4 aspect-square"
               />

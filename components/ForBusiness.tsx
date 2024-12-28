@@ -3,25 +3,25 @@ import FeatureCard from './FeatureCard';
 
 const featureData = [
   {
-    icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d722594e3b185833c1e2c32ea856a847a82b5a5dececb32e3890b0b448a2bca2?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
+    icon: "/sfs.svg",
     bgColor: "bg-teal-50",
     title: "Care about our team",
     description: "Understand what matters to our employees. Give them what they need to do their best work."
   },
   {
-    icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d01dfaa8bfd67f9fbd89b363467b7e18407a883e40bc62dc0d1d6cbd6254c0f3?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
+    icon: "/spfr.svg",
     bgColor: "bg-yellow-50",
     title: "Care about our team",
     description: "Understand what matters to our employees. Give them what they need to do their best work."
   },
   {
-    icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/bf59ad79ffdb742e8b14b48084de0f2f71d29a806c85d95ee3dc0e3aab800fa0?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
+    icon: "/spdfy.svg",
     bgColor: "bg-violet-50",
     title: "Care about our team",
     description: "Understand what matters to our employees. Give them what they need to do their best work."
   },
   {
-    icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/c89c489efd4cdab31b7059c1f85feb9af4bfdbd94076ea6eb4737626158cb60c?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
+    icon: "/spdfd.svg",
     bgColor: "bg-red-50",
     title: "Care about our team",
     description: "Understand what matters to our employees. Give them what they need to do their best work."

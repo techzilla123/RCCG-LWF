@@ -15,7 +15,7 @@ const CtaAction = () => {
         {/* Logo Image */}
         <img 
           loading="lazy" 
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/86198595b18ba5d8653ca6b90ded15524b366e4eeb5db260956d4b3111f1a5a1?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+          src="/ctaa.png"
           alt="Company logo" 
           className="object-contain w-[120px] max-w-full aspect-[2.14]" 
         />

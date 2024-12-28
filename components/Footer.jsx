@@ -72,7 +72,7 @@ const Footer = () => {
       <div className="flex flex-col w-full text-base whitespace-nowrap text-zinc-300 max-md:max-w-full">
         <img
           loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/3645478bc03a07aeb25fe2ab3b2dc9ff4d393c50f35b96e047680af8a676a486?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+          src="/logwhite.png"
           alt="Company logo"
           className="object-contain self-center w-52 max-w-full aspect-[3.25]"
         />
