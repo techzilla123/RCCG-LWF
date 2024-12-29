@@ -35,10 +35,10 @@ function AdminFeaturesSection() {
         <div className="flex w-full bg-gray-200 min-h-[389px] rounded-[40px] max-md:max-w-full" aria-hidden="true" />
         <div data-layername="headingAndSupportingText" className="flex flex-col mt-8 w-full max-md:max-w-full">
           <div data-layername="headingAndSubheading" className="flex flex-col w-full max-md:max-w-full">
-            <h2 data-layername="heading" className="text-5xl font-bold text-green-900 max-md:max-w-full max-md:text-4xl">
+            <h2 data-layername="heading" className="text-5xl font-bold text-green-900 max-md:max-w-full max-md:text-4xl" style={{color:'#005E1E'}}>
               Make fast and secure transactions
             </h2>
-            <p data-layername="subheading" className="mt-3 text-4xl font-semibold text-yellow-600 max-md:max-w-full">
+            <p data-layername="subheading" className="mt-3 text-4xl font-semibold text-yellow-600 max-md:max-w-full" style={{color:'#B39200'}}>
               No sign-up needed!
             </p>
           </div>

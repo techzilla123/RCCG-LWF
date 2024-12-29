@@ -25,14 +25,23 @@ function HeroSection() {
           <h1
             data-layername="displayText"
             className="text-4xl sm:text-5xl font-bold text-yellow-600 max-md:max-w-full max-md:text-3xl max-sm:font-semibold"
-          >
+         style={{color:"#005E1E"}} >
             Get the money you need to fund all your{" "}
-            <span className="text-yellow-600">financial plans!</span>
+            <span className="text-yellow-600" style={{color:'#B39200'}}>financial plans!</span>
           </h1>
           <p
             data-layername="supportingText"
             className="mt-6 text-xl sm:text-2xl text-black max-md:max-w-full"
-          >
+          style={{
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: '24px',
+            fontWeight: 400,
+            lineHeight: '28.13px',
+            width:'450px',
+            textAlign: 'left',
+            textUnderlinePosition: 'from-font',
+            textDecorationSkipInk: 'none',
+          }}>
             Make payments, track transactions, and manage your service—all in one place.
           </p>
         </div>
@@ -45,13 +54,33 @@ function HeroSection() {
           <Button
             asChild
             className="bg-green text-white w-[180px] h-[40px] font-[500] hover:bg-green rounded-[1000px]"
-          >
+          style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '14px',
+            fontWeight: 100,
+            lineHeight: '16.94px',
+            textAlign: 'center',
+            
+          }}>
             <Link href="/client">Pay Now</Link>
           </Button>
           <Button
             asChild
             className=" text-white w-[180px] h-[40px] font-[500] hover:bg-green rounded-[1000px]"
-            style={{ color: "#000000", border: "1px solid #717171", padding: "8px 16px", textDecoration: "none",  backgroundColor: "transparent" }}
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '14px',
+              fontWeight: 100,
+              lineHeight: '16.94px',
+              textAlign: 'center',
+              textUnderlinePosition: 'from-font',
+              textDecorationSkipInk: 'none',
+              color: '#000000',
+              border: '1px solid #717171',
+              padding: '8px 16px',
+              textDecoration: 'none',
+              backgroundColor: 'transparent',
+            }}
           >
             <Link href="/client/history">History</Link>
           </Button>

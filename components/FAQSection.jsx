@@ -86,7 +86,7 @@ function FAQSection() {
     <section className="flex flex-col items-center px-6 py-16 w-full bg-neutral-100">
       {/* Section Header */}
       <header className="text-center mb-12">
-        <h2 className="text-4xl font-semibold tracking-tight text-green-900">
+        <h2 className="text-4xl font-semibold tracking-tight text-green-900" style={{color:'#005E1E'}}>
           Frequently Asked Questions
         </h2>
         <p className="mt-4 text-xl text-neutral-500">
