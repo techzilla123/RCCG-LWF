@@ -22,7 +22,7 @@ const CtaAction = () => {
 
         {/* Heading and Subheading */}
         <div className="flex flex-col mt-8 w-full text-center">
-          <h2 className="text-2xl font-semibold text-green-900">
+          <h2 className="text-2xl font-semibold text-green-900" style={{color: '#005E1E'}}>
             Ready to start exploring financial possibilities?
           </h2>
           <p className="mt-2 text-base text-black">
