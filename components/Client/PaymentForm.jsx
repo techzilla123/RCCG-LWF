@@ -33,7 +33,7 @@ function PaymentForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
-  const url = process.env.NEXT_PUBLIC_API_PAYMENT_NEW_URL;
+
   const nonce = Math.random().toString(36).substring(2);
   const timestamp = Date.now().toString();
   const method = "POST";

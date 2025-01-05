@@ -10,7 +10,7 @@ const PaymentOption = ({ setPaymentOption }) => { // Accept the setPaymentOption
   const [paymentOptions, setPaymentOptions] = useState([]);
 
   const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
-  const url = process.env.NEXT_PUBLIC_API_PAYMENT_LIST_URL;
+  
   const method = "GET"; // HTTP method
 
   // Generate dynamic headers
