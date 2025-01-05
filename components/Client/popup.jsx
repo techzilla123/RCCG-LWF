@@ -1,6 +1,16 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 
-function TransactionModal() {
+function TransactionModal({ authorizationUrl }) {
+  const router = useRouter();
+
+  // Handle redirection once the modal closes or after a specific delay
+  const handleRedirect = () => {
+    if (authorizationUrl) {
+      router.push(authorizationUrl); // Navigate to the stored URL
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-60 z-50"
@@ -27,6 +37,9 @@ function TransactionModal() {
             Initiating transaction...
           </p>
         </div>
+
+        {/* Redirect after a timeout */}
+        {setTimeout(handleRedirect, 3000)} {/* 3 seconds delay before redirect */}
       </section>
     </div>
   );
