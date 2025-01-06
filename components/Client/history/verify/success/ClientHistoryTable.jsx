@@ -92,7 +92,7 @@ function ClientHistoryTable() {
             </button>
             {showTypeDropdown && (
               <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
-                {['All', 'TEST FEE', 'TEST FEE2'].map((type, index) => (
+                {['All', 'TEST_FEE', 'TEST_FEE2'].map((type, index) => (
                   <li
                     key={index}
                     onClick={() => handleTypeSelect(type)}
