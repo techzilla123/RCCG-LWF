@@ -93,11 +93,11 @@ const handleSubmit = async (e) => {
           router.push("/client/history/verify/success");
         }, 3000);
       } else {
-        console.error("Verification failed:", response.statusText);
+        console.log("Verification failed:", response.statusText);
         setShowModal(false); // Hide modal on error
       }
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
       setShowModal(false); // Hide modal on error
     }
   }
