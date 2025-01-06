@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-function TransactionModal() {
+function TransactionModal({ shouldRedirect }) {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to /client/history/verify/success after a 3-second delay
-    const timer = setTimeout(() => {
-      router.push("/client/history/verify/success"); // Navigate to the fixed path
-    }, 3000);
+    let timer;
+    if (shouldRedirect) {
+      // Redirect to /client/history/verify/success after a 3-second delay
+      timer = setTimeout(() => {
+        router.push("/client/history/verify/success"); // Navigate to the fixed path
+      }, 3000);
+    }
 
     // Cleanup the timer on component unmount
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [shouldRedirect, router]);
 
   return (
     <div

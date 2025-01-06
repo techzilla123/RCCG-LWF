@@ -10,100 +10,89 @@ function VerificationForm() {
   const router = useRouter();
   const [verificationCode, setVerificationCode] = useState(["", "", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const [timer, setTimer] = useState(10); // Countdown timer set to 10 seconds initially
+  const [timer, setTimer] = useState(10);
   const [showModal, setShowModal] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Refs for each input field
   const inputRefs = useRef([]);
 
-  // Helper function to generate HMAC for API key
   const generateHMAC = (message, secretKey) => {
     const hash = HmacSHA256(message, secretKey);
     return Base64.stringify(hash);
   };
 
-  // Handle input change for the verification code
   const handleInputChange = (index, value) => {
-    if (!/^\d$/.test(value) && value !== "") return; // Only allow single digits or empty value
+    if (!/^\d$/.test(value) && value !== "") return;
 
     const newCode = [...verificationCode];
     newCode[index] = value;
     setVerificationCode(newCode);
+    setHasError(false); // Clear error state on input change
 
-    // Automatically move to the next input if a valid digit is entered
     if (value && index < verificationCode.length - 1) {
-      inputRefs.current[index + 1]?.focus(); // Focus the next input
+      inputRefs.current[index + 1]?.focus();
     }
 
-    // Move back if cleared
     if (!value && index > 0) {
-      inputRefs.current[index - 1]?.focus(); // Focus the previous input if cleared
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
-  // Handle form submission
-  // Handle form submission
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const code = verificationCode.join("");
-  if (code.length === 6) {
-    // Retrieve email from localStorage
-    const email = localStorage.getItem("userEmail"); // Default email if not set
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const code = verificationCode.join("");
+    if (code.length === 6) {
+      const email = localStorage.getItem("userEmail");
+      const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
+      const nonce = Math.random().toString(36).substring(2);
+      const timestamp = Date.now().toString();
+      const method = "GET";
+      const message = `${method}:${nonce}:${timestamp}`;
+      const apiKey = generateHMAC(message, secretKey);
 
-    // API request details
-    const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Replace with your actual secret key
-    const nonce = Math.random().toString(36).substring(2); // Random nonce
-    const timestamp = Date.now().toString(); // Current timestamp
-    const method = "GET"; // HTTP method
-    const message = `${method}:${nonce}:${timestamp}`; // Message to hash
-    const apiKey = generateHMAC(message, secretKey); // Generate API Key
-
-    const url = process.env.NEXT_PUBLIC_HISTORY_API_BASE_URL;
-    const params = new URLSearchParams({
-      token: code,
-      page: "1",
-      perPage: "50",
-      email: email,
-      regNo: "null",
-    });
-
-    try {
-      setShowModal(true); // Show modal before processing
-
-      // Send request to the server
-      const response = await fetch(`${url}?${params.toString()}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": apiKey,
-          "X-Timestamp": timestamp,
-          "X-Nonce": nonce,
-        },
+      const url = process.env.NEXT_PUBLIC_HISTORY_API_BASE_URL;
+      const params = new URLSearchParams({
+        token: code,
+        page: "1",
+        perPage: "50",
+        email: email,
+        regNo: "null",
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Verification successful:", result);
+      try {
+        setShowModal(true); // Show modal during processing
+        const response = await fetch(`${url}?${params.toString()}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": apiKey,
+            "X-Timestamp": timestamp,
+            "X-Nonce": nonce,
+          },
+        });
 
-        // Save the response in localStorage
-        localStorage.setItem("verificationResult", JSON.stringify(result)); // Save to localStorage
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Verification successful:", result);
 
-        // Navigate to success page after delay
-        setTimeout(() => {
+          localStorage.setItem("verificationResult", JSON.stringify(result));
           router.push("/client/history/verify/success");
-        }, 3000);
-      } else {
-        console.log("Verification failed:", response.statusText);
-        setShowModal(false); // Hide modal on error
+        } else {
+          console.log("Verification failed:", response.statusText);
+          setHasError(true);
+          setErrorMessage("Verification failed. Please check the code and try again.");
+          setShowModal(false);
+        }
+      } catch (error) {
+        console.log("An error occurred:", error);
+        setHasError(true);
+        setErrorMessage("An unexpected error occurred. Please try again.");
+        setShowModal(false);
       }
-    } catch (error) {
-      console.log("An error occurred:", error);
-      setShowModal(false); // Hide modal on error
     }
-  }
-};
+  };
 
-  // Countdown timer for the Resend Code button
   useEffect(() => {
     let countdown;
     if (isResendDisabled && timer > 0) {
@@ -130,7 +119,6 @@ const handleSubmit = async (e) => {
         onSubmit={handleSubmit}
         className="flex flex-col flex-1 self-center max-w-full rounded-xl w-[420px] max-md:w-full"
       >
-        {/* Header Section */}
         <div className="flex flex-col max-w-full w-[314px] max-md:w-full">
           <h1 className="text-4xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
             Verify Your ID
@@ -140,7 +128,6 @@ const handleSubmit = async (e) => {
           </p>
         </div>
 
-        {/* Verification Inputs Section */}
         <div className="flex flex-col justify-center mt-6 w-full text-lg font-medium tracking-tighter leading-tight text-center text-zinc-800">
           <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center">
             {verificationCode.map((digit, index) => (
@@ -151,7 +138,9 @@ const handleSubmit = async (e) => {
                   value={digit}
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   ref={(el) => (inputRefs.current[index] = el)}
-                  className="w-full h-12 px-2 py-3 border border-solid shadow-sm bg-neutral-100 border-zinc-300 rounded-lg text-center text-2xl max-md:text-xl"
+                  className={`w-full h-12 px-2 py-3 border border-solid shadow-sm bg-neutral-100 rounded-lg text-center text-2xl max-md:text-xl ${
+                    hasError ? "border-red-500" : "border-zinc-300"
+                  }`}
                   style={{
                     maxWidth: "60px",
                     height: "70px",
@@ -162,9 +151,11 @@ const handleSubmit = async (e) => {
               </div>
             ))}
           </div>
+          {hasError && (
+            <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+          )}
         </div>
 
-        {/* Action Buttons Section */}
         <div className="flex flex-col mt-8 w-full text-sm font-medium text-center">
           <button
             type="submit"
@@ -174,12 +165,11 @@ const handleSubmit = async (e) => {
               cursor: verificationCode.includes("") ? "not-allowed" : "pointer",
               opacity: verificationCode.includes("") ? 0.7 : 1,
             }}
-            disabled={verificationCode.includes("")} // Disable if any input is empty
+            disabled={verificationCode.includes("")}
           >
             Verify
           </button>
 
-          {/* Resend Code Button */}
           <button
             type="button"
             onClick={handleResendCode}
@@ -201,7 +191,6 @@ const handleSubmit = async (e) => {
         </div>
       </form>
 
-      {/* Transaction Modal */}
       {showModal && <TransactionModal />}
     </div>
   );
