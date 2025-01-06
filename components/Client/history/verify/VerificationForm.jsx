@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import TransactionModal from "@/components/Client/popup";
+import TransactionModal from "@/components/Client/history/popup";
 import HmacSHA256 from "crypto-js/hmac-sha256";
 import Base64 from "crypto-js/enc-base64";
 

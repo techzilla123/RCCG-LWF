@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 function TransactionModal() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to /client/history/verify/success after a 3-second delay
+    const timer = setTimeout(() => {
+      router.push("/client/history/verify/success"); // Navigate to the fixed path
+    }, 3000);
+
+    // Cleanup the timer on component unmount
+    return () => clearTimeout(timer);
+  }, [router]);
+
   return (
     <div
       className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-60 z-50"
@@ -19,12 +32,11 @@ function TransactionModal() {
 
         {/* Modal Text */}
         <div className="flex flex-col items-center w-full">
-          <h2 className="text-2xl font-semibold text-green-900"
-          style={{color:"#005E1E"}}>
+          <h2 className="text-2xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
             Just a minute
           </h2>
           <p className="mt-2 text-sm text-center text-neutral-500">
-          Retrieving transaction history...
+            Retrieving transaction history...
           </p>
         </div>
       </section>

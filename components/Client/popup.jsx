@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 function TransactionModal({ authorizationUrl }) {
   const router = useRouter();
 
-  // Handle redirection once the modal closes or after a specific delay
-  const handleRedirect = () => {
-    if (authorizationUrl) {
-      router.push(authorizationUrl); // Navigate to the stored URL
-    }
-  };
+  useEffect(() => {
+    // Redirect after a 3-second delay
+    const timer = setTimeout(() => {
+      if (authorizationUrl) {
+        router.push(authorizationUrl); // Navigate to the stored URL
+      }
+    }, 3000);
+
+    // Cleanup the timer on component unmount
+    return () => clearTimeout(timer);
+  }, [authorizationUrl, router]);
 
   return (
     <div
@@ -29,17 +34,13 @@ function TransactionModal({ authorizationUrl }) {
 
         {/* Modal Text */}
         <div className="flex flex-col items-center w-full">
-          <h2 className="text-2xl font-semibold text-green-900"
-          style={{color:"#005E1E"}}>
+          <h2 className="text-2xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
             Just a minute
           </h2>
           <p className="mt-2 text-sm text-center text-neutral-500">
             Initiating transaction...
           </p>
         </div>
-
-        {/* Redirect after a timeout */}
-        {setTimeout(handleRedirect, 3000)} {/* 3 seconds delay before redirect */}
       </section>
     </div>
   );
