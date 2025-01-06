@@ -1,16 +1,18 @@
 import React from 'react';
 
-function ClientHistoryRow({ status, type, amount, date }) {
+function ClientHistoryRow({ status, totalAmount, paymentType, transactionDate }){
   // Determine badge style based on status
   const getStatusStyle = (status) => {
-    switch (status.toLowerCase()) {
-      case 'pending':
+    switch (status.toUpperCase()) {
+      case 'PENDING':
         return { backgroundColor: '#F59E0B' }; // Yellow
-      case 'failed':
+      case 'FAILED':
         return { backgroundColor: '#DC2626' }; // Red
-      case 'successful':
+      case 'SUCCESS':
         return { backgroundColor: '#08AA3B' }; // Green
-      case 'reversed':
+        case 'AUTHORIZED':
+        return { backgroundColor: '#08AA3B' }; // Green
+      case 'REVERSED':
         return { backgroundColor: '#9CA3AF' }; // Gray
       default:
         return { backgroundColor: '#A3A3A3' }; // Neutral Gray
@@ -55,7 +57,7 @@ function ClientHistoryRow({ status, type, amount, date }) {
               fontSize: '16px',
             }}
           >
-            {type}
+            {paymentType}
           </div>
         </div>
       </div>
@@ -74,7 +76,7 @@ function ClientHistoryRow({ status, type, amount, date }) {
             fontSize: '16px',
           }}
         >
-          {amount}
+          ₦{totalAmount}
         </div>
         <div
           className="text-xs text-neutral-500 mt-1"
@@ -84,7 +86,7 @@ function ClientHistoryRow({ status, type, amount, date }) {
             fontSize: '12px',
           }}
         >
-          {date}
+          {transactionDate}
         </div>
       </div>
 

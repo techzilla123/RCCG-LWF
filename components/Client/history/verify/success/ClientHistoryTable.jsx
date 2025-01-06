@@ -1,20 +1,8 @@
 'use client'; // Ensure that this file is treated as a Client Component
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ClientHistoryRow from './ClientHistoryRow';
-import Receipt from './Receipt'; // Make sure this path is correct
-
-const clientHistoryData = [
-  { status: 'Pending', type: 'BEDC Payment', amount: '₦30,000', date: 'Tue, 07-10-2024, 13:15' },
-  { status: 'Failed', type: 'BEDC Payment', amount: '₦25,000', date: 'Wed, 08-10-2024, 10:30' },
-  { status: 'Successful', type: 'School Fees', amount: '₦50,000', date: 'Thu, 09-10-2024, 09:00' },
-  { status: 'Pending', type: 'Rent Payment', amount: '₦100,000', date: 'Fri, 10-10-2024, 11:45' },
-  { status: 'Reversed', type: 'BEDC Payment', amount: '₦30,000', date: 'Sat, 11-10-2024, 12:30' },
-  { status: 'Successful', type: 'Hospital Bill', amount: '₦5,000', date: 'Sun, 12-10-2024, 15:00' },
-  { status: 'Failed', type: 'Shopping', amount: '₦20,000', date: 'Mon, 13-10-2024, 16:00' },
-  { status: 'Successful', type: 'BEDC Payment', amount: '₦30,000', date: 'Tue, 14-10-2024, 13:15' },
-  { status: 'Successful', type: 'School Fees', amount: '₦80,000', date: 'Wed, 15-10-2024, 14:15' },
-];
+import Receipt from './Receipt'; // Ensure this path is correct
 
 function ClientHistoryTable() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,17 +12,27 @@ function ClientHistoryTable() {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false); // State to show/hide receipt popup
   const [selectedReceiptData, setSelectedReceiptData] = useState(null); // State to store selected item data
+  const [clientHistoryData, setClientHistoryData] = useState([]); // State to hold client history data
+
+  // Fetch data from local storage when the component mounts
+  useEffect(() => {
+    const storedData = localStorage.getItem("verificationResult");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      // Assuming the payments array is what you want to display
+      setClientHistoryData(parsedData.payments || []);
+    }
+  }, []);
 
   // Filter data based on search term, type, and status
   const filteredData = clientHistoryData.filter(item => {
     const matchesSearch =
-      item.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.amount.includes(searchTerm) ||
-      item.date.includes(searchTerm);
+      item.paymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.totalAmount.includes(searchTerm) ||
+      item.transactionDate.includes(searchTerm);
 
-    const matchesType = selectedType === 'All' || item.type === selectedType;
-    const matchesStatus = selectedStatus === 'All' || item.status === selectedStatus;
+    const matchesType = selectedType === 'All' || item.paymentType === selectedType;
+    const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus); // Assuming status is part of the item
 
     return matchesSearch && matchesType && matchesStatus;
   });

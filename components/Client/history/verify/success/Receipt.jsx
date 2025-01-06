@@ -14,13 +14,14 @@ const Header = () => (
   </header>
 );
 
-const Summary = ({ amount, type, status }) => {
+const Summary = ({ totalAmount, paymentType, status }) => {
   // Define inline styles based on the status
   const statusStyles = {
-    Pending: { color: 'yellow', iconFilter: 'none', iconColor: 'yellow' },
-    Failed: { color: '#FF0000', iconFilter: 'none', iconColor: '#FF0000' }, // Red icon color for failed
-    Reversed: { color: '#B2B2B2', iconFilter: 'grayscale(100%)', iconColor: '#B2B2B2' }, // Ash color (gray) for reversed
-    Successful: { color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' }, // Green icon for successful
+    PENDING: { color: 'yellow', iconFilter: 'none', iconColor: 'yellow' },
+    AUTHORIZED:{ color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' },
+    FAILED: { color: '#FF0000', iconFilter: 'none', iconColor: '#FF0000' }, // Red icon color for failed
+    REVERSED: { color: '#B2B2B2', iconFilter: 'grayscale(100%)', iconColor: '#B2B2B2' }, // Ash color (gray) for reversed
+    SUCCESS: { color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' }, // Green icon for successful
   };
 
   const currentStyle = statusStyles[status] || { color: 'black', iconFilter: 'none', iconColor: 'black' };
@@ -40,8 +41,8 @@ const Summary = ({ amount, type, status }) => {
         </div>
       </div>
       <div className="flex flex-col items-center mt-2">
-        <div className="text-2xl text-black">{amount}</div>
-        <div className="text-xs font-medium text-neutral-500">{type} Payment</div>
+        <div className="text-2xl text-black">₦{totalAmount}</div>
+        <div className="text-xs font-medium text-neutral-500">{paymentType}</div>
       </div>
     </section>
   );
@@ -55,13 +56,19 @@ const TransactionDetail = ({ transactionDetails }) => {
 
   return (
     <section className="flex flex-col p-3 w-full bg-neutral-100 rounded-lg">
-      <h2 className="text-sm font-semibold text-black">Transaction Detail</h2>
+      <h2 className="text-sm font-semibold text-black">Transaction Details</h2>
       <div className="flex flex-col mt-2">
         {transactionDetails.map((detail, index) => (
           <div key={index} className="flex justify-between items-center mt-2">
             <span className="text-xs text-neutral-500">{detail.label}</span>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-black">{detail.value}</span>
+              <span
+                className={`text-sm font-medium text-black ${detail.label === 'Transaction ID' ? 'truncate' : ''}`}
+                title={detail.value} // Shows full text on hover
+                style={detail.label === 'Transaction ID' ? { maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' } : {}}
+              >
+                {detail.value}
+              </span>
               {detail.hasCopyIcon && (
                 <button
                   onClick={() => handleCopy(detail.value)}
@@ -128,10 +135,10 @@ const Receipt = ({ onClose, data }) => {
 
   // Map transaction details
   const transactionDetails = [
-    { label: 'Payment Type', value: data.type },
-    { label: 'Total Amount', value: data.amount },
-    { label: 'Transaction Date', value: data.date },
-    { label: 'Sender ID', value: data.senderId },
+    { label: 'Payment Type', value: data.paymentType },
+    { label: 'Total Amount', value: data.totalAmount },
+    { label: 'Transaction Date', value: data.transactionDate },
+    { label: 'Sender ID', value: data.email },
     { label: 'Transaction ID', value: data.transactionId, hasCopyIcon: true },
   ];
 
@@ -143,7 +150,7 @@ const Receipt = ({ onClose, data }) => {
       <div className="popup-container relative bg-white rounded-xl p-4 w-[90%] max-w-[450px] mt-12 md:mt-16 shadow-lg">
         <Header />
         <div className="my-2 h-px bg-gray-300"></div>
-        <Summary amount={data.amount} type={data.type} status={data.status} />
+        <Summary totalAmount={data.totalAmount} paymentType={data.paymentType} status={data.status} />
         <TransactionDetail transactionDetails={transactionDetails} />
         <SupportMessage />
         <CallToAction onSave={handleSavePDF} onClose={onClose} />
