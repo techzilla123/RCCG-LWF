@@ -92,7 +92,7 @@ function ClientHistoryTable() {
             </button>
             {showTypeDropdown && (
               <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
-                {['All', 'BEDC Payment', 'Insurance', 'NHIS', 'WAEC/NECO e-Pin'].map((type, index) => (
+                {['All', 'TEST FEE', 'TEST FEE2'].map((type, index) => (
                   <li
                     key={index}
                     onClick={() => handleTypeSelect(type)}
@@ -111,7 +111,7 @@ function ClientHistoryTable() {
             </button>
             {showStatusDropdown && (
               <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
-                {['All', 'Successful', 'Pending', 'Failed', 'Reversed'].map((status, index) => (
+                {['All', 'SUCCESS', 'PENDING', 'FAILED', 'REVERSED','AUTHORIZED'].map((status, index) => (
                   <li
                     key={index}
                     onClick={() => handleStatusSelect(status)}

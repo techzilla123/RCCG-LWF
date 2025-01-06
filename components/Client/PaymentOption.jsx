@@ -48,7 +48,7 @@ const PaymentOption = ({ setPaymentOption }) => { // Accept the setPaymentOption
 
         setPaymentOptions(options); // Set the payment options to the state
       } catch (error) {
-        console.log("Error fetching payment options:", error);
+        console.error("Error fetching payment options:", error);
       }
     };
 
