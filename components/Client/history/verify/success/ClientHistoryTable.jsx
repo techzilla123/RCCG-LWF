@@ -25,17 +25,20 @@ function ClientHistoryTable() {
   }, []);
 
   // Filter data based on search term, type, and status
-  const filteredData = clientHistoryData.filter(item => {
+  const filteredData = clientHistoryData
+  .filter(item => {
     const matchesSearch =
       item.paymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.totalAmount.includes(searchTerm) ||
       item.transactionDate.includes(searchTerm);
 
     const matchesType = selectedType === 'All' || item.paymentType === selectedType;
-    const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus); // Assuming status is part of the item
+    const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus);
 
     return matchesSearch && matchesType && matchesStatus;
-  });
+  })
+  .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)); // Sort by date descending
+
 
   // Search form submission handler
   const handleSearch = (event) => {
