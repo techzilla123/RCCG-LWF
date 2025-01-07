@@ -1,8 +1,9 @@
-'use client'; // Ensure that this file is treated as a Client Component
+'use client'; // Ensure this file is treated as a Client Component
 
 import React, { useState, useEffect } from 'react';
 import ClientHistoryRow from './ClientHistoryRow';
 import Receipt from './Receipt'; // Ensure this path is correct
+import crypto from 'crypto-js'; // Ensure you have this package installed
 
 function ClientHistoryTable() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,43 +11,98 @@ function ClientHistoryTable() {
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  const [showReceipt, setShowReceipt] = useState(false); // State to show/hide receipt popup
-  const [selectedReceiptData, setSelectedReceiptData] = useState(null); // State to store selected item data
   const [clientHistoryData, setClientHistoryData] = useState([]); // State to hold client history data
+  const [selectedReceiptData, setSelectedReceiptData] = useState(null);
+  const [showReceipt, setShowReceipt] = useState(false);
+  
+  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Replace with your actual secret key
 
-  // Fetch data from local storage when the component mounts
   useEffect(() => {
     const storedData = localStorage.getItem("verificationResult");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      // Assuming the payments array is what you want to display
       setClientHistoryData(parsedData.payments || []);
     }
   }, []);
 
-  // Filter data based on search term, type, and status
+  useEffect(() => {
+    if (clientHistoryData.length > 0) {
+      localStorage.setItem("verificationResult", JSON.stringify({ payments: clientHistoryData }));
+    }
+  }, [clientHistoryData]); // Save client history data whenever it changes
+
+  // Generate HMAC
+  const generateHMAC = (message, secretKey) => {
+    const hash = crypto.HmacSHA256(message, secretKey);
+    return crypto.enc.Base64.stringify(hash);
+  };
+
+  // Function to fetch status from the API with generated headers
+  const updateStatus = async (transactionId) => {
+    const nonce = Math.random().toString(36).substring(2); // Random nonce
+    const timestamp = Date.now().toString(); // Current timestamp in milliseconds
+    const method = 'GET'; // HTTP method
+    const path = `/payment/process/fetch`; // Request path
+
+    const message = `${method}:${nonce}:${timestamp}`; // Generate message string
+    const apiKey = generateHMAC(message, secretKey); // Generate API Key (HMAC)
+
+    const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}?transactionId=${transactionId}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': apiKey,
+          'X-Timestamp': timestamp,
+          'X-Nonce': nonce,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch status');
+      }
+
+      const result = await response.json();
+      console.log('Fetched status:', result);
+
+      const updatedStatus = result?.status;
+      if (updatedStatus) {
+        setClientHistoryData((prevData) =>
+          prevData.map((item) =>
+            item.transactionId === transactionId ? { ...item, status: updatedStatus } : item
+          )
+        );
+        // Update the receipt data with the new status
+        setSelectedReceiptData((prevData) => ({
+          ...prevData,
+          status: updatedStatus
+        }));
+      }
+    } catch (error) {
+      console.log('Error fetching status:', error);
+    }
+  };
+
   const filteredData = clientHistoryData
-  .filter(item => {
-    const matchesSearch =
-      item.paymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.totalAmount.includes(searchTerm) ||
-      item.transactionDate.includes(searchTerm);
+    .filter(item => {
+      const matchesSearch =
+        item.paymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.totalAmount.includes(searchTerm) ||
+        item.transactionDate.includes(searchTerm);
 
-    const matchesType = selectedType === 'All' || item.paymentType === selectedType;
-    const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus);
+      const matchesType = selectedType === 'All' || item.paymentType === selectedType;
+      const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus);
 
-    return matchesSearch && matchesType && matchesStatus;
-  })
-  .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)); // Sort by date descending
+      return matchesSearch && matchesType && matchesStatus;
+    })
+    .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
 
-
-  // Search form submission handler
   const handleSearch = (event) => {
     event.preventDefault();
     console.log('Searching for:', searchTerm);
   };
 
-  // Toggle functions
   const toggleTypeDropdown = () => {
     setShowTypeDropdown(!showTypeDropdown);
     setShowStatusDropdown(false);
@@ -57,7 +113,6 @@ function ClientHistoryTable() {
     setShowTypeDropdown(false);
   };
 
-  // Select handlers
   const handleTypeSelect = (type) => {
     setSelectedType(type);
     setShowTypeDropdown(false);
@@ -68,16 +123,15 @@ function ClientHistoryTable() {
     setShowStatusDropdown(false);
   };
 
-  // Handle row click to show receipt
   const handleRowClick = (item) => {
-    setSelectedReceiptData(item); // Set selected item data
-    setShowReceipt(true); // Show receipt popup
+    updateStatus(item.transactionId); // Update status when a row is clicked
+    setSelectedReceiptData(item); // Update receipt data immediately
+    setShowReceipt(true);
   };
 
-  // Close receipt popup
   const handleCloseReceipt = () => {
     setShowReceipt(false);
-    setSelectedReceiptData(null); // Clear selected data
+    setSelectedReceiptData(null);
   };
 
   return (
@@ -114,7 +168,7 @@ function ClientHistoryTable() {
             </button>
             {showStatusDropdown && (
               <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
-                {['All', 'SUCCESS', 'PENDING', 'FAILED', 'REVERSED','AUTHORIZED'].map((status, index) => (
+                {['All', 'SUCCESS', 'PENDING', 'FAILED', 'REVERSED', 'AUTHORIZED'].map((status, index) => (
                   <li
                     key={index}
                     onClick={() => handleStatusSelect(status)}
@@ -127,7 +181,6 @@ function ClientHistoryTable() {
             )}
           </div>
 
-          {/* Search Box */}
           <form onSubmit={handleSearch} className="flex-1 flex items-center px-3 py-2 bg-white border rounded-full">
             <input
               type="search"
@@ -140,10 +193,8 @@ function ClientHistoryTable() {
           </form>
         </div>
 
-        {/* Divider Line */}
         <div className="my-4 h-px w-full bg-gray-300" />
 
-        {/* Client History List */}
         <div className="flex flex-col w-full rounded-lg bg-white">
           {filteredData.map((item, index) => (
             <div key={index} className="cursor-pointer" onClick={() => handleRowClick(item)}>
@@ -153,7 +204,6 @@ function ClientHistoryTable() {
         </div>
       </div>
 
-      {/* Conditionally render receipt popup */}
       {showReceipt && selectedReceiptData && (
         <Receipt data={selectedReceiptData} onClose={handleCloseReceipt} />
       )}
