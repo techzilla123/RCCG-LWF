@@ -11,7 +11,7 @@ function ClientHistoryRow({ status, totalAmount, paymentType, transactionDate })
       case 'SUCCESS':
         return { backgroundColor: '#08AA3B' }; // Green
         case 'AUTHORIZED':
-        return { backgroundColor: '#08AA3B' }; // Green
+        return { backgroundColor: '#A3A3A3' }; 
       case 'REVERSED':
         return { backgroundColor: '#9CA3AF' }; // Gray
       default:

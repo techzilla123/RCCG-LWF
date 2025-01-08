@@ -17,9 +17,9 @@ const Header = () => (
 const Summary = ({ totalAmount, paymentType, status }) => {
   // Define inline styles based on the status
   const statusStyles = {
-    PENDING: { color: 'yellow', iconFilter: 'none', iconColor: 'yellow' },
-    AUTHORIZED:{ color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' },
-    FAILED: { color: '#FF0000', iconFilter: 'none', iconColor: '#FF0000' }, // Red icon color for failed
+    PENDING: { color: 'yellow', iconFilter: 'yellow', iconColor: 'yellow' },
+    AUTHORIZED:{ color: '#A3A3A3', iconFilter: '#A3A3A3', iconColor: '#A3A3A3'},
+    FAILED: { color: '#FF0000', iconFilter: 'hue-rotate(0deg) brightness(0.5) saturate(20)', iconColor: 'hue-rotate(0deg) brightness(0.5) saturate(1)' }, // Red icon color for failed
     REVERSED: { color: '#B2B2B2', iconFilter: 'grayscale(100%)', iconColor: '#B2B2B2' }, // Ash color (gray) for reversed
     SUCCESS: { color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' }, // Green icon for successful
   };
@@ -34,7 +34,7 @@ const Summary = ({ totalAmount, paymentType, status }) => {
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
           alt=""
           className="w-5 h-5"
-          style={{ filter: currentStyle.iconFilter, color: currentStyle.iconColor }} // Apply icon color and filter
+          style={{ filter: currentStyle.iconFilter, color: currentStyle.iconColor}} // Apply icon color and filter
         />
         <div className="text-xs" style={{ color: currentStyle.color }}> {/* Apply text color */}
           {status}

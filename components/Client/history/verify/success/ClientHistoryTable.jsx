@@ -47,9 +47,9 @@ function ClientHistoryTable() {
     const message = `${method}:${nonce}:${timestamp}`; // Generate message string
     const apiKey = generateHMAC(message, secretKey); // Generate API Key (HMAC)
 
-    const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}?transactionId=${transactionId}`;
-
-    try {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Get the base URL from .env file
+  const apiUrl = `${apiBaseUrl}${path}?transactionId=${transactionId}`;
+      try {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
