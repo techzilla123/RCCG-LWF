@@ -1,17 +1,16 @@
-"use client";
+"use client"; // This line makes this a client component
 
 import React, { useState, useRef } from 'react';
 
-function InputField({ label, placeholder, type = 'text' }) {
-  const [inputValue, setInputValue] = useState('');
+function InputField({ label, placeholder, type = 'text', name, value, onChange }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const inputRef = useRef(null); // Create a reference to the input field
   const isPasswordField = type === 'password';
 
   // Function to clear the input and keep the focus
   const handleClearInput = () => {
-    setInputValue('');
-    inputRef.current.focus(); // Keep the input field focused
+    onChange({ target: { name, value: '' } }); // Clear the input value by calling onChange with an empty string
+    inputRef.current?.focus(); // Keep the input field focused
   };
 
   // Function to toggle password visibility
@@ -22,7 +21,7 @@ function InputField({ label, placeholder, type = 'text' }) {
       <label className="gap-2.5 self-start text-base text-neutral-500">{label}</label>
       <div
         className={`flex gap-3 items-center px-4 py-1.5 mt-2 w-full h-10 bg-white rounded-lg border-2 ${
-          inputValue ? 'border-[#08AA3B]' : 'border-[#e0e0e0]'
+          value ? 'border-[#08AA3B]' : 'border-[#e0e0e0]'
         } border-solid min-h-[40px]`}
       >
         {/* Eye Icon for Password Toggle (Positioned on the far left) */}
@@ -42,16 +41,17 @@ function InputField({ label, placeholder, type = 'text' }) {
 
         <input
           type={isPasswordField && !isPasswordVisible ? 'password' : 'text'}
-          value={inputValue}
+          name={name} // Attach the name prop to the input field
+          value={value}
           placeholder={placeholder}
           ref={inputRef} // Attach the ref to the input field
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={onChange} // Pass the onChange prop to handle changes
           className="flex-1 text-base text-black outline-none"
           aria-label={label}
         />
 
         {/* Close Icon (Clear Input) */}
-        {inputValue && (
+        {value && (
           <button
             type="button"
             onClick={handleClearInput}

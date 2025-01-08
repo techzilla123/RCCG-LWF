@@ -1,6 +1,6 @@
 'use client'; // This line makes this a client component
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter from Next.js
 import SocialAuthButton from '@/components/Admin/register/SocialAuthButton';
 import InputField from '@/components/Admin/register/InputField';
@@ -8,12 +8,66 @@ import Button from '@/components/Admin/register/Button';
 
 function SignUpPage() {
   const router = useRouter(); // Initialize the useRouter hook
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  // Function to handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   // Function to handle form submission
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent the default form submission
-    router.push('/auth/register/verify'); // Navigate to the verify page
+
+    // Validate form data
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    // Prepare the payload
+    const payload = {
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    try {
+      // Make the API call
+      const response = await fetch(`${apiBaseUrl}/admin/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      // Handle the response
+      if (response.ok) {
+        localStorage.setItem('userEmail', formData.email);
+        router.push('/auth/register/verify'); // Navigate to the verify page
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'An error occurred during signup.');
+      }
+    } catch (err) {
+  console.error('Error:', err);
+  setError('Failed to connect to the server.');
+}
   };
+  
 
   return (
     <main
@@ -43,10 +97,36 @@ function SignUpPage() {
               </div>
             </div>
             <form className="flex flex-col mt-6 w-full" onSubmit={handleSubmit}>
-              <InputField label="Full Name" placeholder="John Doe" />
-              <InputField label="Email/Phone" placeholder="Input email/phone" />
-              <InputField label="Password" placeholder="Enter your password" type="password" />
-              <InputField label="Confirm Password" placeholder="Confirm Password" type="password" />
+              <InputField
+                label="Full Name"
+                name="fullName"
+                placeholder="John Doe"
+                value={formData.fullName}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Email/Phone"
+                name="email"
+                placeholder="Input email/phone"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Password"
+                name="password"
+                placeholder="Enter your password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <InputField
+                label="Confirm Password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
               
               {/* Checkbox Input */}
               <div className="flex items-center mt-4">
@@ -59,6 +139,10 @@ function SignUpPage() {
                   Agree to Terms of Service
                 </label>
               </div>
+
+              {error && (
+                <p className="text-red-500 text-sm mt-2">{error}</p>
+              )}
 
               <div
                 className="flex flex-col mt-6 w-full text-sm font-medium text-center text-white rounded-[1000px]"
