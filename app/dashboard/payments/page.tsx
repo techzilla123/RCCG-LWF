@@ -56,7 +56,7 @@ function AdminPayments() {
         // Handle error from API
         alert(data.message || "An error occurred while creating the payment.");
       }
-    } catch (error) {
+    } catch {
       alert("An error occurred while sending the request.");
     }
   };
@@ -75,8 +75,6 @@ function AdminPayments() {
               <div className="flex items-center self-stretch my-auto min-w-[240px] gap-2">
                 <select className="flex items-center justify-center self-stretch h-10 px-2 rounded-lg shadow-sm bg-black bg-opacity-0 w-[105px] text-sm text-neutral-500">
                   <option>All Type</option>
-                  
-                  
                 </select>
                 <select className="flex items-center justify-center self-stretch h-10 px-2 rounded-lg shadow-sm bg-black bg-opacity-0 w-[105px] text-sm text-neutral-500">
                   <option>All Status</option>
