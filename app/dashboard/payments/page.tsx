@@ -58,7 +58,7 @@ function AdminPayments() {
         // Handle error from API
         setError(data.message || "An error occurred while creating the payment.");
       }
-    } catch (err) {
+    } catch (error) {
       setError("An error occurred while sending the request.");
     }
   };
