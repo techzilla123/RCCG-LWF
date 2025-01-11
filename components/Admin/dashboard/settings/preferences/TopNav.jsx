@@ -119,7 +119,7 @@ const LeftSection = () => (
 );
 
 const RightSection = () => (
-  <div className="flex flex-wrap flex-1 shrink gap-2 items-center justify-end h-full basis-0 min-w-[240px] max-md:max-w-full max-sm:hidden" style={{ marginLeft: "200px" }}>
+  <div className="flex flex-wrap flex-1 shrink gap-2 items-center justify-end h-full basis-0 min-w-[240px] max-md:max-w-full max-sm:hidden" style={{ marginLeft: "0px" }}>
     <CTAButton icon="https://cdn.builder.io/api/v1/image/assets/TEMP/f90281443a83895d8d9d6e0ddfa976bd989b330f0bf866790771040831297800?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" ariaLabel="Notification" />
     <div className="shrink-0 self-stretch w-0 h-9 border border-solid bg-zinc-300 border-zinc-300" role="separator" style={{ marginTop: "10px" }} />
     <MenuDropdown />
