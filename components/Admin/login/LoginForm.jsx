@@ -66,56 +66,65 @@ function LoginForm() {
   if (!isClient) {
     return null;
   }
+// Function to handle form submission
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-  // Function to handle form submission
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    
-    const nonce = Math.random().toString(36).substring(2);
-    const timestamp = Date.now().toString();
-    const method = 'POST';
-    const path = '/admin/signin';  // The API endpoint path
-    
-    // Create the message string for HMAC
-    const message = `${method}:${nonce}:${timestamp}`;
+  const nonce = Math.random().toString(36).substring(2);
+  const timestamp = Date.now().toString();
+  const method = 'POST';
+  const path = '/admin/signin'; // The API endpoint path
 
-    // Function to generate HMAC using HmacSHA256
-     const generateHMAC = (message, secretKey) => {
-        const hash = HmacSHA256(message, secretKey);
-        return Base64.stringify(hash);
-      };
+  // Create the message string for HMAC
+  const message = `${method}:${nonce}:${timestamp}`;
 
-    // Generate the API Key (HMAC)
-    const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Load your secret key from environment variable
-    const apiKey = generateHMAC(message, secretKey);
-
-    // API Request Headers
-    const headers = {
-      'X-API-Key': apiKey,
-      'X-Timestamp': timestamp,
-      'X-Nonce': nonce,
-    };
-
-    // API Request Payload (Login credentials)
-    const data = {
-      email,
-      password,
-    };
-
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`, // Base URL + API path
-        data,
-        { headers }
-      );
-      console.log('Login Success:', response.data);
-      router.push('/dashboard/dashboard-overview'); // Redirect to the desired page
-    } catch (error) {
-      // Extract the responseMessage from the error object
-      const responseMessage = error.response?.data?.responseMessage;
-      setErrorMessage(responseMessage || 'An error occurred.'); // Set the error message
-    }
+  // Function to generate HMAC using HmacSHA256
+  const generateHMAC = (message, secretKey) => {
+    const hash = HmacSHA256(message, secretKey);
+    return Base64.stringify(hash);
   };
+
+  // Generate the API Key (HMAC)
+  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Load your secret key from environment variable
+  const apiKey = generateHMAC(message, secretKey);
+
+  // API Request Headers
+  const headers = {
+    'X-API-Key': apiKey,
+    'X-Timestamp': timestamp,
+    'X-Nonce': nonce,
+  };
+
+  // API Request Payload (Login credentials)
+  const data = {
+    email,
+    password,
+  };
+
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`, // Base URL + API path
+      data,
+      { headers }
+    );
+
+    // Extract token from the response
+    const token = response.data?.token;
+    if (token) {
+      // Store token in localStorage
+      localStorage.setItem('authToken', token);
+
+      // Navigate to the dashboard
+      router.push('/dashboard/dashboard-overview');
+    } else {
+      throw new Error('Token not provided in response.');
+    }
+  } catch (error) {
+    // Extract the responseMessage from the error object
+    const responseMessage = error.response?.data?.responseMessage;
+    setErrorMessage(responseMessage || 'An error occurred.');
+  }
+};
 
   return (
     <section className="flex flex-col justify-center px-10 py-6 max-w-full bg-white rounded-2xl w-[464px] max-md:px-5">
