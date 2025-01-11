@@ -9,7 +9,7 @@ function AdminPayments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentName, setPaymentName] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null); // Adding string | null type for clarity
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -204,7 +204,8 @@ function AdminPayments() {
                 <button
                   type="submit"
                   className="px-4 py-2 text-sm text-white bg-green-600 rounded-md hover:bg-green-700"
-               style={{backgroundColor:'green'}} >
+                  style={{backgroundColor:'green'}}
+                >
                   Save
                 </button>
               </div>
