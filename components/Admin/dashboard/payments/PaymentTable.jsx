@@ -94,6 +94,13 @@ function PaymentTable({ searchQuery }) {
             >
               <div className="absolute -left-px top-2/4 z-0 shrink-0 self-start w-0 border border-solid -translate-y-2/4 bg-zinc-300 border-zinc-300 h-[22px] translate-x-[0%]" />
               <div className="z-0 flex-1 shrink my-auto basis-0">{header}</div>
+              {index < 5 && (
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/936c5ae5899c0cc48ee2a69189a91288cc3e5042a1f0e5d39a5a808fcaff1acc?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+                  alt=""
+                  className="object-contain z-0 shrink-0 aspect-[0.5] w-[11px]"
+                />
+              )}
             </div>
           ))}
         </div>
