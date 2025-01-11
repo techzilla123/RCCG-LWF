@@ -9,7 +9,6 @@ function AdminPayments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentName, setPaymentName] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
-  const [error, setError] = useState<string | null>(null); // Adding string | null type for clarity
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -26,7 +25,7 @@ function AdminPayments() {
     const authToken = localStorage.getItem("authToken");
 
     if (!authToken) {
-      setError("Authorization token is missing.");
+      alert("Authorization token is missing.");
       return;
     }
 
@@ -52,14 +51,13 @@ function AdminPayments() {
         setIsModalOpen(false);
         setPaymentName("");
         setPaymentAmount("");
-        setError(null); // Reset error if success
         alert("Payment created successfully!");
       } else {
         // Handle error from API
-        setError(data.message || "An error occurred while creating the payment.");
+        alert(data.message || "An error occurred while creating the payment.");
       }
     } catch (error) {
-      setError("An error occurred while sending the request.");
+      alert("An error occurred while sending the request.");
     }
   };
 
@@ -77,9 +75,13 @@ function AdminPayments() {
               <div className="flex items-center self-stretch my-auto min-w-[240px] gap-2">
                 <select className="flex items-center justify-center self-stretch h-10 px-2 rounded-lg shadow-sm bg-black bg-opacity-0 w-[105px] text-sm text-neutral-500">
                   <option>All Type</option>
+                  
+                  
                 </select>
                 <select className="flex items-center justify-center self-stretch h-10 px-2 rounded-lg shadow-sm bg-black bg-opacity-0 w-[105px] text-sm text-neutral-500">
                   <option>All Status</option>
+                  <option>Enabled</option>
+                  <option>Disabled</option>
                 </select>
                 <div className="flex overflow-hidden self-stretch px-0 py-2 my-auto h-8 bg-white border border-solid border-neutral-500 min-h-[32px] rounded-[100px] w-[210px]">
                   <button aria-label="Search" className="flex items-center px-3">
@@ -192,7 +194,6 @@ function AdminPayments() {
               </div>
 
               {/* Action Buttons */}
-              {error && <p className="text-red-500 text-xs">{error}</p>}
               <div className="flex justify-end space-x-4">
                 <button
                   type="button"
@@ -204,7 +205,7 @@ function AdminPayments() {
                 <button
                   type="submit"
                   className="px-4 py-2 text-sm text-white bg-green-600 rounded-md hover:bg-green-700"
-                  style={{backgroundColor:'green'}}
+                  style={{ backgroundColor: 'green' }}
                 >
                   Save
                 </button>
