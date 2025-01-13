@@ -126,13 +126,14 @@ function AdminPayments() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-[400px] relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" >
+          <div className="bg-white rounded-lg shadow-lg  p-6 w-[590px] relative">
             {/* Close button */}
             <button
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
               onClick={toggleModal}
               aria-label="Close"
+              style={{height:'32px', width:'32px'}}
             >
               &times;
             </button>
@@ -144,9 +145,9 @@ function AdminPayments() {
             </p>
 
             {/* Form */}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
               {/* Payment Name Input */}
-              <div className="mb-4">
+              <div className="mb-4" >
                 <label
                   htmlFor="payment"
                   className="block text-sm font-medium text-gray-700"
@@ -164,7 +165,7 @@ function AdminPayments() {
               </div>
 
               {/* Amount Input */}
-              <div className="mb-4">
+              <div className="mb-4" >
                 <label
                   htmlFor="amount"
                   className="block text-sm font-medium text-gray-700"
