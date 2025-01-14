@@ -2,15 +2,17 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
+import Link from "next/link"; // Import Link from next/link
 
-function DropdownModal({ isVisible, position, onAction, status }) {
+function DropdownModal({ isVisible, position, onAction, status, paymentName, paymentAmount }) {
+
+  // Early return if isVisible or position is falsy
   if (!isVisible || !position) return null;
 
   const backdropStyle = {
     position: "absolute",
     top: 0,
     left: 0,
-    
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -53,8 +55,17 @@ function DropdownModal({ isVisible, position, onAction, status }) {
     <div style={backdropStyle} onClick={(e) => e.stopPropagation()}>
       <div style={modalStyle}>
         <ul style={listStyle}>
-          <li style={listItemStyle} onClick={() => onAction("edit")}>
-            Edit
+          <li style={listItemStyle}>
+            {/* Use Link component for navigation */}
+            <Link
+              href={{
+                pathname: "/dashboard/payments/edit",
+                query: { paymentName, paymentAmount, status },
+              }}
+              passHref
+            >
+              Edit
+            </Link>
           </li>
           {status === "ENABLED" ? (
             <li style={listItemStyle} onClick={() => onAction("disable")}>

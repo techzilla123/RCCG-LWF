@@ -79,8 +79,18 @@ function PaymentTable({ searchQuery }) {
   };
 
   const handleAction = (action, index) => {
-    console.log(`Action: ${action}, Row: ${index}`);
+    const selectedPayment = tableData[index];
+    const { paymentName, paymentAmount } = selectedPayment;
+
+    console.log(`Action: ${action}, Row: ${index}, Payment Name: ${paymentName}, Payment Amount: ${paymentAmount}`);
     setDropdownVisible(null);
+
+    // If the action is "edit", pass the selected payment details to the edit page
+    if (action === "edit") {
+      // Add your routing logic or state update here for the edit page
+      console.log(`Edit payment: ${paymentName} for amount: ${paymentAmount}`);
+      // For example, you could use useRouter to redirect to an edit page
+    }
   };
 
   const filteredData = tableData.filter((row) => {
@@ -109,11 +119,7 @@ function PaymentTable({ searchQuery }) {
             (header, index) => (
               <div
                 key={index}
-                className={`flex relative flex-1 shrink gap-1 px-2 py-4 h-full text-sm font-medium leading-loose text-black ${
-                  index === 2 || index === 3 ? "text-right" : ""
-                } ${index === 4 ? "text-center" : ""} ${
-                  index === 5 ? "w-16 max-w-[64px] min-w-[44px]" : "basis-4"
-                } ${index === 5 ? "" : "min-w-[160px]"}`}
+                className={`flex relative flex-1 shrink gap-1 px-2 py-4 h-full text-sm font-medium leading-loose text-black ${index === 2 || index === 3 ? "text-right" : ""} ${index === 4 ? "text-center" : ""} ${index === 5 ? "w-16 max-w-[64px] min-w-[44px]" : "basis-4"} ${index === 5 ? "" : "min-w-[160px]"}`}
               >
                 <div className="absolute -left-px top-2/4 z-0 shrink-0 self-start w-0 border border-solid -translate-y-2/4 bg-zinc-300 border-zinc-300 h-[22px] translate-x-[0%]" />
                 <div className="z-0 flex-1 shrink my-auto basis-0">{header}</div>
@@ -185,8 +191,10 @@ function PaymentTable({ searchQuery }) {
                 isVisible={dropdownVisible === rowIndex}
                 position={dropdownPosition}
                 onClose={() => setDropdownVisible(null)}
-                onAction={(action) => handleAction(action, rowIndex)}
+                onAction={(action) => handleAction(action, rowIndex)}  // Passing the action and index
                 status={row.status}
+                paymentName={row.paymentName}  // Passing paymentName to DropdownModal
+                paymentAmount={row.paymentAmount}  // Passing paymentAmount to DropdownModal
               />
             </div>
           </div>
