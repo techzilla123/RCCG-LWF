@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import SideBar from "@/components/Admin/dashboard/payments/Sidebar";
 import TopNav from "@/components/Admin/dashboard/payments/edit/TopNav";
+import PaymentTable from "@/components/Admin/dashboard/payments/PaymentTable";
 
 function AdminPayments() {
   const [paymentName, setPaymentName] = useState("");
@@ -128,7 +129,7 @@ function AdminPayments() {
             </div>
             <div>
               <label htmlFor="paymentAmount" className="block text-sm font-medium text-gray-700">
-                Amount
+                Amount 
               </label>
               <input
                 id="paymentAmount"
@@ -164,6 +165,7 @@ function AdminPayments() {
               </div>
             </div>
           </div>
+          <PaymentTable searchQuery={searchQuery} />
         </div>
       </main>
     </div>
