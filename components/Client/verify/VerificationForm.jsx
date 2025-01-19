@@ -184,7 +184,7 @@ function VerificationForm() {
           </div>
           {/* Display error message */}
           {responseMessage && (
-            <p className="text-red-500 text-sm mt-2">{responseMessage}</p>
+            <p className="text-red-500 self-stretch text-sm mt-2 " style={{letterSpacing: '0.5px'}}>{responseMessage}</p>
           )}
         </div>
 
