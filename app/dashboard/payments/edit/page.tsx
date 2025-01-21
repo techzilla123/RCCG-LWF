@@ -9,27 +9,26 @@ function AdminPayments() {
   const [paymentName, setPaymentName] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [status, setStatus] = useState("ENABLED");
- 
+  const [status, setStatus] = useState("ENABLED");  // Default to 'ENABLED'
+
   // Initialize state from URL query parameters once
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const name = params.get("paymentName");
     const amount = params.get("paymentAmount");
-    const statusFromQuery = params.get("status");
-  
+    const statusFromQuery = params.get("status"); // Read status from URL
+
     if (name) setPaymentName(name);
     if (amount) setPaymentAmount(amount);
-    if (statusFromQuery) setStatus(statusFromQuery);
+    if (statusFromQuery) setStatus(statusFromQuery); // Set status from URL if present
   }, []);
-  
-  // Button fix
-   // Update URL query parameters when state changes
+
+  // Update URL query parameters when state changes
   useEffect(() => {
     const params = new URLSearchParams();
     if (paymentName) params.set("paymentName", paymentName);
     if (paymentAmount) params.set("paymentAmount", paymentAmount);
-    params.set("status", status);
+    params.set("status", status); // Always include status in the URL
 
     window.history.replaceState(null, "", `?${params.toString()}`);
   }, [paymentName, paymentAmount, status]); // Dependencies on state variables
@@ -39,7 +38,8 @@ function AdminPayments() {
   };
 
   const toggleStatus = () => {
-    setStatus((prevStatus) => (prevStatus === "ENABLED" ? "DISABLED" : "ENABLED"));
+    const newStatus = status === "ENABLED" ? "DISABLED" : "ENABLED";
+    setStatus(newStatus); // Update the state
   };
 
   const saveChanges = async () => {
@@ -94,22 +94,20 @@ function AdminPayments() {
                 Save Changes
               </button>
               <button
-  onClick={toggleStatus}
-  className={`px-4 py-2 rounded-md flex items-center gap-2 ${
-    status === "ENABLED"
-      ? "bg-red-500 text-white hover:bg-red-600"
-      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-  }`}
->
-  <img
-    src="/Vector.svg"
-    alt="Status Icon"
-    style={{ padding: 0 }}
-  />
-  <span>{status === "ENABLED" ? "Disable" : "Enable"}</span>
-</button>
-
-
+                onClick={toggleStatus}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 ${
+                  status === "ENABLED"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <img
+                  src="/Vector.svg"
+                  alt="Status Icon"
+                  style={{ padding: 0 }}
+                />
+                <span>{status === "ENABLED" ? "Disable" : "Enable"}</span>
+              </button>
             </div>
           </div>
 
@@ -124,7 +122,7 @@ function AdminPayments() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
                 placeholder={paymentName || "BEDC Payment"}
                 value={paymentName}
-                onChange={(e) => setPaymentName(e.target.value)}
+                readOnly // This ensures the field is not editable
               />
             </div>
             <div>
