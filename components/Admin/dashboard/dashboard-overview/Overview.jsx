@@ -51,7 +51,7 @@ function Overview() {
             figure: data.totalSuccessfulPayment,
             subTitle: "Failure Rate",
             percentage: `${data.failureRate}%`,
-            trend: parseFloat(data.failureRate) > 50 ? "up" : "down",
+            trend: parseFloat(data.failureRate) < 50 ? "up" : "down",
           },
           {
             title: "Cashflow",
