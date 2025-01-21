@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import SideBar from "@/components/Admin/dashboard/payments/Sidebar";
 import TopNav from "@/components/Admin/dashboard/payments/edit/TopNav";
-import PaymentTable from "@/components/Admin/dashboard/payments/PaymentTable";
+import PaymentTable from "@/components/Admin/dashboard/payments/edit/PaymentTable";
 
 function AdminPayments() {
   const [paymentName, setPaymentName] = useState("");
