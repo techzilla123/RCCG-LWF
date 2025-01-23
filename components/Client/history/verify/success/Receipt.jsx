@@ -15,16 +15,19 @@ const Header = () => (
 );
 
 const Summary = ({ totalAmount, paymentType, status }) => {
-  // Define inline styles based on the status
   const statusStyles = {
     PENDING: { color: 'yellow', iconFilter: 'yellow', iconColor: 'yellow' },
-    AUTHORIZED:{ color: '#A3A3A3', iconFilter: '#A3A3A3', iconColor: '#A3A3A3'},
-    FAILED: { color: '#FF0000', iconFilter: 'hue-rotate(0deg) brightness(0.5) saturate(20)', iconColor: 'hue-rotate(0deg) brightness(0.5) saturate(1)' }, // Red icon color for failed
-    REVERSED: { color: '#B2B2B2', iconFilter: 'grayscale(100%)', iconColor: '#B2B2B2' }, // Ash color (gray) for reversed
-    SUCCESS: { color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' }, // Green icon for successful
+    AUTHORIZED: { color: '#A3A3A3', iconFilter: '#A3A3A3', iconColor: '#A3A3A3' },
+    FAILED: {
+      color: '#FF0000',
+      iconFilter: 'hue-rotate(0deg) brightness(0.5) saturate(20)',
+      iconColor: 'hue-rotate(0deg) brightness(0.5) saturate(1)',
+    },
+    REVERSED: { color: '#B2B2B2', iconFilter: 'grayscale(100%)', iconColor: '#B2B2B2' },
+    SUCCESS: { color: 'green', iconFilter: 'hue-rotate(90deg)', iconColor: 'green' },
   };
 
-  const currentStyle = statusStyles[status] || { color: 'black', iconFilter: 'none', iconColor: 'black' };
+  const currentStyle = statusStyles[status] || { color: 'black' };
 
   return (
     <section className="flex flex-col items-center pt-2 pb-4 w-full">
@@ -34,9 +37,9 @@ const Summary = ({ totalAmount, paymentType, status }) => {
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
           alt=""
           className="w-5 h-5"
-          style={{ filter: currentStyle.iconFilter, color: currentStyle.iconColor}} // Apply icon color and filter
+          style={{ filter: currentStyle.iconFilter, color: currentStyle.color }}
         />
-        <div className="text-xs" style={{ color: currentStyle.color }}> {/* Apply text color */}
+        <div className="text-xs" style={{ color: currentStyle.color }}>
           {status}
         </div>
       </div>
@@ -48,7 +51,7 @@ const Summary = ({ totalAmount, paymentType, status }) => {
   );
 };
 
-const TransactionDetail = ({ transactionDetails }) => {
+const TransactionDetail = ({ transactionDetails, fullTransactionId }) => {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     alert('Copied to clipboard!');
@@ -63,9 +66,21 @@ const TransactionDetail = ({ transactionDetails }) => {
             <span className="text-xs text-neutral-500">{detail.label}</span>
             <div className="flex items-center gap-2">
               <span
-                className={`text-sm font-medium text-black ${detail.label === 'Transaction ID' ? 'truncate' : ''}`}
-                title={detail.value} // Shows full text on hover
-                style={detail.label === 'Transaction ID' ? { maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' } : {}}
+                className={`text-sm font-medium text-black ${
+                  detail.label === 'Transaction ID' ? 'truncate' : ''
+                }`}
+                title={detail.label === 'Transaction ID' && !fullTransactionId ? detail.value : undefined}
+                style={
+                  detail.label === 'Transaction ID'
+                    ? { maxWidth: '100%', whiteSpace: 'nowrap', textOverflow: 'ellipsis', position: 'relative', // To ensure proper layering
+                      zIndex: 9999,
+                      fontSize: '12px', // Reduced font size for better fit
+                      lineHeight: '2.2',
+                      
+                      
+                     }
+                    : {}
+                }
               >
                 {detail.value}
               </span>
@@ -97,8 +112,8 @@ const SupportMessage = () => (
   </section>
 );
 
-const CallToAction = ({ onSave, onClose }) => (
-  <div className="flex gap-2 pb-4 text-sm font-medium text-center">
+const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
+  <div className="call-to-action flex gap-2 pb-4 text-sm font-medium text-center">
     <button
       onClick={onClose}
       className="flex-1 px-3 py-2 border border-neutral-500 rounded-full"
@@ -107,8 +122,11 @@ const CallToAction = ({ onSave, onClose }) => (
     </button>
     <button
       onClick={onSave}
-      className="flex-1 px-3 py-2 text-white rounded-full"
-      style={{ background: '#08AA3B' }}
+      className={`flex-1 px-3 py-2 text-white rounded-full ${
+        isSaveDisabled ? 'cursor-not-allowed bg-gray-400' : ''
+      }`}
+      style={{ background: isSaveDisabled ? '#A3A3A3' : '#08AA3B' }}
+      disabled={isSaveDisabled}
     >
       Save
     </button>
@@ -118,8 +136,13 @@ const CallToAction = ({ onSave, onClose }) => (
 const Receipt = ({ onClose, data }) => {
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
+    const buttons = document.querySelector('.call-to-action');
+
+    // Temporarily hide buttons for PDF generation
+    if (buttons) buttons.style.visibility = 'hidden';
+
     html2canvas(popupElement, {
-      scale: 3, // Increase scale for better clarity
+      scale: 3,
       useCORS: true,
       allowTaint: true,
     }).then((canvas) => {
@@ -128,12 +151,16 @@ const Receipt = ({ onClose, data }) => {
       const imgProps = pdf.getImageProperties(imageData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
       pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+      // Restore buttons visibility after PDF generation
+      if (buttons) buttons.style.visibility = 'visible';
+
       pdf.save('receipt.pdf');
     });
   };
 
-  // Map transaction details
   const transactionDetails = [
     { label: 'Payment Type', value: data.paymentType },
     { label: 'Total Amount', value: data.totalAmount },
@@ -150,10 +177,21 @@ const Receipt = ({ onClose, data }) => {
       <div className="popup-container relative bg-white rounded-xl p-4 w-[90%] max-w-[450px] mt-12 md:mt-16 shadow-lg">
         <Header />
         <div className="my-2 h-px bg-gray-300"></div>
-        <Summary totalAmount={data.totalAmount} paymentType={data.paymentType} status={data.status} />
-        <TransactionDetail transactionDetails={transactionDetails} />
+        <Summary
+          totalAmount={data.totalAmount}
+          paymentType={data.paymentType}
+          status={data.status}
+        />
+        <TransactionDetail
+          transactionDetails={transactionDetails}
+          fullTransactionId={data.status === 'SUCCESS'}
+        />
         <SupportMessage />
-        <CallToAction onSave={handleSavePDF} onClose={onClose} />
+        <CallToAction
+          onSave={handleSavePDF}
+          onClose={onClose}
+          isSaveDisabled={data.status !== 'SUCCESS'}
+        />
       </div>
     </div>
   );

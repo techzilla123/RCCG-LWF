@@ -57,7 +57,7 @@ function ClientHistoryRow({ status, totalAmount, paymentType, transactionDate })
               fontSize: '16px',
             }}
           >
-            {paymentType}
+            {paymentType.replace(/_/g, ' ')}
           </div>
         </div>
       </div>

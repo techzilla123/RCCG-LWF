@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import ClientHistoryRow from './ClientHistoryRow';
 import Receipt from './Receipt'; // Ensure this path is correct
 import crypto from 'crypto-js'; // Ensure you have this package installed
+import axios from 'axios';
 
 function ClientHistoryTable() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,8 +15,45 @@ function ClientHistoryTable() {
   const [clientHistoryData, setClientHistoryData] = useState([]); // State to hold client history data
   const [selectedReceiptData, setSelectedReceiptData] = useState(null);
   const [showReceipt, setShowReceipt] = useState(false);
-  
+  const [paymentOptions, setPaymentOptions] = useState([]); // State to hold the payment options
+
   const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Replace with your actual secret key
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Get the base URL from .env file
+  const paymentOptionsUrl = process.env.NEXT_PUBLIC_API_PAYMENT_LIST_URL; // API endpoint to fetch payment options
+
+  // Generate HMAC
+  const generateHMAC = (message, secretKey) => {
+    const hash = crypto.HmacSHA256(message, secretKey);
+    return crypto.enc.Base64.stringify(hash);
+  };
+
+  useEffect(() => {
+    // Fetch payment options from the API
+    const fetchPaymentOptions = async () => {
+      const nonce = Math.random().toString(36).substring(2); // Random nonce
+      const timestamp = Date.now().toString(); // Current timestamp in milliseconds
+      const method = "GET"; // HTTP method
+      const message = `${method}:${nonce}:${timestamp}`; // Generate message string
+      const apiKey = generateHMAC(message, secretKey); // Generate API Key (HMAC)
+
+      try {
+        const headers = {
+          "X-API-Key": apiKey,
+          "X-Timestamp": timestamp,
+          "X-Nonce": nonce,
+        };
+
+        const response = await axios.get(paymentOptionsUrl, { headers });
+        const options = response.data.map(option => option.paymentName); // Extract payment names
+
+        setPaymentOptions(['All', ...options]); // Set payment options (adding 'All' as the first option)
+      } catch (error) {
+        console.error("Error fetching payment options:", error);
+      }
+    };
+
+    fetchPaymentOptions();
+  }, [secretKey, paymentOptionsUrl]);
 
   useEffect(() => {
     const storedData = localStorage.getItem("verificationResult");
@@ -31,13 +69,6 @@ function ClientHistoryTable() {
     }
   }, [clientHistoryData]); // Save client history data whenever it changes
 
-  // Generate HMAC
-  const generateHMAC = (message, secretKey) => {
-    const hash = crypto.HmacSHA256(message, secretKey);
-    return crypto.enc.Base64.stringify(hash);
-  };
-
-  // Function to fetch status from the API with generated headers
   const updateStatus = async (transactionId) => {
     const nonce = Math.random().toString(36).substring(2); // Random nonce
     const timestamp = Date.now().toString(); // Current timestamp in milliseconds
@@ -47,9 +78,8 @@ function ClientHistoryTable() {
     const message = `${method}:${nonce}:${timestamp}`; // Generate message string
     const apiKey = generateHMAC(message, secretKey); // Generate API Key (HMAC)
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Get the base URL from .env file
-  const apiUrl = `${apiBaseUrl}${path}?transactionId=${transactionId}`;
-      try {
+    const apiUrl = `${apiBaseUrl}${path}?transactionId=${transactionId}`;
+    try {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -64,8 +94,6 @@ function ClientHistoryTable() {
       }
 
       const result = await response.json();
-      console.log('Fetched status:', result);
-
       const updatedStatus = result?.status;
       if (updatedStatus) {
         setClientHistoryData((prevData) =>
@@ -76,7 +104,7 @@ function ClientHistoryTable() {
         // Update the receipt data with the new status
         setSelectedReceiptData((prevData) => ({
           ...prevData,
-          status: updatedStatus
+          status: updatedStatus,
         }));
       }
     } catch (error) {
@@ -85,22 +113,22 @@ function ClientHistoryTable() {
   };
 
   const filteredData = clientHistoryData
-    .filter(item => {
-      const matchesSearch =
-        item.paymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.totalAmount.includes(searchTerm) ||
-        item.transactionDate.includes(searchTerm);
+  .filter(item => {
+    const normalizedPaymentType = item.paymentType.replace(/_/g, ' '); // Convert underscores to spaces
+    const matchesSearch =
+      normalizedPaymentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.totalAmount.includes(searchTerm) ||
+      item.transactionDate.includes(searchTerm);
 
-      const matchesType = selectedType === 'All' || item.paymentType === selectedType;
-      const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus);
+    const matchesType = selectedType === 'All' || normalizedPaymentType === selectedType;
+    const matchesStatus = selectedStatus === 'All' || (item.status && item.status === selectedStatus);
 
-      return matchesSearch && matchesType && matchesStatus;
-    })
-    .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
+    return matchesSearch && matchesType && matchesStatus;
+  })
+  .sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
 
   const handleSearch = (event) => {
     event.preventDefault();
-    console.log('Searching for:', searchTerm);
   };
 
   const toggleTypeDropdown = () => {
@@ -149,7 +177,7 @@ function ClientHistoryTable() {
             </button>
             {showTypeDropdown && (
               <ul className="absolute top-full left-0 bg-white border rounded-lg shadow-md w-full sm:w-auto z-10">
-                {['All', 'TEST_FEE', 'TEST_FEE2'].map((type, index) => (
+                {paymentOptions.map((type, index) => (
                   <li
                     key={index}
                     onClick={() => handleTypeSelect(type)}
