@@ -88,7 +88,7 @@ function TransactionTable({ searchQuery, filters }) {
     const filtered = transactions.filter((transaction) => {
       const transactionValues = Object.values(transaction).join(" ").toLowerCase();
       let isValid = transactionValues.includes(searchQuery.toLowerCase());
-
+  
       // Filter based on the filters
       if (filters.paymentType && transaction.payment_type !== filters.paymentType) {
         isValid = false;
@@ -102,13 +102,18 @@ function TransactionTable({ searchQuery, filters }) {
       if (filters.transactionId && !transaction.transaction_id.includes(filters.transactionId)) {
         isValid = false;
       }
-
+  
+      // Log transaction status and filtering conditions to debug
+      console.log("Filtering transaction:", transaction.transaction_id, "isValid:", isValid);
+  
       return isValid;
     });
-
+  
+    // Ensure you have the filtered transactions to display
+    console.log("Filtered Transactions:", filtered);
     setFilteredTransactions(filtered);
   }, [searchQuery, filters, transactions]);
-
+  
   const handleCheckboxChange = () => {
     setSelectAll((prev) => {
       const newSelectAll = !prev;
@@ -132,7 +137,7 @@ function TransactionTable({ searchQuery, filters }) {
   if (error) return (
     <div>
       Error: {error}
-       <button onClick={() => setError(null)} style={{marginLeft:'2px'}}> Retry</button>
+       <button onClick={() => setError(null)} style={{marginLeft:'6px', color:'blue'}}> Retry</button>
     </div>
   );
 
