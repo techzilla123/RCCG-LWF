@@ -34,10 +34,13 @@ function TransactionTable({ searchQuery, filters }) {
       // Build the query string based on filters
       let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments?`;
 
+      // Add filters for startDate and endDate
       if (filters.startDate) {
         url += `startdate=${encodeURIComponent(formatDate(filters.startDate))}&`;
       }
       if (filters.paymentType) {
+        // Only append if paymentType is defined
+        
         url += `paymentType=${encodeURIComponent(filters.paymentType)}&`;
       }
       if (filters.endDate) {
@@ -66,8 +69,12 @@ function TransactionTable({ searchQuery, filters }) {
 
         const data = await response.json();
         setTransactions(data.payments || []);
+        setFilteredTransactions(data.payments || []); // Ensure filtered data is updated
+        setError(null); // Reset error state if request is successful
       } catch (err) {
         setError(err.message);
+        setTransactions([]); // Clear previous transactions
+        setFilteredTransactions([]); // Clear previous filtered transactions
       } finally {
         setLoading(false);
       }
@@ -122,7 +129,12 @@ function TransactionTable({ searchQuery, filters }) {
   };
 
   if (loading) return <div>Loading transactions...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (error) return (
+    <div>
+      Error: {error}
+       <button onClick={() => setError(null)} style={{marginLeft:'2px'}}> Retry</button>
+    </div>
+  );
 
   return (
     <div className="flex flex-col flex-1 mt-4 w-full rounded-xl max-md:max-w-full">
