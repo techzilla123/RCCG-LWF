@@ -17,7 +17,7 @@ function Overview() {
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/payment/metrics`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/metrics`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

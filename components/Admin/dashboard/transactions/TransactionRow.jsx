@@ -3,7 +3,7 @@
 import React from 'react';
 
 function TransactionRow({
-  userId,
+  registration,
   name,
   email,
   phone,
@@ -16,16 +16,17 @@ function TransactionRow({
   // Helper function to get the color for status indicators
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Successful':
+      case 'SUCCESS':
         return '#08AA3B'; // Green color for successful status
-      case 'Pending':
+      case 'PENDING':
         return '#FFBB33'; // Yellow color for pending status
-      case 'Failed':
-        return '#FF4D4D'; // Red color for failed status
+      case 'FAILED':
+        return '#FF0000'; // Red color for failed status
       default:
         return '#D1D5DB'; // Default color for undefined status
     }
   };
+  
 
   // Copy Transaction ID to Clipboard
   const handleImageClick = () => {
@@ -34,17 +35,29 @@ function TransactionRow({
     });
   };
 
+  // Function to truncate email (hides @domain but shows full on hover)
+  const formatEmail = (email) => {
+    const [localPart, domain] = email.split('@');
+    return domain ? `${localPart}@...` : email;
+  };
+
   return (
     <div className="flex flex-wrap w-full bg-white border-b border-zinc-300 min-h-[64px] max-md:max-w-full">
       {/* User Information Section */}
-      <div className="flex-1 p-2 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
-        <div className="text-black">{userId}</div>
-        <div>{name}</div>
+      <div className="flex-1 p-3 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
+        <span className="text-xs leading-4 text-black">{registration}</span>
+        <br />
+        <span className="text-xs leading-5">{name}</span>
       </div>
 
-      {/* Contact Information Section */}
+      {/* Contact Information Section (Email Truncated) */}
       <div className="flex-1 p-2 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
-        <div className="text-black">{email}</div>
+        <div
+          className="text-black truncate max-w-[120px] cursor-pointer"
+          title={email} // Show full email on hover
+        >
+          {formatEmail(email)}
+        </div>
         <div>{phone}</div>
       </div>
 
@@ -66,7 +79,7 @@ function TransactionRow({
       </div>
 
       {/* Amount Section */}
-      <div className="flex-1 p-2 text-sm text-left text-black" style={{ marginLeft: '44px' }}>
+      <div className="flex-1 p-2 text-sm text-left text-black flex items-center" style={{ marginLeft: '44px' }}>
         {amount}
       </div>
 

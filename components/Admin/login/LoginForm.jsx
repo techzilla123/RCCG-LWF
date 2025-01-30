@@ -131,7 +131,7 @@ const handleLogin = async (e) => {
       <div className="flex w-full min-h-[18px]" />
       <form className="flex flex-col self-center w-full rounded-xl" onSubmit={handleLogin}>
         <div className="flex flex-col items-start self-start text-center">
-          <h1 className="text-4xl font-semibold text-green-900" style={{ color: "#005E1E" }}>
+          <h1 className="text-4xl font-semibold text-green-900 " style={{ color: "#005E1E" }}>
             Login
           </h1>
           <p className="mt-3 text-base text-neutral-500">
@@ -173,7 +173,7 @@ const handleLogin = async (e) => {
 
         {/* Submit Button and Forgot Password Link */}
         <div className="flex flex-col mt-6 w-full font-medium">
-          <button type="submit" className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-sm text-center text-white whitespace-nowrap bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px]" style={{ background: "#08AA3B" }}>
+          <button type="submit" className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-sm text-center text-white whitespace-nowrap bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px]" style={{ background: "#08AA3B"}}>
             Login
           </button>
 

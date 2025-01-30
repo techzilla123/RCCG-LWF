@@ -57,7 +57,7 @@ const EmailCapture = () => {
       </div>
       <button
         type="submit"
-        className="overflow-hidden gap-2 self-stretch px-4 py-3 h-10 font-medium text-center text-white whitespace-nowrap  border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] w-[137px] hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        className="overflow-hidden gap-2 self-stretch px-4 py-3 h-10 font-medium text-center text-white whitespace-nowrap  border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] w-[137px] hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 "
         style={{ background: '#08AA3B' }} >
         Subscribe
       </button>
