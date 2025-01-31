@@ -6,60 +6,44 @@ function TransactionTable({ searchQuery, filters }) {
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [checkedItems, setCheckedItems] = useState({});
   const [selectAll, setSelectAll] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // **Format Payment Type (Remove Underscores)**
+  const formatPaymentType = (type) => type.replace(/_/g, ' ');
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const token = localStorage.getItem("authToken"); // Get token from localStorage
+      const token = localStorage.getItem("authToken");
 
       if (!token) {
         setError("Authorization token is missing");
-        setLoading(false);
         return;
       }
 
-      // Helper function to format date as "YYYY-MM-DD HH:mm:ss"
-      const formatDate = (date) => {
-        const d = new Date(date);
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const seconds = String(d.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-      };
-
-      // Build the query string based on filters
       let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments?`;
 
-      // Add filters for startDate and endDate
-      if (filters.startDate) {
-        url += `startdate=${encodeURIComponent(formatDate(filters.startDate))}&`;
-      }
-      if (filters.paymentType) {
-        // Only append if paymentType is defined
-        
-        url += `paymentType=${encodeURIComponent(filters.paymentType)}&`;
-      }
-      if (filters.endDate) {
-        url += `enddate=${encodeURIComponent(formatDate(filters.endDate))}&`;
-      }
-      if (filters.transactionId) {
-        url += `transactionId=${encodeURIComponent(filters.transactionId)}&`;
-      }
+      if (filters.startDate) url += `startdate=${encodeURIComponent(filters.startDate)}&`;
+      if (filters.paymentType) url += `paymentType=${encodeURIComponent(filters.paymentType)}&`;
+      if (filters.endDate) url += `enddate=${encodeURIComponent(filters.endDate)}&`;
+      if (filters.transactionId) url += `transactionId=${encodeURIComponent(filters.transactionId)}&`;
+      if (filters.status) url += `status=${encodeURIComponent(filters.status)}&`;  
 
-      // Remove trailing '&' if any
       url = url.endsWith("&") ? url.slice(0, -1) : url;
 
       try {
-        setLoading(true);
+        const cachedData = localStorage.getItem("transactions");
+
+        if (cachedData) {
+          setTransactions(JSON.parse(cachedData));
+          setFilteredTransactions(JSON.parse(cachedData));
+          return;
+        }
+
         const response = await fetch(url, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Add Bearer token to header
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -68,29 +52,31 @@ function TransactionTable({ searchQuery, filters }) {
         }
 
         const data = await response.json();
-        setTransactions(data.payments || []);
-        setFilteredTransactions(data.payments || []); // Ensure filtered data is updated
-        setError(null); // Reset error state if request is successful
+        const transactionsList = data.payments || [];
+
+        // **Save to localStorage for faster reload**
+        localStorage.setItem("transactions", JSON.stringify(transactionsList));
+
+        setTransactions(transactionsList);
+        setFilteredTransactions(transactionsList);
+        setError(null);
       } catch (err) {
         setError(err.message);
-        setTransactions([]); // Clear previous transactions
-        setFilteredTransactions([]); // Clear previous filtered transactions
-      } finally {
-        setLoading(false);
+        setTransactions([]);
+        setFilteredTransactions([]);
       }
     };
 
     fetchTransactions();
-  }, [filters]); // Run whenever filters change
+  }, [filters]);
 
-  // Apply the search query and filters
+  // **Apply Filters & Search**
   useEffect(() => {
     const filtered = transactions.filter((transaction) => {
       const transactionValues = Object.values(transaction).join(" ").toLowerCase();
       let isValid = transactionValues.includes(searchQuery.toLowerCase());
-  
-      // Filter based on the filters
-      if (filters.paymentType && transaction.payment_type !== filters.paymentType) {
+
+      if (filters.paymentType && formatPaymentType(transaction.payment_type) !== filters.paymentType) {
         isValid = false;
       }
       if (filters.startDate && new Date(transaction.created_date_time) < new Date(filters.startDate)) {
@@ -102,18 +88,18 @@ function TransactionTable({ searchQuery, filters }) {
       if (filters.transactionId && !transaction.transaction_id.includes(filters.transactionId)) {
         isValid = false;
       }
-  
-      // Log transaction status and filtering conditions to debug
+      if (filters.status && transaction.status !== filters.status) {  // <-- Apply status filtering
+        isValid = false;
+      }
+
       console.log("Filtering transaction:", transaction.transaction_id, "isValid:", isValid);
-  
       return isValid;
     });
-  
-    // Ensure you have the filtered transactions to display
+
     console.log("Filtered Transactions:", filtered);
     setFilteredTransactions(filtered);
   }, [searchQuery, filters, transactions]);
-  
+
   const handleCheckboxChange = () => {
     setSelectAll((prev) => {
       const newSelectAll = !prev;
@@ -133,11 +119,10 @@ function TransactionTable({ searchQuery, filters }) {
     }));
   };
 
-  if (loading) return <div>Loading transactions...</div>;
   if (error) return (
     <div>
       Error: {error}
-       <button onClick={() => setError(null)} style={{marginLeft:'6px', color:'blue'}}> Retry</button>
+      <button onClick={() => setError(null)} style={{ marginLeft: '6px', color: 'blue' }}> Retry</button>
     </div>
   );
 
@@ -192,7 +177,7 @@ function TransactionTable({ searchQuery, filters }) {
             name={transaction.name}
             email={transaction.email}
             phone={transaction.phone_no}
-            description={transaction.payment_type}
+            description={formatPaymentType(transaction.payment_type)}
             date={transaction.created_date_time}
             transactionId={transaction.transaction_id}
             amount={`₦${(transaction.transaction_amount / 100).toLocaleString()}`}

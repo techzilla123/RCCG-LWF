@@ -14,11 +14,13 @@ function TransactionPage() {
     startDate: string;
     endDate: string;
     transactionId: string;
+    status: string;
   }>({
     paymentType: "",
     startDate: "",
     endDate: "",
     transactionId: "",
+    status: "",
   });
 
   const [paymentTypes, setPaymentTypes] = useState<{ name: string; status: string }[]>([]);
@@ -31,7 +33,7 @@ function TransactionPage() {
       if (!token) return;
   
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/payment/config?page=1&perPage=10`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/payment/config`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,6 +61,44 @@ function TransactionPage() {
   
     fetchPaymentTypes();
   }, []);
+
+  
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+    
+      let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments`;
+      if (filters.status) {
+        url += `?status=${encodeURIComponent(filters.status)}`;
+      }
+    
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+    
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Failed to fetch transactions: ${response.status} - ${errorText}`);
+          return;
+        }
+    
+        const data = await response.json();
+        console.log("Fetched transactions:", data);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+    
+    if (filters.status || filters.paymentType || filters.startDate || filters.endDate || filters.transactionId) {
+      fetchTransactions();
+    }
+  }, [filters]);
   
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,12 +134,12 @@ function TransactionPage() {
               </button>
 
               {/* Status Dropdown */}
-              <select className="flex items-center justify-center self-stretch h-10 px-2 rounded-lg shadow-sm bg-black bg-opacity-0 w-[105px] text-sm text-neutral-500">
-                <option>All Status</option>
-                <option>Successful</option>
-                <option>Failed</option>
-                <option>Pending</option>
-                <option>Reversed</option>
+              <select name="status" value={filters.status} onChange={handleFilterChange} className="flex items-center bg-white border border-gray-300  justify-center self-stretch h-10 px-2 rounded-lg shadow-sm bg-opacity-0 w-[105px] text-sm focus:outline-none focus:ring-2 text-neutral-500">
+                <option value="">All Status</option>
+                <option value="SUCCESS">Successful</option>
+                <option value="FAILED">Failed</option>
+                <option value="PENDING">Pending</option>
+                <option value="REVERSED">Reversed</option>
               </select>
 
               {/* Search Bar */}
