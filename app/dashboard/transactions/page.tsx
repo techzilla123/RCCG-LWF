@@ -113,7 +113,44 @@ function TransactionPage() {
   const clearFilter = (key: string) => {
     setFilters((prev) => ({ ...prev, [key]: "" }));
   };
+  const handleExport = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
 
+    const params = new URLSearchParams();
+    if (filters.startDate) params.append('startdate', filters.startDate);
+    if (filters.endDate) params.append('enddate', filters.endDate);
+    if (filters.paymentType) params.append('paymentType', filters.paymentType);
+    if (filters.transactionId) params.append('transactionId', filters.transactionId);
+    if (filters.status) params.append('status', filters.status);
+
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/excel/download?${params.toString()}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to export: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlBlob;
+      a.download = 'transactions.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(urlBlob);
+    } catch (error) {
+      console.error("Error exporting transactions:", error);
+    }
+  };
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
       <SideBar />
@@ -164,7 +201,8 @@ function TransactionPage() {
                   onChange={handleSearch}
                 />
               </div>
-              <button className="flex justify-center items-center h-8 border border-solid bg-black bg-opacity-0 border-black border-opacity-0 rounded-[1000px] px-4">
+              <button className="flex justify-center items-center h-8 border border-solid bg-black bg-opacity-0 border-black border-opacity-0 rounded-[1000px] px-4"
+               onClick={handleExport}>
                 <span className="text-sm font-medium text-center text-neutral-500">
                   Export
                 </span>
