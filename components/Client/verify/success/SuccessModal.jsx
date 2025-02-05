@@ -14,7 +14,7 @@ function SuccessModal() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('reference');  // Extract the reference parameter
-    console.log('Extracted Reference (Transaction ID):', ref); // Log the reference value
+    console.log('Extracted Reference (Transaction ID):', ref);
     setTransactionId(ref);
   }, []);
 
@@ -31,20 +31,19 @@ function SuccessModal() {
     const method = 'GET';
     const path = `/payment/process/fetch?transactionId=${transactionId}`;
     const message = `${method}:${nonce}:${timestamp}`;
-    console.log('Constructed API Path:', path); // Log API path
+    console.log('Constructed API Path:', path);
 
-    // Generate HMAC
     const generateHMAC = (message, secretKey) => {
       const hash = CryptoJS.HmacSHA256(message, secretKey);
       return CryptoJS.enc.Base64.stringify(hash);
     };
 
     const apiKey = generateHMAC(message, secretKey);
-    console.log('Generated API Key:', apiKey); // Log generated API key
+    console.log('Generated API Key:', apiKey);
 
     try {
       const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}`;
-      console.log('Complete API URL:', apiUrl); // Log full API URL
+      console.log('Complete API URL:', apiUrl);
 
       const response = await fetch(apiUrl, {
         method,
@@ -56,11 +55,11 @@ function SuccessModal() {
         },
       });
 
-      console.log('Response Status:', response.status); // Log response status
+      console.log('Response Status:', response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Transaction Details:', data); // Log transaction details
+        console.log('Transaction Details:', data);
         // Store the response in localStorage
         localStorage.setItem('transactionDetails', JSON.stringify(data));
       } else {
@@ -72,15 +71,14 @@ function SuccessModal() {
     }
   };
 
-  // Trigger fetching when receipt is viewed
   const handleViewReceiptClick = () => {
-    console.log('View Receipt Button Clicked'); // Log button click
+    console.log('View Receipt Button Clicked');
     fetchTransactionDetails();
     setShowReceipt(true);
   };
 
   const handleFinishClick = () => {
-    console.log('Finish Button Clicked'); // Log finish button click
+    console.log('Finish Button Clicked');
     router.push('/');
   };
 
@@ -94,11 +92,7 @@ function SuccessModal() {
           loading="lazy"
           src="/success-0u6rqMvimp.png"
           alt="Success Icon"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-          }}
+          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
       </div>
 

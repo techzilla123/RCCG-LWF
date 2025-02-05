@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import ForBusiness from "@/components/ForBusiness";
-import ForCustomer from "@/components/ForCustomer";
+// import ForCustomer from "@/components/ForCustomer";
 import ContactForm from "@/components/ContactFormSect";
 import Brands from "@/components/Brands";
 import FaqSection from "@/components/FAQSection";
@@ -16,7 +16,7 @@ export default function Home() {
       <Brands />
       
       <ForBusiness />
-      <ForCustomer />
+      {/* <ForCustomer /> */}
       <ContactForm />
       <FaqSection />
       

@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import OverviewCard from "./OverviewCard";
@@ -26,6 +24,17 @@ function Overview() {
         );
 
         const data = response.data;
+
+        // Convert payment amount to appropriate string with K or M
+        let paymentAmount = parseFloat(data.paymentAmount);
+        let paymentFormatted;
+        if (paymentAmount >= 1000000) {
+          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`;  // For amounts in millions
+        } else if (paymentAmount >= 1000) {
+          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`;  // For amounts in thousands
+        } else {
+          paymentFormatted = `₦${paymentAmount.toLocaleString()}`;  // For amounts in the hundreds
+        }
 
         const mappedData = [
           {
@@ -56,7 +65,7 @@ function Overview() {
           {
             title: "Cashflow",
             icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/a3a48832b72d51ee4c914bfc147a9fed9e92fe799de981b463f8ef0313f32882?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
-            figure: `₦${parseFloat(data.paymentAmount).toLocaleString()}`,
+            figure: paymentFormatted,
             subTitle: "Profit",
             percentage: "20.00%",
             trend: "up",

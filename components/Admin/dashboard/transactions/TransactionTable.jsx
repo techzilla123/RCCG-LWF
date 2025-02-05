@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from "react";
 import TransactionRow from "./TransactionRow";
 
@@ -31,14 +33,6 @@ function TransactionTable({ searchQuery, filters }) {
       url = url.endsWith("&") ? url.slice(0, -1) : url;
 
       try {
-        const cachedData = localStorage.getItem("transactions");
-
-        if (cachedData) {
-          setTransactions(JSON.parse(cachedData));
-          setFilteredTransactions(JSON.parse(cachedData));
-          return;
-        }
-
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -52,9 +46,9 @@ function TransactionTable({ searchQuery, filters }) {
         }
 
         const data = await response.json();
-        const transactionsList = data.payments || [];
+        const transactionsList = (data.payments || []).sort((a, b) => new Date(b.created_date_time) - new Date(a.created_date_time));
 
-        // **Save to localStorage for faster reload**
+        // **Always update localStorage with new data**
         localStorage.setItem("transactions", JSON.stringify(transactionsList));
 
         setTransactions(transactionsList);
@@ -88,15 +82,13 @@ function TransactionTable({ searchQuery, filters }) {
       if (filters.transactionId && !transaction.transaction_id.includes(filters.transactionId)) {
         isValid = false;
       }
-      if (filters.status && transaction.status !== filters.status) {  // <-- Apply status filtering
+      if (filters.status && transaction.status !== filters.status) {
         isValid = false;
       }
 
-      console.log("Filtering transaction:", transaction.transaction_id, "isValid:", isValid);
       return isValid;
     });
 
-    console.log("Filtered Transactions:", filtered);
     setFilteredTransactions(filtered);
   }, [searchQuery, filters, transactions]);
 
@@ -147,7 +139,7 @@ function TransactionTable({ searchQuery, filters }) {
                 index === 4 ? "text-right" : index === 5 ? "text-center" : ""
               } ${index > 3 ? "" : "whitespace-nowrap"} basis-4 ${
                 index < 4 ? "min-w-[160px]" : ""
-              } max-sm:hidden`}
+              } max-sm:hidden lg:pl-2`} // Added padding left for larger screens
             >
               <div className="absolute -left-px top-2/4 z-0 shrink-0 self-start w-0 border border-solid -translate-y-2/4 bg-zinc-300 border-zinc-300 h-[22px] translate-x-[0%]" />
               <div className="z-0 flex-1 shrink my-auto basis-0">{header}</div>

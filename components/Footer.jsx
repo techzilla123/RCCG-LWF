@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 
 const FooterLinks = () => {
   const links = [
@@ -27,43 +27,43 @@ const FooterLinks = () => {
   );
 };
 
-const EmailCapture = () => {
-  const [email, setEmail] = useState('');
+// const EmailCapture = () => {
+//   const [email, setEmail] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Submitted email:', email);
-    setEmail('');
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   console.log('Submitted email:', email);
+  //   setEmail('');
+  // };
 
-  return (
-    <form onSubmit={handleSubmit} className="flex gap-2 items-start self-stretch my-auto text-sm min-w-[240px] max-md:max-w-full">
-      <div className="flex flex-col min-h-[40px] min-w-[240px] text-neutral-500 w-[280px]">
-        <div className="flex flex-col flex-1 w-full">
-          <div className="flex overflow-hidden flex-1 gap-2 items-center px-3.5 py-2.5 bg-white rounded-lg border border-solid shadow-sm border-neutral-600 size-full">
-            <label htmlFor="emailInput" className="sr-only">Enter your email</label>
-            <input
-              id="emailInput"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="flex-1 shrink gap-2 self-stretch my-auto w-full min-w-[240px] bg-transparent border-none outline-none"
-              required
-              aria-required="true"
-            />
-          </div>
-        </div>
-      </div>
-      <button
-        type="submit"
-        className="overflow-hidden gap-2 self-stretch px-4 py-3 h-10 font-medium text-center text-white whitespace-nowrap  border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] w-[137px] hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 "
-        style={{ background: '#08AA3B' }} >
-        Subscribe
-      </button>
-    </form>
-  );
-};
+//   return (
+//     <form onSubmit={handleSubmit} className="flex gap-2 items-start self-stretch my-auto text-sm min-w-[240px] max-md:max-w-full">
+//       <div className="flex flex-col min-h-[40px] min-w-[240px] text-neutral-500 w-[280px]">
+//         <div className="flex flex-col flex-1 w-full">
+//           <div className="flex overflow-hidden flex-1 gap-2 items-center px-3.5 py-2.5 bg-white rounded-lg border border-solid shadow-sm border-neutral-600 size-full">
+//             <label htmlFor="emailInput" className="sr-only">Enter your email</label>
+//             <input
+//               id="emailInput"
+//               type="email"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               placeholder="Enter your email"
+//               className="flex-1 shrink gap-2 self-stretch my-auto w-full min-w-[240px] bg-transparent border-none outline-none"
+//               required
+//               aria-required="true"
+//             />
+//           </div>
+//         </div>
+//       </div>
+//       <button
+//         type="submit"
+//         className="overflow-hidden gap-2 self-stretch px-4 py-3 h-10 font-medium text-center text-white whitespace-nowrap  border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] w-[137px] hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 "
+//         style={{ background: '#08AA3B' }} >
+//         Subscribe
+//       </button>
+//     </form>
+  // );
+// };
 
 const Footer = () => {
   return (
@@ -83,8 +83,8 @@ const Footer = () => {
       </div>
       <div className="flex flex-col mt-8 w-full max-md:max-w-full">
         <div className="flex flex-wrap gap-10 justify-between items-center w-full max-md:max-w-full">
-          <EmailCapture />
-          <p className="self-stretch my-auto text-base text-neutral-500">
+          {/* <EmailCapture /> */}
+          <p className="text-roght self-stretch my-auto text-base text-neutral-500">
             © {new Date().getFullYear()} yctmb. All rights reserved.
           </p>
         </div>

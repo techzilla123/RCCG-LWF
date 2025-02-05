@@ -1,14 +1,15 @@
 // Add this line at the top
 "use client";
-
+import { Roboto } from 'next/font/google';
 import Sidebar from '@/components/Admin/dashboard/dashboard-overview/Sidebar';
 import TopNav from '@/components/Admin/dashboard/dashboard-overview/TopNav';
 import Overview from '@/components/Admin/dashboard/dashboard-overview/Overview';
-import ChartGroup from '@/components/Admin/dashboard/dashboard-overview/ChartGroup';
+// import ChartGroup from '@/components/Admin/dashboard/dashboard-overview/ChartGroup';
 import TopPayments from '@/components/Admin/dashboard/dashboard-overview/TopPayments';
-import UsersChart from '@/components/Admin/dashboard/dashboard-overview/UsersChart';
+// import UsersChart from '@/components/Admin/dashboard/dashboard-overview/UsersChart';
 import TransactionsChart from '@/components/Admin/dashboard/dashboard-overview/TransactionsChart';
 
+const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 function AdminDashboard() {
 
   return (
@@ -19,16 +20,16 @@ function AdminDashboard() {
       </div>
 
       {/* Main content - Adjusted margin to avoid overlap with sidebar */}
-      <div data-layername="body" className="flex flex-col flex-1 py-4 pr-4 pl-2 ml-[216px] max-w-full">
+      <div data-layername="body" className="flex flex-col flex-1 py-4 pr-4 pl-2 ml-[216px] max-w-full" >
         <TopNav />
        
-          <div data-layername="line" className="flex-1 shrink self-stretch my-auto w-full h-px border border-solid basis-0 bg-zinc-300 border-zinc-300 min-h-[1px] min-w-[240px] max-md:max-w-full" />
+          <div data-layername="line" className="flex shrink self-stretch w-full border  bg-zinc-300 border-zinc-300 min-w-[240px]"/>
         
-        <main data-layername="main" className="flex flex-col w-full bg-white rounded-none max-md:max-w-full">
+        <main data-layername="main" className=" flex flex-col w-full bg-white rounded-none max-md:max-w-full" >
         
-            <header data-layername="header" className="flex flex-wrap gap-4 px-4 pt-6 pb-0 w-full bg-white max-md:max-w-full">
+            <header data-layername="header" className="flex flex-wrap gap-4 px-4 pt-6 pb-0 w-full bg-white max-md:max-w-full ">
               <h1 data-layername="title" className="flex flex-col flex-1 shrink justify-center items-start text-3xl text-black basis-0 min-w-[240px] max-md:max-w-full">
-                <div data-layername="titleText" className="gap-1 self-stretch">Dashboard Overview</div>
+                <div data-layername="titleText" className={roboto.className}  >Dashboard Overview</div>
               </h1>
               <div data-layername="actions" className="flex gap-2 items-center my-auto">
               <button
@@ -46,14 +47,14 @@ function AdminDashboard() {
           
           <section data-layername="content" className="flex flex-col p-4 w-full max-md:max-w-full">
             <Overview />
-            <div data-layername="secondRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full">
-              <UsersChart />
+            <div data-layername="secondRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full ">
+            <TopPayments />
               <TransactionsChart />
             </div>
-            <div data-layername="firstRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full">
+            {/* <div data-layername="firstRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full">
               <ChartGroup title="Revenue" subtitle="Over the past week" />
-              <TopPayments />
-            </div>
+              <UsersChart />
+            </div> */}
           </section>
         </main>
       </div>

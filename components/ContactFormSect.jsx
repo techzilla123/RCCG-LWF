@@ -19,7 +19,7 @@ function InputField({
   };
 
   return (
-    <div className="flex flex-col flex-1 shrink basis-0 min-h-[111px] min-w-[240px] relative">
+    <div className="flex flex-col flex-1 shrink basis-0  min-h-[111px] min-w-[240px] relative">
       <div className="flex justify-between">
         <label className="gap-2.5 self-start text-neutral-500">{label}</label>
         {error && <span className="text-red-500 text-xs">{error}</span>}

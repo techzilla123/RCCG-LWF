@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import crypto from "crypto-js";
-import { useRouter } from "next/navigation";
+
 import TransactionModal from "@/components/Client/popup";
 
 function VerificationForm() {
-  const router = useRouter();
   const [verificationCode, setVerificationCode] = useState(["", "", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(10); // Countdown timer set to 10 seconds initially
@@ -15,7 +14,6 @@ function VerificationForm() {
 
   // Refs for each input field
   const inputRefs = useRef([]);
-  
 
   // Handle input change for the verification code
   const handleInputChange = (index, value) => {
@@ -33,6 +31,18 @@ function VerificationForm() {
     // Move back if cleared
     if (!value && index > 0) {
       inputRefs.current[index - 1]?.focus(); // Focus the previous input if cleared
+    }
+  };
+
+  const handlePaste = (e) => {
+    const pasteData = e.clipboardData.getData("text").trim();
+    if (/^\d{6}$/.test(pasteData)) {
+      setVerificationCode(pasteData.split(""));
+      pasteData.split("").forEach((digit, index) => {
+        if (inputRefs.current[index]) {
+          inputRefs.current[index].value = digit;
+        }
+      });
     }
   };
 
@@ -124,8 +134,51 @@ function VerificationForm() {
     return () => clearInterval(countdown);
   }, [timer, isResendDisabled]);
 
-  const handleResendCode = () => {
-    router.push("/client");
+  // Modified handleResendCode to recall the endpoint using details from localStorage
+  const handleResendCode = async () => {
+    // Retrieve email from localStorage
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      console.log("Email not found in localStorage");
+      return;
+    }
+
+    // Pre-request HMAC generation for headers
+    const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
+    const nonce = Math.random().toString(36).substring(2);
+    const timestamp = Date.now().toString();
+    const method = "POST";
+    const message = `${method}:${nonce}:${timestamp}`;
+
+    const generateHMAC = (message, secretKey) => {
+      const hash = crypto.HmacSHA256(message, secretKey);
+      return hash.toString(crypto.enc.Base64);
+    };
+
+    const apiKey = generateHMAC(message, secretKey);
+
+    // Data to send to the API (using only email here, adjust if more details are needed)
+    const data = { email };
+
+    try {
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_API_PAYMENT_NEW_URL, // Recall the Payment endpoint
+        data,
+        {
+          headers: {
+            "X-API-Key": apiKey,
+            "X-Timestamp": timestamp,
+            "X-Nonce": nonce,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Resend payment request success:", response.data);
+      const token = response.data.token;
+      window.location.href = `/client/verify?token=${token}&email=${email}`;
+    } catch (error) {
+      console.log("Error during resend:", error);
+    }
   };
 
   return (
@@ -155,7 +208,7 @@ function VerificationForm() {
           className="flex flex-col justify-center mt-6 w-full text-6xl font-medium tracking-tighter leading-tight text-center whitespace-nowrap min-h-[96px] text-zinc-300 max-md:text-4xl"
           style={{ color: "#000000" }}
         >
-          <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center">
+          <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center" onPaste={handlePaste}>
             {verificationCode.map((digit, index) => (
               <div className="flex flex-col" key={index}>
                 <input
@@ -184,7 +237,9 @@ function VerificationForm() {
           </div>
           {/* Display error message */}
           {responseMessage && (
-            <p className="text-red-500 self-stretch text-sm mt-2 " style={{letterSpacing: '0.5px'}}>{responseMessage}</p>
+            <p className="text-red-500 self-stretch text-sm mt-2 " style={{letterSpacing: '0.5px'}}>
+              {responseMessage}
+            </p>
           )}
         </div>
 
@@ -194,10 +249,12 @@ function VerificationForm() {
             type="submit"
             className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-white bg-green-600 border border-transparent rounded-full hover:bg-green-700 transition-all duration-200"
             style={{
-              background: "#08AA3B",
+              background: "#08AA3B",transition: "background 0.3s", cursor: "pointer",
               cursor: verificationCode.includes("") ? "not-allowed" : "pointer",
               opacity: verificationCode.includes("") ? 0.7 : 1,
             }}
+            onMouseEnter={(e) => (e.target.style.background = "#067F2E")}
+onMouseLeave={(e) => (e.target.style.background = "#08AA3B")}
             disabled={verificationCode.includes("")} // Disable if any input is empty
           >
             Verify
@@ -231,7 +288,6 @@ function VerificationForm() {
       {/* Transaction Modal */}
       {showModal && <TransactionModal authorizationUrl={authorizationUrl} />}
     </div>
-    
   );
 }
 

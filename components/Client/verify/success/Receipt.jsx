@@ -20,34 +20,34 @@ const Summary = ({ totalAmount, paymentType, status }) => {
 
   switch (status) {
     case 'SUCCESS':
-      statusColor = 'text-green-500'; // Green for success
-      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a'; // Success icon URL
-      textStyle = { color: 'green' }; // Text color green
-      iconStyle = { filter: 'hue-rotate(90deg)' }; // Adjust hue for green
+      statusColor = 'text-green-500';
+      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a';
+      textStyle = { color: 'green' };
+      iconStyle = { filter: 'hue-rotate(90deg)' };
       break;
     case 'PENDING':
-      statusColor = 'text-yellow-500'; // Yellow for pending
-      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a'; // Pending icon URL
-      textStyle = { color: 'yellow' }; // Text color yellow
-      iconStyle = { filter: 'hue-rotate(60deg)' }; // Adjust hue for yellow
+      statusColor = 'text-yellow-500';
+      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a';
+      textStyle = { color: 'yellow' };
+      iconStyle = { filter: 'hue-rotate(60deg)' };
       break;
     case 'FAILED':
-      statusColor = 'text-red-500'; // Red for failed
-      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a'; // Failed icon URL
-      textStyle = { color: 'red' }; // Text color red
-      iconStyle = { filter: 'hue-rotate(0deg)' }; // Adjust hue for red
+      statusColor = 'text-red-500';
+      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a';
+      textStyle = { color: 'red' };
+      iconStyle = { filter: 'hue-rotate(0deg)' };
       break;
     case 'REVERSED':
-      statusColor = 'text-gray-500'; // Gray for reversed
-      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a'; // Reversed icon URL
-      textStyle = { color: 'gray' }; // Text color gray
-      iconStyle = { filter: 'hue-rotate(180deg)' }; // Adjust hue for gray
+      statusColor = 'text-gray-500';
+      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a';
+      textStyle = { color: 'gray' };
+      iconStyle = { filter: 'hue-rotate(180deg)' };
       break;
     default:
-      statusColor = 'text-gray-500'; // Default color if status is unknown
-      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a'; // Default icon URL
+      statusColor = 'text-gray-500';
+      iconSrc = 'https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a';
       textStyle = { color: 'gray' };
-      iconStyle = { filter: 'hue-rotate(180deg)' }; // Default hue adjustment for unknown status
+      iconStyle = { filter: 'hue-rotate(180deg)' };
   }
 
   return (
@@ -58,7 +58,7 @@ const Summary = ({ totalAmount, paymentType, status }) => {
           src={iconSrc}
           alt=""
           className="w-5 h-5"
-          style={iconStyle} // Applying the iconStyle to the image
+          style={iconStyle}
         />
         <div className={`text-xs ${statusColor}`} style={textStyle}>{status}</div>
       </div>
@@ -69,7 +69,6 @@ const Summary = ({ totalAmount, paymentType, status }) => {
     </section>
   );
 };
-
 
 Summary.propTypes = {
   totalAmount: PropTypes.number.isRequired,
@@ -93,7 +92,7 @@ const TransactionDetail = ({ transactionDetails }) => {
             <div className="flex items-center gap-2">
               <span
                 className={`text-sm font-medium text-black ${detail.label === 'Transaction ID' ? 'truncate' : ''}`}
-                title={detail.value} // Shows full text on hover
+                title={detail.value}
                 style={detail.label === 'Transaction ID' ? { maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' } : {}}
               >
                 {detail.value}
@@ -114,7 +113,6 @@ const TransactionDetail = ({ transactionDetails }) => {
     </section>
   );
 };
-
 
 TransactionDetail.propTypes = {
   transactionDetails: PropTypes.arrayOf(
@@ -161,14 +159,21 @@ CallToAction.propTypes = {
 };
 
 const Receipt = ({ onClose }) => {
-  const [transactionData, setTransactionData] = useState(null);
+  // Instead of only setting the transaction data once on mount,
+  // we now read from localStorage on every render to get the latest details.
+  const transactionData = JSON.parse(localStorage.getItem('transactionDetails') || 'null');
 
-  useEffect(() => {
-    const storedTransactionData = localStorage.getItem('transactionDetails');
-    if (storedTransactionData) {
-      setTransactionData(JSON.parse(storedTransactionData));
-    }
-  }, []);
+  if (!transactionData) {
+    return <div>Loading...</div>;
+  }
+
+  const transactionDetails = [
+    { label: 'Payment Type', value: transactionData.paymentType },
+    { label: 'Total Amount', value: `₦${transactionData.totalAmount}` },
+    { label: 'Transaction Date', value: transactionData.transactionDate },
+    { label: 'Sender ID', value: transactionData.email },
+    { label: 'Transaction ID', value: transactionData.transactionId, hasCopyIcon: true },
+  ];
 
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
@@ -186,18 +191,6 @@ const Receipt = ({ onClose }) => {
       pdf.save('receipt.pdf');
     });
   };
-
-  if (!transactionData) {
-    return <div>Loading...</div>;
-  }
-
-  const transactionDetails = [
-    { label: 'Payment Type', value: transactionData.paymentType },
-    { label: 'Total Amount', value: `₦${transactionData.totalAmount}` },
-    { label: 'Transaction Date', value: transactionData.transactionDate },
-    { label: 'Sender ID', value: transactionData.email },
-    { label: 'Transaction ID', value: transactionData.transactionId, hasCopyIcon: true },
-  ];
 
   return (
     <div

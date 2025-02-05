@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+
 function HeroSection() {
   return (
     <section
@@ -14,7 +15,7 @@ function HeroSection() {
         alt=""
         className="object-contain absolute inset-x-0 z-0 self-start aspect-[3.39] bottom-[137px] top-[200px] w-[1280px] max-md:max-w-full max-md:top-[150px]"
       />
-      
+
       {/* Text Body */}
       <div
         data-layername="textBody"
@@ -25,67 +26,56 @@ function HeroSection() {
           <h1
             data-layername="displayText"
             className="text-4xl sm:text-5xl font-bold text-yellow-600 max-md:max-w-full max-md:text-3xl max-sm:font-semibold"
-         style={{color:"#005E1E"}} >
+            style={{ color: "#005E1E" }}
+          >
             Get the money you need to fund all your{" "}
-            <span className="text-yellow-600" style={{color:'#B39200'}}>financial plans!</span>
+            <span className="text-yellow-600" style={{ color: "#B39200" }}>
+              financial plans!
+            </span>
           </h1>
           <p
             data-layername="supportingText"
             className="mt-6 text-xl sm:text-2xl text-black max-md:max-w-full"
-          style={{
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: '24px',
-            fontWeight: 400,
-            lineHeight: '28.13px',
-            width:'450px',
-            textAlign: 'left',
-            textUnderlinePosition: 'from-font',
-            textDecorationSkipInk: 'none',
-          }}>
+            style={{
+              fontFamily: "Roboto, sans-serif",
+              fontSize: "24px",
+              fontWeight: 400,
+              lineHeight: "28.13px",
+              width: "450px",
+              textAlign: "left",
+              textUnderlinePosition: "from-font",
+              textDecorationSkipInk: "none",
+            }}
+          >
             Make payments, track transactions, and manage your service—all in one place.
           </p>
         </div>
 
-        {/* Call to Action Button */}
+        {/* Call to Action Buttons */}
         <div
           data-layername="cta"
           className="flex gap-2 items-center mt-8 w-full text-sm font-medium text-center text-white max-md:max-w-full"
         >
-          <Button
-            asChild
-            className="bg-green text-white w-[180px] h-[40px] font-[500] hover:bg-green rounded-[1000px]"
-          style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '14px',
-            fontWeight: 100,
-            lineHeight: '16.94px',
-            textAlign: 'center',
-            
-          }}>
-            <Link href="/client">Pay Now</Link>
-          </Button>
-          <Button
-            asChild
-            className=" text-white w-[180px] h-[40px] font-[500] hover:bg-green rounded-[1000px]"
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '14px',
-              fontWeight: 100,
-              lineHeight: '16.94px',
-              textAlign: 'center',
-              textUnderlinePosition: 'from-font',
-              textDecorationSkipInk: 'none',
-              color: '#000000',
-              border: '1px solid #717171',
-              padding: '8px 16px',
-              textDecoration: 'none',
-              backgroundColor: 'transparent',
-            }}
-          >
-            <Link href="/client/history">History</Link>
-          </Button>
+          {/* Pay Now Button */}
+   {/* Pay Now Button */}
+<Button
+  asChild
+  className="w-[180px] h-[40px] font-medium rounded-full text-white bg-green 
+             hover:bg-[#00782A] active:bg-green-800 transition-all duration-300 ease-in-out"
+>
+  <Link href="/client">Pay Now</Link>
+</Button>
+
+{/* History Button */}
+<Button
+  asChild
+  className="w-[180px] h-[40px] font-medium bg-transparent rounded-full text-black border border-gray-500 
+             hover:bg-gray-300 active:bg-gray-300 transition-all duration-300 ease-in-out"
+>
+  <Link href="/client/history">History</Link>
+</Button>
+
         </div>
-        
       </div>
 
       {/* Image Section (hidden on small screens) */}

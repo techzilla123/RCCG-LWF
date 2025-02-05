@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import crypto from 'crypto-js'; // Install this library with npm install crypto-js
 import InputField from './InputField';
 import PaymentOption from './PaymentOption'; // Make sure it's correctly imported
+
 
 const labelStyle = {
   color: "#717171",
@@ -15,6 +16,7 @@ const labelStyle = {
   textDecorationSkipInk: 'none',
 };
 
+
 function PaymentForm() {
   const [fullName, setFullName] = useState('');
   const [matricNumber, setMatricNumber] = useState('');
@@ -22,6 +24,7 @@ function PaymentForm() {
   const [phone, setPhone] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
 
   const [errors, setErrors] = useState({
     matricNumber: false,
@@ -31,6 +34,11 @@ function PaymentForm() {
 
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
 
@@ -124,7 +132,7 @@ function PaymentForm() {
             <div className="flex gap-4 items-start w-full text-base max-md:max-w-full">
               <InputField label="Full Name" placeholder="John Doe" labelStyle={labelStyle} value={fullName} onChange={(e) => setFullName(e.target.value)} />
               <InputField
-                label="Matric/Reg. Number *"
+                label={windowWidth < 399 ? "Matric Number *" : "Matric/Reg Number *"}
                 placeholder="Input number"
                 required
                 labelStyle={labelStyle}
@@ -174,8 +182,10 @@ function PaymentForm() {
             <div className="flex flex-col mt-6 w-full text-sm font-medium text-center text-white whitespace-nowrap max-md:max-w-full">
               <button
                 type="submit"
-                className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] max-md:max-w-full"
-                style={{ background: "#08AA3B" }}
+                className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full bg-green-600 hover:bg-[#00782A] active:bg-green-800 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] max-md:max-w-full"
+                style={{ background: "#08AA3B", transition: "background 0.3s", cursor: "pointer" }}
+onMouseEnter={(e) => (e.target.style.background = "#067F2E")}
+onMouseLeave={(e) => (e.target.style.background = "#08AA3B")}
               >
                 Proceed
               </button>

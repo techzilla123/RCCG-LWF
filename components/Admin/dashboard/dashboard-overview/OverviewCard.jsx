@@ -11,8 +11,15 @@ function OverviewCard({ title, icon, figure, subTitle, percentage, trend, isLigh
         </div>
         <div data-layername="titleText" className="flex-1 shrink self-stretch my-auto text-xs basis-0 text-neutral-500">{title}</div>
       </div>
-      <div data-layername="figure" className="flex flex-wrap gap-2 justify-between items-center mt-2 w-full rounded-lg">
-        <div data-layername="figureAmount" className="self-stretch my-auto text-3xl font-medium text-black">{figure}</div>
+      <div data-layername="figure" className="flex flex-wrap gap-2 justify-between items-center  w-full rounded-lg" >
+        <div data-layername="figureAmount" className="self-stretch my-auto text-3xl font-medium text-black head-h-lg32"   style={{
+           fontSize: "32px",
+            fontWeight: 100,
+            lineHeight: "38.73px",
+            textAlign: "left",
+            textUnderlinePosition: "from-font",
+            textDecorationSkipInk: "none"
+        }}>{figure}</div>
         <div data-layername="level" className="flex flex-col self-stretch my-auto min-h-[34px]">
           <div data-layername="stockLevel" className="text-xs text-neutral-500">{subTitle}</div>
           <div data-layername="iconText" className="flex flex-wrap flex-1 gap-1 items-center h-full rounded-lg">

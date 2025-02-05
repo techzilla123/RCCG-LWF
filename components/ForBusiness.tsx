@@ -30,7 +30,7 @@ const featureData = [
 
 function AdminFeaturesSection() {
   return (
-    <section data-layername="adminFeatures" className="flex overflow-hidden z-0 flex-wrap gap-10 justify-center px-32 py-20 w-full bg-white max-md:px-5 max-md:max-w-full">
+    <section data-layername="adminFeatures" className="flex overflow-hidden z-0 flex-wrap gap-10 justify-center px-32 py-20 w-full bg-zinc-50 max-md:px-5 max-md:max-w-full">
       <div data-layername="content" className="flex flex-col flex-1 shrink self-start basis-0 min-w-[240px] max-md:max-w-full">
         <div className="flex w-full bg-gray-200 min-h-[389px] rounded-[40px] max-md:max-w-full" aria-hidden="true" />
         <div data-layername="headingAndSupportingText" className="flex flex-col mt-8 w-full max-md:max-w-full">
