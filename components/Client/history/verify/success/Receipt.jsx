@@ -61,45 +61,54 @@ const TransactionDetail = ({ transactionDetails, fullTransactionId }) => {
     <section className="flex flex-col p-3 w-full bg-neutral-100 rounded-lg">
       <h2 className="text-sm font-semibold text-black">Transaction Details</h2>
       <div className="flex flex-col mt-2">
-        {transactionDetails.map((detail, index) => (
-          <div key={index} className="flex justify-between items-center mt-2">
-            <span className="text-xs text-neutral-500">{detail.label}</span>
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-sm font-medium text-black ${
-                  detail.label === 'Transaction ID' ? 'truncate' : ''
-                }`}
-                title={detail.label === 'Transaction ID' && !fullTransactionId ? detail.value : undefined}
-                style={
-                  detail.label === 'Transaction ID'
-                    ? { maxWidth: '100%', whiteSpace: 'nowrap', textOverflow: 'ellipsis', position: 'relative', // To ensure proper layering
-                      zIndex: 9999,
-                      fontSize: '12px', // Reduced font size for better fit
-                      lineHeight: '2.2',
-                      
-                      
-                     }
-                    : {}
-                }
-              >
-                {detail.value}
-              </span>
-              {detail.hasCopyIcon && (
-                <button
-                  onClick={() => handleCopy(detail.value)}
-                  className="text-blue-500 hover:text-blue-700"
-                  aria-label="Copy to clipboard"
+        {transactionDetails.map((detail, index) => {
+          const isTransactionId = detail.label === 'Transaction ID';
+          const isTotalAmount = detail.label === 'Total Amount';
+          const displayValue = isTransactionId
+            ? fullTransactionId
+              ? detail.value // Display full Transaction ID if `fullTransactionId` is true
+              : detail.value.slice(0, 18) + '...' // Shortened if not fullTransactionId
+            : isTotalAmount
+            ? `₦${detail.value}` // Add Naira sign to Total Amount
+            : detail.value;
+
+          return (
+            <div key={index} className="flex justify-between items-center mt-2">
+              <span className="text-xs text-neutral-500">{detail.label}</span>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`flex text-sm font-medium text-black ${
+                    detail.label === 'Transaction ID' ? 'truncate' : ''
+                  }`}
+                  title={detail.label === 'Transaction ID' && fullTransactionId ? detail.value : undefined} // Title shows full value on hover
+                  style={
+                    detail.label === 'Transaction ID'
+                      ? { maxWidth: '100%', whiteSpace: 'nowrap', textOverflow: 'ellipsis', position: 'relative', zIndex: 9999, fontSize: '10px', lineHeight: '2.2', flex: 'col' }
+                      : {}
+                  }
                 >
-                  📋
-                </button>
-              )}
+                  {displayValue} {/* Conditionally display shortened value or full value */}
+                </span>
+                {detail.hasCopyIcon && (
+                  <button
+                    onClick={() => handleCopy(detail.value)}
+                    className="text-blue-500 hover:text-blue-700"
+                    aria-label="Copy to clipboard"
+                  >
+                    📋
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
 };
+
+
+
 
 const SupportMessage = () => (
   <section className="pt-3 pb-4">
@@ -137,10 +146,10 @@ const Receipt = ({ onClose, data }) => {
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
     const buttons = document.querySelector('.call-to-action');
-
+  
     // Temporarily hide buttons for PDF generation
     if (buttons) buttons.style.visibility = 'hidden';
-
+  
     html2canvas(popupElement, {
       scale: 3,
       useCORS: true,
@@ -151,15 +160,18 @@ const Receipt = ({ onClose, data }) => {
       const imgProps = pdf.getImageProperties(imageData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
+  
+      // Add image to PDF
       pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
+  
       // Restore buttons visibility after PDF generation
       if (buttons) buttons.style.visibility = 'visible';
-
+  
+      // Save the PDF
       pdf.save('receipt.pdf');
     });
   };
+  
 
   const transactionDetails = [
     { label: 'Payment Type', value: data.paymentType },

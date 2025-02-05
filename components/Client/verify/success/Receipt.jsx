@@ -70,7 +70,6 @@ const Summary = ({ totalAmount, paymentType, status }) => {
   );
 };
 
-
 Summary.propTypes = {
   totalAmount: PropTypes.number.isRequired,
   paymentType: PropTypes.string.isRequired,
@@ -78,6 +77,18 @@ Summary.propTypes = {
 };
 
 const TransactionDetail = ({ transactionDetails }) => {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 406);
+    };
+
+    handleResize();  // Check size on mount
+    window.addEventListener('resize', handleResize);  // Check size on window resize
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     alert('Copied to clipboard!');
@@ -94,9 +105,9 @@ const TransactionDetail = ({ transactionDetails }) => {
               <span
                 className={`text-sm font-medium text-black ${detail.label === 'Transaction ID' ? 'truncate' : ''}`}
                 title={detail.value} // Shows full text on hover
-                style={detail.label === 'Transaction ID' ? { maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' } : {}}
+                style={detail.label === 'Transaction ID' ? { maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: '2.2' } : {}}
               >
-                {detail.value}
+                {isSmallScreen && detail.label === 'Transaction ID' ? `${detail.value} (TxID)` : detail.value}
               </span>
               {detail.hasCopyIcon && (
                 <button
@@ -114,7 +125,6 @@ const TransactionDetail = ({ transactionDetails }) => {
     </section>
   );
 };
-
 
 TransactionDetail.propTypes = {
   transactionDetails: PropTypes.arrayOf(
@@ -137,7 +147,7 @@ const SupportMessage = () => (
   </section>
 );
 
-const CallToAction = ({ onSave, onClose }) => (
+const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
   <div className="flex gap-2 pb-4 text-sm font-medium text-center">
     <button
       onClick={onClose}
@@ -149,6 +159,7 @@ const CallToAction = ({ onSave, onClose }) => (
       onClick={onSave}
       className="flex-1 px-3 py-2 text-white rounded-full"
       style={{ background: '#08AA3B' }}
+      disabled={isSaveDisabled}
     >
       Save
     </button>
@@ -158,6 +169,7 @@ const CallToAction = ({ onSave, onClose }) => (
 CallToAction.propTypes = {
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  isSaveDisabled: PropTypes.bool.isRequired,
 };
 
 const Receipt = ({ onClose }) => {
@@ -180,6 +192,21 @@ const Receipt = ({ onClose }) => {
   
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
+    const buttons = document.querySelector('.call-to-action');
+  
+    // Temporarily hide the button container for PDF generation
+    if (buttons) buttons.style.display = 'none';
+  
+    // Store the current value of the Transaction ID for full display in PDF
+    const transactionIdElement = document.querySelector('[data-transaction-id]');
+    const fullTransactionId = transactionIdElement ? transactionIdElement.getAttribute('data-transaction-id') : '';
+  
+    // Temporarily remove the "truncate" style for Transaction ID
+    if (transactionIdElement) {
+      transactionIdElement.style.maxWidth = 'none'; // Allow full text to show in the canvas
+      transactionIdElement.textContent = fullTransactionId; // Set full text for canvas
+    }
+  
     html2canvas(popupElement, {
       scale: 3,
       useCORS: true,
@@ -190,10 +217,22 @@ const Receipt = ({ onClose }) => {
       const imgProps = pdf.getImageProperties(imageData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  
       pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  
+      // Restore the button container and "truncate" style for Transaction ID
+      if (buttons) buttons.style.display = 'block'; // Restore display property
+  
+      if (transactionIdElement) {
+        transactionIdElement.style.maxWidth = '200px'; // Reapply truncation style
+        transactionIdElement.textContent = fullTransactionId; // Revert to truncated text
+      }
+  
       pdf.save('receipt.pdf');
     });
   };
+  
+    
   
   if (!transactionData) {
     return <div>Loading...</div>;  // Wait until data is available
@@ -206,7 +245,6 @@ const Receipt = ({ onClose }) => {
     { label: 'Sender ID', value: transactionData.email },
     { label: 'Transaction ID', value: transactionData.transactionId, hasCopyIcon: true },
   ];
-  
 
   return (
     <div
@@ -223,7 +261,7 @@ const Receipt = ({ onClose }) => {
         />
         <TransactionDetail transactionDetails={transactionDetails} />
         <SupportMessage />
-        <CallToAction onSave={handleSavePDF} onClose={onClose} />
+        <CallToAction onSave={handleSavePDF} onClose={onClose} isSaveDisabled={transactionData.status !== 'SUCCESS'} />
       </div>
     </div>
   );
