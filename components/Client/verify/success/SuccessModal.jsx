@@ -24,7 +24,7 @@ function SuccessModal() {
       console.log('Transaction ID is missing');
       return;
     }
-
+  
     const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
     const nonce = Math.random().toString(36).substring(2);
     const timestamp = Date.now().toString();
@@ -32,19 +32,19 @@ function SuccessModal() {
     const path = `/payment/process/fetch?transactionId=${transactionId}`;
     const message = `${method}:${nonce}:${timestamp}`;
     console.log('Constructed API Path:', path);
-
+  
     const generateHMAC = (message, secretKey) => {
       const hash = CryptoJS.HmacSHA256(message, secretKey);
       return CryptoJS.enc.Base64.stringify(hash);
     };
-
+  
     const apiKey = generateHMAC(message, secretKey);
     console.log('Generated API Key:', apiKey);
-
+  
     try {
       const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}`;
       console.log('Complete API URL:', apiUrl);
-
+  
       const response = await fetch(apiUrl, {
         method,
         headers: {
@@ -54,13 +54,15 @@ function SuccessModal() {
           'Content-Type': 'application/json',
         },
       });
-
+  
       console.log('Response Status:', response.status);
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Transaction Details:', data);
-        // Store the response in localStorage
+  
+        // Clear previous transaction details and store the new data
+        localStorage.removeItem('transactionDetails');
         localStorage.setItem('transactionDetails', JSON.stringify(data));
       } else {
         const errorData = await response.json();
@@ -70,7 +72,7 @@ function SuccessModal() {
       console.log('Error fetching transaction details:', error);
     }
   };
-
+  
   const handleViewReceiptClick = () => {
     console.log('View Receipt Button Clicked');
     fetchTransactionDetails();
