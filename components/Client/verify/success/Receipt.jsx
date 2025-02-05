@@ -170,6 +170,14 @@ const Receipt = ({ onClose }) => {
     }
   }, []);  // Dependency array empty to run only on component mount
   
+  // Adding a reload function to force re-fetch when localStorage changes
+  useEffect(() => {
+    const storedTransactionData = localStorage.getItem('transactionDetails');
+    if (storedTransactionData) {
+      setTransactionData(JSON.parse(storedTransactionData));
+    }
+  }, [localStorage.getItem('transactionDetails')]);  // Triggered when 'transactionDetails' in localStorage changes
+  
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
     html2canvas(popupElement, {

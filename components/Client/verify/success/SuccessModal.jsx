@@ -18,7 +18,6 @@ function SuccessModal() {
     setTransactionId(ref);
   }, []);
 
-  // Fetch API data using transactionId
   const fetchTransactionDetails = async () => {
     if (!transactionId) {
       console.log('Transaction ID is missing');
@@ -64,6 +63,9 @@ function SuccessModal() {
         // Clear previous transaction details and store the new data
         localStorage.removeItem('transactionDetails');
         localStorage.setItem('transactionDetails', JSON.stringify(data));
+        
+        // After updating localStorage, update state to reflect the changes
+        setTransactionId(data.transactionId); // Or use other relevant states to reflect changes in UI
       } else {
         const errorData = await response.json();
         console.log('Failed to fetch transaction details:', errorData);
