@@ -9,6 +9,22 @@ function SuccessModal() {
   const router = useRouter();
   const [showReceipt, setShowReceipt] = useState(false);
   const [transactionId, setTransactionId] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(null);  // Set initial state to null
+
+  // Update windowWidth on resize and on mount
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+
+    // Initialize windowWidth when component mounts
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth);
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Extract transactionId (reference) from the URL
   useEffect(() => {
@@ -124,7 +140,9 @@ function SuccessModal() {
           style={{ background: '#08AA3B' }}
         >
           <span style={{ fontSize: '20px', marginRight: '8px' }}>✔</span>
-          <span>View Receipt</span>
+          <span className="text-base max-md:text-sm">
+            {windowWidth !== null && windowWidth < 409 ? "Receipt" : "View Receipt"}  {/* Ensure windowWidth is not null */}
+          </span>
         </button>
       </div>
 

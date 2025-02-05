@@ -210,7 +210,7 @@ const Receipt = ({ onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 flex justify-center items-start bg-black bg-opacity-50 z-[1000]"
+      className="fixed inset-0 flex justify-center items-start bg-black bg-opacity-50 z-[9999]"
       style={{ marginTop: '40px' }}
     >
       <div className="popup-container relative bg-white rounded-xl p-4 w-[90%] max-w-[450px] mt-12 md:mt-16 shadow-lg">
