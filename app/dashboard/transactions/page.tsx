@@ -89,7 +89,7 @@ function TransactionPage() {
         }
     
         const data = await response.json();
-        console.log("Fetched transactions:", data);
+        
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }

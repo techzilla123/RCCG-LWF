@@ -77,7 +77,7 @@ const TransactionDetail = ({ transactionDetails, fullTransactionId }) => {
               <span className="text-xs text-neutral-500">{detail.label}</span>
               <div className="flex items-center gap-2">
                 <span
-                  className={`flex text-sm font-medium text-black ${
+                  className={`flex text-sm font-medium  text-black ${
                     detail.label === 'Transaction ID' ? 'truncate' : ''
                   }`}
                   title={detail.label === 'Transaction ID' && fullTransactionId ? detail.value : undefined} // Title shows full value on hover

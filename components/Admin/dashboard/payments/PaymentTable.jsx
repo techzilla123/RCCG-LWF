@@ -25,16 +25,11 @@ function PaymentTable({ searchQuery }) {
 
         if (data.paymentConfigurations && Array.isArray(data.paymentConfigurations)) {
           setTableData(data.paymentConfigurations.reverse());
-        } else {
-          console.log(
-            "Expected 'paymentConfigurations' to be an array, but received:",
-            data
-          );
-        }
+        } 
       } catch (error) {
         console.log("Error fetching payment data:", error);
       }
-    };
+    }; 
 
     fetchPaymentData();
   }, []);

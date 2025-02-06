@@ -5,7 +5,7 @@ import React from 'react';
 const CtaAction = () => {
   // Handle Pay Now button click
   const handlePayNow = () => {
-    console.log('Pay Now clicked');
+   
     window.location.href = '/client';  // Navigate to /client without using a router
   };
 

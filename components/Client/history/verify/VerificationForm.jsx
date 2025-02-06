@@ -30,14 +30,28 @@ function VerificationForm() {
     setVerificationCode(newCode);
     setHasError(false); // Clear error state on input change
 
-    if (value && index < verificationCode.length - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
+ // Automatically move to the next input if a valid digit is entered
+ if (value && index < verificationCode.length - 1) {
+  inputRefs.current[index + 1]?.focus(); // Focus the next input
+}
 
-    if (!value && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
+// Move back if cleared
+if (!value && index > 0) {
+  inputRefs.current[index - 1]?.focus(); // Focus the previous input if cleared
+}
+};
+const handlePaste = (e) => {
+  const pasteData = e.clipboardData.getData("text").trim();
+  if (/^\d{6}$/.test(pasteData)) {
+    setVerificationCode(pasteData.split(""));
+    pasteData.split("").forEach((digit, index) => {
+      if (inputRefs.current[index]) {
+        inputRefs.current[index].value = digit;
+      }
+    });
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -129,7 +143,7 @@ function VerificationForm() {
         </div>
 
         <div className="flex flex-col justify-center mt-6 w-full text-lg font-medium tracking-tighter leading-tight text-center text-zinc-800">
-          <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center">
+          <div className="flex gap-3 items-center max-md:gap-2 max-md:justify-center" onPaste={handlePaste}>
             {verificationCode.map((digit, index) => (
               <div className="flex flex-col w-full max-w-[60px] max-md:max-w-[50px]" key={index}>
                 <input
@@ -137,6 +151,16 @@ function VerificationForm() {
                   maxLength="1"
                   value={digit}
                   onChange={(e) => handleInputChange(index, e.target.value)}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === "Backspace" &&
+                      !digit &&
+                      inputRefs.current[index - 1]
+                    ) {
+                      e.preventDefault();
+                      inputRefs.current[index - 1]?.focus();
+                    }
+                  }}
                   ref={(el) => (inputRefs.current[index] = el)}
                   className={`w-full h-12 px-2 py-3 border border-solid shadow-sm bg-neutral-100 rounded-lg text-center text-2xl max-md:text-xl ${
                     hasError ? "border-red-500" : "border-zinc-300"
@@ -161,10 +185,12 @@ function VerificationForm() {
             type="submit"
             className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-white bg-green-600 border border-transparent rounded-full hover:bg-green-700 transition-all duration-200"
             style={{
-              background: "#08AA3B",
+              background: "#08AA3B", transition: "background 0.3s", cursor: "pointer",
               cursor: verificationCode.includes("") ? "not-allowed" : "pointer",
               opacity: verificationCode.includes("") ? 0.7 : 1,
             }}
+            onMouseEnter={(e) => (e.target.style.background = "#067F2E")}
+            onMouseLeave={(e) => (e.target.style.background = "#08AA3B")}
             disabled={verificationCode.includes("")}
           >
             Verify

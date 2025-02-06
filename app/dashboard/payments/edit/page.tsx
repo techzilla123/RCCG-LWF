@@ -46,7 +46,7 @@ function AdminPayments() {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-      console.log("No authorization token found.");
+     
       return;
     }
 
@@ -66,11 +66,11 @@ function AdminPayments() {
 
       if (!response.ok) throw new Error("Failed to update payment config.");
 
-      const data = await response.json();
-      console.log("Payment config updated successfully", data);
+     
+     
       alert("Payment config updated successfully!");
     } catch (error) {
-      console.log("Error updating payment config:", error);
+     
       alert("Error updating payment config. Please try again.");
     }
   };
