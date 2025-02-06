@@ -51,62 +51,57 @@ const Summary = ({ totalAmount, paymentType, status }) => {
   );
 };
 
-const TransactionDetail = ({ transactionDetails, fullTransactionId }) => {
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    alert('Copied to clipboard!');
-  };
+  const TransactionDetail = ({ transactionDetails, fullTransactionId, isSaving }) => {
+    const handleCopy = (text) => {
+      navigator.clipboard.writeText(text);
+      alert('Copied to clipboard!');
+    };
 
-  return (
-    <section className="flex flex-col p-3 w-full bg-neutral-100 rounded-lg">
-      <h2 className="text-sm font-semibold text-black">Transaction Details</h2>
-      <div className="flex flex-col mt-2">
-        {transactionDetails.map((detail, index) => {
-          const isTransactionId = detail.label === 'Transaction ID';
-          const isTotalAmount = detail.label === 'Total Amount';
-          const displayValue = isTransactionId
-            ? fullTransactionId
-              ? detail.value // Display full Transaction ID if `fullTransactionId` is true
-              : detail.value.slice(0, 18) + '...' // Shortened if not fullTransactionId
-            : isTotalAmount
-            ? `₦${detail.value}` // Add Naira sign to Total Amount
-            : detail.value;
+    return (
+      <section className="flex flex-col p-3 w-full bg-neutral-100 rounded-lg">
+        <h2 className="text-sm font-semibold text-black">Transaction Details</h2>
+        <div className="flex flex-col mt-2">
+          {transactionDetails.map((detail, index) => {
+            const isTransactionId = detail.label === 'Transaction ID';
+            const isTotalAmount = detail.label === 'Total Amount';
+            const displayValue = isTransactionId
+              ? fullTransactionId || isSaving
+                ? detail.value
+                : detail.value.slice(0, 8) + '...' // Truncate normally
+              : isTotalAmount
+              ? `₦${detail.value}`
+              : detail.value;
 
-          return (
-            <div key={index} className="flex justify-between items-center mt-2">
-              <span className="text-xs text-neutral-500">{detail.label}</span>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`flex text-sm font-medium  text-black ${
-                    detail.label === 'Transaction ID' ? 'truncate' : ''
-                  }`}
-                  title={detail.label === 'Transaction ID' && fullTransactionId ? detail.value : undefined} // Title shows full value on hover
-                  style={
-                    detail.label === 'Transaction ID'
-                      ? { maxWidth: '100%', whiteSpace: 'nowrap', textOverflow: 'ellipsis', position: 'relative', zIndex: 9999, fontSize: '10px', lineHeight: '2.2', flex: 'col' }
-                      : {}
-                  }
-                >
-                  {displayValue} {/* Conditionally display shortened value or full value */}
-                </span>
-                {detail.hasCopyIcon && (
-                  <button
-                    onClick={() => handleCopy(detail.value)}
-                    className="text-blue-500 hover:text-blue-700"
-                    aria-label="Copy to clipboard"
+            return (
+              <div key={index} className="flex justify-between items-center mt-2">
+                <span className="text-xs text-neutral-500">{detail.label}</span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`flex text-sm font-medium text-black ${
+                      isTransactionId ? 'truncate max-w-[150px] overflow-hidden transaction-id' : ''
+                    }`}
+                    title={isTransactionId && fullTransactionId ? detail.value : undefined}
+                    data-full-value={detail.value} // Store full value for easy restoration
                   >
-                    📋
-                  </button>
-                )}
+                    {displayValue}
+                  </span>
+                  {detail.hasCopyIcon && (
+                    <button
+                      onClick={() => handleCopy(detail.value)}
+                      className="copy-icon text-blue-500 hover:text-blue-700"
+                      aria-label="Copy to clipboard"
+                    >
+                      📋
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-};
-
+            );
+          })}
+        </div>
+      </section>
+    );
+  };
 
 
 
@@ -146,9 +141,22 @@ const Receipt = ({ onClose, data }) => {
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
     const buttons = document.querySelector('.call-to-action');
+    const copyIcons = document.querySelectorAll('.copy-icon'); // Select all copy icons
   
-    // Temporarily hide buttons for PDF generation
     if (buttons) buttons.style.visibility = 'hidden';
+    copyIcons.forEach(icon => icon.style.display = 'none'); // Hide all copy icons before saving
+  
+    document.querySelectorAll('.transaction-id').forEach(el => {
+      el.style.whiteSpace = 'pre-wrap';  // Allows wrapping but preserves formatting
+      el.style.wordBreak = 'break-word'; // Ensures long words break properly
+      el.style.fontSize = '10px';        // Adjust font size for better readability
+      el.style.textAlign = 'center';     // Center-align for a neater look
+      el.style.display = 'block';        // Ensure it appears in block format
+      el.style.padding = '5px 10px';     // Add spacing
+      el.style.maxWidth = '220px';       // Prevents text from being too wide
+      el.style.color = '#333';           // Ensure good text contrast
+      el.innerText = el.getAttribute('data-full-value'); // Display full value
+    });
   
     html2canvas(popupElement, {
       scale: 3,
@@ -161,18 +169,20 @@ const Receipt = ({ onClose, data }) => {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
   
-      // Add image to PDF
       pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
   
-      // Restore buttons visibility after PDF generation
+      // Restore truncated view after PDF is generated
+      document.querySelectorAll('.transaction-id').forEach(el => {
+        el.innerText = el.getAttribute('data-full-value').slice(0, 8) + '...'; // Restore truncation
+      });
+  
+      copyIcons.forEach(icon => icon.style.display = 'inline-block'); // Show copy icons back
       if (buttons) buttons.style.visibility = 'visible';
   
-      // Save the PDF
       pdf.save('receipt.pdf');
     });
   };
   
-
   const transactionDetails = [
     { label: 'Payment Type', value: data.paymentType },
     { label: 'Total Amount', value: data.totalAmount },
