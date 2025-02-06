@@ -32,7 +32,7 @@ function ClientHistoryRow({ status, totalAmount, paymentType, transactionDate })
 
           {/* Payment Type with Hover Tooltip */}
           <div className="relative group">
-            <div className="text-base text-black mt-1 truncate max-w-[180px] sm:max-w-full group-hover:overflow-visible">
+            <div className="text-base text-black mt-1 truncate max-w-[180px] sm:max-w-full ">
               {paymentType.replace(/_/g, ' ')}
             </div>
 
