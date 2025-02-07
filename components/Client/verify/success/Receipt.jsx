@@ -107,6 +107,7 @@
               : isTotalAmount
               ? `₦${detail.value}`
               : detail.value;
+              console.log(displayValue);
 
             return (
               <div key={index} className="flex justify-between items-center mt-2">
@@ -290,7 +291,7 @@
         }
     
         // **Force reflow to ensure it renders**
-        document.body.offsetHeight;
+        void document.body.offsetHeight;
       }
     
       document.querySelectorAll('.transaction-id').forEach(el => {
