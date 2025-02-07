@@ -24,9 +24,19 @@ function OverviewCard({ title, icon, figure, subTitle, percentage, trend, isLigh
           <div data-layername="stockLevel" className="text-xs text-neutral-500">{subTitle}</div>
           <div data-layername="iconText" className="flex flex-wrap flex-1 gap-1 items-center h-full rounded-lg">
             <div data-layername="text" className="self-stretch my-auto text-base text-black whitespace-nowrap rounded-lg w-[57px]">{percentage}</div>
-            <div data-layername="iconSet" className="flex justify-center items-center self-stretch my-auto w-4 rounded-lg">
-              <img loading="lazy" src={trend === 'up' ? "https://cdn.builder.io/api/v1/image/assets/TEMP/9cdbfeae0272e08eff375d7de98dcad60f9a6a348ecb110539ee05a85d7e7f43?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a" : "https://cdn.builder.io/api/v1/image/assets/TEMP/646108d3e6be7d9848c6c29e58925e104b15cb4c50bf7e29b61f45561140e9c9?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"} className="object-contain self-stretch my-auto w-4 aspect-square" alt={trend === 'up' ? "Trend up" : "Trend down"} />
-            </div>
+            {trend && (
+  <div data-layername="iconSet" className="flex justify-center items-center self-stretch my-auto w-4 rounded-lg">
+    <img 
+      loading="lazy" 
+      src={trend === 'up' 
+        ? "https://cdn.builder.io/api/v1/image/assets/TEMP/9cdbfeae0272e08eff375d7de98dcad60f9a6a348ecb110539ee05a85d7e7f43?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a" 
+        : "https://cdn.builder.io/api/v1/image/assets/TEMP/646108d3e6be7d9848c6c29e58925e104b15cb4c50bf7e29b61f45561140e9c9?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+      } 
+      className="object-contain self-stretch my-auto w-4 aspect-square" 
+      alt={trend === 'up' ? "Trend up" : "Trend down"} 
+    />
+  </div>
+)}
           </div>
         </div>
       </div>

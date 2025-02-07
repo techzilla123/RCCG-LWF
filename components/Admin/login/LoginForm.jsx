@@ -173,7 +173,9 @@ const handleLogin = async (e) => {
 
         {/* Submit Button and Forgot Password Link */}
         <div className="flex flex-col mt-6 w-full font-medium">
-          <button type="submit" className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-sm text-center text-white whitespace-nowrap bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px]" style={{ background: "#08AA3B"}}>
+          <button type="submit" className="overflow-hidden gap-2 self-stretch px-4 py-3.5 w-full text-sm text-center text-white whitespace-nowrap bg-green-600 border border-solid border-black border-opacity-0 min-h-[44px] rounded-[1000px] hover:bg-[#00782A] active:bg-green-800" style={{ background: "#08AA3B"}}
+          onMouseEnter={(e) => (e.target.style.background = "#067F2E")}
+          onMouseLeave={(e) => (e.target.style.background = "#08AA3B")}>
             Login
           </button>
 

@@ -69,7 +69,7 @@ function AdminPayments() {
      
      
       alert("Payment config updated successfully!");
-    } catch (error) {
+    } catch {
      
       alert("Error updating payment config. Please try again.");
     }

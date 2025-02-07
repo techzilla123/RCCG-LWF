@@ -55,9 +55,9 @@ function Overview() {
             isLight: true,
           },
           {
-            title: "Total Payments",
+            title: "Total Failed Payments",
             icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/e446998ae8969f443cea6f65cc4e29c000ad8192fc544781cb59af3d5b390c68?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
-            figure: data.totalSuccessfulPayment,
+            figure: data.totalFailedPayment,
             subTitle: "Failure Rate",
             percentage: `${data.failureRate}%`,
             trend: parseFloat(data.failureRate) < 50 ? "up" : "down",
@@ -66,28 +66,36 @@ function Overview() {
             title: "Cashflow",
             icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/a3a48832b72d51ee4c914bfc147a9fed9e92fe799de981b463f8ef0313f32882?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a",
             figure: paymentFormatted,
-            subTitle: "Profit",
-            percentage: "20.00%",
-            trend: "up",
+            // Cashflow does not have a trend, so we omit it completely here
             isLight: true,
           },
         ];
 
+        // Update the state with the new data from the API
         setOverviewData(mappedData);
+
+        // Update localStorage with the fresh data
         localStorage.setItem("overviewData", JSON.stringify(mappedData));
+
       } catch (error) {
         console.error("Error fetching metrics data:", error);
         setError(error.message || "Failed to fetch data.");
+
+        // If the API request fails, fall back to the cached data
+        const cachedData = localStorage.getItem("overviewData");
+        if (cachedData) {
+          setOverviewData(JSON.parse(cachedData));
+        }
       }
     };
 
-    // Load cached data from localStorage first
+    // Check if there is any data in localStorage
     const cachedData = localStorage.getItem("overviewData");
     if (cachedData) {
       setOverviewData(JSON.parse(cachedData));
     }
 
-    // Fetch data from API
+    // Fetch fresh data from the API
     fetchData();
   }, []);
 

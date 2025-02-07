@@ -25,6 +25,8 @@ function TransactionPage() {
 
   const [paymentTypes, setPaymentTypes] = useState<{ name: string; status: string }[]>([]);
   const [isPaymentTypesLoading, setIsPaymentTypesLoading] = useState<boolean>(true);
+  const [activeFilter, setActiveFilter] = useState('paymentType');
+
 
   // Fetch payment types on component mount
   useEffect(() => {
@@ -88,7 +90,7 @@ function TransactionPage() {
           return;
         }
     
-        const data = await response.json();
+        
         
       } catch (error) {
         console.error("Error fetching transactions:", error);
@@ -113,36 +115,43 @@ function TransactionPage() {
   const clearFilter = (key: string) => {
     setFilters((prev) => ({ ...prev, [key]: "" }));
   };
+  const formatDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ` +
+           `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+  };
   const handleExport = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) return;
-
+  
     const params = new URLSearchParams();
-    if (filters.startDate) params.append('startdate', filters.startDate);
-    if (filters.endDate) params.append('enddate', filters.endDate);
+    if (filters.startDate) params.append('startdate', formatDate(filters.startDate));
+    if (filters.endDate) params.append('enddate', formatDate(filters.endDate));
     if (filters.paymentType) params.append('paymentType', filters.paymentType);
     if (filters.transactionId) params.append('transactionId', filters.transactionId);
     if (filters.status) params.append('status', filters.status);
-
+  
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/excel/download?${params.toString()}`;
-
+  
     try {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`Failed to export: ${response.status}`);
       }
-
+  
       const blob = await response.blob();
       const urlBlob = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = urlBlob;
-      a.download = 'transactions.xlsx';
+      a.download = `transactions_${formatDate(filters.startDate) || 'all'}_to_${formatDate(filters.endDate) || 'all'}.xlsx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -151,6 +160,7 @@ function TransactionPage() {
       console.error("Error exporting transactions:", error);
     }
   };
+  
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
       <SideBar />
@@ -236,85 +246,152 @@ function TransactionPage() {
               ))}
           </div>
 
-          {isFilterOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-6 rounded-lg w-[600px] shadow-2xl z-50 relative">
-                <h2 className="text-lg font-semibold mb-4">Filter Transactions</h2>
-                <div className="flex">
-                  {/* Left Section - Payment Types */}
-                  <div className="w-1/3 border-r pr-4">
-                    <h3 className="font-medium mb-2">Payment Type</h3>
-                    {isPaymentTypesLoading ? (
-                      <p>Loading payment types...</p>
-                    ) : (
-                      paymentTypes.map(({ name, status }) => (
-                        <div key={name} className="flex items-center mb-2">
-                          <input
-                            type="radio"
-                            name="paymentType"
-                            value={name}
-                            checked={filters.paymentType === name}
-                            onChange={handleFilterChange}
-                            className="mr-2"
-                          />
-                          {name}
-                          {status === "DISABLED" && <span className="text-red-500 ml-2" title="Payment is currently disabled">●</span>}
-                        </div>
-                      ))
-                    )}
-                  </div>
+         {isFilterOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg w-[800px] h-[600px] shadow-2xl z-50 relative flex flex-col">
+      {/* Header */}
+      <h2 className="text-lg font-semibold mb-4 border-b pb-2">Filter Transactions</h2>
 
-                  {/* Right Section - Filters */}
-                  <div className="w-2/3 pl-4">
-                    <label className="block text-sm font-medium mb-1">Start Date & Time</label>
-                    <input
-                      type="datetime-local"
-                      name="startDate"
-                      value={filters.startDate}
-                      onChange={handleFilterChange}
-                      className="w-full border px-2 py-1 mb-3 rounded"
-                    />
+      {/* Main Content */}
+      <div className="flex h-[480px] overflow-hidden">
+        {/* Left Sidebar - Filter Categories */}
+        <div className="w-1/4 border-r pr-4 overflow-y-auto">
+          <ul className="space-y-2">
+            <li
+              onClick={() => setActiveFilter("transactionId")}
+              className={`cursor-pointer p-2 ${
+                activeFilter === "transactionId" ? "bg-gray-200 font-semibold" : ""
+              }`}
+            >
+              Transaction ID
+            </li>
+            <li
+              onClick={() => setActiveFilter("paymentType")}
+              className={`cursor-pointer p-2 ${
+                activeFilter === "paymentType" ? "bg-gray-200 font-semibold" : ""
+              }`}
+            >
+              Payment Type
+            </li>
+            <li
+              onClick={() => setActiveFilter("startDate")}
+              className={`cursor-pointer p-2 ${
+                activeFilter === "startDate" ? "bg-gray-200 font-semibold" : ""
+              }`}
+            >
+              Start Date
+            </li>
+            <li
+              onClick={() => setActiveFilter("endDate")}
+              className={`cursor-pointer p-2 ${
+                activeFilter === "endDate" ? "bg-gray-200 font-semibold" : ""
+              }`}
+            >
+              End Date
+            </li>
+          </ul>
+        </div>
 
-                    <label className="block text-sm font-medium mb-1">End Date & Time</label>
-                    <input
-                      type="datetime-local"
-                      name="endDate"
-                      value={filters.endDate}
-                      onChange={handleFilterChange}
-                      className="w-full border px-2 py-1 mb-3 rounded"
-                    />
-
-                    <label className="block text-sm font-medium mb-1">Transaction ID</label>
-                    <input
-                      type="text"
-                      name="transactionId"
-                      value={filters.transactionId}
-                      onChange={handleFilterChange}
-                      className="w-full border px-2 py-1 rounded"
-                      placeholder="Enter Transaction ID"
-                    />
-                  </div>
-                </div>
-
-                {/* Modal Buttons */}
-                <div className="flex justify-end gap-3 mt-4">
-                  <button
-                    onClick={() => setIsFilterOpen(false)}
-                    className="px-4 py-2 bg-gray-300 rounded-lg"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => setIsFilterOpen(false)}
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg"
-                    style={{ background: '#08AA3B' }}
-                  >
-                    Apply Filters
-                  </button>
-                </div>
-              </div>
+        {/* Right Section - Filter Values */}
+        <div className="w-3/4 pl-4 overflow-y-auto">
+          {activeFilter === "transactionId" && (
+            <div>
+              <h3 className="font-medium mb-2">Transaction ID</h3>
+              <input
+                type="text"
+                name="transactionId"
+                value={filters.transactionId}
+                onChange={handleFilterChange}
+                placeholder="Enter Transaction ID"
+                className="w-full border px-2 py-1 rounded"
+              />
             </div>
           )}
+
+          {activeFilter === "paymentType" && (
+            <div>
+              <h3 className="font-medium mb-2">Payment Type</h3>
+              {isPaymentTypesLoading ? (
+                <p>Loading payment types...</p>
+              ) : (
+                paymentTypes.map(({ name, status }) => (
+                  <div key={name} className="flex items-center mb-2">
+                    <input
+                      type="radio"
+                      name="paymentType"
+                      value={name}
+                      checked={filters.paymentType === name}
+                      onChange={handleFilterChange}
+                      className="mr-2"
+                    />
+                    {name}
+                    {status === "DISABLED" && (
+                      <span
+                        className="text-red-500 ml-2"
+                        title="Payment is currently disabled"
+                      >
+                        ●
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {activeFilter === "startDate" && (
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Start Date & Time
+              </label>
+              <input
+                type="datetime-local"
+                name="startDate"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+                className="w-full border px-2 py-1 rounded"
+              />
+            </div>
+          )}
+
+          {activeFilter === "endDate" && (
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                End Date & Time
+              </label>
+              <input
+                type="datetime-local"
+                name="endDate"
+                value={filters.endDate}
+                onChange={handleFilterChange}
+                className="w-full border px-2 py-1 rounded"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Footer Buttons */}
+      <div className="flex justify-end gap-3 mt-4 border-t pt-4">
+        <button
+          onClick={() => setIsFilterOpen(false)}
+          className="px-4 py-2 bg-gray-300 rounded-lg"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => setIsFilterOpen(false)}
+          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+          style={{ background: "#08AA3B" }}
+        >
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
           <section className="flex flex-col flex-1 p-4 w-full max-md:max-w-full">
             <TransactionOverview />

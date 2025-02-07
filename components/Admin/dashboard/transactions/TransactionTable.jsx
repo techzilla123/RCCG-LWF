@@ -13,25 +13,32 @@ function TransactionTable({ searchQuery, filters }) {
   // **Format Payment Type (Remove Underscores)**
   const formatPaymentType = (type) => type.replace(/_/g, ' ');
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ` +
+           `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+  };
+  
   useEffect(() => {
     const fetchTransactions = async () => {
       const token = localStorage.getItem("authToken");
-
+  
       if (!token) {
         setError("Authorization token is missing");
         return;
       }
-
+  
       let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments?`;
-
-      if (filters.startDate) url += `startdate=${encodeURIComponent(filters.startDate)}&`;
-      if (filters.paymentType) url += `paymentType=${encodeURIComponent(filters.paymentType)}&`;
-      if (filters.endDate) url += `enddate=${encodeURIComponent(filters.endDate)}&`;
-      if (filters.transactionId) url += `transactionId=${encodeURIComponent(filters.transactionId)}&`;
-      if (filters.status) url += `status=${encodeURIComponent(filters.status)}&`;  
-
-      url = url.endsWith("&") ? url.slice(0, -1) : url;
-
+  
+      if (filters.startDate) url += `startdate=${formatDate(filters.startDate)}&`;
+      if (filters.endDate) url += `enddate=${formatDate(filters.endDate)}&`;
+      if (filters.paymentType) url += `paymentType=${filters.paymentType}&`;
+      if (filters.transactionId) url += `transactionId=${filters.transactionId}&`;
+      if (filters.status) url += `status=${filters.status}&`;
+  
+      url = url.endsWith("&") ? url.slice(0, -1) : url; // Remove trailing '&'
+  
       try {
         const response = await fetch(url, {
           method: "GET",
@@ -40,17 +47,17 @@ function TransactionTable({ searchQuery, filters }) {
             Authorization: `Bearer ${token}`,
           },
         });
-
+  
         if (!response.ok) {
           throw new Error("Failed to fetch transactions");
         }
-
+  
         const data = await response.json();
-        const transactionsList = (data.payments || []).sort((a, b) => new Date(b.created_date_time) - new Date(a.created_date_time));
-
-        // **Always update localStorage with new data**
+        const transactionsList = (data.payments || []).sort(
+          (a, b) => new Date(b.created_date_time) - new Date(a.created_date_time)
+        );
+  
         localStorage.setItem("transactions", JSON.stringify(transactionsList));
-
         setTransactions(transactionsList);
         setFilteredTransactions(transactionsList);
         setError(null);
@@ -60,9 +67,10 @@ function TransactionTable({ searchQuery, filters }) {
         setFilteredTransactions([]);
       }
     };
-
+  
     fetchTransactions();
   }, [filters]);
+  
 
   // **Apply Filters & Search**
   useEffect(() => {

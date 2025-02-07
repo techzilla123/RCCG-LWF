@@ -36,7 +36,7 @@ const Summary = ({ totalAmount, paymentType, status }) => {
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/64553941dfa8bce4e1e75825c1f045da249a5c1fd5ec11ec5ecf8c9ba4410f1a?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
           alt=""
-          className="w-5 h-5"
+          className="status-icon w-5 h-5"
           style={{ filter: currentStyle.iconFilter, color: currentStyle.color }}
         />
         <div className="text-xs" style={{ color: currentStyle.color }}>
@@ -142,9 +142,14 @@ const Receipt = ({ onClose, data }) => {
     const popupElement = document.querySelector('.popup-container');
     const buttons = document.querySelector('.call-to-action');
     const copyIcons = document.querySelectorAll('.copy-icon'); // Select all copy icons
-  
+    const statusIcon = document.querySelector('.status-icon'); // Select status icon
+    
     if (buttons) buttons.style.visibility = 'hidden';
     copyIcons.forEach(icon => icon.style.display = 'none'); // Hide all copy icons before saving
+    
+    if (statusIcon) {
+      statusIcon.style.display = 'none'; // Hide the status icon
+    }
   
     document.querySelectorAll('.transaction-id').forEach(el => {
       el.style.whiteSpace = 'pre-wrap';  // Allows wrapping but preserves formatting
@@ -153,7 +158,7 @@ const Receipt = ({ onClose, data }) => {
       el.style.textAlign = 'center';     // Center-align for a neater look
       el.style.display = 'block';        // Ensure it appears in block format
       el.style.padding = '5px 10px';     // Add spacing
-      el.style.maxWidth = '220px';       // Prevents text from being too wide
+      el.style.maxWidth = '230px';       // Prevents text from being too wide
       el.style.color = '#333';           // Ensure good text contrast
       el.innerText = el.getAttribute('data-full-value'); // Display full value
     });
@@ -175,13 +180,20 @@ const Receipt = ({ onClose, data }) => {
       document.querySelectorAll('.transaction-id').forEach(el => {
         el.innerText = el.getAttribute('data-full-value').slice(0, 8) + '...'; // Restore truncation
       });
-  
+      
       copyIcons.forEach(icon => icon.style.display = 'inline-block'); // Show copy icons back
       if (buttons) buttons.style.visibility = 'visible';
+  
+      // Restore status icon visibility if needed
+      if (statusIcon) {
+        statusIcon.style.display = 'inline-block'; // Show the status icon again
+      }
   
       pdf.save('receipt.pdf');
     });
   };
+  
+  
   
   const transactionDetails = [
     { label: 'Payment Type', value: data.paymentType },
