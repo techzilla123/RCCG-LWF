@@ -41,64 +41,60 @@ function TransactionRow({
   };
 
   return (
-    <div className="flex flex-wrap w-full bg-white border-b border-zinc-300 min-h-[64px] max-md:max-w-full">
-      {/* User Information Section */}
-      <div className="flex-1 p-3 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
-        <span className="text-xs leading-4 text-black">{registration}</span>
+    <>
+      {/* User Information */}
+      <td className="px-4 py-2 text-xs font-medium text-black whitespace-nowrap">
+        {registration}
         <br />
-        <span className="text-xs leading-5">{name}</span>
-      </div>
-
-      {/* Contact Information Section (Email Truncated) */}
-      <div className="flex-1 p-2 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
-        <div
-          className="text-black truncate max-w-[120px] cursor-pointer"
-          title={email} // Show full email on hover
-        >
+        <span className="text-neutral-500">{name}</span>
+      </td>
+  
+      {/* Contact Information */}
+      <td className="px-4 py-2 text-xs text-neutral-500">
+        <div className="truncate max-w-[120px] text-black" title={email}>
           {formatEmail(email)}
         </div>
-        <div className="text-left">{phone}</div>
-      </div>
-
-      {/* Description and Date Section */}
-      <div className="flex-1 p-2 text-xs font-medium leading-5 text-neutral-500 min-w-[160px] text-left">
-        <div className="text-black">{description}</div>
-        <div>{date}</div>
-      </div>
-
-      {/* Transaction ID and Image Section */}
-      <div className="flex items-center flex-1 p-2 gap-2 min-w-[160px] text-left">
-        <div className="text-xs text-neutral-500 flex-1 truncate">{transactionId}</div>
+        <div>{phone}</div>
+      </td>
+  
+      {/* Description and Date */}
+      <td className="flex-1 p-2 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
+        <span className='text-black'>{description}</span>
+        <br />
+        <span>{date}</span>
+      </td>
+  
+      {/* Transaction ID */}
+      <td className="flex items-center flex-1 p-2 gap-2 min-w-[160px]">
+       <span className='text-xs text-neutral-500 flex-1 truncate' style={{width:'30px'}}> {transactionId}</span>
         <img
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/1b8f2d08e1b65d6fd3e351a8838957669993cf9dcfbd47815d3bcf98844fff1e?apiKey=73dffa2d4bac468cb175120cf834230a"
           alt="Transaction Icon"
-          className="w-4 h-4 object-contain cursor-pointer"
+          className="inline-block w-4 h-4 ml-2 cursor-pointer"
           onClick={handleImageClick}
         />
-      </div>
-
-      {/* Amount Section */}
-      <div className="flex-1 p-2 text-sm text-left text-black flex items-center">
-        {amount}
-      </div>
-
-      {/* Status Indicator Section */}
-      <div className="flex items-center justify-start flex-1 p-2 text-left min-w-[160px]">
-        {/* Conditional Icon Color */}
+      </td>
+  
+      {/* Amount */}
+      <td className="px-4 py-2 text-xs text-black">{amount}</td>
+  
+      {/* Status */}
+      <td className="px-4 py-2 text-xs">
         <div
-          className="w-3 h-3 rounded-full"
-          style={{ backgroundColor: getStatusColor(status) }} // Apply dynamic color
+          className="w-3 h-3 inline-block rounded-full"
+          style={{ backgroundColor: getStatusColor(status) }}
         ></div>
-        <div className="ml-2 text-sm text-neutral-500">{status}</div>
-      </div>
-
-      {/* Actions Section */}
-      <div className="flex items-center gap-4 py-2 pr-2 justify-start text-left">
-        <button className="text-xs text-blue-600 underline">Summary</button>
-        <button className="text-xs text-red-600">Delete</button>
-      </div>
-    </div>
-  );
+        <span className="ml-2">{status}</span>
+      </td>
+  
+      {/* Actions */}
+      <td className="px-4 py-2 text-xs">
+        <button className="text-blue-600 underline">Summary</button>
+        <button className="text-red-600 ml-2">Delete</button>
+      </td>
+    </>
+  )
+  
 }
 
 export default TransactionRow;

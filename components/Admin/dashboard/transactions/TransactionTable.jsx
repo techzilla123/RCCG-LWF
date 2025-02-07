@@ -127,66 +127,80 @@ function TransactionTable({ searchQuery, filters }) {
   );
 
   return (
-    <div className="flex flex-col flex-1 mt-4 w-full rounded-xl max-md:max-w-full">
-      <div className="flex overflow-hidden flex-wrap px-0 py-0.5 w-full rounded-lg bg-neutral-100 max-md:max-w-full">
-        <div className="flex gap-1 items-center px-4 py-2 w-12 h-full">
-          <input
-            type="checkbox"
-            onChange={handleCheckboxChange}
-            checked={selectAll}
-            style={{ accentColor: "#08AA3B" }}
-            className="w-4 h-4"
-          />
-        </div>
+  <div className="flex flex-col flex-1 mt-4 w-full rounded-xl max-md:max-w-full">
+    <table className="table-auto w-full bg-neutral-100 rounded-lg">
+      {/* Table Header */}
+      <thead>
+        <tr className="bg-neutral-200">
+          <th className="flex gap-1 items-center px-4 py-2 w-12 h-full">
+            <input
+               type="checkbox"
+               onChange={handleCheckboxChange}
+               checked={selectAll}
+               style={{ accentColor: "#08AA3B", marginTop:"5px" }}
+               className="w-4 h-4"
+            />
+          </th>
+          {["User ID", "Contact", "Description", "Transaction ID", "Amount", "Status", "Action"].map(
+            (header, index) => (
+              <th
+                key={index}
+                className={`px-4 py-2 text-sm font-medium text-black relative ${
+                  index === 4 ? "text-right" : index === 5 ? "text-center" : "text-left"
+                }`}
+              >
+                <div className="flex items-center gap-1">
+                  {header}
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/936c5ae5899c0cc48ee2a69189a91288cc3e5042a1f0e5d39a5a808fcaff1acc?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
+                    alt="Sort Icon"
+                    className="object-contain shrink-0 w-[11px] aspect-[0.5]"
+                  />
+                </div>
+              </th>
+            )
+          )}
+        </tr>
+      </thead>
 
-        {["User ID", "Contact", "Description", "Transaction ID", "Amount", "Status", "Action"].map(
-          (header, index) => (
-            <div
-              key={index}
-              className={`flex relative flex-1 shrink gap-1 px-2 py-4 h-full text-sm font-medium leading-loose text-black ${
-                index === 4 ? "text-right" : index === 5 ? "text-center" : ""
-              } ${index > 3 ? "" : "whitespace-nowrap"} basis-4 ${
-                index < 4 ? "min-w-[160px]" : ""
-              } max-sm:hidden lg:pl-2`} // Added padding left for larger screens
-            >
-              <div className="absolute -left-px top-2/4 z-0 shrink-0 self-start w-0 border border-solid -translate-y-2/4 bg-zinc-300 border-zinc-300 h-[22px] translate-x-[0%]" />
-              <div className="z-0 flex-1 shrink my-auto basis-0">{header}</div>
-              {index < 7 && (
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/936c5ae5899c0cc48ee2a69189a91288cc3e5042a1f0e5d39a5a808fcaff1acc?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a"
-                  alt=""
-                  className="object-contain z-0 shrink-0 aspect-[0.5] w-[11px]"
-                />
-              )}
-            </div>
-          )
-        )}
-      </div>
+      {/* Table Body */}
+      <tbody>
+        {filteredTransactions.map((transaction) => (
+          <tr
+            key={transaction.transaction_id}
+            className="bg-white border-b border-zinc-300 hover:bg-neutral-50"
+          >
+            {/* Checkbox Column */}
+            <td className="px-4 py-2">
+              <input
+                type="checkbox"
+                checked={checkedItems[transaction.transaction_id] || false}
+                onChange={() => handleRowCheckboxChange(transaction.transaction_id)}
+                style={{ accentColor: "#08AA3B" }}
+                className="w-4 h-4"
+              />
+            </td>
 
-      {filteredTransactions.map((transaction) => (
-        <div key={transaction.transaction_id} className="flex items-center justify-between px-4 py-2">
-          <input
-            type="checkbox"
-            checked={checkedItems[transaction.transaction_id] || false}
-            onChange={() => handleRowCheckboxChange(transaction.transaction_id)}
-            style={{ accentColor: "#08AA3B" }}
-            className="w-4 h-4 mr-2"
-          />
-          <TransactionRow
-            registration={transaction.registration_no}
-            name={transaction.name}
-            email={transaction.email}
-            phone={transaction.phone_no}
-            description={formatPaymentType(transaction.payment_type)}
-            date={transaction.created_date_time}
-            transactionId={transaction.transaction_id}
-            amount={`₦${(transaction.transaction_amount / 100).toLocaleString()}`}
-            status={transaction.status}
-          />
-        </div>
-      ))}
-    </div>
-  );
+            {/* Row Data */}
+            <TransactionRow
+              registration={transaction.registration_no}
+              name={transaction.name}
+              email={transaction.email}
+              phone={transaction.phone_no}
+              description={formatPaymentType(transaction.payment_type)}
+              date={transaction.created_date_time}
+              transactionId={transaction.transaction_id}
+              amount={`₦${(transaction.transaction_amount / 100).toLocaleString()}`}
+              status={transaction.status}
+            />
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+  
 }
 
 export default TransactionTable;
