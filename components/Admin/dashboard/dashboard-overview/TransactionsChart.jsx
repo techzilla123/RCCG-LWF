@@ -3,7 +3,6 @@ import axios from "axios";
 
 function TransactionsChart() {
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
