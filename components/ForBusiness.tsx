@@ -45,9 +45,9 @@ const StyledImage = () => (
       <h3 className="text-lg font-semibold">Transfer Money</h3>
       <p className="text-gray-600">How much are you sending?</p>
       <div className="flex space-x-2 mt-2">
-        <button className="bg-blue-500 text-white px-3 py-1 rounded-lg">₦2000</button>
-        <button className="bg-blue-500 text-white px-3 py-1 rounded-lg">₦20,000</button>
-        <button className="bg-blue-500 text-white px-3 py-1 rounded-lg">₦50,000</button>
+        <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦2000</button>
+        <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦20,000</button>
+        <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦50,000</button>
       </div>
     </div>
 
