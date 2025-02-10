@@ -5,26 +5,26 @@ const featureData = [
   {
     icon: "/sfs.svg",
     bgColor: "bg-teal-50",
-    title: "Care about our team",
-    description: "Understand what matters to our employees. Give them what they need to do their best work."
+    title: "Stop chasing invoices",
+    description: "We makes it easy to send professional invoices, accept online payments, and track your earnings – all in one place."
   },
   {
     icon: "/spfr.svg",
     bgColor: "bg-yellow-50",
-    title: "Care about our team",
-    description: "Understand what matters to our employees. Give them what they need to do their best work."
+    title: "Spend less time",
+    description: "Spend less time managing payments. We automate your payment process, so you can focus on growing your business."
   },
   {
     icon: "/spdfy.svg",
     bgColor: "bg-violet-50",
-    title: "Care about our team",
-    description: "Understand what matters to our employees. Give them what they need to do their best work."
+    title: "Grow with YCT Microfinance bank",
+    description: "YCT Microfinance bank helps you grow by simplifying your payment process. From invoicing to reporting, we've got you covered, so you can focus on expanding your business."
   },
   {
     icon: "/spdfd.svg",
     bgColor: "bg-red-50",
-    title: "Care about our team",
-    description: "Understand what matters to our employees. Give them what they need to do their best work."
+    title: "  Accept payments online with just a few clicks.",
+    description: "Seamlessly accept payments online with just a few clicks, making transactions effortless and secure our intuitive platform simplifies the payment process, ensuring fast transactions."
   }
 ];
 

@@ -4,18 +4,13 @@ import React, { useState } from 'react';
 
 const initialFaqData = [
   {
-    question: "Is there a free trial available?",
-    answer: "Yes, you can try us for free for 30 days. If you want, we'll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.",
+    question: "How long does it take for payments to be processed?",
+    answer: "Payments happens instantly and receipts can be generated and saved for individual payments.",
     isOpen: true,
   },
   {
-    question: "Can I change my plan later?",
-    answer: "Absolutely! You can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.",
-    isOpen: false,
-  },
-  {
-    question: "What is your cancellation policy?",
-    answer: "You can cancel your subscription at any time. There are no long-term contracts or cancellation fees. Your service will continue until the end of your current billing period.",
+    question: "How do I view my transaction history?",
+    answer: "Click on the History button and your transaction history should be available to you after confirming your identity of course.",
     isOpen: false,
   },
   {
@@ -24,13 +19,13 @@ const initialFaqData = [
     isOpen: false,
   },
   {
-    question: "How does billing work?",
-    answer: "We bill on a monthly or annual basis, depending on the plan you choose. Payment is due at the beginning of each billing cycle.",
+    question: "How long does it take for payments to be processed?",
+    answer: "This is an instant payment platform and you should be able to make payments and generate receipts in seconds,",
     isOpen: false,
   },
   {
-    question: "How do I change my account email?",
-    answer: "You can change your account email in your profile settings. After making the change, you'll need to verify your new email address.",
+    question: "My payment is not going through.",
+    answer: " What should I do? Check the transaction history to confirm the status of the payment it would be clearly stated if the payment is successful or has failed.",
     isOpen: false,
   },
 ];
