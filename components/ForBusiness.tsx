@@ -52,7 +52,7 @@ const StyledImage = () => (
     </div>
 
     {/* Bottom-left box */}
-    <div className="absolute bottom-4 left-4 bg-white shadow-lg rounded-lg p-4">
+    <div className="absolute bottom-4 right-4 bg-white shadow-lg rounded-lg p-4">
       <h3 className="text-lg font-semibold">Spending Trend</h3>
       <p className="text-gray-600">Money In: ₦550,000</p>
       <p className="text-gray-600">Money Out: ₦950,000</p>
