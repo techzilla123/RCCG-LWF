@@ -12,7 +12,7 @@ export default function RandomImage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setImageSrc(images[Math.floor(Math.random() * images.length)]);
-    }, 60000); // Changes the image every 5 seconds
+    }, 100000); // Changes the image every 5 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);

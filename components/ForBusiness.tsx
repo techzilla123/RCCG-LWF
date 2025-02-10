@@ -18,13 +18,13 @@ const featureData = [
     icon: "/spdfy.svg",
     bgColor: "bg-violet-50",
     title: "Grow with YCT Microfinance bank",
-    description: "YCT Microfinance bank helps you grow by simplifying your payment process. From invoicing to reporting, we've got you covered, so you can focus on expanding your business."
+    description: "YCT Microfinance bank helps you grow by simplifying your payment process. From invoicing to reporting, we've got you covered."
   },
   {
     icon: "/spdfd.svg",
     bgColor: "bg-red-50",
     title: "Accept payments online with just a few clicks.",
-    description: "Seamlessly accept payments online with just a few clicks, making transactions effortless and secure. Our intuitive platform simplifies the payment process, ensuring fast transactions."
+    description: "Seamlessly accept payments online with just a few clicks, making transactions effortless and secure with Our intuitive platform."
   }
 ];
 
