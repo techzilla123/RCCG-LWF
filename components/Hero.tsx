@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import RandomImage from "./RandomImage";
 
 function HeroSection() {
   return (
@@ -79,11 +80,8 @@ function HeroSection() {
       </div>
 
       {/* Image Section (hidden on small screens) */}
-      <div
-        data-layername="image"
-        className="flex z-0 flex-1 shrink bg-gray-200 basis-0 h-[482px] min-w-[240px] rounded-[40px] w-[500px] max-sm:hidden"
-        aria-hidden="true"
-      />
+      <RandomImage />
+
     </section>
   );
 }
