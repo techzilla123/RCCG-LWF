@@ -150,11 +150,13 @@ function ContactFormSection() {
               error={errors.message}
             />
           </div>
-
-          <div className="flex flex-col self-end mt-6 max-w-full text-sm font-medium text-center text-white w-[286px] md:self-end md:items-end md:w-[286px] sm:items-center sm:self-center">
+          <div className="flex flex-col mt-6 max-w-full text-sm font-medium text-center text-white w-[286px] 
+                md:self-end md:items-end md:w-[286px] 
+                sm:self-center sm:items-center self-center items-center">
   <button
     type="submit"
-    className="overflow-hidden gap-2 self-stretch p-4 w-full h-12 border border-solid border-black border-opacity-0 min-h-[48px] rounded-[1000px]"
+    className="overflow-hidden gap-2 self-stretch p-4 w-full h-12 border border-solid border-black border-opacity-0 
+               min-h-[48px] rounded-full"
     style={{ background: "#08AA3B" }}
   >
     Send Message
