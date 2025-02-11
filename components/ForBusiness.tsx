@@ -28,41 +28,41 @@ const featureData = [
   }
 ];
 
-// New StyledImage component
-const StyledImage = () => (
-  <div
-    className="flex w-full bg-gray-200 min-h-[389px] rounded-[40px] max-md:max-w-full relative"
-    aria-hidden="true"
-    style={{
-      backgroundImage: "url('/af.png')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
+// // New StyledImage component
+// const StyledImage = () => (
+//   <div
+//     className="flex w-full bg-gray-200 min-h-[389px] rounded-[40px] max-md:max-w-full relative"
+//     aria-hidden="true"
+//     style={{
+//       backgroundImage: "url('/af.png')",
+//       backgroundSize: "cover",
+//       backgroundPosition: "center",
       
-    }}
-  >
-    {/* Top-right box */}
-    <div className="absolute top-4 right-4 bg-white shadow-lg rounded-lg p-4">
-      <h3 className="text-lg font-semibold">Transfer Money</h3>
-      <p className="text-gray-600">How much are you sending?</p>
-      <div className="flex space-x-2 mt-2">
-        <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦2000</button>
-        <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦20,000</button>
-        <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦50,000</button>
-      </div>
-    </div>
+//     }}
+//   >
+//     {/* Top-right box */}
+//     <div className="absolute top-4 right-4 bg-white shadow-lg rounded-lg p-4">
+//       <h3 className="text-lg font-semibold">Transfer Money</h3>
+//       <p className="text-gray-600">How much are you sending?</p>
+//       <div className="flex space-x-2 mt-2">
+//         <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦2000</button>
+//         <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦20,000</button>
+//         <button className="bg-[#005E1E] hover:bg-[#00FF00] text-white px-3 py-1 rounded-lg">₦50,000</button>
+//       </div>
+//     </div>
 
-    {/* Bottom-left box */}
-    <div className="absolute bottom-4 right-4 bg-white shadow-lg rounded-lg p-4">
-      <h3 className="text-lg font-semibold">Spending Trend</h3>
-      <p className="text-gray-600">Money In: ₦550,000</p>
-      <p className="text-gray-600">Money Out: ₦950,000</p>
-      <div className="mt-2">
-        <div className="h-2 bg-green-500 w-1/2 rounded-full mb-2"></div>
-        <div className="h-2 bg-red-500 w-3/4 rounded-full"></div>
-      </div>
-    </div>
-  </div>
-);
+//     {/* Bottom-left box */}
+//     <div className="absolute bottom-4 right-4 bg-white shadow-lg rounded-lg p-4">
+//       <h3 className="text-lg font-semibold">Spending Trend</h3>
+//       <p className="text-gray-600">Money In: ₦550,000</p>
+//       <p className="text-gray-600">Money Out: ₦950,000</p>
+//       <div className="mt-2">
+//         <div className="h-2 bg-green-500 w-1/2 rounded-full mb-2"></div>
+//         <div className="h-2 bg-red-500 w-3/4 rounded-full"></div>
+//       </div>
+//     </div>
+//   </div>
+// );
 
 function AdminFeaturesSection() {
   return (
@@ -75,7 +75,17 @@ function AdminFeaturesSection() {
         className="flex flex-col flex-1 shrink self-start basis-0 min-w-[240px] max-md:max-w-full"
       >
         {/* Replace the placeholder div with StyledImage */}
-        <StyledImage />
+        {/* <StyledImage /> */}
+        <div
+    className="flex w-full bg-gray-200 min-h-[389px] rounded-[40px] max-md:max-w-full relative"
+    aria-hidden="true"
+    style={{
+      backgroundImage: "url('/af.png')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      
+    }}
+  />
         <div
           data-layername="headingAndSupportingText"
           className="flex flex-col mt-8 w-full max-md:max-w-full"
