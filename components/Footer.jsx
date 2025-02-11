@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { FaMoon, FaSun, FaEye } from 'react-icons/fa';
 
 const FooterLinks = () => {
   const links = [
@@ -27,48 +28,69 @@ const FooterLinks = () => {
   );
 };
 
-// const EmailCapture = () => {
-//   const [email, setEmail] = useState('');
+const ThemeToggle = () => {
+  const [theme, setTheme] = useState("light");
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log('Submitted email:', email);
-  //   setEmail('');
-  // };
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setTheme(storedTheme);
+      applyTheme(storedTheme);
+    }
+  }, []);
 
-//   return (
-//     <form onSubmit={handleSubmit} className="flex gap-2 items-start self-stretch my-auto text-sm min-w-[240px] max-md:max-w-full">
-//       <div className="flex flex-col min-h-[40px] min-w-[240px] text-neutral-500 w-[280px]">
-//         <div className="flex flex-col flex-1 w-full">
-//           <div className="flex overflow-hidden flex-1 gap-2 items-center px-3.5 py-2.5 bg-white rounded-lg border border-solid shadow-sm border-neutral-600 size-full">
-//             <label htmlFor="emailInput" className="sr-only">Enter your email</label>
-//             <input
-//               id="emailInput"
-//               type="email"
-//               value={email}
-//               onChange={(e) => setEmail(e.target.value)}
-//               placeholder="Enter your email"
-//               className="flex-1 shrink gap-2 self-stretch my-auto w-full min-w-[240px] bg-transparent border-none outline-none"
-//               required
-//               aria-required="true"
-//             />
-//           </div>
-//         </div>
-//       </div>
-//       <button
-//         type="submit"
-//         className="overflow-hidden gap-2 self-stretch px-4 py-3 h-10 font-medium text-center text-white whitespace-nowrap  border border-solid border-black border-opacity-0 min-h-[40px] rounded-[1000px] w-[137px] hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 "
-//         style={{ background: '#08AA3B' }} >
-//         Subscribe
-//       </button>
-//     </form>
-  // );
-// };
+  const applyTheme = (mode) => {
+    document.documentElement.classList.remove("dark");
+    document.documentElement.style.filter = "";
+
+    if (mode === "dark") {
+      document.documentElement.classList.add("dark");
+    } else if (mode === "tritanopia") {
+      document.documentElement.style.filter = "url('#tritanopia-filter')";
+    }
+  };
+
+  const toggleTheme = () => {
+    let newTheme;
+    if (theme === "light") {
+      newTheme = "dark";
+    } else if (theme === "dark") {
+      newTheme = "tritanopia";
+    } else {
+      newTheme = "light";
+    }
+
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    applyTheme(newTheme);
+  };
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-full text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+    >
+      {theme === "light" ? <FaMoon size={20} /> : theme === "dark" ? <FaEye size={20} /> : <FaSun size={20} />}
+    </button>
+  );
+};
 
 const Footer = () => {
   return (
-    <footer className="flex z-0 flex-col px-32 py-24 -mb-0.5 w-full  max-md:px-5 max-md:max-w-full"
-    style={{ background: '#001C09' }}>
+    <footer className="flex z-0 flex-col px-32 py-24 -mb-0.5 w-full max-md:px-5 max-md:max-w-full" style={{ background: '#001C09' }}>
+      <svg width="0" height="0">
+        <defs>
+          <filter id="tritanopia-filter">
+            <feColorMatrix
+              type="matrix"
+              values="1 0 0 0 0
+                      0 0.7 0.3 0 0
+                      0 0.3 0.7 0 0
+                      0 0 0 1 0"
+            />
+          </filter>
+        </defs>
+      </svg>
       <div className="flex flex-col w-full text-base whitespace-nowrap text-zinc-300 max-md:max-w-full">
         <img
           loading="lazy"
@@ -83,10 +105,10 @@ const Footer = () => {
       </div>
       <div className="flex flex-col mt-8 w-full max-md:max-w-full">
         <div className="flex flex-wrap gap-10 justify-between items-center w-full max-md:max-w-full">
-          {/* <EmailCapture /> */}
-          <p className="text-roght self-stretch my-auto text-base text-neutral-500">
+          <p className="text-right self-stretch my-auto text-base text-neutral-500">
             © {new Date().getFullYear()} yctmb. All rights reserved.
           </p>
+          <ThemeToggle />
         </div>
       </div>
     </footer>
