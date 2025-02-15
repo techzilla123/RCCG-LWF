@@ -10,7 +10,7 @@ function Sidebar() {
   const menuItems = [
     { defaultIcon: "/group.png", activeIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/169987296379ebd575c944ee818f34f7c4db28a62f4cce8b76efbb3ccfc1c480?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", title: "Dashboard", href: "/dashboard/dashboard-overview" },
     { defaultIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0ca88bfbddec7fe885a4f4a0fbe7582977a5eb2f50e2954b7a64273c494034f5?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", activeIcon: "/receipt-text.png", title: "Transactions", href: "/dashboard/transactions" },
-    { defaultIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/75b833f829875f8054a26481bf69414676723d3ca27f94285434efbdaf8b9a47?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", activeIcon: "/profile-2user.png", title: "Users", href: "/dashboard/users" },
+    // { defaultIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/75b833f829875f8054a26481bf69414676723d3ca27f94285434efbdaf8b9a47?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", activeIcon: "/profile-2user.png", title: "Users", href: "/dashboard/users" },
     { defaultIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/cd350191d1d01b79e18ed191735eed9a9300fe0fa823da0bee438f277bf278b3?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", activeIcon: "/tag.png", title: "Payments", href: "/dashboard/payments" },
     { defaultIcon: "https://cdn.builder.io/api/v1/image/assets/TEMP/b0566c1b74cc9429eab3c485a13c2ec4060d048ed2fe0fbf8858e5a9c470a9f1?placeholderIfAbsent=true&apiKey=73dffa2d4bac468cb175120cf834230a", activeIcon: "/setting.png", title: "Settings", href: "/dashboard/settings" }
   ];
