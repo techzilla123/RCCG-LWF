@@ -78,7 +78,15 @@ function TransactionRow({
   </td>
   
       {/* Amount */}
-      <td className="px-4 py-2 text-xs text-black">{amount}</td>
+      <td className="px-4 py-2  text-black" 
+  style={{
+    fontFamily: "Roboto",
+    fontWeight: 400,
+    fontSize: "14px",
+    lineHeight: "16.41px",
+    letterSpacing: "0%",
+    padding: "12px 24px", // Adjust spacing
+  }}>{amount}</td>
   
       {/* Status */}
       <td className="px-4 py-2 text-xs">
