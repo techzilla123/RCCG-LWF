@@ -9,19 +9,20 @@ function AdminPayments() {
   const [paymentName, setPaymentName] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [status, setStatus] = useState("ENABLED");  // Default to 'ENABLED'
+  const [status, setStatus] = useState("Disabled");  // Default to 'ENABLED'
 
   // Initialize state from URL query parameters once
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const name = params.get("paymentName");
     const amount = params.get("paymentAmount");
-    const statusFromQuery = params.get("status"); // Read status from URL
+    const statusFromQuery = params.get("status");  // Read status from URL
 
     if (name) setPaymentName(name);
     if (amount) setPaymentAmount(amount);
-    if (statusFromQuery) setStatus(statusFromQuery); // Set status from URL if present
-  }, []);
+    if (statusFromQuery === "ENABLED" || statusFromQuery === "DISABLED") {
+      setStatus(statusFromQuery);
+    }}, []);
 
   // Update URL query parameters when state changes
   useEffect(() => {
