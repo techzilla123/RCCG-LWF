@@ -43,47 +43,51 @@ function TransactionRow({
   return (
     <>
       {/* User Information */}
-      <td className="px-4 py-2 text-xs font-medium text-black whitespace-nowrap">
-        {registration}
-        <br />
-        <span className="text-neutral-500">{name}</span>
-      </td>
-  
-      {/* Contact Information */}
-      <td className="px-4 py-2 text-xs text-neutral-500">
-        <div className="truncate max-w-[120px] text-black" title={email}>
-          {formatEmail(email)}
-        </div>
-        <div>{phone}</div>
-      </td>
-  
+      <td className="px-4 py-3 text-xs font-medium text-black whitespace-nowrap">
+    {registration}
+    <br />
+    <span className="text-neutral-500 mt-3 block">{name}</span>
+  </td>
+
+  {/* Contact Information */}
+  <td className="px-4 py-3 text-xs text-neutral-500">
+    <div className="truncate max-w-[140px] text-black" title={email}>
+      {formatEmail(email)}
+    </div>
+    <div className="mt-2">{phone}</div>
+  </td>
+
       {/* Description and Date */}
-      <td className="flex-1 p-2 text-xs font-medium leading-5 text-neutral-500 min-w-[160px]">
-        <span className='text-black'>{description}</span>
-        <br />
-        <span>{date}</span>
-      </td>
-  
-      {/* Transaction ID */}
-      <td className="flex items-center flex-1 p-2 gap-2 min-w-[160px]">
-       <span className='text-xs text-neutral-500 flex-1 truncate' style={{width:'30px'}}> {transactionId}</span>
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/1b8f2d08e1b65d6fd3e351a8838957669993cf9dcfbd47815d3bcf98844fff1e?apiKey=73dffa2d4bac468cb175120cf834230a"
-          alt="Transaction Icon"
-          className="inline-block w-4 h-4 ml-2 cursor-pointer"
-          onClick={handleImageClick}
-        />
-      </td>
+      <td className="flex-1 p-4 text-xs font-medium leading-4 text-neutral-500 min-w-[180px]">
+    <span className="text-black">{description}</span>
+    <br />
+    <span className="mt-2 block">{date}</span>
+  </td>
+
+  {/* Transaction ID */}
+  <td className="flex items-center mt-3 flex-1 p-4 gap-3   min-w-[180px]">
+    <span className="text-xs text-neutral-500 flex-1 truncate" style={{ width: '40px' }}>
+      {transactionId}
+    </span>
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets/TEMP/1b8f2d08e1b65d6fd3e351a8838957669993cf9dcfbd47815d3bcf98844fff1e?apiKey=73dffa2d4bac468cb175120cf834230a"
+      alt="Transaction Icon"
+      className="inline-block w-5 h-5 ml-3 cursor-pointer"
+      onClick={handleImageClick}
+    />
+  </td>
   
       {/* Amount */}
       <td className="px-4 py-2 text-xs text-black">{amount}</td>
   
       {/* Status */}
       <td className="px-4 py-2 text-xs">
-        <div
-          className="w-3 h-3 inline-block rounded-full"
-          style={{ backgroundColor: getStatusColor(status) }}
-        ></div>
+         {status !== "AUTHORIZED" && (
+    <div
+      className="w-3 h-3 inline-block rounded-full"
+      style={{ backgroundColor: getStatusColor(status) }}
+    ></div>
+  )}
         <span className="ml-2">{status}</span>
       </td>
   
