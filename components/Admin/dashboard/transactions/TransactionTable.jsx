@@ -49,7 +49,7 @@ function TransactionTable({ searchQuery, filters }) {
         });
   
         if (!response.ok) {
-          throw new Error("Failed to fetch transactions");
+          throw new Error("No matching data found based on the selected filter.");
         }
   
         const data = await response.json();
