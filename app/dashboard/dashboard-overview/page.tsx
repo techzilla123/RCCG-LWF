@@ -20,7 +20,7 @@ function AdminDashboard() {
       </div>
 
       {/* Main content - Adjusted margin to avoid overlap with sidebar */}
-      <div data-layername="body" className="flex flex-col flex-1 py-4 pr-4 pl-2 ml-[216px] max-w-full" >
+      <div data-layername="body" className="flex flex-col flex-1 py-4 pr-4 pl-2 ml-[216px] max-w-full " >
         <TopNav />
        
           <div data-layername="line" className="flex shrink self-stretch w-full border  bg-zinc-300 border-zinc-300 min-w-[240px]"/>
@@ -45,7 +45,8 @@ function AdminDashboard() {
               </div>
             </header>
           
-          <section data-layername="content" className="flex flex-col p-4 w-full max-md:max-w-full">
+          <section data-layername="content" className="flex flex-col p-4 w-full max-md:max-w-full" 
+            style={{height:"100vh"}}>
             <Overview />
             <div data-layername="secondRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full ">
             <TopPayments />
