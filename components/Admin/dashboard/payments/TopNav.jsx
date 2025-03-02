@@ -83,23 +83,21 @@ const UserProfile = () => {
         </div>
       </button>
       {isOpen && (
-        <nav className="absolute top-full right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[160px]" style={{ width: "200px" }}>
-          {['Profile', 'Settings', 'Switch Account', 'Log out'].map((item, index) => (
-            <React.Fragment key={item}>
-              {index === 2 && (
-                <div className="flex gap-3 items-center px-0 py-3 pb-2 w-full h-6 border-t border-solid border-t-opacity-0 min-h-[24px]">
-                  <div className="flex-1 shrink self-stretch my-auto w-full h-px min-h-0 border border-solid basis-0 bg-zinc-300 border-zinc-300" />
-                </div>
-              )}
-              <a
-                href="#"
-                className={`flex overflow-hidden gap-2 items-center py-0 pr-2 pl-3 w-full h-10 text-sm whitespace-nowrap rounded-lg shadow-sm bg-black bg-opacity-0 min-h-[40px] ${item === 'Log out' ? 'text-red-600' : 'text-neutral-500'}`}
-              >
-                <span className="flex-1 shrink my-auto basis-0">{item}</span>
-              </a>
-            </React.Fragment>
-          ))}
-        </nav>
+      <nav className="absolute top-full right-0 z-50 flex flex-col self-end p-2 mt-1 w-[160px] bg-white rounded-lg shadow-lg max-w-[200px] border border-gray-200">
+      {['Profile', 'Settings', 'Switch Account', 'Log out'].map((item, index) => (
+        <React.Fragment key={item}>
+          {index === 2 && <div className="border-t border-gray-300 mx-3 my-2" />}
+          <a
+            href="#"
+            className={`flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 
+              ${item === 'Log out' ? 'text-red-600 hover:bg-red-50' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'}`}
+          >
+            <span className="flex-1">{item}</span>
+          </a>
+        </React.Fragment>
+      ))}
+    </nav>
+    
       )}
     </div>
   );
