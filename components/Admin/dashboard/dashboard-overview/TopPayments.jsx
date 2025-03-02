@@ -47,7 +47,7 @@ function TopPayments() {
   }, []);
 
   return (
-    <div data-layername="chartGroup" className="flex overflow-hidden flex-col flex-1 shrink self-start px-6 py-4 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:px-5 max-md:max-w-full">
+    <div data-layername="chartGroup" className="flex overflow-hidden flex-col flex-1 shrink self-start px-6 py-7 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:px-5 max-md:max-w-full">
       <div data-layername="heading" className="flex gap-2 items-center w-full max-md:max-w-full">
         <div data-layername="title" className="flex flex-col flex-1 shrink justify-center self-stretch my-auto basis-0 min-w-[240px]">
           <div data-layername="figureAmount" className="text-sm font-semibold text-black">Top Payments</div>
