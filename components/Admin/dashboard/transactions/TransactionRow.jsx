@@ -72,12 +72,14 @@ function TransactionRow({
         <span className="text-neutral-500 mt-3 block">{name}</span>
       </td>
 
-      <td className="px-4 py-3 text-xs text-neutral-500">
-        <div className="truncate max-w-[140px] text-black" title={email}>
-          {formatEmail(email)}
-        </div>
-        <div className="mt-2">{phone}</div>
-      </td>
+      <td className="px-4 py-3 text-xs text-neutral-500 whitespace-nowrap">
+  <span className="block max-w-[140px] truncate text-black" title={email}>
+    {formatEmail(email)}
+  </span>
+  <br />
+  <span className="mt-2">{phone}</span>
+</td>
+
 
       <td className="flex-1 p-4 text-xs font-medium leading-4 text-neutral-500 min-w-[180px]">
         <span className="text-black">{description}</span>
@@ -102,14 +104,15 @@ function TransactionRow({
       </td>
 
       <td className="px-4 py-2 text-xs">
-        {status !== "AUTHORIZED" && (
-          <div
-            className="w-3 h-3 inline-block rounded-full"
-            style={{ backgroundColor: getStatusColor(status) }}
-          ></div>
-        )}
-        <span className="ml-2">{status}</span>
-      </td>
+  {status !== "AUTHORIZED" && (
+    <span
+      className="w-3 h-3 inline-block rounded-full"
+      style={{ backgroundColor: getStatusColor(status) }}
+    ></span>
+  )}
+  <span className="ml-2">{status}</span>
+</td>
+
 
       <td className="px-4 py-2 text-xs">
         <button className="text-blue-600 underline" onClick={handleSummaryClick}>
