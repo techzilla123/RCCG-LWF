@@ -1,4 +1,12 @@
 import React, { useState } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+const menuItems = [
+  { name: "Profile", icon: "/YCT-paymen/user.svg", link: "#" },
+  { name: "Settings", icon: "/YCT-paymen/setting.png", link: "#" },
+  { name: "Switch Account", icon: "/YCT-paymen/A-icon-sizeable.png", link: "#" },
+  { name: "Log out", icon: "/YCT-paymen/logout.png", link: "/" },
+];
 
 const CTAButton = ({ icon, text, ariaLabel, className = '' }) => (
   <button
@@ -83,19 +91,30 @@ const UserProfile = () => {
       </button>
       {isOpen && (
       
-         <nav className="absolute top-full right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[200px] border border-gray-200" style={{ width: "160px" }}>
-      {['Profile', 'Settings', 'Switch Account', 'Log out'].map((item, index) => (
-        <React.Fragment key={item}>
-          {index === 2 && (
-            <div className="border-t border-gray-300 mx-3 my-2" />
-          )}
-          <a
-            href="#"
+      <nav
+      className="absolute top-full right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[200px] border border-gray-200"
+      style={{ width: "160px" }}
+    >
+      {menuItems.map((item, index) => (
+        <React.Fragment key={item.name}>
+          {index === 2 && <div className="border-t border-gray-300 mx-3 my-2" />}
+
+          <Link
+            href={item.link}
             className={`flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 
-              ${item === 'Log out' ? 'text-red-600 hover:bg-red-50' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'}`}
+              ${item.name === "Log out" ? "text-red-600 hover:bg-red-50" : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"}`}
           >
-            <span className="flex-1">{item}</span>
-          </a>
+            <Image
+              src={item.icon}
+              alt={item.name}
+              width={16}
+              height={16}
+              className={item.name === "Switch Account" ? "mr-0 w-4 h-4" :    ""}
+
+            />
+          <span className=" text-left whitespace-nowrap">{item.name}</span>
+
+          </Link>
         </React.Fragment>
       ))}
     </nav>
