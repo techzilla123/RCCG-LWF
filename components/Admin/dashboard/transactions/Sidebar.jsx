@@ -37,7 +37,7 @@ function Sidebar() {
             />
           </Link>
         ))}
-        <div data-layername="divider" className="gap-3 self-stretch px-0 py-1.5 pt-3 pb-2 mt-3 w-full h-6 text-xs font-medium whitespace-nowrap border-t border-solid border-t-zinc-300 min-h-[24px] text-neutral-500">
+        {/* <div data-layername="divider" className="gap-3 self-stretch px-0 py-1.5 pt-3 pb-2 mt-3 w-full h-6 text-xs font-medium whitespace-nowrap border-t border-solid border-t-zinc-300 min-h-[24px] text-neutral-500">
           Account
         </div>
         {menuItems.slice(3).map((item, index) => (
@@ -48,7 +48,7 @@ function Sidebar() {
               onClick={() => handleItemClick(item.title)} // Set active item when clicked
             />
           </Link>
-        ))}
+        ))} */}
       </nav>
     </aside>
   );

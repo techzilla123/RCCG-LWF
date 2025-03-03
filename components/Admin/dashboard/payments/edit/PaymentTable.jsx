@@ -82,10 +82,10 @@ function PaymentTable({ searchQuery }) {
   });
 
   return (
-    <section className="flex flex-col flex-1 justify-center p-4 w-full max-md:max-w-full">
-      <div className="flex flex-col flex-1 w-full rounded-xl max-md:max-w-full">
-        <div className="flex overflow-hidden flex-wrap px-0 py-0.5 w-full rounded-lg bg-neutral-100 max-md:max-w-full">
-          <div className="flex gap-1 items-center px-4 py-2 w-12 h-full">
+    <section className="flex flex-col flex-1 justify-center p-4 w-full min-h-screen h-screen">
+      <div className="flex flex-col flex-1 w-full rounded-xl max-md:max-w-full" style={{height:"100vh"}}>
+        <div className="flex overflow-hidden flex-wrap px-0 py-0.5 w-full rounded-lg bg-neutral-100 max-md:max-w-full" >
+          <div className="flex gap-1 items-center px-4 py-2 w-12 h-full" >
             <input
               type="checkbox"
               className="w-4 h-4 rounded-sm border border-solid border-zinc-300"
@@ -159,13 +159,13 @@ function PaymentTable({ searchQuery }) {
                 </div>
               </div>
             </div>
-            <div className="relative flex overflow-hidden gap-2 justify-center items-center p-2 w-16 h-full text-sm leading-8 text-center whitespace-nowrap max-w-[64px] min-w-[44px] text-neutral-500 tracking-[2px]">
-              <button
+            <div className="relative flex overflow-hidden gap-2 justify-center items-center p-2 w-16 h-full text-sm leading-8 text-center whitespace-nowrap max-w-[64px] min-w-[44px] text-neutral-500 tracking-[2px]" >
+              {/* <button
                 aria-label="More options"
                 className="z-80"
               >
                 •••
-              </button>
+              </button> */}
             </div>
           </div>
         ))}

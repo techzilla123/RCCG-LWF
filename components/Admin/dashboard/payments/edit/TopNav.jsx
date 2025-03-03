@@ -1,6 +1,19 @@
 "use client"
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
+import { useState, useRef, useEffect } from "react";
+
+
+import Image from "next/image";
+
+
+const menuItems = [
+  { name: "Profile", icon: "/YCT-paymen/user.svg", link: "#" },
+  { name: "Settings", icon: "/YCT-paymen/setting.png", link: "#" },
+  { name: "Switch Account", icon: "/YCT-paymen/A-icon-sizeable.png", link: "#" },
+  { name: "Log out", icon: "/YCT-paymen/logout.png", link: "/" },
+];
+
 
 const CTAButton = ({ icon, text, ariaLabel, className = '' }) => (
   <button
@@ -69,37 +82,78 @@ const MenuDropdown = () => {
 
 const UserProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
-    <div className="relative flex items-center gap-2">
+    <div className="relative flex items-center gap-2" ref={menuRef}>
       <button
         className="flex gap-2 items-center p-2"
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/1bbcece132fc3258893233235810b0e0cd7a41e2bd24367e8bcc80594b4aada2?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" alt="User avatar" className="object-contain shrink-0 gap-0 w-7 aspect-square" />
+        <img
+          loading="lazy"
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/1bbcece132fc3258893233235810b0e0cd7a41e2bd24367e8bcc80594b4aada2?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772"
+          alt="User avatar"
+          className="object-contain shrink-0 gap-0 w-7 aspect-square"
+        />
         <div className="flex gap-2.5 items-center w-4">
-          <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/14c133e6b8c500272dd10e40e1082fd0c879e6398f4fada1b8c273852798fd39?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" alt="" className="object-contain w-4 aspect-square" />
+          <img
+            loading="lazy"
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/14c133e6b8c500272dd10e40e1082fd0c879e6398f4fada1b8c273852798fd39?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772"
+            alt=""
+            className="object-contain w-4 aspect-square"
+          />
         </div>
       </button>
+
       {isOpen && (
-       <nav className="absolute top-full right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[200px] border border-gray-200" style={{ width: "160px" }}>
-       {['Profile', 'Settings', 'Switch Account', 'Log out'].map((item, index) => (
-         <React.Fragment key={item}>
-           {index === 2 && (
-             <div className="border-t border-gray-300 mx-3 my-2" />
-           )}
-           <a
-             href="#"
-             className={`flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 
-               ${item === 'Log out' ? 'text-red-600 hover:bg-red-50' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'}`}
-           >
-             <span className="flex-1">{item}</span>
-           </a>
-         </React.Fragment>
-       ))}
-     </nav>
+        <nav
+          ref={menuRef}
+          className="absolute top-full z-50 right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[200px] border border-gray-200"
+          style={{ width: "160px" }}
+        >
+          {menuItems.map((item, index) => (
+            <React.Fragment key={item.name}>
+              {index === 2 && <div className="border-t border-gray-300 mx-3 my-2" />}
+
+              <Link
+                href={item.link}
+                className={`flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 
+                  ${item.name === "Log out" ? "text-red-600 hover:bg-red-50" : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"}`}
+              >
+                <Image
+                  src={item.icon}
+                  alt={item.name}
+                  width={16}
+                  height={16}
+                  className={item.name === "Switch Account" ? "mr-0 w-4 h-4" : ""}
+                />
+                <span className="text-left whitespace-nowrap">{item.name}</span>
+              </Link>
+            </React.Fragment>
+          ))}
+        </nav>
       )}
     </div>
   );
@@ -129,12 +183,16 @@ const LeftSection = () => (
 );
 
 const RightSection = () => (
-  <div
-    className="flex flex-wrap flex-1 shrink gap-2 items-center justify-end h-full basis-0 min-w-[240px] max-md:max-w-full max-sm:hidden"
-    style={{ marginLeft: "0px" }}
-  >
-    <CTAButton icon="https://cdn.builder.io/api/v1/image/assets/TEMP/f90281443a83895d8d9d6e0ddfa976bd989b330f0bf866790771040831297800?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" ariaLabel="Notification" />
-    <div className="shrink-0 self-stretch w-0 h-9 border border-solid bg-zinc-300 border-zinc-300" role="separator" style={{ marginTop: "10px" }} />
+  <div className="flex flex-wrap flex-1 shrink gap-2 items-center justify-end h-full basis-0 min-w-[240px] max-md:max-w-full max-sm:hidden" style={{ marginLeft: "0px" }}>
+ <CTAButton 
+  icon="https://cdn.builder.io/api/v1/image/assets/TEMP/f90281443a83895d8d9d6e0ddfa976bd989b330f0bf866790771040831297800?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" 
+  ariaLabel="Notification" 
+  onClick={() => document.location.reload()} 
+  className="transition-transform duration-300 hover:rotate-12 active:rotate-45"
+/>
+
+
+    {/* <div className="shrink-0 self-stretch w-0 h-9 border border-solid bg-zinc-300 border-zinc-300" role="separator" style={{ marginTop: "10px" }} />
     <MenuDropdown />
     <CTAButton icon="https://cdn.builder.io/api/v1/image/assets/TEMP/e3516a938ee25c75199b3ef21e5ab257cbaf6f81cfa29c4754c60e50aedc8601?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" ariaLabel="Search" />
     <button
@@ -149,11 +207,12 @@ const RightSection = () => (
         alt=""
         className="object-contain w-4 h-4 ml-2 aspect-square"
       />
-    </button>
+    </button> */}
     {/* User Profile */}
     <UserProfile />
   </div>
 );
+
 
 const TopNav = () => {
   return (

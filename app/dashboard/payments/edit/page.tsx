@@ -142,7 +142,7 @@ function AdminPayments() {
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4" >
               <h2 className="text-lg font-medium">
                 Transactions <span className="text-gray-500">(200)</span>
               </h2>

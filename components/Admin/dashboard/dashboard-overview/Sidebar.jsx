@@ -22,7 +22,14 @@ function Sidebar() {
   return (
     <aside data-layername="sideBar1stLevel" className="flex flex-col py-4 pr-2 pl-4 bg-neutral-100 w-[216px] max-sm:hidden">
       <div className="flex flex-col justify-center items-start px-4 py-6 w-full bg-white rounded-lg shadow-sm min-h-[90px]">
-        <img loading="lazy" src="/logo.png" className="object-contain max-w-full aspect-[3.25] w-[130px]" alt="Company Logo" />
+      <Link href="/">
+  <img
+    loading="lazy"
+    src="/logo.png"
+    className="object-contain max-w-full aspect-[3.25] w-[130px] cursor-pointer"
+    alt="Company Logo"
+  />
+</Link>
       </div>
       <nav data-layername="menu" className="flex flex-col flex-1 mt-2 w-full rounded-2xl">
         <div data-layername="divider" className="gap-3 self-stretch px-0 py-1.5 pt-3 pb-2 w-full h-6 text-xs font-medium whitespace-nowrap border-t border-solid  border-t-opacity-0 min-h-[24px] text-neutral-500">
@@ -37,7 +44,7 @@ function Sidebar() {
             />
           </Link>
         ))}
-        <div data-layername="divider" className="gap-3 self-stretch px-0 py-1.5 pt-3 pb-2 mt-3 w-full h-6 text-xs font-medium whitespace-nowrap border-t border-solid border-t-zinc-300 min-h-[24px] text-neutral-500">
+        {/* <div data-layername="divider" className="gap-3 self-stretch px-0 py-1.5 pt-3 pb-2 mt-3 w-full h-6 text-xs font-medium whitespace-nowrap border-t border-solid border-t-zinc-300 min-h-[24px] text-neutral-500">
           Account
         </div>
         {menuItems.slice(3).map((item, index) => (
@@ -48,7 +55,7 @@ function Sidebar() {
               onClick={() => handleItemClick(item.title)} // Set active item when clicked
             />
           </Link>
-        ))}
+        ))} */}
       </nav>
     </aside>
   );
