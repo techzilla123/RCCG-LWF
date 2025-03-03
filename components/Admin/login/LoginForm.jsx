@@ -162,14 +162,14 @@ const handleLogin = async (e) => {
         </div>
 
         {/* Terms Checkbox */}
-        <div className="flex items-center w-full mt-4">
+        {/* <div className="flex items-center w-full mt-4">
           <label className="flex gap-2 items-center self-stretch my-auto">
             <input type="checkbox" className="w-4 h-4 bg-white rounded border border-solid border-zinc-300" style={{ accentColor: '#08AA3B' }} />
             <span className="self-stretch my-auto text-xs font-medium text-neutral-500">
               Agree to Terms of Service
             </span>
           </label>
-        </div>
+        </div> */}
 
         {/* Submit Button and Forgot Password Link */}
         <div className="flex flex-col mt-6 w-full font-medium">
