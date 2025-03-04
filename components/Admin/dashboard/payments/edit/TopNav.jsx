@@ -33,52 +33,52 @@ const CTAButton = ({ icon, text, ariaLabel, className = '' }) => (
   </button>
 );
 
-const MenuDropdown = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Past Week'); // Add state for the selected option
+// const MenuDropdown = () => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [selectedOption, setSelectedOption] = useState('Past Week'); // Add state for the selected option
 
-  const handleSelection = (option) => {
-    setSelectedOption(option); // Update selected option
-    setIsOpen(false); // Close the dropdown after selection
-  };
+//   const handleSelection = (option) => {
+//     setSelectedOption(option); // Update selected option
+//     setIsOpen(false); // Close the dropdown after selection
+//   };
 
-  return (
-    <div className="relative flex flex-col justify-center self-stretch my-auto h-10 rounded-lg shadow-sm bg-black bg-opacity-0 w-[126px]">
-      <button
-        className="flex overflow-hidden flex-1 gap-2 items-center px-2 h-full"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-haspopup="true"
-        aria-expanded={isOpen}
-      >
-        <div className="flex gap-2.5 items-center self-stretch my-auto w-4">
-          <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/3274ae6a86d4e19065986b84df287d69981ce1aafa66f04edfe927166d5aa2a0?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" alt="" className="object-contain self-stretch my-auto w-4 aspect-square" />
-        </div>
-        <span className="self-stretch my-auto text-sm text-neutral-500" style={{ width: "110px" }}>
-          {selectedOption} {/* Show the selected option */}
-        </span>
-        <div className={`flex gap-2.5 items-center self-stretch my-auto w-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-          <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/e1a13b375fb2dc02e0b40f84353469445e86f3172204e66e5ed691fa798bc40a?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" alt="" className="object-contain self-stretch my-auto w-3 aspect-square" />
-        </div>
-      </button>
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-md">
-          <ul className="flex flex-col">
-            {['Past 24 hours', 'Past week', 'Past month', 'Past quarter', 'Past 6 months', 'Past year'].map((item, index) => (
-              <li key={index} className="w-full">
-                <button
-                  className="w-full text-left py-2 px-4 text-sm text-neutral-500 hover:bg-gray-100"
-                  onClick={() => handleSelection(item)} // Set the selected option on click
-                >
-                  {item}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div className="relative flex flex-col justify-center self-stretch my-auto h-10 rounded-lg shadow-sm bg-black bg-opacity-0 w-[126px]">
+//       <button
+//         className="flex overflow-hidden flex-1 gap-2 items-center px-2 h-full"
+//         onClick={() => setIsOpen(!isOpen)}
+//         aria-haspopup="true"
+//         aria-expanded={isOpen}
+//       >
+//         <div className="flex gap-2.5 items-center self-stretch my-auto w-4">
+//           <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/3274ae6a86d4e19065986b84df287d69981ce1aafa66f04edfe927166d5aa2a0?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" alt="" className="object-contain self-stretch my-auto w-4 aspect-square" />
+//         </div>
+//         <span className="self-stretch my-auto text-sm text-neutral-500" style={{ width: "110px" }}>
+//           {selectedOption} {/* Show the selected option */}
+//         </span>
+//         <div className={`flex gap-2.5 items-center self-stretch my-auto w-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+//           <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/e1a13b375fb2dc02e0b40f84353469445e86f3172204e66e5ed691fa798bc40a?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772" alt="" className="object-contain self-stretch my-auto w-3 aspect-square" />
+//         </div>
+//       </button>
+//       {isOpen && (
+//         <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-md">
+//           <ul className="flex flex-col">
+//             {['Past 24 hours', 'Past week', 'Past month', 'Past quarter', 'Past 6 months', 'Past year'].map((item, index) => (
+//               <li key={index} className="w-full">
+//                 <button
+//                   className="w-full text-left py-2 px-4 text-sm text-neutral-500 hover:bg-gray-100"
+//                   onClick={() => handleSelection(item)} // Set the selected option on click
+//                 >
+//                   {item}
+//                 </button>
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
 
 const UserProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
