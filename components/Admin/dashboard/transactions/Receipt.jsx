@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -148,7 +148,7 @@ const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
   </div>
 );
 
-const Receipt  = ({ registration, name, email, phone, description, date, transactionId, amount, status, onClose }) => {
+const Receipt  = ({ registration, name, email, phone, description, date, transactionId, amount, status }) => {
   
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
