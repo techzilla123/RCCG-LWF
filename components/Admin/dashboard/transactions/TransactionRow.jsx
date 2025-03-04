@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Receipt from './Receipt';  // Assuming the Receipt component is in the same folder
+import crypto from 'crypto-js'; // Ensure you have this package installed
+import axios from 'axios';
 
 function TransactionRow({
   registration,
@@ -42,28 +44,76 @@ function TransactionRow({
     return domain ? `${localPart}@...` : email;
   };
 
+  const [currentStatus, setCurrentStatus] = useState(status);
   // State to manage receipt visibility
   const [showReceipt, setShowReceipt] = useState(false);
 
-  // Function to handle summary click
-  const handleSummaryClick = () => {
-    setShowReceipt(!showReceipt);  // Toggle the receipt visibility
-    if (onSummaryClick) {
-      onSummaryClick({
-        registration,
-        name,
-        email,
-        phone,
-        description,
-        date,
-        transactionId,
-        amount,
-        status,
+  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Replace with your actual secret key
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Get the base URL from .env file
+  const paymentOptionsUrl = process.env.NEXT_PUBLIC_API_PAYMENT_LIST_URL; // API endpoint to fetch payment options
+
+  // Generate HMAC
+  const generateHMAC = (message, secretKey) => {
+    const hash = crypto.HmacSHA256(message, secretKey);
+    return crypto.enc.Base64.stringify(hash);
+  };
+
+
+  const updateStatus = async (transactionId) => {
+    const nonce = Math.random().toString(36).substring(2);
+    const timestamp = Date.now().toString();
+    const method = 'GET';
+    const path = `/payment/process/fetch`;
+
+    const message = `${method}:${nonce}:${timestamp}`;
+    const apiKey = generateHMAC(message, secretKey);
+
+    const apiUrl = `${apiBaseUrl}${path}?transactionId=${transactionId}`;
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': apiKey,
+          'X-Timestamp': timestamp,
+          'X-Nonce': nonce,
+        },
       });
+      const data = await response.json();
+      if (data.status && data.status !== currentStatus) {
+        setCurrentStatus(data.status);
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
     }
   };
 
-  return (
+  const handleSummaryClick = async () => {
+    if (currentStatus === 'AUTHORIZED') {
+      await updateStatus(transactionId);
+    }
+    setShowReceipt(!showReceipt);
+  };
+
+
+  // // Function to handle summary click
+  // const handleSummaryClick = () => {
+  //   setShowReceipt(!showReceipt);  // Toggle the receipt visibility
+  //   if (onSummaryClick) {
+  //     onSummaryClick({
+  //       registration,
+  //       name,
+  //       email,
+  //       phone,
+  //       description,
+  //       date,
+  //       transactionId,
+  //       amount,
+  //       status,
+  //     });
+  //   }
+  // };
+
+  return React.Children.toArray(
     <>
       {/* Transaction Row */}
       <td className="px-4 py-3 text-xs font-medium text-black whitespace-nowrap">

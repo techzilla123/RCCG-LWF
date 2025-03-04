@@ -149,9 +149,13 @@ const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
 );
 
 const Receipt  = ({ registration, name, email, phone, description, date, transactionId, amount, status }) => {
-  
+  const popupElement = document.getElementById('receipt-popup');
+
+
   const handleSavePDF = () => {
-    const popupElement = document.querySelector('.popup-container');
+    const popupElement = document.querySelector('.popup-container > div'); // Selects only the inner popup
+    if (!popupElement) return console.error("Popup not found!");
+
     const buttons = document.querySelector('.call-to-action');
     const copyIcons = document.querySelectorAll('.copy-icon'); // Select all copy icons
     const statusIcon = document.querySelector('.status-icon'); // Select status icon
@@ -170,15 +174,17 @@ const Receipt  = ({ registration, name, email, phone, description, date, transac
       el.style.textAlign = 'center';     // Center-align for a neater look
       el.style.display = 'block';        // Ensure it appears in block format
       el.style.padding = '5px 10px';     // Add spacing
-      el.style.maxWidth = '230px';       // Prevents text from being too wide
+      el.style.maxWidth = '350px';       // Prevents text from being too wide
       el.style.color = '#333';           // Ensure good text contrast
       el.innerText = el.getAttribute('data-full-value'); // Display full value
     });
   
     html2canvas(popupElement, {
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null, // Makes transparent background
+        logging: false
     }).then((canvas) => {
       const imageData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -214,7 +220,7 @@ const Receipt  = ({ registration, name, email, phone, description, date, transac
   };
   
   return (
-    <div
+    <div id="receipt-popup"
       className="popup-container fixed inset-0 flex justify-center items-start bg-black bg-opacity-50 z-[1000]"
       style={{ marginTop: '0px' }}
     >

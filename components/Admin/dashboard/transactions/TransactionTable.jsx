@@ -126,7 +126,7 @@ function TransactionTable({ searchQuery, filters }) {
     </div>
   );
 
-  return (
+  return React.Children.toArray(
   <div className="flex flex-col flex-1 mt-4 w-full rounded-xl max-md:max-w-full">
     <table className="table-auto w-full bg-neutral-100 rounded-lg">
       {/* Table Header */}

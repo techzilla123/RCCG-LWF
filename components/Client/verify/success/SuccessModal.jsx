@@ -30,7 +30,7 @@ function SuccessModal() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('reference');  // Extract the reference parameter
-    console.log('Extracted Reference (Transaction ID):', ref);
+   
     setTransactionId(ref);
   }, []);
 
@@ -53,8 +53,7 @@ function SuccessModal() {
     const method = 'GET';
     const path = `/payment/process/fetch?transactionId=${transactionId}`;
     const message = `${method}:${nonce}:${timestamp}`;
-    console.log('Constructed API Path:', path);
-
+    
     const generateHMAC = (message, secretKey) => {
       const hash = CryptoJS.HmacSHA256(message, secretKey);
       return CryptoJS.enc.Base64.stringify(hash);
@@ -65,7 +64,7 @@ function SuccessModal() {
 
     try {
       const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}`;
-      console.log('Complete API URL:', apiUrl);
+      
 
       const response = await fetch(apiUrl, {
         method,
@@ -77,11 +76,11 @@ function SuccessModal() {
         },
       });
 
-      console.log('Response Status:', response.status);
+     
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Transaction Details:', data);
+        
 
         // Clear previous transaction details and store the new data
         localStorage.removeItem('transactionDetails');
