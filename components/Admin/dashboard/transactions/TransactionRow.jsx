@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Receipt from './Receipt';  // Assuming the Receipt component is in the same folder
 import crypto from 'crypto-js'; // Ensure you have this package installed
-import axios from 'axios';
+
 
 function TransactionRow({
   registration,
@@ -15,7 +15,7 @@ function TransactionRow({
   transactionId,
   amount,
   status,
-  onSummaryClick,
+  
 }) {
   // Helper function to get the color for status indicators
   const getStatusColor = (status) => {
@@ -50,7 +50,7 @@ function TransactionRow({
 
   const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Replace with your actual secret key
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Get the base URL from .env file
-  const paymentOptionsUrl = process.env.NEXT_PUBLIC_API_PAYMENT_LIST_URL; // API endpoint to fetch payment options
+  
 
   // Generate HMAC
   const generateHMAC = (message, secretKey) => {
