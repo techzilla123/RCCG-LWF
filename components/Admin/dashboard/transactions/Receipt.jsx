@@ -149,7 +149,7 @@ const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
 );
 
 const Receipt  = ({ registration, name, email, phone, description, date, transactionId, amount, status }) => {
-  const popupElement = document.getElementById('receipt-popup');
+  // const popupElement = document.getElementById('receipt-popup');
 
 
   const handleSavePDF = () => {
