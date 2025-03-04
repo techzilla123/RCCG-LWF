@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -50,7 +50,7 @@ const Summary = ({ amount, status }) => {
   );
 };
 
-const TransactionRow = ({ registration, name, email, phone, description, date, transactionId, amount, status, isSaving }) => {
+const TransactionRow = ({ registration, name, email, phone, description, date, transactionId, amount, isSaving }) => {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     alert('Copied to clipboard!');
@@ -130,7 +130,7 @@ const SupportMessage = () => (
 const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
   <div className="call-to-action flex gap-2 pb-4 text-sm font-medium text-center">
     <button
-      onClick={() => onClose()} 
+     onClick={onClose} 
       className="flex-1 px-3 py-2 border border-neutral-500 rounded-full"
     >
       Done
@@ -149,7 +149,7 @@ const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
 );
 
 const Receipt  = ({ registration, name, email, phone, description, date, transactionId, amount, status, onClose }) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(true)
+  
   const handleSavePDF = () => {
     const popupElement = document.querySelector('.popup-container');
     const buttons = document.querySelector('.call-to-action');
@@ -210,7 +210,7 @@ const Receipt  = ({ registration, name, email, phone, description, date, transac
     if (popupElement) {
       popupElement.remove();
     }
-    setIsPopupOpen(false);
+   
   };
   
   return (
