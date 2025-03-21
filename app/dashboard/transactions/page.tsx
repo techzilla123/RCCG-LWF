@@ -35,7 +35,7 @@ function TransactionPage() {
       if (!token) return;
   
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/payment/config`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/payment/config?page=1&perPage=10000000`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
