@@ -14,7 +14,7 @@ function PaymentTable({ searchQuery }) {
         const paymentName = params.get("paymentName");
 
         if (!paymentName) {
-          console.log("No paymentName provided in the query.");
+         
           return;
         }
 
@@ -38,9 +38,7 @@ function PaymentTable({ searchQuery }) {
           setTableData([data]); // Wrap the single object in an array
         }
         
-      } catch (error) {
-        console.log("Error fetching payment data:", error);
-      }
+      } 
     };
 
     fetchPaymentData();

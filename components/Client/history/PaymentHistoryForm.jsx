@@ -64,8 +64,8 @@ function PaymentHistoryForm() {
 
       // Navigate to the verification page on success
       router.push("/client/history/verify");
-    } catch (error) {
-      console.log("Failed to fetch payment history:", error.message);
+    } catch {
+     
       alert("Failed to fetch payment history. Please try again.");
     } finally {
       setLoading(false);

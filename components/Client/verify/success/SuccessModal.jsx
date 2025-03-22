@@ -44,7 +44,7 @@ function SuccessModal() {
 
   const fetchTransactionDetails = async () => {
     if (!transactionId) {
-      console.log('Transaction ID is missing');
+      
       return;
     }
 
@@ -90,9 +90,7 @@ function SuccessModal() {
         // Update state to reflect the new transaction data
         setTransactionId(data.transactionId); // Or use other relevant states to reflect changes in UI
       } 
-    } catch{
-      console.log('Error fetching transaction details:');
-    }
+    } 
   };
 
   const handleViewReceiptClick = () => {

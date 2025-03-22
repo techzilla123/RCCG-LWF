@@ -95,7 +95,7 @@ function PaymentForm() {
         const token = response.data.token;
         window.location.href = `/client/verify?token=${token}&email=${email}`;
       } catch (error) {
-        console.log('Error processing payment:');
+        
         if (error.response && error.response.data && error.response.data.responseMessage) {
           // Show error modal if response contains the error message
           setErrorMessage(error.response.data.responseMessage);

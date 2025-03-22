@@ -69,7 +69,7 @@ function AuthResetForm() {
         // Navigate to the verification page on success
         router.push("/auth/forgot-password/verify");
       } catch {
-        console.log("Failed to fetch payment history:");
+       
         alert("Failed to fetch payment history. Please try again.");
       } finally {
         setLoading(false);

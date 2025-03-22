@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import TransactionModal from "@/components/Client/history/popup";
+import TransactionModal from "./popup";
 import HmacSHA256 from "crypto-js/hmac-sha256";
 import Base64 from "crypto-js/enc-base64";
+import CryptoJS from "crypto-js";
 
 function VerificationForm() {
   const router = useRouter();
@@ -88,18 +89,18 @@ const handlePaste = (e) => {
 
         if (response.ok) {
           const result = await response.json();
-          console.log("Verification successful:");
+         
 
           localStorage.setItem("verificationResult", JSON.stringify(result));
           router.push("/auth/forgot-password/reset");
         } else {
-          console.log("Verification failed:");
+        
           setHasError(true);
           setErrorMessage("Verification failed. Please check the code and try again.");
           setShowModal(false);
         }
       } catch {
-        console.log("An error occurred:");
+    
         setHasError(true);
         setErrorMessage("An unexpected error occurred. Please try again.");
         setShowModal(false);
@@ -123,9 +124,65 @@ const handlePaste = (e) => {
     return () => clearInterval(countdown);
   }, [timer, isResendDisabled]);
 
-  const handleResendCode = () => {
-    router.push("/client/history");
-  };
+  const handleResendCode = async () => {
+      try {
+        const email = localStorage.getItem("userEmail");
+        if (!email) {
+          alert("No email found. Please try again.");
+          return;
+        }
+    
+        // Get environment variables
+        const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
+        if (!secretKey) {
+          console.error("Secret key is missing from environment variables.");
+          return;
+        }
+    
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_HISTORY_URL}`;
+    
+        // Generate HMAC and headers
+        const nonce = Math.random().toString(36).substring(2);
+        const timestamp = Date.now().toString();
+        const method = "POST";
+        const message = `${method}:${nonce}:${timestamp}`;
+        const hash = CryptoJS.HmacSHA256(message, secretKey);
+        const apiKey = CryptoJS.enc.Base64.stringify(hash);
+    
+        // Create request headers
+        const headers = {
+          "Content-Type": "application/json",
+          "X-API-Key": apiKey,
+          "X-Timestamp": timestamp,
+          "X-Nonce": nonce,
+        };
+    
+        // Request body
+        const body = JSON.stringify({
+          email: email,
+          regNo: "", // Ensure regNo is included as an empty string
+        });
+    
+        // Make the API call
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers,
+          body,
+        });
+    
+        if (response.ok) {
+          alert("Verification code resent successfully!");
+          setTimer(10);
+          setIsResendDisabled(true);
+        } else {
+          const errorData = await response.json();
+          alert(errorData.message || "Failed to resend code.");
+        }
+      } catch (err) {
+        alert("Failed to connect to the server.");
+        console.error("Error resending verification code:", err);
+      }
+    };
 
   return (
     <div className="flex flex-col items-center w-full max-md:w-full px-4" style={{ marginTop: "100px" }}>

@@ -34,7 +34,7 @@ function PaymentTable({ searchQuery }) {
           }
         }
       } catch {
-        console.log("Error fetching payment data:");
+        console.log(":");
       }
     };
 
@@ -93,11 +93,9 @@ function PaymentTable({ searchQuery }) {
 
     // If the action is "edit", pass the selected payment details to the edit page
     if (action === "edit") {
-      // Add your routing logic or state update here for the edit page
-      // console.log(`Edit payment: ${paymentName} for amount: ${paymentAmount}`);
-      // For example, you could use useRouter to redirect to an edit page
+      // Add your routing logic or state update here
     }
-  };
+      };
 
   const filteredData = tableData.filter((row) => {
     return (
