@@ -41,10 +41,9 @@ function SuccessModal() {
     }
   }, [transactionId]); // Runs when transactionId is updated
 
-
   const fetchTransactionDetails = async () => {
     if (!transactionId) {
-      
+      console.log(';');
       return;
     }
 
@@ -61,7 +60,7 @@ function SuccessModal() {
     };
 
     const apiKey = generateHMAC(message, secretKey);
-    
+    console.log('Generated API Key:');
 
     try {
       const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}`;
@@ -90,16 +89,18 @@ function SuccessModal() {
         // Update state to reflect the new transaction data
         setTransactionId(data.transactionId); // Or use other relevant states to reflect changes in UI
       } 
-    } 
+    } catch{
+      console.log('Error fetching transaction details:');
+    }
   };
 
   const handleViewReceiptClick = () => {
-   
+    console.log(':');
     setShowReceipt(true);
   };
 
   const handleFinishClick = () => {
-  
+    console.log(':');
     router.push('/');
   };
 
