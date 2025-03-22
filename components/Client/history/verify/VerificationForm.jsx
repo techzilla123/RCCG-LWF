@@ -88,17 +88,19 @@ const handlePaste = (e) => {
         });
 
         if (response.ok) {
-          
+          const result = await response.json();
+          console.log("Verification successful:", result);
 
           localStorage.setItem("verificationResult", JSON.stringify(result));
           router.push("/client/history/verify/success");
         } else {
-        
+          console.log("Verification failed:", response.statusText);
           setHasError(true);
           setErrorMessage("Verification failed. Please check the code and try again.");
           setShowModal(false);
         }
-      } catch {
+      } catch (error) {
+        console.log("An error occurred:", error);
         setHasError(true);
         setErrorMessage("An unexpected error occurred. Please try again.");
         setShowModal(false);
