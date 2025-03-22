@@ -58,7 +58,7 @@ function VerificationForm() {
 
       // Check if email exists in localStorage
       if (!email) {
-     
+        console.log("Email not found");
         return;
       }
 
