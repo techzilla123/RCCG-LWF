@@ -75,7 +75,7 @@
     status: PropTypes.string.isRequired,
   };
 
-  const TransactionDetail = ({ transactionDetails, fullTransactionId, isSaving }) => {
+  const TransactionDetail = ({ transactionDetails, fullTransactionId}) => {
     const [isSmallScreen, setIsSmallScreen] = useState(false);
 
     useEffect(() => {
@@ -99,7 +99,7 @@
         <div className="flex flex-col mt-2">
           {transactionDetails.map((detail, index) => {
             const isTransactionId = detail.label === 'Transaction ID';
-            const isTotalAmount = detail.label === 'Total Amount';
+            // const isTotalAmount = detail.label === 'Total Amount';
             // const displayValue = isTransactionId
             //   ? fullTransactionId || isSaving
             //     ? detail.value
