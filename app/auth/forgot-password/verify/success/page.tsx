@@ -13,7 +13,7 @@ function AdminAuthSignupSuccess() {
   };
 
   return (
-    <div className="flex flex-col bg-white min-h-screen">
+    <div className="flex flex-col   bg-neutral-100 min-h-screen">
       <main className="flex flex-col justify-center items-center px-8 py-12 w-full bg-neutral-100 min-h-[800px] max-w-screen-lg mx-auto">
         {isModalOpen && <SuccessModal onClose={handleClose} />}
       </main>

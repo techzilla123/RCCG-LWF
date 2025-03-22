@@ -47,7 +47,8 @@ function SuccessModal({ onClose }) {
       <button
         aria-label="Close"
         className="flex absolute top-0 right-0 z-0 flex-col justify-center items-center p-6 w-16 max-md:px-5"
-        onClick={onClose} // Call the onClose function to close the modal
+        onClick={onClose}
+        disabled // Call the onClose function to close the modal
       >
         <img
           loading="lazy"

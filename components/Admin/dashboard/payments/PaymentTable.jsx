@@ -33,8 +33,8 @@ function PaymentTable({ searchQuery }) {
             setTotalPages(calculatedPages);
           }
         }
-      } catch (error) {
-        console.log("Error fetching payment data:", error);
+      } catch {
+        console.log("Error fetching payment data:");
       }
     };
 
@@ -86,7 +86,7 @@ function PaymentTable({ searchQuery }) {
 
   const handleAction = (action, index) => {
     const selectedPayment = tableData[index];
-    const { paymentName, paymentAmount } = selectedPayment;
+    // const { paymentName, paymentAmount } = selectedPayment;
 
    
     setDropdownVisible(null);
@@ -108,17 +108,17 @@ function PaymentTable({ searchQuery }) {
     );
   });
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages && tableData.length > 0) {
-      setCurrentPage(prev => prev + 1);
-    }
-  };
+  // const handleNextPage = () => {
+  //   if (currentPage < totalPages && tableData.length > 0) {
+  //     setCurrentPage(prev => prev + 1);
+  //   }
+  // };
   
-  const handlePreviousPage = () => {
-    if (currentPage > 1 && tableData.length > 0) {
-      setCurrentPage(prev => prev - 1);
-    }
-  };
+  // const handlePreviousPage = () => {
+  //   if (currentPage > 1 && tableData.length > 0) {
+  //     setCurrentPage(prev => prev - 1);
+  //   }
+  // };
 
   
   const generatePagination = () => {
