@@ -84,8 +84,8 @@ function PaymentTable({ searchQuery }) {
     }
   };
 
-  const handleAction = (action, index) => {
-    const selectedPayment = tableData[index];
+  const handleAction = (action) => {
+    // const selectedPayment = tableData[index];
     // const { paymentName, paymentAmount } = selectedPayment;
 
    
