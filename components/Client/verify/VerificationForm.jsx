@@ -108,7 +108,7 @@ function VerificationForm() {
 
         setShowModal(true);
         setResponseMessage(""); // Clear any previous error message
-      } catch (error) {
+      } catch {
         console.log("Error during verification:");
         setResponseMessage(
           error.response?.data?.message || "An unknown error occurred."
@@ -176,7 +176,7 @@ function VerificationForm() {
       console.log("Resend payment request success:");
       const token = response.data.token;
       window.location.href = `/client/verify?token=${token}&email=${email}`;
-    } catch (error) {
+    } catch  {
       console.log("Error during resend:");
     }
   };

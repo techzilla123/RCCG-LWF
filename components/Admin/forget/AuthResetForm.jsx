@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import CryptoJS from "crypto-js"; // Import CryptoJS as an ES module
 import BackButton from './BackButton';
-import InputField from './InputField'; // Reusable input field component
+// import InputField from './InputField'; // Reusable input field component
 import Link from 'next/link';
 
 function AuthResetForm() {
@@ -68,7 +68,7 @@ function AuthResetForm() {
   
         // Navigate to the verification page on success
         router.push("/auth/forgot-password/verify");
-      } catch (error) {
+      } catch {
         console.log("Failed to fetch payment history:");
         alert("Failed to fetch payment history. Please try again.");
       } finally {

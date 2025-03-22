@@ -54,8 +54,6 @@ function TransactionPage() {
         } else {
           console.error("Failed to fetch payment types");
         }
-      } catch (error) {
-        console.error("Error fetching payment types:", error);
       } finally {
         setIsPaymentTypesLoading(false);
       }

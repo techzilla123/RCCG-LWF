@@ -98,7 +98,7 @@ const handlePaste = (e) => {
           setErrorMessage("Verification failed. Please check the code and try again.");
           setShowModal(false);
         }
-      } catch (error) {
+      } catch {
         console.log("An error occurred:");
         setHasError(true);
         setErrorMessage("An unexpected error occurred. Please try again.");

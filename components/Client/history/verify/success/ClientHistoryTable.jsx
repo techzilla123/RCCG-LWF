@@ -107,8 +107,8 @@ function ClientHistoryTable() {
           status: updatedStatus,
         }));
       }
-    } catch (error) {
-      console.log('Error fetching status:', error);
+    } catch {
+      console.log('Error fetching status:');
     }
   };
 
