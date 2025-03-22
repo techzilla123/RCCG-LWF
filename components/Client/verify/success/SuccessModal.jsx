@@ -39,8 +39,8 @@ function SuccessModal() {
     if (transactionId) {
       fetchTransactionDetails();
     }
-  }, 
-); // Runs when transactionId is updated
+  }, [transactionId]); // Runs when transactionId is updated
+
 
   const fetchTransactionDetails = async () => {
     if (!transactionId) {

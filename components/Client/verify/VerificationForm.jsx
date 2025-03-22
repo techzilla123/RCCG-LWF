@@ -176,7 +176,7 @@ function VerificationForm() {
       
       const token = response.data.token;
       window.location.href = `/client/verify?token=${token}&email=${email}`;
-    } 
+    }; 
   };
 
   return (
