@@ -8,31 +8,42 @@ function PaymentTable({ searchQuery }) {
   const [selectAll, setSelectAll] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 10;
+  const [totalPages, setTotalPages] = useState(2);
   useEffect(() => {
     const fetchPaymentData = async () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/payment/config?page=1&perPage=10`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/payment/config?page=${currentPage}&perPage=${perPage}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         const data = await response.json();
+        
 
         if (data.paymentConfigurations && Array.isArray(data.paymentConfigurations)) {
           setTableData(data.paymentConfigurations.reverse());
-        } 
+
+          // Ensure totalCount exists before setting totalPages
+          if (data.totalCount) {
+            const calculatedPages = Math.ceil(data.totalCount / perPage);
+            setTotalPages(calculatedPages);
+          }
+        }
       } catch (error) {
         console.log("Error fetching payment data:", error);
       }
-    }; 
+    };
 
     fetchPaymentData();
-  }, []);
+  }, [currentPage]);
+
+  
+
+  
 
   useEffect(() => {
     setSelectAll(
@@ -77,13 +88,13 @@ function PaymentTable({ searchQuery }) {
     const selectedPayment = tableData[index];
     const { paymentName, paymentAmount } = selectedPayment;
 
-    console.log(`Action: ${action}, Row: ${index}, Payment Name: ${paymentName}, Payment Amount: ${paymentAmount}`);
+   
     setDropdownVisible(null);
 
     // If the action is "edit", pass the selected payment details to the edit page
     if (action === "edit") {
       // Add your routing logic or state update here for the edit page
-      console.log(`Edit payment: ${paymentName} for amount: ${paymentAmount}`);
+      // console.log(`Edit payment: ${paymentName} for amount: ${paymentAmount}`);
       // For example, you could use useRouter to redirect to an edit page
     }
   };
@@ -96,6 +107,50 @@ function PaymentTable({ searchQuery }) {
       row.status.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages && tableData.length > 0) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1 && tableData.length > 0) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  
+  const generatePagination = () => {
+    if (totalPages <= 1) return [1, 2]; // Always show at least page 1
+  
+    const pages = [];
+    const maxVisiblePages = 5; // Number of pages to show before/after current page
+  
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1); // Always show first page
+  
+      if (currentPage > 3) pages.push("..."); // Add left ellipsis
+  
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+  
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+  
+      if (currentPage < totalPages - 2) pages.push("..."); // Add right ellipsis
+  
+      pages.push(totalPages); // Always show last page
+    }
+  
+    return pages;
+  };
+  
 
   return (
     <section className="flex flex-col flex-1 justify-center p-4 w-full max-md:max-w-full">
@@ -194,6 +249,40 @@ function PaymentTable({ searchQuery }) {
             </div>
           </div>
         ))}
+       <div className="flex justify-center items-center gap-2 p-4">
+  {/* Previous Button */}
+  <button
+    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage(currentPage - 1)}
+  >
+    &lt;
+  </button>
+
+  {/* Page Numbers */}
+  {generatePagination().map((page, index) => (
+    <button
+      key={index}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+        ${page === currentPage ? "bg-gray-900 text-white shadow-md" : "text-gray-600 hover:bg-gray-200"}
+        ${page === "..." ? "cursor-default opacity-50" : ""}`}
+      onClick={() => typeof page === "number" && setCurrentPage(page)}
+      disabled={page === "..."}
+    >
+      {page}
+    </button>
+  ))}
+
+  {/* Next Button */}
+  <button
+    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled={currentPage === totalPages}
+    onClick={() => setCurrentPage(currentPage + 1)}
+  >
+    &gt;
+  </button>
+</div>
+
       </div>
     </section>
   );
