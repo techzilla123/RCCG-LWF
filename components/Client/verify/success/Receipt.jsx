@@ -101,11 +101,13 @@
             const isTransactionId = detail.label === 'Transaction ID';
             const isTotalAmount = detail.label === 'Total Amount';
             const displayValue = isTransactionId
-            ? fullTransactionId || (isSaving ? detail.value : detail.value.slice(0, 8) + '...') // Truncate normally
-            : isTotalAmount
-            ? `₦${detail.value}`
-            : detail.value;
-          
+              ? fullTransactionId || isSaving
+                ? detail.value
+                : detail.value.slice(0, 8) + '...' // Truncate normally
+              : isTotalAmount
+              ? `₦${detail.value}`
+              : detail.value;
+              console.log(displayValue);
 
             return (
               <div key={index} className="flex justify-between items-center mt-2">
