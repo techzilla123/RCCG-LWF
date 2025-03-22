@@ -89,18 +89,18 @@ const handlePaste = (e) => {
 
         if (response.ok) {
           const result = await response.json();
-          console.log("Verification successful:", result);
+          console.log("Verification successful:");
 
           localStorage.setItem("verificationResult", JSON.stringify(result));
           router.push("/client/history/verify/success");
         } else {
-          console.log("Verification failed:", response.statusText);
+          console.log("Verification failed:");
           setHasError(true);
           setErrorMessage("Verification failed. Please check the code and try again.");
           setShowModal(false);
         }
-      } catch (error) {
-        console.log("An error occurred:", error);
+      } catch  {
+        console.log("An error occurred:");
         setHasError(true);
         setErrorMessage("An unexpected error occurred. Please try again.");
         setShowModal(false);
@@ -135,7 +135,7 @@ const handlePaste = (e) => {
          // Get environment variables
          const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY;
          if (!secretKey) {
-           console.error("Secret key is missing from environment variables.");
+           console.error(".");
            return;
          }
      
