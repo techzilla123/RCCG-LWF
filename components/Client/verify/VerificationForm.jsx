@@ -51,7 +51,7 @@ function VerificationForm() {
     e.preventDefault();
     const code = verificationCode.join("");
     if (code.length === 6) {
-     
+      console.log("Submitted code:");
 
       // Retrieve email from localStorage
       const email = localStorage.getItem("userEmail"); // Updated to 'userEmail'
@@ -99,7 +99,7 @@ function VerificationForm() {
           }
         );
 
-       
+        console.log("Verification success:");
 
         // Check if the authorizationUrl is in the response and set it
         if (response.data.authorizationUrl) {
@@ -109,7 +109,7 @@ function VerificationForm() {
         setShowModal(true);
         setResponseMessage(""); // Clear any previous error message
       } catch {
-      
+        console.log("Error during verification:");
         setResponseMessage(
           error.response?.data?.message || "An unknown error occurred."
         ); // Set exact error message from backend
@@ -139,7 +139,7 @@ function VerificationForm() {
     // Retrieve email from localStorage
     const email = localStorage.getItem("userEmail");
     if (!email) {
-      
+      console.log("Email not found");
       return;
     }
 
@@ -173,10 +173,12 @@ function VerificationForm() {
           },
         }
       );
-      
+      console.log("Resend payment request success:");
       const token = response.data.token;
       window.location.href = `/client/verify?token=${token}&email=${email}`;
-    }; 
+    } catch {
+      console.log("Error during resend:");
+    }
   };
 
   return (
