@@ -34,9 +34,10 @@ function PaymentTable({ searchQuery }) {
         // Check if the data contains `paymentConfigurations` or is a single object
         if (Array.isArray(data.paymentConfigurations)) {
           setTableData(data.paymentConfigurations.reverse());
-        } else (data.paymentName) {
+        } else if (data.paymentName) {
           setTableData([data]); // Wrap the single object in an array
-        } 
+        }
+        
       } catch (error) {
         console.log("Error fetching payment data:", error);
       }
