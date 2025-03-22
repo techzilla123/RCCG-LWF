@@ -111,7 +111,7 @@ const SupportMessage = () => (
       We appreciate your business
     </h3>
     <p className="mt-1 text-xs text-neutral-500">
-      For questions, contact us at <span className="font-semibold">support@yctmb.com</span>.
+      For questions, contact us at <span className="font-semibold">support@yctmb.net</span>.
     </p>
   </section>
 );
