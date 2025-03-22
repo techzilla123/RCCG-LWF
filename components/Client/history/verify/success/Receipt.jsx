@@ -119,11 +119,24 @@ const SupportMessage = () => (
 const CallToAction = ({ onSave, onClose, isSaveDisabled }) => (
   <div className="call-to-action flex gap-2 pb-4 text-sm font-medium text-center">
     <button
-      onClick={onClose}
-      className="flex-1 px-3 py-2 border border-neutral-500 rounded-full"
-    >
-      Done
-    </button>
+  onClick={onClose}
+  style={{
+    padding: "10px 20px",
+    border: "2px solid #6b7280", // Neutral gray border
+    borderRadius: "999px", // Fully rounded button
+    backgroundColor: "#08AA3B", // Green background
+    color: "#fff", // White text
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    transition: "background 0.3s ease",
+  }}
+  onMouseOver={(e) => (e.target.style.backgroundColor = "#066c2b")} // Darker green on hover
+  onMouseOut={(e) => (e.target.style.backgroundColor = "#08AA3B")}
+>
+  Done
+</button>
+
     <button
       onClick={onSave}
       className={`flex-1 px-3 py-2 text-white rounded-full ${
