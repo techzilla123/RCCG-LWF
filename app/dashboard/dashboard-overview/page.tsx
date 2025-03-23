@@ -36,7 +36,7 @@ const ChartSkeleton = () => (
       data-layername="chart"
       className="flex flex-1 justify-center items-center mt-1 rounded-lg p-4"
     >
-      <div className="w-[250px] h-[250px] rounded-full bg-gray-200 animate-pulse"></div>
+      {/* <div className="w-[250px] h-[250px] rounded-full bg-gray-200 animate-pulse"></div> */}
 
       {/* Legend */}
       <div data-layername="legend" className="flex flex-col ml-4">
