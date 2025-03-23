@@ -8,26 +8,24 @@ function TransactionsChart() {
   const [isClient, setIsClient] = useState(false); // State to check if it's client-side
 
   useEffect(() => {
-    setIsClient(true); // Mark that the component has mounted in the browser
-
-    const fetchData = async () => {
-      try {
-        if (typeof window !== "undefined") { // Ensure we're in the browser
-          const token = localStorage.getItem("authToken");
-          if (!token) {
-            throw new Error("Authorization token is missing.");
-          }
-
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("Authorization token is missing.");
+        return;
+      }
+  
+      const fetchData = async () => {
+        try {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/metrics`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-
           const fetchedData = response.data;
           setData(fetchedData);
-
+  
           // Format total payment amount
           let paymentAmount = parseFloat(fetchedData.paymentAmount);
           let paymentFormatted;
@@ -38,16 +36,17 @@ function TransactionsChart() {
           } else {
             paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
           }
-
+  
           setTotalFormatted(paymentFormatted);
+        } catch (err) {
+          console.error("Error fetching transaction metrics:", err);
         }
-      } catch (err) {
-        console.error("Error fetching transaction metrics:", err);
-      }
-    };
-
-    fetchData();
+      };
+  
+      fetchData();
+    }
   }, []);
+  
 
   // Use default values while loading
   const pendingRate = data?.pendingRate || 15;

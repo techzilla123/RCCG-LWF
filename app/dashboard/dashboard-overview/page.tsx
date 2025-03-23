@@ -6,7 +6,12 @@ import Overview from '@/components/Admin/dashboard/dashboard-overview/Overview';
 // import ChartGroup from '@/components/Admin/dashboard/dashboard-overview/ChartGroup';
 import TopPayments from '@/components/Admin/dashboard/dashboard-overview/TopPayments';
 // import UsersChart from '@/components/Admin/dashboard/dashboard-overview/UsersChart';
-import TransactionsChart from '@/components/Admin/dashboard/dashboard-overview/TransactionsChart';
+import dynamic from "next/dynamic";
+
+const TransactionsChart = dynamic(() => import("@/components/Admin/dashboard/dashboard-overview/TransactionsChart"), {
+  ssr: false,
+});
+
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 
