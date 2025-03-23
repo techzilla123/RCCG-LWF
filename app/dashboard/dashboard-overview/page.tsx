@@ -14,24 +14,24 @@ import { useRouter } from "next/navigation";
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
 function AdminDashboard() {
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
-  const [loading, setLoading] = useState(true); // Track loading state
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        router.replace("/auth/login"); // Use replace() to prevent back navigation
-      } else {
-        setIsAuthenticated(true);
-      }
-      setLoading(false); // Stop loading once check is done
-    }
-  }, [router]);
-
-  if (loading) return null; // Hide everything until auth check is done
-  if (!isAuthenticated) return null; // Also hide if not authenticated
+ const router = useRouter();
+     const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
+     const [loading, setLoading] = useState(true); // Track loading state
+   
+     useEffect(() => {
+       if (typeof window !== "undefined") {
+         const token = localStorage.getItem("authToken");
+         if (!token) {
+           router.replace("/auth/login"); // Use replace() to prevent back navigation
+         } else {
+           setIsAuthenticated(true);
+         }
+         setLoading(false); // Stop loading once check is done
+       }
+     }, [router]);
+   
+     if (loading) return null; // Hide everything until auth check is done
+     if (!isAuthenticated) return null; // Also hide if not authenticated
   
   return (
     <div data-layername="adminDashboard" className="flex min-h-screen bg-neutral-100">
