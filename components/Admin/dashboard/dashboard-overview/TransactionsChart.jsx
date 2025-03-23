@@ -5,7 +5,7 @@ import ReactApexChart from "react-apexcharts";
 function TransactionsChart() {
   const [data, setData] = useState(null);
   const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
-  const [isClient, setIsClient] = useState(false); // State to check if it's client-side
+  const [isClient] = useState(false); // State to check if it's client-side
 
   useEffect(() => {
     if (typeof window !== "undefined") {
