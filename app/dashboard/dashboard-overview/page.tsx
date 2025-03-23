@@ -1,4 +1,3 @@
-// Add this line at the top
 "use client";
 import { Roboto } from 'next/font/google';
 import Sidebar from '@/components/Admin/dashboard/dashboard-overview/Sidebar';
@@ -14,25 +13,24 @@ import { useRouter } from "next/navigation";
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
 function AdminDashboard() {
- const router = useRouter();
-     const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
-     const [loading, setLoading] = useState(true); // Track loading state
-   
-     useEffect(() => {
-       if (typeof window !== "undefined") {
-         const token = localStorage.getItem("authToken");
-         if (!token) {
-           router.replace("/auth/login"); // Use replace() to prevent back navigation
-         } else {
-           setIsAuthenticated(true);
-         }
-         setLoading(false); // Stop loading once check is done
-       }
-     }, [router]);
-   
-     if (loading) return null; // Hide everything until auth check is done
-     if (!isAuthenticated) return null; // Also hide if not authenticated
-  
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Allow null or boolean
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.replace("/auth/login"); // Redirect if no token
+      } else {
+        setIsAuthenticated(true);
+      }
+    }
+  }, [router]);
+
+  // Prevent rendering while authentication check is in progress
+  if (isAuthenticated === null) return null;
+  if (!isAuthenticated) return null;
+
   return (
     <div data-layername="adminDashboard" className="flex min-h-screen bg-neutral-100">
       {/* Sidebar - Fixed position */}
@@ -41,42 +39,33 @@ function AdminDashboard() {
       </div>
 
       {/* Main content - Adjusted margin to avoid overlap with sidebar */}
-      <div data-layername="body" className="flex flex-col flex-1 py-4 pr-4 pl-2 ml-[216px] max-w-full " >
+      <div data-layername="body" className="flex flex-col flex-1 py-4 pr-4 pl-2 ml-[216px] max-w-full">
         <TopNav />
-       
-          <div data-layername="line" className="flex shrink self-stretch w-full border  bg-zinc-300 border-zinc-300 min-w-[240px]"/>
-        
-        <main data-layername="main" className=" flex flex-col w-full bg-white rounded-none max-md:max-w-full" >
-        
-            <header data-layername="header" className="flex flex-wrap gap-4 px-4 pt-6 pb-0 w-full bg-white max-md:max-w-full ">
-              <h1 data-layername="title" className="flex flex-col flex-1 shrink justify-center items-start text-3xl text-black basis-0 min-w-[240px] max-md:max-w-full">
-                <div data-layername="titleText" className={roboto.className}  >Dashboard Overview</div>
-              </h1>
-              <div data-layername="actions" className="flex gap-2 items-center my-auto">
-              <button
-  data-layername="secCta"
-  className="flex gap-2 justify-center items-center self-stretch px-4 py-3 my-auto border border-solid bg-black bg-opacity-0 border-black border-opacity-0 rounded-[1000px]"
->
-  <span data-layername="text" className="self-stretch my-auto text-sm font-medium text-center text-neutral-500">
-    Export
-  </span>
-  {/* Add some margin to the right of the image */}
-  <img src='/A-icon-sizeable.png' className="w-4 h-4 ml-2" alt="Export icon" />
-</button>
-              </div>
-            </header>
-          
-          <section data-layername="content" className="flex flex-col p-4 w-full max-md:max-w-full" 
-            style={{height:"100vh"}}>
+
+        <div data-layername="line" className="flex shrink self-stretch w-full border bg-zinc-300 border-zinc-300 min-w-[240px]" />
+
+        <main data-layername="main" className="flex flex-col w-full bg-white rounded-none max-md:max-w-full">
+          <header data-layername="header" className="flex flex-wrap gap-4 px-4 pt-6 pb-0 w-full bg-white max-md:max-w-full">
+            <h1 data-layername="title" className="flex flex-col flex-1 shrink justify-center items-start text-3xl text-black basis-0 min-w-[240px] max-md:max-w-full">
+              <div data-layername="titleText" className={roboto.className}>Dashboard Overview</div>
+            </h1>
+            <div data-layername="actions" className="flex gap-2 items-center my-auto">
+              <button data-layername="secCta" className="flex gap-2 justify-center items-center self-stretch px-4 py-3 my-auto border border-solid bg-black bg-opacity-0 border-black border-opacity-0 rounded-[1000px]">
+                <span data-layername="text" className="self-stretch my-auto text-sm font-medium text-center text-neutral-500">
+                  Export
+                </span>
+                {/* Add some margin to the right of the image */}
+                <img src='/A-icon-sizeable.png' className="w-4 h-4 ml-2" alt="Export icon" />
+              </button>
+            </div>
+          </header>
+
+          <section data-layername="content" className="flex flex-col p-4 w-full max-md:max-w-full" style={{ height: "100vh" }}>
             <Overview />
-            <div data-layername="secondRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full ">
-            <TopPayments />
+            <div data-layername="secondRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full">
+              <TopPayments />
               <TransactionsChart />
             </div>
-            {/* <div data-layername="firstRow" className="flex flex-wrap gap-4 mt-4 w-full max-md:max-w-full">
-              <ChartGroup title="Revenue" subtitle="Over the past week" />
-              <UsersChart />
-            </div> */}
           </section>
         </main>
       </div>
