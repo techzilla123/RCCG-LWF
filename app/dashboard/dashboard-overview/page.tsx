@@ -8,30 +8,30 @@ import TopPayments from '@/components/Admin/dashboard/dashboard-overview/TopPaym
 // import UsersChart from '@/components/Admin/dashboard/dashboard-overview/UsersChart';
 import TransactionsChart from '@/components/Admin/dashboard/dashboard-overview/TransactionsChart';
 
-// import { useEffect, useState } from 'react';
-// import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
 
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
 function AdminDashboard() {
-  // const router = useRouter();
-  // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  // const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") { // Ensure it's running on the client
-  //     const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-  //     if (!token) {
-  //       router.replace("/auth/login");
-  //     } else {
-  //       setIsAuthenticated(true);
-  //     }
-  //     setLoading(false);
-  //   }
-  // }, [router]);
+  useEffect(() => {
+    if (typeof window !== "undefined") { // Ensure it's running on the client
+      const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+      if (!token) {
+        router.replace("/auth/login");
+      } else {
+        setIsAuthenticated(true);
+      }
+      setLoading(false);
+    }
+  }, [router]);
 
-  // if (loading) return null; // Prevent rendering until authentication check is done
-  // if (!isAuthenticated) return null; // Hide UI if not authenticated
+  if (loading) return null; // Prevent rendering until authentication check is done
+  if (!isAuthenticated) return null; // Hide UI if not authenticated
 
   return (
     <div data-layername="adminDashboard" className="flex min-h-screen bg-neutral-100">
