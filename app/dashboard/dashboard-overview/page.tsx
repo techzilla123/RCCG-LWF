@@ -19,7 +19,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     if (typeof window !== "undefined") { // Ensure it's running on the client
-      const token = localStorage.getItem("authToken");
+      const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
       if (!token) {
         router.replace("/auth/login");
       } else {
