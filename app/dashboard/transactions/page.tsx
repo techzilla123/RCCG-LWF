@@ -159,23 +159,28 @@ function TransactionPage() {
     }
   };
   const router = useRouter();
-      const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
-      const [loading, setLoading] = useState(true); // Track loading state
-    
-      useEffect(() => {
-        if (typeof window !== "undefined") {
-          const token = localStorage.getItem("authToken");
-          if (!token) {
-            router.replace("/auth/login"); // Use replace() to prevent back navigation
-          } else {
-            setIsAuthenticated(true);
-          }
-          setLoading(false); // Stop loading once check is done
-        }
-      }, [router]);
-    
-      if (loading) return null; // Hide everything until auth check is done
-      if (!isAuthenticated) return null; // Also hide if not authenticated
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false); // Track if code runs on the client
+
+  useEffect(() => {
+    setIsClient(true); // Ensures this runs only on the client
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.replace("/auth/login"); 
+      } else {
+        setIsAuthenticated(true);
+      }
+      setLoading(false);
+    }
+  }, [isClient, router]);
+
+  if (loading) return null; 
+  if (!isAuthenticated) return null; 
   
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
