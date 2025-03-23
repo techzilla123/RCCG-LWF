@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import SideBar from "@/components/Admin/dashboard/payments/Sidebar";
 import TopNav from "@/components/Admin/dashboard/payments/edit/TopNav";
 import PaymentTable from "@/components/Admin/dashboard/payments/edit/PaymentTable";
-
+import { useRouter } from "next/navigation";
 function AdminPayments() {
   const [paymentName, setPaymentName] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
@@ -75,7 +75,25 @@ function AdminPayments() {
       alert("Error updating payment config. Please try again.");
     }
   };
-
+ const router = useRouter();
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
+    const [loading, setLoading] = useState(true); // Track loading state
+  
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          router.replace("/auth/login"); // Use replace() to prevent back navigation
+        } else {
+          setIsAuthenticated(true);
+        }
+        setLoading(false); // Stop loading once check is done
+      }
+    }, [router]);
+  
+    if (loading) return null; // Hide everything until auth check is done
+    if (!isAuthenticated) return null; // Also hide if not authenticated
+    
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
       <SideBar />

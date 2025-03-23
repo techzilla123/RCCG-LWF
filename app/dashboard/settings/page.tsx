@@ -4,6 +4,7 @@ import TopNav from '@/components/Admin/dashboard/settings/TopNav';
 import ProfileSettings from '@/components/Admin/dashboard/settings/ProfileSettings';
 
 function AdminSettingsProfile() {
+  
   return (
     <div data-layername="adminSettingsProfile" className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
       <SideBar />

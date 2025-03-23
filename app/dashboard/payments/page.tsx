@@ -1,10 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "@/components/Admin/dashboard/payments/Sidebar";
 import TopNav from "@/components/Admin/dashboard/payments/TopNav";
 import PaymentTable from "@/components/Admin/dashboard/payments/PaymentTable";
+import { useRouter } from "next/navigation";
+
 
 function AdminPayments() {
+
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentName, setPaymentName] = useState("");
@@ -60,6 +64,26 @@ function AdminPayments() {
       alert("An error occurred while sending the request.");
     }
   };
+
+   const router = useRouter();
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
+    const [loading, setLoading] = useState(true); // Track loading state
+  
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          router.replace("/auth/login"); // Use replace() to prevent back navigation
+        } else {
+          setIsAuthenticated(true);
+        }
+        setLoading(false); // Stop loading once check is done
+      }
+    }, [router]);
+  
+    if (loading) return null; // Hide everything until auth check is done
+    if (!isAuthenticated) return null; // Also hide if not authenticated
+    
 
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">

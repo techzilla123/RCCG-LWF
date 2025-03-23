@@ -5,7 +5,7 @@ import SideBar from "@/components/Admin/dashboard/transactions/Sidebar";
 import TopNav from "@/components/Admin/dashboard/transactions/TopNav";
 import TransactionOverview from "@/components/Admin/dashboard/transactions/TransactionOverview";
 import TransactionTable from "@/components/Admin/dashboard/transactions/TransactionTable";
-
+import { useRouter } from "next/navigation";
 function TransactionPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
@@ -158,6 +158,24 @@ function TransactionPage() {
       console.error("Error exporting transactions:", error);
     }
   };
+  const router = useRouter();
+      const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
+      const [loading, setLoading] = useState(true); // Track loading state
+    
+      useEffect(() => {
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem("authToken");
+          if (!token) {
+            router.replace("/auth/login"); // Use replace() to prevent back navigation
+          } else {
+            setIsAuthenticated(true);
+          }
+          setLoading(false); // Stop loading once check is done
+        }
+      }, [router]);
+    
+      if (loading) return null; // Hide everything until auth check is done
+      if (!isAuthenticated) return null; // Also hide if not authenticated
   
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">

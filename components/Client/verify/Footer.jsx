@@ -7,10 +7,10 @@ function Footer() {
       <div className="flex flex-wrap gap-10 justify-between items-center w-full max-md:max-w-full">
         <a href="mailto:support@yctmb.com" className="self-stretch my-auto text-green-600 w-[150px]"
         style={{ color: '#08AA3B' }}>
-          support@yctmb.com
+          support@yctmb.net
         </a>
         <p className="self-stretch my-auto text-neutral-500">
-          © 2024 yctmb. All rights reserved.
+          © {new Date().getFullYear()} yctmb. All rights reserved.
         </p>
       </div>
     </footer>

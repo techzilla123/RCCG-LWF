@@ -4,6 +4,8 @@ import Sidebar from '@/components/Admin/dashboard/users/Sidebar';
 import TopNav from '@/components/Admin/dashboard/users/TopNav';
 import Overview from '@/components/Admin/dashboard/users/Overview';
 import UserTable from '@/components/Admin/dashboard/users/UserTable';
+import { useEffect} from 'react';
+import { useRouter } from "next/navigation";
 
 function UserManagement() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,6 +14,24 @@ function UserManagement() {
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
+  const router = useRouter();
+        const [isAuthenticated, setIsAuthenticated] = useState(false); // Track auth state
+        const [loading, setLoading] = useState(true); // Track loading state
+      
+        useEffect(() => {
+          if (typeof window !== "undefined") {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+              router.replace("/auth/login"); // Use replace() to prevent back navigation
+            } else {
+              setIsAuthenticated(true);
+            }
+            setLoading(false); // Stop loading once check is done
+          }
+        }, [router]);
+      
+        if (loading) return null; // Hide everything until auth check is done
+        if (!isAuthenticated) return null; // Also hide if not authenticated
 
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
