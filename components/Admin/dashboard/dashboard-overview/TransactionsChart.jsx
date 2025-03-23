@@ -4,8 +4,6 @@ import ReactApexChart from "react-apexcharts";
 
 function TransactionsChart() {
   const [data, setData] = useState(null);
-  const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,28 +19,16 @@ function TransactionsChart() {
           }
         );
 
-        const fetchedData = response.data;
-        setData(fetchedData);
-
-        // Format total payment amount
-        let paymentAmount = parseFloat(fetchedData.paymentAmount);
-        let paymentFormatted;
-        if (paymentAmount >= 1000000) {
-          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
-        } else if (paymentAmount >= 1000) {
-          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
-        } else {
-          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
-        }
-
-        setTotalFormatted(paymentFormatted);
+        setData(response.data);
       } catch (err) {
         console.error("Error fetching transaction metrics:", err);
+        setError("Failed to load data.");
       }
     };
 
     fetchData();
   }, []);
+
 
   // Use default values while loading
   const pendingRate = data?.pendingRate || 15;
@@ -71,7 +57,7 @@ function TransactionsChart() {
             total: {
               show: true,
               label: "Total",
-              formatter: () => totalFormatted, // Display the formatted total
+              formatter: () => "40k", // Display the formatted total
               style: { fontSize: "16px", fontWeight: "bold", color: "#555" },
             },
           },
