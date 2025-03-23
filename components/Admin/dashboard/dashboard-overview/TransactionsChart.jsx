@@ -4,11 +4,15 @@ import ReactApexChart from "react-apexcharts";
 
 function TransactionsChart() {
   const [data, setData] = useState(null);
-  
+  const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
+    setIsClient(true); // Ensures the component renders only on the client
+
     const fetchData = async () => {
+      if (typeof window === "undefined") return; // Prevents running on the server
+
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
@@ -25,15 +29,14 @@ function TransactionsChart() {
         const fetchedData = response.data;
         setData(fetchedData);
 
-        // Format total payment amount
         let paymentAmount = parseFloat(fetchedData.paymentAmount);
         let paymentFormatted;
         if (paymentAmount >= 1000000) {
-          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
+          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // Millions
         } else if (paymentAmount >= 1000) {
-          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
+          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // Thousands
         } else {
-          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
+          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // Hundreds
         }
 
         setTotalFormatted(paymentFormatted);
@@ -45,7 +48,9 @@ function TransactionsChart() {
     fetchData();
   }, []);
 
-  // Use default values while loading
+  if (!isClient) return null; // Ensures no rendering on the server
+
+  // Default values while loading
   const pendingRate = data?.pendingRate || 15;
   const failureRate = data?.failureRate || 5;
   const successRate = data?.successRate || 70;
@@ -59,27 +64,22 @@ function TransactionsChart() {
       },
       plotOptions: {
         radialBar: {
-          hollow: {
-            size: "30%",
-          },
-          track: {
-            background: "#F3F3F3",
-            strokeWidth: "100%",
-          },
+          hollow: { size: "30%" },
+          track: { background: "#F3F3F3", strokeWidth: "100%" },
           dataLabels: {
             name: { show: false },
             value: { show: false },
             total: {
               show: true,
               label: "Total",
-              formatter: () => totalFormatted, // Display the formatted total
+              formatter: () => totalFormatted,
               style: { fontSize: "16px", fontWeight: "bold", color: "#555" },
             },
           },
         },
       },
       labels: ["Success", "Pending", "Failed"],
-      colors: ["#08AA3B", "#F4C02A", "#E63946"], // Green, Yellow, Red
+      colors: ["#08AA3B", "#F4C02A", "#E63946"],
     },
   };
 
