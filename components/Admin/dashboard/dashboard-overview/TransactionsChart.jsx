@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import ReactApexChart from "react-apexcharts";
 
 function TransactionsChart() {
   const [data, setData] = useState(null);
-  
+  const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,10 +21,23 @@ function TransactionsChart() {
           }
         );
 
-        setData(response.data);
+        const fetchedData = response.data;
+        setData(fetchedData);
+
+        // Format total payment amount
+        let paymentAmount = parseFloat(fetchedData.paymentAmount);
+        let paymentFormatted;
+        if (paymentAmount >= 1000000) {
+          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
+        } else if (paymentAmount >= 1000) {
+          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
+        } else {
+          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
+        }
+
+        setTotalFormatted(paymentFormatted);
       } catch (err) {
         console.error("Error fetching transaction metrics:", err);
-        setError("Failed to load data.");
       }
     };
 
@@ -31,86 +45,72 @@ function TransactionsChart() {
   }, []);
 
   // Use default values while loading
-  const peak = data?.peakTransactions || 902020;
-  const average = data?.averageTransactions || 760200;
-  const target = data?.targetTransactions || 800000;
   const pendingRate = data?.pendingRate || 15;
   const failureRate = data?.failureRate || 5;
   const successRate = data?.successRate || 70;
+
+  const chartOptions = {
+    series: [successRate, pendingRate, failureRate],
+    options: {
+      chart: {
+        type: "radialBar",
+        height: 250,
+      },
+      plotOptions: {
+        radialBar: {
+          hollow: {
+            size: "30%",
+          },
+          track: {
+            background: "#F3F3F3",
+            strokeWidth: "100%",
+          },
+          dataLabels: {
+            name: { show: false },
+            value: { show: false },
+            total: {
+              show: true,
+              label: "Total",
+              formatter: () => totalFormatted, // Display the formatted total
+              style: { fontSize: "16px", fontWeight: "bold", color: "#555" },
+            },
+          },
+        },
+      },
+      labels: ["Success", "Pending", "Failed"],
+      colors: ["#08AA3B", "#F4C02A", "#E63946"], // Green, Yellow, Red
+    },
+  };
 
   return (
     <div
       data-layername="chartGroup"
       className="flex overflow-hidden flex-col flex-1 shrink justify-center p-4 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:max-w-full"
     >
-      {/* Header and Metrics */}
+      {/* Header */}
       <div
         data-layername="heading"
         className="flex justify-between items-center w-full max-md:max-w-full mb-4"
       >
-        {/* Title */}
         <div data-layername="title" className="flex flex-col justify-center">
-          <div
-            data-layername="figureAmount"
-            className="text-sm font-semibold text-black"
-          >
-            Transactions
-          </div>
-          <div
-            data-layername="figureAmount"
-            className="mt-1 text-xs text-neutral-700"
-          >
-            Over the past week
-          </div>
-        </div>
-
-        {/* Metrics */}
-        <div data-layername="metrics" className="flex gap-4">
-          <div data-layername="peakMetric" className="flex flex-col items-center">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-              <span className="text-xs text-neutral-500">Peak</span>
-            </div>
-            <div className="text-xs font-semibold text-black">
-              {peak.toLocaleString()}
-            </div>
-          </div>
-          <div data-layername="averageMetric" className="flex flex-col items-center">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-neutral-600 rounded-full"></div>
-              <span className="text-xs text-neutral-500">Average</span>
-            </div>
-            <div className="text-xs font-semibold text-black">
-              {average.toLocaleString()}
-            </div>
-          </div>
-          <div data-layername="targetMetric" className="flex flex-col items-center">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-600 rounded-full" style={{ background: "#08AA3B" }}></div>
-              <span className="text-xs text-neutral-500">Target</span>
-            </div>
-            <div className="text-xs font-semibold text-black">
-              {target.toLocaleString()}
-            </div>
-          </div>
+          <div className="text-sm font-semibold text-black">Transactions</div>
         </div>
       </div>
 
-      {/* Chart Placeholder */}
+      {/* Chart */}
       <div
         data-layername="chart"
-        className="flex flex-1 justify-center items-center mt-4 rounded-lg p-4"
+        className="flex flex-1 justify-center items-center mt-1 rounded-lg p-4"
       >
-        {/* Placeholder image representing chart content */}
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/4433f420f2bc18c7166293b3f3874c2be0196fc5333aa0b9a6d800b55433bc5a?apiKey=73dffa2d4bac468cb175120cf834230a&"
-          className="object-contain w-[200px]"
-          alt="Transactions Chart"
+        <ReactApexChart
+          options={chartOptions.options}
+          series={chartOptions.series}
+          type="radialBar"
+          height={250}
         />
 
         {/* Legend */}
-        <div data-layername="legend" className="flex flex-col ml-4">
+        <div data-layername="legend" className="flex flex-col ">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
             <span className="text-sm text-neutral-500">
@@ -124,7 +124,7 @@ function TransactionsChart() {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-600 rounded-full" style={{ background: "#08AA3B" }}></div>
+            <div className="w-2 h-2 bg-green-600 rounded-full" style={{ backgroundColor: "#08AA3B" }}></div>
             <span className="text-sm text-neutral-500">
               Success ({successRate}%)
             </span>
