@@ -14,22 +14,23 @@ const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
 function AdminDashboard() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Allow null or boolean
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined") { // Ensure it's running on the client
       const token = localStorage.getItem("authToken");
       if (!token) {
-        router.replace("/auth/login"); // Redirect if no token
+        router.replace("/auth/login");
       } else {
         setIsAuthenticated(true);
       }
+      setLoading(false);
     }
   }, [router]);
 
-  // Prevent rendering while authentication check is in progress
-  if (isAuthenticated === null) return null;
-  if (!isAuthenticated) return null;
+  if (loading) return null; // Prevent rendering until authentication check is done
+  if (!isAuthenticated) return null; // Hide UI if not authenticated
 
   return (
     <div data-layername="adminDashboard" className="flex min-h-screen bg-neutral-100">
