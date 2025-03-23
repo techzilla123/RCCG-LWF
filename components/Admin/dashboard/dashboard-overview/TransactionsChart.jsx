@@ -5,48 +5,44 @@ import ReactApexChart from "react-apexcharts";
 function TransactionsChart() {
   const [data, setData] = useState(null);
   const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
-  const [isClient] = useState(false); // State to check if it's client-side
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        console.error("Authorization token is missing.");
-        return;
-      }
-  
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/metrics`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          const fetchedData = response.data;
-          setData(fetchedData);
-  
-          // Format total payment amount
-          let paymentAmount = parseFloat(fetchedData.paymentAmount);
-          let paymentFormatted;
-          if (paymentAmount >= 1000000) {
-            paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
-          } else if (paymentAmount >= 1000) {
-            paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
-          } else {
-            paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
-          }
-  
-          setTotalFormatted(paymentFormatted);
-        } catch (err) {
-          console.error("Error fetching transaction metrics:", err);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          throw new Error("Authorization token is missing.");
         }
-      };
-  
-      fetchData();
-    }
+
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/metrics`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const fetchedData = response.data;
+        setData(fetchedData);
+
+        // Format total payment amount
+        let paymentAmount = parseFloat(fetchedData.paymentAmount);
+        let paymentFormatted;
+        if (paymentAmount >= 1000000) {
+          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
+        } else if (paymentAmount >= 1000) {
+          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
+        } else {
+          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
+        }
+
+        setTotalFormatted(paymentFormatted);
+      } catch (err) {
+        console.error("Error fetching transaction metrics:", err);
+      }
+    };
+
+    fetchData();
   }, []);
-  
 
   // Use default values while loading
   const pendingRate = data?.pendingRate || 15;
@@ -85,10 +81,6 @@ function TransactionsChart() {
       colors: ["#08AA3B", "#F4C02A", "#E63946"], // Green, Yellow, Red
     },
   };
-
-  if (!isClient) {
-    return null; // Avoid rendering on the server to prevent window-related errors
-  }
 
   return (
     <div
