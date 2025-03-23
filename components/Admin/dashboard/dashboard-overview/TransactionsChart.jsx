@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReactApexChart from "react-apexcharts";
@@ -8,12 +9,12 @@ function TransactionsChart() {
   const [isClient, setIsClient] = useState(false); // Track client-side rendering
 
   useEffect(() => {
-    setIsClient(true); // Mark that we are on the client
+    setIsClient(true); // Mark as client-side
 
     const fetchData = async () => {
-      try {
-        if (typeof window === "undefined") return; // Ensure we are on the client
+      if (typeof window === "undefined") return; // Ensure client-side
 
+      try {
         const token = localStorage.getItem("authToken");
         if (!token) {
           console.error("Authorization token is missing.");
@@ -22,9 +23,7 @@ function TransactionsChart() {
 
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/metrics`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const fetchedData = response.data;
@@ -34,11 +33,11 @@ function TransactionsChart() {
         let paymentAmount = parseFloat(fetchedData.paymentAmount);
         let paymentFormatted;
         if (paymentAmount >= 1000000) {
-          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
+          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`;
         } else if (paymentAmount >= 1000) {
-          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
+          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`;
         } else {
-          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
+          paymentFormatted = `₦${paymentAmount.toLocaleString()}`;
         }
 
         setTotalFormatted(paymentFormatted);
@@ -64,27 +63,22 @@ function TransactionsChart() {
       },
       plotOptions: {
         radialBar: {
-          hollow: {
-            size: "30%",
-          },
-          track: {
-            background: "#F3F3F3",
-            strokeWidth: "100%",
-          },
+          hollow: { size: "30%" },
+          track: { background: "#F3F3F3", strokeWidth: "100%" },
           dataLabels: {
             name: { show: false },
             value: { show: false },
             total: {
               show: true,
               label: "Total",
-              formatter: () => totalFormatted, // Display the formatted total
+              formatter: () => totalFormatted,
               style: { fontSize: "16px", fontWeight: "bold", color: "#555" },
             },
           },
         },
       },
       labels: ["Success", "Pending", "Failed"],
-      colors: ["#08AA3B", "#F4C02A", "#E63946"], // Green, Yellow, Red
+      colors: ["#08AA3B", "#F4C02A", "#E63946"],
     },
   };
 
