@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReactApexChart from "react-apexcharts";
@@ -6,24 +5,20 @@ import ReactApexChart from "react-apexcharts";
 function TransactionsChart() {
   const [data, setData] = useState(null);
   const [totalFormatted, setTotalFormatted] = useState("₦200k"); // Default value
-  const [isClient, setIsClient] = useState(false); // Track client-side rendering
 
   useEffect(() => {
-    setIsClient(true); // Mark as client-side
-
     const fetchData = async () => {
-      if (typeof window === "undefined") return; // Ensure client-side
-
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
-          console.error("Authorization token is missing.");
-          return;
+          throw new Error("Authorization token is missing.");
         }
 
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/metrics`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const fetchedData = response.data;
@@ -33,11 +28,11 @@ function TransactionsChart() {
         let paymentAmount = parseFloat(fetchedData.paymentAmount);
         let paymentFormatted;
         if (paymentAmount >= 1000000) {
-          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`;
+          paymentFormatted = `₦${(paymentAmount / 1000000).toFixed(1)}M`; // For millions
         } else if (paymentAmount >= 1000) {
-          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`;
+          paymentFormatted = `₦${(paymentAmount / 1000).toFixed(1)}K`; // For thousands
         } else {
-          paymentFormatted = `₦${paymentAmount.toLocaleString()}`;
+          paymentFormatted = `₦${paymentAmount.toLocaleString()}`; // For hundreds
         }
 
         setTotalFormatted(paymentFormatted);
@@ -49,7 +44,7 @@ function TransactionsChart() {
     fetchData();
   }, []);
 
-  // Default values while loading
+  // Use default values while loading
   const pendingRate = data?.pendingRate || 15;
   const failureRate = data?.failureRate || 5;
   const successRate = data?.successRate || 70;
@@ -63,49 +58,59 @@ function TransactionsChart() {
       },
       plotOptions: {
         radialBar: {
-          hollow: { size: "30%" },
-          track: { background: "#F3F3F3", strokeWidth: "100%" },
+          hollow: {
+            size: "30%",
+          },
+          track: {
+            background: "#F3F3F3",
+            strokeWidth: "100%",
+          },
           dataLabels: {
             name: { show: false },
             value: { show: false },
             total: {
               show: true,
               label: "Total",
-              formatter: () => totalFormatted,
+              formatter: () => totalFormatted, // Display the formatted total
               style: { fontSize: "16px", fontWeight: "bold", color: "#555" },
             },
           },
         },
       },
       labels: ["Success", "Pending", "Failed"],
-      colors: ["#08AA3B", "#F4C02A", "#E63946"],
+      colors: ["#08AA3B", "#F4C02A", "#E63946"], // Green, Yellow, Red
     },
   };
 
   return (
-    <div className="flex overflow-hidden flex-col flex-1 shrink justify-center p-4 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:max-w-full">
+    <div
+      data-layername="chartGroup"
+      className="flex overflow-hidden flex-col flex-1 shrink justify-center p-4 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:max-w-full"
+    >
       {/* Header */}
-      <div className="flex justify-between items-center w-full max-md:max-w-full mb-4">
-        <div className="flex flex-col justify-center">
+      <div
+        data-layername="heading"
+        className="flex justify-between items-center w-full max-md:max-w-full mb-4"
+      >
+        <div data-layername="title" className="flex flex-col justify-center">
           <div className="text-sm font-semibold text-black">Transactions</div>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="flex flex-1 justify-center items-center mt-1 rounded-lg p-4">
-        {isClient ? (
-          <ReactApexChart
-            options={chartOptions.options}
-            series={chartOptions.series}
-            type="radialBar"
-            height={250}
-          />
-        ) : (
-          <div>Loading Chart...</div> // Show something while waiting for client-side render
-        )}
+      <div
+        data-layername="chart"
+        className="flex flex-1 justify-center items-center mt-1 rounded-lg p-4"
+      >
+        <ReactApexChart
+          options={chartOptions.options}
+          series={chartOptions.series}
+          type="radialBar"
+          height={250}
+        />
 
         {/* Legend */}
-        <div className="flex flex-col ">
+        <div data-layername="legend" className="flex flex-col ">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
             <span className="text-sm text-neutral-500">

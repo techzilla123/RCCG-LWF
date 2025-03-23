@@ -6,13 +6,56 @@ import Overview from '@/components/Admin/dashboard/dashboard-overview/Overview';
 // import ChartGroup from '@/components/Admin/dashboard/dashboard-overview/ChartGroup';
 import TopPayments from '@/components/Admin/dashboard/dashboard-overview/TopPayments';
 // import UsersChart from '@/components/Admin/dashboard/dashboard-overview/UsersChart';
-import TransactionsChart from '@/components/Admin/dashboard/dashboard-overview/TransactionsChart';
-
+import dynamic from "next/dynamic";
+const TransactionsChart = dynamic(
+  () => import("@/components/Admin/dashboard/dashboard-overview/TransactionsChart"),
+  { ssr: false, loading: () => <ChartSkeleton /> } // Display skeleton while loading
+);
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 
 const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
+const ChartSkeleton = () => (
+  <div
+    data-layername="chartGroup"
+    className="flex overflow-hidden flex-col flex-1 shrink justify-center p-4 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:max-w-full"
+  >
+    {/* Header */}
+    <div
+      data-layername="heading"
+      className="flex justify-between items-center w-full max-md:max-w-full mb-4"
+    >
+      <div data-layername="title" className="flex flex-col justify-center">
+        <div className="text-sm font-semibold text-black">Transactions</div>
+      </div>
+    </div>
+
+    {/* Placeholder Chart */}
+    <div
+      data-layername="chart"
+      className="flex flex-1 justify-center items-center mt-1 rounded-lg p-4"
+    >
+      <div className="w-[250px] h-[250px] rounded-full bg-gray-200 animate-pulse"></div>
+
+      {/* Legend */}
+      <div data-layername="legend" className="flex flex-col ml-4">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+          <span className="text-sm text-neutral-500">Pending (--%)</span>
+        </div>
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+          <span className="text-sm text-neutral-500">Failed (--%)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+          <span className="text-sm text-neutral-500">Success (--%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 function AdminDashboard() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
