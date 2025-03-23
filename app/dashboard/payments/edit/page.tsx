@@ -76,7 +76,6 @@ function AdminPayments() {
     }
   };
  const router = useRouter();
- const router = useRouter();
  const [isAuthenticated, setIsAuthenticated] = useState(false); 
  const [loading, setLoading] = useState(true);
  const [isClient, setIsClient] = useState(false); // Track if code runs on the client
