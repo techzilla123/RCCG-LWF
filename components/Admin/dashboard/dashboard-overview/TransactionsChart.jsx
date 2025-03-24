@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import axios from "axios";
-import ReactApexChart from "react-apexcharts";
+
+// ✅ Dynamically import ApexCharts (Runs only in browser)
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false, // Prevents "window is not defined" error
+});
 
 function TransactionsChart() {
   const [data, setData] = useState(null);
