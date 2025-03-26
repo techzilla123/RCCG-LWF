@@ -1,9 +1,15 @@
-import React from 'react';
+"use client"
+import React, { useEffect } from 'react';
 
 import Footer from '@/components/Client/Footer';
 import ClientHistoryTable from '@/components/Client/history/verify/success/ClientHistoryTable';
 
 function ClientHistoryPage() {
+  
+    useEffect(() => {
+      localStorage.removeItem("userEmail"); // ✅ Clear email on success
+    }, []);
+    
   return (
     <div data-layername="clientHistory" className="flex overflow-hidden relative flex-col bg-white"
     style={{marginTop:"-70px"}}>

@@ -1,9 +1,15 @@
-import React from 'react';
+"use client"
+import React, { useEffect } from 'react';
 
 import Footer from '@/components/Client/Footer';
 import SuccessModal from '@/components/Client/verify/success/SuccessModal';
 
 function PaymentSuccess() {
+  
+    useEffect(() => {
+      localStorage.removeItem("userEmail"); // ✅ Clear email on success
+    }, []);
+    
   return (
     <div className="flex overflow-hidden relative flex-col bg-white"
     style={{ marginTop: "-70px" }}>

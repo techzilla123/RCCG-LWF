@@ -1,11 +1,18 @@
 "use client"; // Add this line
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import VerificationForm from '@/components/Admin/register/verify/VerificationForm';
 
 function VerifyID() {
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter(); 
+
+  useEffect(() => {
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+      router.replace('/auth/register'); // Redirect if email is missing
+    }
+  }, [router]);
 
   // Handle Back button click
   const handleBackClick = () => {

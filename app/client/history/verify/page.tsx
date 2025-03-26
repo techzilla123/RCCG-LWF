@@ -1,13 +1,21 @@
 "use client"; // Add this line to ensure it's treated as a Client Component
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter from next/navigation
 import Footer from '@/components/Client/Footer';
 import VerificationForm from '@/components/Client/history/verify/VerificationForm';
 
 function VerifyID() {
   const router = useRouter(); // Initialize useRouter
-
+   
+  
+    useEffect(() => {
+      const email = localStorage.getItem("userEmail");
+      if (!email) {
+        router.replace('/client/history'); // Redirect if email is missing
+      }
+    }, [router]);
+  
   // Handle Back button click
   const handleBackClick = () => {
     router.push('/client/history'); // Navigate to the /client/history page

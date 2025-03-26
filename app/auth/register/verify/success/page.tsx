@@ -1,8 +1,14 @@
-import React from 'react';
+"use client"
+import React, { useEffect } from 'react';
 import SuccessModal from '@/components/Admin/register/verify/success/SuccessModal';
 
 
 function AdminAuthSignupSuccess() {
+
+  useEffect(() => {
+    localStorage.removeItem("userEmail"); // ✅ Clear email on success
+  }, []);
+
   return (
     <div className="flex overflow-hidden relative flex-col bg-white"
     >

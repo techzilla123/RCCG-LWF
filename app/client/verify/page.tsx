@@ -1,13 +1,20 @@
 "use client"; // Add this line
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import Footer from '@/components/Client/Footer';
 import VerificationForm from '@/components/Client/verify/VerificationForm';
 
 function VerifyID() {
   const router = useRouter(); // Initialize useRouter
-
+     
+    
+      useEffect(() => {
+        const email = localStorage.getItem("userEmail");
+        if (!email) {
+          router.replace('/client'); // Redirect if email is missing
+        }
+      }, [router]);
   // Handle Back button click
   const handleBackClick = () => {
     router.push('/client'); // Navigate to the /client page

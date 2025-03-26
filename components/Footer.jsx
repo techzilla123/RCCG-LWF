@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { FaMoon, FaSun, FaEye } from 'react-icons/fa';
 
 const FooterLinks = () => {
+  
   const links = [
     ['Home', 'Partners', 'About'],
     ['Contact', 'Terms', 'Privacy']

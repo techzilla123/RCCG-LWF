@@ -1,9 +1,15 @@
 'use client';  // Add this line at the top
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SuccessModal from '@/components/Admin/forget/verify/success/SuccessModal';
 
 function AdminAuthSignupSuccess() {
+
+  
+    useEffect(() => {
+      localStorage.removeItem("userEmail"); // ✅ Clear email on success
+    }, []);
+    
   // State to control the modal visibility
   const [isModalOpen, setIsModalOpen] = useState(true);
 
