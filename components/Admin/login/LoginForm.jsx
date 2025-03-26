@@ -122,7 +122,12 @@ const handleLogin = async (e) => {
   } catch (error) {
     // Extract the responseMessage from the error object
     const responseMessage = error.response?.data?.responseMessage;
-    setErrorMessage(responseMessage || 'An error occurred.');
+    const responseCode = error.response?.data?.responseCode;
+    if (responseCode === "E6") {
+      setErrorMessage("User not found");
+    } else {
+      setErrorMessage(responseMessage || "An error occurred.");
+    }
   }
 };
 
