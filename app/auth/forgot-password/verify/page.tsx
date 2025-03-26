@@ -10,7 +10,7 @@ function VerifyID() {
     useEffect(() => {
       const email = localStorage.getItem("userEmail");
       if (!email) {
-        router.replace('/auth/register'); // Redirect if email is missing
+        router.replace('/auth/forgot-password'); // Redirect if email is missing
       }
     }, [router]);
 
