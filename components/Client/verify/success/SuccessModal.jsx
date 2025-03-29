@@ -60,7 +60,7 @@ function SuccessModal() {
     };
 
     const apiKey = generateHMAC(message, secretKey);
-    console.log('Generated API Key:');
+    console.log(':');
 
     try {
       const apiUrl = `https://payment-collections-service-f353c2fd4b8a.herokuapp.com${path}`;
@@ -90,7 +90,7 @@ function SuccessModal() {
         setTransactionId(data.transactionId); // Or use other relevant states to reflect changes in UI
       } 
     } catch{
-      console.log('Error fetching transaction details:');
+      console.log(':');
     }
   };
 

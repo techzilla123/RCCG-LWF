@@ -87,7 +87,7 @@ const UserProfile = () => {
       >
         <img
           loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/1bbcece132fc3258893233235810b0e0cd7a41e2bd24367e8bcc80594b4aada2?placeholderIfAbsent=true&apiKey=487312638bbb418aa183126fc9624772"
+          src="/Vector.png"
           alt="User avatar"
           className="object-contain shrink-0 gap-0 w-7 aspect-square"
         />
