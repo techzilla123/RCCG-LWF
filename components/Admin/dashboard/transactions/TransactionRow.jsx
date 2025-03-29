@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import Receipt from './Receipt';  // Assuming the Receipt component is in the same folder
 import crypto from 'crypto-js'; // Ensure you have this package installed
 
@@ -59,15 +60,15 @@ function TransactionRow({
   };
 
 
-  const updateStatus = async (transactionId) => {
+  const updateStatus = useCallback(async (transactionId) => {
     const nonce = Math.random().toString(36).substring(2);
     const timestamp = Date.now().toString();
     const method = 'GET';
     const path = `/payment/process/fetch`;
-
+  
     const message = `${method}:${nonce}:${timestamp}`;
     const apiKey = generateHMAC(message, secretKey);
-
+  
     const apiUrl = `${apiBaseUrl}${path}?transactionId=${transactionId}`;
     try {
       const response = await fetch(apiUrl, {
@@ -78,21 +79,32 @@ function TransactionRow({
           'X-Nonce': nonce,
         },
       });
+  
       const data = await response.json();
-      if (data.status && data.status !== currentStatus) {
-        setCurrentStatus(data.status);
+      if (data.status) {
+        setCurrentStatus((prevStatus) => {
+          return prevStatus !== data.status ? data.status : prevStatus;
+        });
       }
     } catch (error) {
       console.error('Error updating status:', error);
     }
-  };
+  }, [secretKey, apiBaseUrl]); // ❌ Removed `currentStatus` to prevent dependency loop
+  
 
   const handleSummaryClick = async () => {
-    if (currentStatus === 'AUTHORIZED') {
-      await updateStatus(transactionId);
+    if (currentStatus === 'AUTHORIZED' || showReceipt === false) {
+      await updateStatus(transactionId);  // Fetch latest status if "AUTHORIZED" or first-time opening
     }
-    setShowReceipt(!showReceipt);
+    setShowReceipt((prev) => !prev);  // Toggle receipt visibility
   };
+  
+  
+  useEffect(() => {
+    if (showReceipt) {
+      updateStatus(transactionId); // Ensure latest status when receipt is opened
+    }
+  }, [showReceipt, transactionId, updateStatus]);
 
 
   // // Function to handle summary click
@@ -116,13 +128,16 @@ function TransactionRow({
   return React.Children.toArray(
     <>
       {/* Transaction Row */}
-      <td className="px-4 py-3 text-xs font-medium text-black whitespace-nowrap">
+      <td className="flex-1 p-4 text-xs font-medium text-black leading-4 text-black min-w-[180px]">
         {registration}
         <br />
-        <span className="text-neutral-500 mt-3 block">{name}</span>
+        <span className="text-neutral-500 mt-3 block" title={name}>
+  {name.split(" ").slice(0, 3).join(" ")}
+  {name.split(" ").length > 3 && "..."}
+</span>
       </td>
 
-      <td className="px-4 py-3 text-xs text-neutral-500 whitespace-nowrap">
+      <td className="pl-0 pr-1 py-3 text-xs text-neutral-500 whitespace-nowrap leading-tight text-left ml-[-12px]">
   <span className="block max-w-[140px] truncate text-black" title={email}>
     {formatEmail(email)}
   </span>
@@ -153,14 +168,17 @@ function TransactionRow({
         {amount}
       </td>
 
-      <td className="px-4 py-2 text-xs">
-  {status !== "AUTHORIZED" && (
+      <td className="px-4 py-2 text-xs flex items-center gap-2"
+      style={{ marginTop: "12px" }}>
+  {currentStatus !== "AUTHORIZED" && (
     <span
-      className="w-3 h-3 inline-block rounded-full"
-      style={{ backgroundColor: getStatusColor(status) }}
+      className="w-3 h-3 rounded-full"
+      style={{ backgroundColor: getStatusColor(currentStatus), display: "inline-block" }}
     ></span>
   )}
-  <span className="ml-2">{status}</span>
+  <span className="ml-1" style={{ lineHeight: "1", display: "inline-block" }}>
+    {currentStatus}
+  </span>
 </td>
 
 
@@ -173,7 +191,7 @@ function TransactionRow({
       {showReceipt && (
   <tr>
     <td colSpan="7">
-      <Receipt {...{ registration, name, email, phone, description, date, transactionId, amount, status }} />
+      <Receipt {...{ registration, name, email, phone, description, date, transactionId, amount, status: currentStatus }} />
     </td>
   </tr>
 )}

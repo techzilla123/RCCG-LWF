@@ -144,10 +144,14 @@ function TransactionTable({ searchQuery, filters }) {
           {["User ID", "Contact", "Description", "Transaction ID", "Amount", "Status", "Action"].map(
             (header, index) => (
               <th
-                key={index}
-                className={`px-4 py-2 text-sm font-medium text-black relative ${
-                  index === 4 ? "text-right" : index === 5 ? "text-center" : "text-left"
-                }`}
+              key={index}
+              className={`py-2 text-sm font-medium text-black relative ${
+                index === 1 ? "!px-0 !pl-0 !ml-0 text-left w-1 min-w-1 max-w-1" : // Reduce padding for "Contact" column
+                index === 4 ? "px-4 text-right" : 
+                index === 5 ? "px-4 text-center" : 
+                "px-4 text-left"
+              }`}
+              style={index === 1 ? { paddingLeft: "0px", marginLeft: "0px", width: "1px", minWidth: "1px", textAlign: "left" } : {}}
               >
                 <div className="flex items-center gap-1">
                   {header}
