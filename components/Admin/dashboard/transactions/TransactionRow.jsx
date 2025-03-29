@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useEffect, useCallback } from 'react';
 import Receipt from './Receipt';  // Assuming the Receipt component is in the same folder
-import crypto from 'crypto-js'; // Ensure you have this package installed
+
 
 
 function TransactionRow({
@@ -49,47 +49,42 @@ function TransactionRow({
   // State to manage receipt visibility
   const [showReceipt, setShowReceipt] = useState(false);
 
-  const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY; // Replace with your actual secret key
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Get the base URL from .env file
-  
-
-  // Generate HMAC
-  const generateHMAC = (message, secretKey) => {
-    const hash = crypto.HmacSHA256(message, secretKey);
-    return crypto.enc.Base64.stringify(hash);
-  };
-
 
   const updateStatus = useCallback(async (transactionId) => {
-    const nonce = Math.random().toString(36).substring(2);
-    const timestamp = Date.now().toString();
-    const method = 'GET';
-    const path = `/payment/process/fetch`;
+    const token = localStorage.getItem("authToken");
   
-    const message = `${method}:${nonce}:${timestamp}`;
-    const apiKey = generateHMAC(message, secretKey);
+    if (!token) {
+      console.error("Authorization token is missing");
+      return;
+    }
   
+    const method = "GET";
+    const path = "/admin/dashboard/payments";
     const apiUrl = `${apiBaseUrl}${path}?transactionId=${transactionId}`;
+  
     try {
       const response = await fetch(apiUrl, {
-        method: 'GET',
+        method,
         headers: {
-          'X-API-Key': apiKey,
-          'X-Timestamp': timestamp,
-          'X-Nonce': nonce,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
   
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+      }
+  
       const data = await response.json();
-      if (data.status) {
-        setCurrentStatus((prevStatus) => {
-          return prevStatus !== data.status ? data.status : prevStatus;
-        });
+  
+      if (data.status && typeof setCurrentStatus === "function") {
+        setCurrentStatus((prevStatus) => (prevStatus !== data.status ? data.status : prevStatus));
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
-  }, [secretKey, apiBaseUrl]); // ❌ Removed `currentStatus` to prevent dependency loop
+  }, [apiBaseUrl]); // Removed unnecessary dependencies
   
 
   const handleSummaryClick = async () => {
