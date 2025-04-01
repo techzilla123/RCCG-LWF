@@ -9,6 +9,11 @@ function TransactionTable({ searchQuery, filters }) {
   const [checkedItems, setCheckedItems] = useState({});
   const [selectAll, setSelectAll] = useState(false);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalConfig, setTotalConfig] = useState(0);
+  const [loading, setLoading] = useState(true);  // Loading state
+
+
 
   // **Format Payment Type (Remove Underscores)**
   const formatPaymentType = (type) => type.replace(/_/g, ' ');
@@ -22,7 +27,10 @@ function TransactionTable({ searchQuery, filters }) {
   
   useEffect(() => {
     const fetchTransactions = async () => {
+      setLoading(true);  // Start loading
       const token = localStorage.getItem("authToken");
+      
+
   
       if (!token) {
         setError("Authorization token is missing");
@@ -36,6 +44,7 @@ function TransactionTable({ searchQuery, filters }) {
       if (filters.paymentType) url += `paymentType=${filters.paymentType}&`;
       if (filters.transactionId) url += `transactionId=${filters.transactionId}&`;
       if (filters.status) url += `status=${filters.status}&`;
+      if (currentPage) url += `page=${currentPage}&limit=1000&`;
   
       url = url.endsWith("&") ? url.slice(0, -1) : url; // Remove trailing '&'
   
@@ -60,16 +69,22 @@ function TransactionTable({ searchQuery, filters }) {
         localStorage.setItem("transactions", JSON.stringify(transactionsList));
         setTransactions(transactionsList);
         setFilteredTransactions(transactionsList);
+
+        setTotalConfig(data.totalCount || 0); // ✅ Updates totalConfig for pagination
+
         setError(null);
       } catch (err) {
         setError(err.message);
         setTransactions([]);
         setFilteredTransactions([]);
       }
+      finally {
+        setLoading(false);  // End loading
+      }
     };
   
     fetchTransactions();
-  }, [filters]);
+  }, [filters, currentPage]);
   
 
   // **Apply Filters & Search**
@@ -118,6 +133,41 @@ function TransactionTable({ searchQuery, filters }) {
       [transactionId]: !prev[transactionId],
     }));
   };
+
+  const calculateTotalPages = (totalConfig) => {
+    return totalConfig <= 1000 ? 1 : Math.ceil(totalConfig / 1000);
+  };
+  
+  const generatePagination = () => {
+    const totalPages = calculateTotalPages(totalConfig);
+    if (totalPages <= 1) return [1];
+    
+    const pages = [];
+    const maxVisiblePages = 5; // Number of pages to show before/after current page
+  
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1); // Always show first page
+      if (currentPage > 3) pages.push("..."); // Add left ellipsis
+  
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+  
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+  
+      if (currentPage < totalPages - 2) pages.push("..."); // Add right ellipsis
+  
+      pages.push(totalPages); // Always show last page
+    }
+    
+    return pages;
+  };
+  
 
   if (error) return (
     <div>
@@ -201,8 +251,42 @@ function TransactionTable({ searchQuery, filters }) {
         ))}
       </tbody>
     </table>
+    {!loading && filteredTransactions.length > 0 && (
+    <div className="flex justify-center items-center gap-2 mt-4">
+    {/* Prev Button */}
+    <button
+      className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage(currentPage - 1)}
+    >
+      &lt;
+    </button>
+    
+    {/* Page Numbers */}
+    {generatePagination().map((page, index) => (
+      <button
+        key={index}
+        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+          ${page === currentPage ? "bg-gray-900 text-white shadow-md" : "text-gray-600 hover:bg-gray-200"}
+          ${page === "..." ? "cursor-default opacity-50" : ""}`}
+        onClick={() => typeof page === "number" && setCurrentPage(page)}
+        disabled={page === "..."}
+      >
+        {page}
+      </button>
+    ))}
+    
+    {/* Next Button */}
+    <button
+      className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled={currentPage === calculateTotalPages(totalConfig)}
+      onClick={() => setCurrentPage(currentPage + 1)}
+    >
+      &gt;
+    </button>
   </div>
-);
+      )}
+  </div>);
 
   
 }

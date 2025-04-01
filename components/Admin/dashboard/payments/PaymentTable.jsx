@@ -10,9 +10,11 @@ function PaymentTable({ searchQuery }) {
   const [dropdownPosition, setDropdownPosition] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 10;
-  const [totalPages, setTotalPages] = useState(2);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);  // Loading state
   useEffect(() => {
     const fetchPaymentData = async () => {
+      setLoading(true);  // Start loading
       try {
         const token = localStorage.getItem("authToken");
         const response = await fetch(
@@ -32,9 +34,15 @@ function PaymentTable({ searchQuery }) {
             const calculatedPages = Math.ceil(data.totalCount / perPage);
             setTotalPages(calculatedPages);
           }
+          else {
+            setTotalPages(1); // If no totalCount, set to 1
+          }
         }
       } catch {
         console.log(":");
+      }
+      finally {
+        setLoading(false);  // End loading
       }
     };
 
@@ -120,32 +128,32 @@ function PaymentTable({ searchQuery }) {
 
   
   const generatePagination = () => {
-    if (totalPages <= 1) return [1, 2]; // Always show at least page 1
-  
+    if (totalPages <= 1) return [1]; // Always show at least page 1
+
     const pages = [];
     const maxVisiblePages = 5; // Number of pages to show before/after current page
-  
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
       pages.push(1); // Always show first page
-  
+
       if (currentPage > 3) pages.push("..."); // Add left ellipsis
-  
+
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
-  
+
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
-  
+
       if (currentPage < totalPages - 2) pages.push("..."); // Add right ellipsis
-  
+
       pages.push(totalPages); // Always show last page
     }
-  
+
     return pages;
   };
   
@@ -247,39 +255,42 @@ function PaymentTable({ searchQuery }) {
             </div>
           </div>
         ))}
-       <div className="flex justify-center items-center gap-2 p-4">
-  {/* Previous Button */}
-  <button
-    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage(currentPage - 1)}
-  >
-    &lt;
-  </button>
 
-  {/* Page Numbers */}
-  {generatePagination().map((page, index) => (
-    <button
-      key={index}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
-        ${page === currentPage ? "bg-gray-900 text-white shadow-md" : "text-gray-600 hover:bg-gray-200"}
-        ${page === "..." ? "cursor-default opacity-50" : ""}`}
-      onClick={() => typeof page === "number" && setCurrentPage(page)}
-      disabled={page === "..."}
-    >
-      {page}
-    </button>
-  ))}
+{!loading && tableData.length > 0 && (  // Only show when not loading and data is present
+          <div className="flex justify-center items-center gap-2 mt-4">
+            {/* Prev Button */}
+            <button
+              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lt;
+            </button>
 
-  {/* Next Button */}
-  <button
-    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage(currentPage + 1)}
-  >
-    &gt;
-  </button>
-</div>
+            {/* Page Numbers */}
+            {generatePagination().map((page, index) => (
+              <button
+                key={index}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+                  ${page === currentPage ? "bg-gray-900 text-white shadow-md" : "text-gray-600 hover:bg-gray-200"}
+                  ${page === "..." ? "cursor-default opacity-50" : ""}`}
+                onClick={() => typeof page === "number" && setCurrentPage(page)}
+                disabled={page === "..." || page === currentPage}
+              >
+                {page}
+              </button>
+            ))}
+
+            {/* Next Button */}
+            <button
+              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &gt;
+            </button>
+          </div>
+        )}
 
       </div>
     </section>

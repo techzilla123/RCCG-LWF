@@ -207,7 +207,8 @@ function TransactionPage() {
                 <option value="SUCCESS">Successful</option>
                 <option value="FAILED">Failed</option>
                 <option value="PENDING">Pending</option>
-                <option value="REVERSED">Reversed</option>
+                <option value="OPEN">Open</option>
+                <option value="AUTHORIZED">Authorized</option>
               </select>
 
               {/* Search Bar */}

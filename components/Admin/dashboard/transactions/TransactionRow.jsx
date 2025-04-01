@@ -88,8 +88,8 @@ function TransactionRow({
   
 
   const handleSummaryClick = async () => {
-    if (currentStatus === 'AUTHORIZED' || showReceipt === false) {
-      await updateStatus(transactionId);  // Fetch latest status if "AUTHORIZED" or first-time opening
+    if (currentStatus === 'AUTHORIZED' || currentStatus === 'PENDING' || showReceipt === false) {
+      await updateStatus(transactionId);  // Fetch latest status if "AUTHORIZED", "PENDING", or first-time opening
     }
     setShowReceipt((prev) => !prev);  // Toggle receipt visibility
   };
@@ -165,7 +165,8 @@ function TransactionRow({
 
       <td className="px-4 py-2 text-xs flex items-center gap-2"
       style={{ marginTop: "12px" }}>
-  {currentStatus !== "AUTHORIZED" && (
+ {currentStatus !== "AUTHORIZED" && currentStatus !== "PENDING" && (
+
     <span
       className="w-3 h-3 rounded-full"
       style={{ backgroundColor: getStatusColor(currentStatus), display: "inline-block" }}
