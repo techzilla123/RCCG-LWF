@@ -7,7 +7,7 @@ import TransactionModal from "@/components/Client/popup";
 function VerificationForm() {
   const [verificationCode, setVerificationCode] = useState(["", "", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const [timer, setTimer] = useState(10); // Countdown timer set to 10 seconds initially
+  const [timer, setTimer] = useState(300); // Countdown timer set to 10 seconds initially
   const [showModal, setShowModal] = useState(false);
   const [authorizationUrl, setAuthorizationUrl] = useState(null); // New state for storing the authorization URL
   const [responseMessage, setResponseMessage] = useState(""); // State for error message
@@ -134,6 +134,14 @@ function VerificationForm() {
     return () => clearInterval(countdown);
   }, [timer, isResendDisabled]);
 
+  // Function to format the time as MM:SS
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? `0${secs}` : secs}`;
+  };
+
+
   // Modified handleResendCode to recall the endpoint using details from localStorage
   const handleResendCode = async () => {
     // Retrieve email from localStorage
@@ -162,7 +170,7 @@ function VerificationForm() {
 
     try {
       const response = await axios.post(
-        process.env.NEXT_PUBLIC_API_PAYMENT_NEW_URL, // Recall the Payment endpoint
+        process.env.NEXT_PUBLIC_API_HISTORY_URL, // Recall the Payment endpoint
         data,
         {
           headers: {
@@ -279,7 +287,7 @@ onMouseLeave={(e) => (e.target.style.background = "#08AA3B")}
               transition: "background-color 0.3s ease",
             }}
           >
-            {isResendDisabled ? `Resend Code in ${timer}s` : "Resend Code"}
+            {isResendDisabled ? `Resend Code in ${formatTime(timer)}s` : "Resend Code"}
           </button>
         </div>
       </form>

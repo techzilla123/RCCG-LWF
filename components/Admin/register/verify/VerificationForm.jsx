@@ -11,7 +11,7 @@ function VerificationForm() {
   const router = useRouter();
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(300);
   const [showModal, setShowModal] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -92,21 +92,28 @@ function VerificationForm() {
   };
 
   // Countdown timer for the Resend Code button
-  useEffect(() => {
-    let countdown;
-    if (isResendDisabled && timer > 0) {
-      countdown = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    }
-
-    if (timer === 0) {
-      setIsResendDisabled(false);
-      clearInterval(countdown);
-    }
-
-    return () => clearInterval(countdown);
-  }, [timer, isResendDisabled]);
+ useEffect(() => {
+      let countdown;
+      if (isResendDisabled && timer > 0) {
+        countdown = setInterval(() => {
+          setTimer((prev) => prev - 1);
+        }, 1000);
+      }
+  
+      if (timer === 0) {
+        setIsResendDisabled(false);
+        clearInterval(countdown);
+      }
+  
+      return () => clearInterval(countdown);
+    }, [timer, isResendDisabled]);
+  
+    // Function to format the time as MM:SS
+    const formatTime = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes}:${secs < 10 ? `0${secs}` : secs}`;
+    };
 
   const handleResendCode = async () => {
     try {
@@ -231,7 +238,7 @@ function VerificationForm() {
               transition: "background-color 0.3s ease",
             }}
           >
-            {isResendDisabled ? `Resend Code in ${timer}s` : "Resend Code"}
+            {isResendDisabled ? `Resend Code in ${formatTime(timer)}s` : "Resend Code"}
           </button>
         </div>
       </form>

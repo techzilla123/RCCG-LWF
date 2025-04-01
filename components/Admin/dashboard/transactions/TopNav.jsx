@@ -4,9 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 const menuItems = [
-  { name: "Profile", icon: "/YCT-paymen/user.svg", link: "#" },
-  { name: "Settings", icon: "/YCT-paymen/setting.png", link: "#" },
-  { name: "Switch Account", icon: "/YCT-paymen/A-icon-sizeable.png", link: "#" },
+
   { name: "Log out", icon: "/YCT-paymen/logout.png", link: "/" },
 ];
 
