@@ -75,30 +75,56 @@ function AdminPayments() {
       alert("Error updating payment config. Please try again.");
     }
   };
- const router = useRouter();
- const [isAuthenticated, setIsAuthenticated] = useState(false); 
- const [loading, setLoading] = useState(true);
- const [isClient, setIsClient] = useState(false); // Track if code runs on the client
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false); // Track if code runs on the client
 
- useEffect(() => {
-   setIsClient(true); // Ensures this runs only on the client
- }, []);
+  useEffect(() => {
+    setIsClient(true); // Ensures this runs only on the client
+  }, []);
 
- useEffect(() => {
-   if (isClient) {
-     const token = localStorage.getItem("authToken");
-     if (!token) {
-       router.replace("/auth/login"); 
-     } else {
-       setIsAuthenticated(true);
-     }
-     setLoading(false);
-   }
- }, [isClient, router]);
+  useEffect(() => {
+    let inactivityTimer: NodeJS.Timeout;
 
- if (loading) return null; 
- if (!isAuthenticated) return null; 
-    
+    const handleLogout = () => {
+      localStorage.removeItem("authToken"); // Clear token
+      setIsAuthenticated(false);
+      router.replace("/auth/login"); // Redirect to login
+    };
+
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(handleLogout, 5 * 60 * 1000); // 5 minutes
+    };
+
+    if (isClient) {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.replace("/auth/login");
+      } else {
+        setIsAuthenticated(true);
+        resetInactivityTimer();
+      }
+      setLoading(false);
+
+      // Add event listeners to track user activity
+      window.addEventListener("mousemove", resetInactivityTimer);
+      window.addEventListener("keydown", resetInactivityTimer);
+      window.addEventListener("click", resetInactivityTimer);
+    }
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      window.removeEventListener("mousemove", resetInactivityTimer);
+      window.removeEventListener("keydown", resetInactivityTimer);
+      window.removeEventListener("click", resetInactivityTimer);
+    };
+  }, [isClient, router]);
+
+  if (loading) return null;
+  if (!isAuthenticated) return null;
+  
   return (
     <div className="flex flex-wrap justify-center bg-neutral-100 min-h-[832px]">
       <SideBar />

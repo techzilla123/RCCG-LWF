@@ -19,12 +19,27 @@ const roboto = Roboto({ weight: ['400', '500', '700'], subsets: ['latin'] });
 
 
 function AdminDashboard() {
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const router = useRouter(); // Ensure this is used inside the component
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Properly typed useState
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== "undefined") { // Ensure it's running on the client
+    let inactivityTimer: NodeJS.Timeout; // Explicit type for inactivityTimer
+
+    // Function to handle user inactivity
+    const handleInactivity = () => {
+      localStorage.removeItem("authToken");  // Clear the token
+      router.replace("/auth/login");  // Redirect to login page
+    };
+
+    // Function to reset the inactivity timer
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(handleInactivity, 5 * 60 * 1000); // 5 minutes
+    };
+
+    // Check authentication status on initial load
+    if (typeof window !== "undefined") {
       const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
       if (!token) {
         router.replace("/auth/login");
@@ -33,6 +48,22 @@ function AdminDashboard() {
       }
       setLoading(false);
     }
+
+    // Event listeners to reset the inactivity timer
+    window.addEventListener("mousemove", resetInactivityTimer);
+    window.addEventListener("keydown", resetInactivityTimer);
+    window.addEventListener("click", resetInactivityTimer);
+
+    // Start the inactivity timer
+    resetInactivityTimer();
+
+    // Cleanup listeners when component unmounts
+    return () => {
+      clearTimeout(inactivityTimer);
+      window.removeEventListener("mousemove", resetInactivityTimer);
+      window.removeEventListener("keydown", resetInactivityTimer);
+      window.removeEventListener("click", resetInactivityTimer);
+    };
   }, [router]);
 
   if (loading) return null; // Prevent rendering until authentication check is done
