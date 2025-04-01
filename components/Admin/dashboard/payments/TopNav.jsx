@@ -5,8 +5,8 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 const menuItems = [
- 
-  { name: "Log out", icon: "/YCT-paymen/logout.png", link: "/" },
+
+  { name: "Log out", icon: "/YCT-paymen/logout.png", link: null },
 ];
 
 const CTAButton = ({ icon, text, ariaLabel, className = '' }) => (
@@ -55,31 +55,37 @@ const MenuDropdown = () => {
 const UserProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
+  const buttonRef = useRef(null); // Track button clicks
 
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target) // Ignore clicks on button
+      ) {
         setIsOpen(false);
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    window.location.href = "/auth/login";
+  };
 
   return (
-    <div className="relative flex items-center gap-2" ref={menuRef}>
+    <div className="relative flex items-center gap-2">
+      {/* Dropdown Toggle Button */}
       <button
+        ref={buttonRef} // Track clicks on button
         className="flex gap-2 items-center p-2"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
@@ -99,30 +105,33 @@ const UserProfile = () => {
         </div>
       </button>
 
+      {/* Dropdown Menu */}
       {isOpen && (
         <nav
           ref={menuRef}
-          className="absolute top-full z-50 right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[200px] border border-gray-200"
+          className="absolute top-full right-0 flex flex-col self-end p-2 mt-1 w-full bg-white rounded-lg shadow-sm max-w-[200px] border border-gray-200"
           style={{ width: "160px" }}
         >
           {menuItems.map((item, index) => (
             <React.Fragment key={item.name}>
               {index === 2 && <div className="border-t border-gray-300 mx-3 my-2" />}
-
-              <Link
-                href={item.link}
-                className={`flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 
-                  ${item.name === "Log out" ? "text-red-600 hover:bg-red-50" : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"}`}
-              >
-                <Image
-                  src={item.icon}
-                  alt={item.name}
-                  width={16}
-                  height={16}
-                  className={item.name === "Switch Account" ? "mr-0 w-4 h-4" : ""}
-                />
-                <span className="text-left whitespace-nowrap">{item.name}</span>
-              </Link>
+              {item.name === "Log out" ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 text-red-600 hover:bg-red-50"
+                >
+                  <Image src={item.icon} alt={item.name} width={16} height={16} />
+                  <span className="text-left whitespace-nowrap">{item.name}</span>
+                </button>
+              ) : (
+                <Link
+                  href={item.link}
+                  className="flex items-center gap-2 py-2 px-4 w-full text-sm rounded-md transition duration-200 text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                >
+                  <Image src={item.icon} alt={item.name} width={16} height={16} />
+                  <span className="text-left whitespace-nowrap">{item.name}</span>
+                </Link>
+              )}
             </React.Fragment>
           ))}
         </nav>
