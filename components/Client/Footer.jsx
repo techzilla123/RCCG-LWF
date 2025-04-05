@@ -2,14 +2,17 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer className="flex z-1 flex-col justify-center px-32 py-4 w-full text-base bg-neutral-950 max-md:px-5 max-md:max-w-full"
-    style={{ background: '#001C09' }}>
-      <div className="flex flex-wrap gap-10 justify-between items-center w-full max-md:max-w-full">
-        <a href="mailto:support@yctmb.com" className="self-stretch my-auto text-green-600 w-[150px]"
-        style={{ color: '#08AA3B' }}>
+    <footer
+      className="w-full mt-auto bg-[#001C09] text-white px-6 md:px-32 py-6 text-sm md:text-base"
+    >
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <a
+          href="mailto:support@yctmb.com"
+          className="text-[#08AA3B] hover:underline"
+        >
           support@yctmb.net
         </a>
-        <p className="self-stretch my-auto text-neutral-500">
+        <p className="text-neutral-400">
           © {new Date().getFullYear()} yctmb. All rights reserved.
         </p>
       </div>
