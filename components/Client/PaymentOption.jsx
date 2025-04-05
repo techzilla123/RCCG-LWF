@@ -67,48 +67,51 @@ const PaymentOption = ({ setPaymentOption }) => {
 
   return (
     <div className="flex flex-col w-full">
-      {/* Label */}
-      <label htmlFor="paymentOption" className="text-sm font-semibold text-gray-700 mb-2">
-        Choose Payment
-      </label>
-
-      {/* Dropdown Container */}
-      <div className="relative">
-        {/* Dropdown Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex justify-between items-center w-full px-4 py-3 bg-white/80 backdrop-blur-lg rounded-xl border border-gray-300 shadow-lg transition-all duration-300 hover:ring-2 hover:ring-blue-400 focus:ring-2 focus:ring-blue-500"
-          title={selectedOption ? `${selectedOption.paymentName} - ₦${formatAmount(selectedOption.paymentAmount)}` : "Choose option"} // Tooltip on hover
-        >
-          <span className="truncate w-[80%] text-left">
-            {selectedOption
-              ? `${selectedOption.paymentName} - ₦${formatAmount(selectedOption.paymentAmount)}`
-              : "Choose option"}
-          </span>
-          <FaChevronDown className={`transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`} />
-        </button>
-
-        {/* Dropdown List */}
-        {isOpen && (
-          <ul className="absolute left-0 w-full mt-2 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200 z-50 max-h-60 overflow-y-auto animate-fadeIn">
-            {paymentOptions.length > 0 ? (
-              paymentOptions.map((option, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleSelect(option)}
-                  className="px-4 py-3 text-gray-700 font-medium cursor-pointer hover:bg-blue-100 transition"
-                  title={`${option.paymentName} - ₦${formatAmount(option.paymentAmount)}`} // Tooltip for full name
-                >
-                  <span className="truncate block w-full">{option.paymentName} - ₦{formatAmount(option.paymentAmount)}</span>
-                </li>
-              ))
-            ) : (
-              <li className="px-4 py-3 text-gray-500">Loading options...</li>
-            )}
-          </ul>
-        )}
-      </div>
+    {/* Label */}
+    <label htmlFor="paymentOption" className="text-sm font-semibold text-gray-700 mb-2">
+      Choose Payment
+    </label>
+  
+    {/* Dropdown Container */}
+    <div className="relative">
+      {/* Dropdown Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex justify-between items-center w-full px-4 py-3 bg-white/80 backdrop-blur-lg rounded-xl border border-gray-300 shadow-lg transition-all duration-300 hover:ring-2 hover:ring-blue-400 focus:ring-2 focus:ring-blue-500"
+        title={selectedOption ? `${selectedOption.paymentName} - ₦${formatAmount(selectedOption.paymentAmount)}` : "Choose option"}
+      >
+        <span className="w-[80%] text-left text-xs sm:text-sm whitespace-normal ">
+          {selectedOption
+            ? `${selectedOption.paymentName} - ₦${formatAmount(selectedOption.paymentAmount)}`
+            : "Choose option"}
+        </span>
+        <FaChevronDown className={`transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`} />
+      </button>
+  
+      {/* Dropdown List */}
+      {isOpen && (
+        <ul className="absolute left-0 w-full mt-2 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200 z-50 max-h-60 overflow-y-auto animate-fadeIn">
+          {paymentOptions.length > 0 ? (
+            paymentOptions.map((option, index) => (
+              <li
+                key={index}
+                onClick={() => handleSelect(option)}
+                className="px-4 py-3 text-gray-700 font-medium cursor-pointer hover:bg-blue-100 transition text-xs sm:text-sm"
+                title={`${option.paymentName} - ₦${formatAmount(option.paymentAmount)}`}
+              >
+                <span className="block w-full whitespace-normal break-words">
+                  {option.paymentName} - ₦{formatAmount(option.paymentAmount)}
+                </span>
+              </li>
+            ))
+          ) : (
+            <li className="px-4 py-3 text-gray-500 text-xs sm:text-sm">Loading options...</li>
+          )}
+        </ul>
+      )}
     </div>
+  </div>
+  
   );
 };
 
