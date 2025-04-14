@@ -292,7 +292,8 @@ setFilteredTransactions(transactionsList);
         ))}
       </tbody>
     </table>
-    {!loading && filteredTransactions.length > 1000 && (
+    {!loading && filteredTransactions.length > 0 && (totalConfig > 1000 || filteredTransactions.length > 1000) && (
+
     <div className="flex justify-center items-center gap-2 mt-4">
     {/* Prev Button */}
     <button
