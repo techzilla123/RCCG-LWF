@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import TransactionRow from "./TransactionRow";
+import isEqual from "lodash.isequal"; 
 
 function TransactionTable({ searchQuery, filters }) {
   const [transactions, setTransactions] = useState([]);
@@ -11,6 +12,7 @@ function TransactionTable({ searchQuery, filters }) {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalConfig, setTotalConfig] = useState(0);
+  const perPage = 1000;
   const [loading, setLoading] = useState(true);  // Loading state
 
 
@@ -26,6 +28,15 @@ function TransactionTable({ searchQuery, filters }) {
   };
   
   useEffect(() => {
+// **Retrieve saved transaction count from localStorage**
+const savedTransactionCount = localStorage.getItem("transactionCount");
+if (savedTransactionCount) {
+  const transactionCount = Number(savedTransactionCount);
+  setTotalConfig(transactionCount); // Use saved value to set totalConfig
+  
+}
+
+
     const fetchTransactions = async () => {
       setLoading(true);  // Start loading
       const token = localStorage.getItem("authToken");
@@ -44,7 +55,7 @@ function TransactionTable({ searchQuery, filters }) {
       if (filters.paymentType) url += `paymentType=${filters.paymentType}&`;
       if (filters.transactionId) url += `transactionId=${filters.transactionId}&`;
       if (filters.status) url += `status=${filters.status}&`;
-      if (currentPage) url += `page=${currentPage}&limit=1000&`;
+      if (currentPage) url += `page=${currentPage}&perPage=${perPage}&`;
   
       url = url.endsWith("&") ? url.slice(0, -1) : url; // Remove trailing '&'
   
@@ -68,9 +79,9 @@ function TransactionTable({ searchQuery, filters }) {
   
         localStorage.setItem("transactions", JSON.stringify(transactionsList));
         setTransactions(transactionsList);
-        setFilteredTransactions(transactionsList);
+setFilteredTransactions(transactionsList);
 
-        setTotalConfig(data.totalCount || 0); // ✅ Updates totalConfig for pagination
+
 
         setError(null);
       } catch (err) {
@@ -86,12 +97,14 @@ function TransactionTable({ searchQuery, filters }) {
     fetchTransactions();
   }, [filters, currentPage]);
   
+  const [prevFilters, setPrevFilters] = useState(filters);
+  const [filteredByFilters, setFilteredByFilters] = useState([]);
 
-  // **Apply Filters & Search**
   useEffect(() => {
+    if (isEqual(filters, prevFilters)) return;
+
     const filtered = transactions.filter((transaction) => {
-      const transactionValues = Object.values(transaction).join(" ").toLowerCase();
-      let isValid = transactionValues.includes(searchQuery.toLowerCase());
+      let isValid = true;
 
       if (filters.paymentType && formatPaymentType(transaction.payment_type) !== filters.paymentType) {
         isValid = false;
@@ -112,8 +125,36 @@ function TransactionTable({ searchQuery, filters }) {
       return isValid;
     });
 
-    setFilteredTransactions(filtered);
-  }, [searchQuery, filters, transactions]);
+    setFilteredByFilters(filtered);
+    setCurrentPage(1);  
+    setPrevFilters(filters);  
+  }, [filters, transactions]);
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setFilteredTransactions(filteredByFilters);  
+      return;
+    }
+
+    const searched = filteredByFilters.filter((transaction) => {
+      const transactionValues = Object.values(transaction || {})
+        .map(val => (val ? String(val) : ""))
+        .join(" ")
+        .toLowerCase();
+
+      return transactionValues.includes(searchQuery.toLowerCase());
+    });
+
+    setFilteredTransactions(searched);
+  }, [searchQuery, filteredByFilters]);
+
+
+
+
+
+
+
+  
 
   const handleCheckboxChange = () => {
     setSelectAll((prev) => {

@@ -37,6 +37,8 @@ function TransactionOverview() {
         }
 
         const data = await response.json();
+
+        localStorage.setItem("transactionCount", data.transactionCount);
         
         const updatedOverviewDatas = [
           {
