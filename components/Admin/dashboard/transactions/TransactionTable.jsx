@@ -17,33 +17,7 @@ function TransactionTable({ searchQuery, filters }) {
   const [shouldResetPage, setShouldResetPage] = useState(false);
 
 
-  const AdvancedPreloader = () => {
-    return (
-      <div className="fixed inset-0 z-50 bg-white bg-opacity-80 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity duration-300">
-        {/* Spinner with glowing ring */}
-        <div className="relative mb-6">
-          <div className="w-16 h-16 border-[6px] border-green-500 border-t-transparent rounded-full animate-spin" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-sm font-semibold text-green-600 animate-ping">⏳</span>
-          </div>
-        </div>
-  
-        <p className="text-gray-700 text-base font-medium mb-6 animate-fade-in">
-          Fetching Transactions...
-        </p>
-  
-        {/* Skeleton Table Preview */}
-        <div className="w-[90%] max-w-4xl mt-2 space-y-3">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="h-6 w-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:400%_100%] animate-shimmer rounded-lg"
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
+ 
   
 
   // **Format Payment Type (Remove Underscores)**
