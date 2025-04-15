@@ -7,10 +7,23 @@ function TopPayments() {
     const fetchPayments = async () => {
       const token = localStorage.getItem("authToken");
       if (!token) return;
-
+  
       try {
+        // Fetch transaction count from local storage
+        const transactionCount = parseInt(localStorage.getItem("transactionCount") || "0");
+        if (transactionCount <= 0) return;
+  
+        // Calculate the page number based on transaction count
+        const itemsPerPage = 5;
+        let page = Math.floor(transactionCount / 1000) + 1; // Calculate the current page number
+        page = page > 1 ? page : 1; // Ensure page number is at least 1
+  
+        // Calculate the starting index for the requested page
+        const offset = (page - 1) * itemsPerPage;
+  
+        // Fetch the current page's data
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments?page=${page}&limit=${itemsPerPage}`,
           {
             method: "GET",
             headers: {
@@ -19,32 +32,72 @@ function TopPayments() {
             },
           }
         );
-
+  
         if (!response.ok) {
           throw new Error("Failed to fetch payments");
         }
-
+  
         const data = await response.json();
-        const latestPayments = (data.payments || [])
+        let currentPayments = data.payments || [];
+  
+        // If the current page has fewer than 5 items, try to fill with data from the previous page
+        if (currentPayments.length < itemsPerPage) {
+          const missingItems = itemsPerPage - currentPayments.length;
+  
+          // Fetch the previous page to get more items
+          const prevPage = page - 1;
+          if (prevPage > 0) {
+            const prevResponse = await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments?page=${prevPage}&limit=${missingItems}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+  
+            if (!prevResponse.ok) {
+              throw new Error("Failed to fetch previous page payments");
+            }
+  
+            const prevData = await prevResponse.json();
+            const prevPayments = prevData.payments || [];
+  
+            // Combine the previous page's payments with the current page's payments
+            currentPayments = [...prevPayments.slice(-missingItems), ...currentPayments];
+          }
+        }
+  
+        // Map the payments to the required format
+        const latestPayments = currentPayments
           .sort((a, b) => new Date(b.created_date_time) - new Date(a.created_date_time))
-          .slice(0, 5)
+          .slice(0, itemsPerPage) // Ensure we only have 5 items (or fewer if no more data)
           .map((payment) => ({
             type: payment.payment_type.replace(/_/g, " "),
             name: payment.name,
             amount: `₦${(payment.transaction_amount / 100).toLocaleString()}`,
           }));
-
+  
+        // Set the payments in state
         setPayments(latestPayments);
+  
+        // Store the transactions in localStorage
         localStorage.setItem("transactions", JSON.stringify(latestPayments));
+  
       } catch (error) {
         console.error("Error fetching payments:", error);
       }
     };
-
+  
     fetchPayments();
-    const interval = setInterval(fetchPayments, 5000); // Refresh every 5 seconds
-    return () => clearInterval(interval);
-  }, []);
+  }, []); // Empty array means this runs once on component mount
+  
+  //   fetchPayments();
+  //   const interval = setInterval(fetchPayments, 5000); // Refresh every 5 seconds
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div data-layername="chartGroup" className="flex overflow-hidden flex-col flex-1 shrink self-start px-6 py-7 bg-white rounded-lg border border-solid basis-0 border-zinc-300 min-w-[240px] max-md:px-5 max-md:max-w-full">
