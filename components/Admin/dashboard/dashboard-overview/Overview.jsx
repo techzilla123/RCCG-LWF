@@ -76,6 +76,11 @@ function Overview() {
 
         // Update localStorage with the fresh data
         localStorage.setItem("overviewData", JSON.stringify(mappedData));
+        localStorage.setItem("dashboardMeta", JSON.stringify({
+          totalTransactions: data.transactionCount
+       
+        }));
+        
 
       } catch (error) {
         console.error("Error fetching metrics data:", error);
