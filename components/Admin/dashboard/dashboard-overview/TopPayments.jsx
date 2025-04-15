@@ -18,7 +18,7 @@ function TopPayments() {
         let page = Math.floor(transactionCount / 1000) + 1;
         page = page > 1 ? page : 1;
   
-        const offset = (page - 1) * itemsPerPage;
+        // const offset = (page - 1) * itemsPerPage;
   
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard/payments?page=${page}&limit=${itemsPerPage}`,
