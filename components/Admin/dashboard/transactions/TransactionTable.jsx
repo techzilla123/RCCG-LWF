@@ -14,8 +14,37 @@ function TransactionTable({ searchQuery, filters }) {
   const [totalConfig, setTotalConfig] = useState(0);
   const perPage = 1000;
   const [loading, setLoading] = useState(true);  // Loading state
+  const [shouldResetPage, setShouldResetPage] = useState(false);
 
 
+  const AdvancedPreloader = () => {
+    return (
+      <div className="fixed inset-0 z-50 bg-white bg-opacity-80 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity duration-300">
+        {/* Spinner with glowing ring */}
+        <div className="relative mb-6">
+          <div className="w-16 h-16 border-[6px] border-green-500 border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-sm font-semibold text-green-600 animate-ping">⏳</span>
+          </div>
+        </div>
+  
+        <p className="text-gray-700 text-base font-medium mb-6 animate-fade-in">
+          Fetching Transactions...
+        </p>
+  
+        {/* Skeleton Table Preview */}
+        <div className="w-[90%] max-w-4xl mt-2 space-y-3">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="h-6 w-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:400%_100%] animate-shimmer rounded-lg"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+  
 
   // **Format Payment Type (Remove Underscores)**
   const formatPaymentType = (type) => type.replace(/_/g, ' ');
@@ -68,67 +97,88 @@ if (savedTransactionCount) {
           },
         });
   
-        if (!response.ok) {
-          throw new Error("No matching data found based on the selected filter.");
-        }
-  
-        const data = await response.json();
-        const transactionsList = (data.payments || []).sort(
-          (a, b) => new Date(b.created_date_time) - new Date(a.created_date_time)
-        );
-  
-        localStorage.setItem("transactions", JSON.stringify(transactionsList));
-        setTransactions(transactionsList);
-setFilteredTransactions(transactionsList);
+        
+      if (!response.ok) {
+        // 🧠 TEMPORARILY skip showing the error during this first fetch
+        if (currentPage > 1) return; // Let another fetch kick in with page = 1
+        throw new Error("No matching data found based on the selected filter.");
+      }
 
+      const data = await response.json();
+      const transactionsList = (data.payments || []).sort(
+        (a, b) => new Date(b.created_date_time) - new Date(a.created_date_time)
+      );
 
-
-        setError(null);
-      } catch (err) {
+      localStorage.setItem("transactions", JSON.stringify(transactionsList));
+      setTransactions(transactionsList);
+      setFilteredTransactions(transactionsList);
+      setError(null); // ✅ clear error
+    } catch (err) {
+      // ✅ only show error if we're not expecting another fetch soon
+      if (currentPage === 1) {
         setError(err.message);
         setTransactions([]);
         setFilteredTransactions([]);
       }
-      finally {
-        setLoading(false);  // End loading
-      }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchTransactions();
+}, [filters, currentPage]);
+
+  useEffect(() => {
+    if (shouldResetPage) {
+      setCurrentPage(1);
+      setShouldResetPage(false);
+    }
+  }, [shouldResetPage]);
   
-    fetchTransactions();
-  }, [filters, currentPage]);
   
   const [prevFilters, setPrevFilters] = useState(filters);
   const [filteredByFilters, setFilteredByFilters] = useState([]);
 
   useEffect(() => {
-    if (isEqual(filters, prevFilters)) return;
+  if (isEqual(filters, prevFilters)) return;
 
-    const filtered = transactions.filter((transaction) => {
-      let isValid = true;
+  // Only reset page if change is NOT just from searchQuery
+  const filterKeys = ["startDate", "endDate", "paymentType", "transactionId", "status"];
+  const relevantFilterChanged = filterKeys.some(
+    key => filters[key] !== prevFilters[key]
+  );
 
-      if (filters.paymentType && formatPaymentType(transaction.payment_type) !== filters.paymentType) {
-        isValid = false;
-      }
-      if (filters.startDate && new Date(transaction.created_date_time) < new Date(filters.startDate)) {
-        isValid = false;
-      }
-      if (filters.endDate && new Date(transaction.created_date_time) > new Date(filters.endDate)) {
-        isValid = false;
-      }
-      if (filters.transactionId && !transaction.transaction_id.includes(filters.transactionId)) {
-        isValid = false;
-      }
-      if (filters.status && transaction.status !== filters.status) {
-        isValid = false;
-      }
+  if (relevantFilterChanged) {
+    setShouldResetPage(true);  // ✅ trigger page reset
+  }
 
-      return isValid;
-    });
 
-    setFilteredByFilters(filtered);
-    setCurrentPage(1);  
-    setPrevFilters(filters);  
-  }, [filters, transactions]);
+  const filtered = transactions.filter((transaction) => {
+    let isValid = true;
+
+    if (filters.paymentType && formatPaymentType(transaction.payment_type) !== filters.paymentType) {
+      isValid = false;
+    }
+    if (filters.startDate && new Date(transaction.created_date_time) < new Date(filters.startDate)) {
+      isValid = false;
+    }
+    if (filters.endDate && new Date(transaction.created_date_time) > new Date(filters.endDate)) {
+      isValid = false;
+    }
+    if (filters.transactionId && !transaction.transaction_id.includes(filters.transactionId)) {
+      isValid = false;
+    }
+    if (filters.status && transaction.status !== filters.status) {
+      isValid = false;
+    }
+
+    return isValid;
+  });
+
+  setFilteredByFilters(filtered);
+  setPrevFilters(filters);
+}, [filters, transactions]);
+
 
   useEffect(() => {
     if (!searchQuery) {
