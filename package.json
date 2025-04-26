@@ -25,6 +25,7 @@
     "devextreme": "^24.2.5",
     "devextreme-react": "^24.2.5",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.9.2",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "lodash.isequal": "^4.5.0",
