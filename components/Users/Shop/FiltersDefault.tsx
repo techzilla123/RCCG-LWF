@@ -50,15 +50,21 @@ const [filters, setFilters] = useState<{ [key: string]: FilterValue }>({
       setFilters((prev) => ({ ...prev, [section]: option }));
     } else {
       setFilters((prev) => {
-        const current = prev[section] || [];
-        if (current.includes(option)) {
-          return { ...prev, [section]: current.filter((o: string) => o !== option) };
+        const current = prev[section];
+        if (Array.isArray(current)) {
+          if (current.includes(option)) {
+            return { ...prev, [section]: current.filter((o) => o !== option) };
+          } else {
+            return { ...prev, [section]: [...current, option] };
+          }
         } else {
-          return { ...prev, [section]: [...current, option] };
+          // If there was no current array, start with this option
+          return { ...prev, [section]: [option] };
         }
       });
     }
   };
+  
 
   const clearAll = () => {
     setFilters({});
