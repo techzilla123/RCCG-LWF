@@ -8,12 +8,12 @@ interface CheckboxOption {
 
 interface CheckboxGroupProps {
   options: CheckboxOption[];
-  onChange?: (selectedIndexes: number[]) => void;
+
 }
 
 export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   options,
-  onChange,
+
 }) => {
   return (
     <div className="px-2 pb-2 w-full bg-white min-w-40">
