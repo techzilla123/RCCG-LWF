@@ -1,6 +1,7 @@
 "use client";
 
 interface AccordionItemProps {
+  index: number;
   question: string;
   answer?: string;
   isOpen: boolean;
