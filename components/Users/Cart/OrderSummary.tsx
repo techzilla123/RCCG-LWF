@@ -13,7 +13,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   total,
 }) => {
   // Separate Subtotal and Taxes from other items
-  const subtotal = items.find((item) => item.label.toLowerCase() === "subtotal");
+
   const taxes = items.find((item) => item.label.toLowerCase() === "taxes");
   const otherItems = items.filter(
     (item) =>

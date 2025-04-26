@@ -1,7 +1,6 @@
 "use client";
 
 interface AccordionItemProps {
-  index: number;
   question: string;
   answer?: string;
   isOpen: boolean;
@@ -9,7 +8,6 @@ interface AccordionItemProps {
 }
 
 export function AccordionItem({
-  index,
   question,
   answer,
   isOpen,

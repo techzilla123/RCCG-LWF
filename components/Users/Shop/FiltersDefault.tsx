@@ -32,11 +32,14 @@ export default function FiltersSidebar() {
     () => Object.fromEntries(filtersConfig.map(({ title }) => [title, true]))
   );
   
-  const [filters, setFilters] = useState<{ [key: string]: any }>({
-    "Sort by": "Relevant to you",
-    "Listings": "For sale",
-    "Customer Rating": "4-star",
-  });
+  type FilterValue = string | string[];
+
+const [filters, setFilters] = useState<{ [key: string]: FilterValue }>({
+  "Sort by": "Relevant to you",
+  "Listings": "For sale",
+  "Customer Rating": "4-star",
+});
+
 
   const toggleSection = (title: string) => {
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));

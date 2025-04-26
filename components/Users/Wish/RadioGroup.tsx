@@ -8,12 +8,12 @@ interface RadioOption {
 
 interface RadioGroupProps {
   options: RadioOption[];
-  onChange?: (selectedIndex: number) => void;
+
 }
 
 export const RadioGroup: React.FC<RadioGroupProps> = ({
   options,
-  onChange,
+
 }) => {
   return (
     <div className="px-2 pb-2 w-full bg-white min-w-40">

@@ -1,4 +1,4 @@
-import Hero from "@/components/Hero";
+
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
 import { SuccessIcon } from "@/components/Users/Cart/Success/SuccessIcon";

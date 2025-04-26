@@ -20,7 +20,7 @@ const SuccessIcon: React.FC = () => {
 const MessageSection: React.FC = () => {
   return (
     <header className="flex z-0 flex-col justify-center mt-6 w-full max-md:max-w-full">
-      <h1 className="self-center text-4xl text-black">You're all set!</h1>
+      <h1 className="self-center text-4xl text-black">You&apos;re all set!</h1>
       <p className="mt-1 text-base tracking-normal leading-6 text-center text-neutral-500 max-md:max-w-full">
         Your account is ready, you can now make memorable shopping choices
       </p>

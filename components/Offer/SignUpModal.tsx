@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook, FaXTwitter, FaLock, FaEnvelope } from "react-icons/fa6";
+import { FaLock, FaEnvelope } from "react-icons/fa6";
 
 interface SignUpModalProps {
   onClose: () => void;

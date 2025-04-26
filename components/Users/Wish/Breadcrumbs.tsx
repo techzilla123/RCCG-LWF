@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useRouter } from "next/navigation"; // Import useRouter to handle navigation
 
 interface BreadcrumbItem {
   label: string;
@@ -12,7 +11,6 @@ interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
-  const router = useRouter(); // Initialize the router
 
   return (
     <nav
