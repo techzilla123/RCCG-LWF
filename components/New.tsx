@@ -148,7 +148,7 @@ export function New() {
 
   return (
     <section className="relative px-8 py-10 bg-sky-50 max-md:px-5">
-      <ProductHeader rightArrowIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/66d546e330544d515b682a58503bcbd12bbada55?placeholderIfAbsent=true" />
+      <ProductHeader />
 
       {/* Scroll buttons BELOW header, above product row */}
       <div className="flex justify-end gap-4 mt-4 pr-4">
