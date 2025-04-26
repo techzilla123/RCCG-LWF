@@ -18,8 +18,8 @@ const WishlistButton: React.FC = () => {
         <img
           src={
             isWishlisted
-              ? "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/6d4c88eb3b14ac9da2ed7a829f1e155f7dd127de?placeholderIfAbsent=true"
-              : "/Vector(2).svg"
+              ? "/Vector(2).svg"
+              : "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/6d4c88eb3b14ac9da2ed7a829f1e155f7dd127de?placeholderIfAbsent=true"
           }
           alt="Heart icon"
           className="object-contain w-10 h-10 transform scale-150"
