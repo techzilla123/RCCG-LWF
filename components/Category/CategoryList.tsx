@@ -12,6 +12,11 @@ const categories = [
   
 ];
 
+interface CategoryListProps {
+  scrollRef: React.RefObject<HTMLDivElement>;
+}
+
+
 export const CategoryList: React.FC<CategoryListProps> = ({ scrollRef }) => {
   return (
     <section
