@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { AccordionItem } from "./Faq/AccordionItem";
-import { FaqItem } from "./Faq/types";
+
+interface FaqItem {
+  question: string;
+  answer?: string;
+}
 
 const faqItems: FaqItem[] = [
   {

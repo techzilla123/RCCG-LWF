@@ -1,6 +1,6 @@
-export interface FaqItem {
-    question: string;
-    answer?: string;
-    isOpen?: boolean;
-  }
-  
+interface AccordionItemProps {
+  question: string;
+  answer?: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}
