@@ -77,7 +77,7 @@ export const TwoFactorAuth: React.FC = () => {
   className="mt-6 w-[122px] h-10 px-4 py-2"
 >
   <span className="flex items-center gap-2 justify-center w-full">
-    Activate 2FA
+    Activate
   </span>
 </Button>
 
