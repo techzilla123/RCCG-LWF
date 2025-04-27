@@ -54,7 +54,7 @@ export const CookiePreferences: React.FC = () => {
         </div>
         <ToggleSwitch
           enabled={marketingEnabled}
-          onChange={setMarketingEnabled}
+          onChangeAction={setMarketingEnabled}
         />
       </div>
 
@@ -71,7 +71,7 @@ export const CookiePreferences: React.FC = () => {
         </div>
         <ToggleSwitch
           enabled={personalizationEnabled}
-          onChange={setPersonalizationEnabled}
+          onChangeAction={setPersonalizationEnabled}
         />
       </div>
 

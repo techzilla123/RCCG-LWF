@@ -1,15 +1,16 @@
 "use client";
+
 import * as React from "react";
 
 interface ToggleSwitchProps {
   enabled: boolean;
-  onChange: (enabled: boolean) => void;
+  onChangeAction: (enabled: boolean) => void;
   disabled?: boolean;
 }
 
 export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   enabled,
-  onChange,
+  onChangeAction,
   disabled = false,
 }) => {
   return (
@@ -20,7 +21,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       role="switch"
       aria-checked={enabled}
-      onClick={() => !disabled && onChange(!enabled)}
+      onClick={() => !disabled && onChangeAction(!enabled)}
       disabled={disabled}
     >
       <span
