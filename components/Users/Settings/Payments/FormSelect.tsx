@@ -9,7 +9,7 @@ interface FormSelectProps {
   onChange?: (value: string) => void;
 }
 
-export function FormSelect({ label, optional, placeholder, value }: FormSelectProps) {
+export function FormSelect({ label, optional, placeholder }: FormSelectProps) {
   return (
     <div className="flex flex-col w-full max-w-sm">
       <label className="text-base font-medium text-black mb-1">

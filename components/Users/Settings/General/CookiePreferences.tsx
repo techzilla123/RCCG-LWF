@@ -31,7 +31,7 @@ export const CookiePreferences: React.FC = () => {
             </h3>
             <p className="mt-1 text-sm tracking-normal text-neutral-500 max-md:max-w-full">
               These cookies are necessary for the website to work smoothly and
-              can't be disabled
+              can&apos;t be disabled
             </p>
           </div>
         </div>

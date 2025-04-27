@@ -108,7 +108,7 @@ export default function NotificationsPage() {
 
         {settings
           .filter((s) => s.category === "Updates")
-          .map((setting, idx) => (
+          .map((setting) => (
             <div
               key={setting.title}
               className="grid grid-cols-3 items-center px-6 py-4 border-t text-sm"
