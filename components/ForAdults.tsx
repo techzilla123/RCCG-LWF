@@ -8,7 +8,7 @@ const ForAdults: React.FC = () => {
     <section className="flex flex-col gap-6 px-6 py-10 bg-sky-50 md:px-20">
       <div className="flex flex-col md:flex-row flex-wrap gap-6 items-start xxl:flex-nowrap">
         {/* Left Title + 6 Cards */}
-        <div className="flex flex-wrap gap-4 flex-1 min-w-[280px]">
+        <div className="flex flex-wrap gap-4 flex-1 min-w-[280px] ">
           <TitleSection />
 
           <ProductCard
