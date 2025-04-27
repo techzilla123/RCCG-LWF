@@ -13,13 +13,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   return (
     <article
-    className={`flex flex-col overflow-hidden text-xl tracking-normal leading-8 text-black rounded-2xl basis-0 ${
-      isLarge
-        ? "h-full flex-1 max-w-[400px] min-w-[280px]"
-        : "min-h-60 flex-1 min-w-[200px]"
-    }`}
-  >
-  
+      className={`flex flex-col overflow-hidden text-xl tracking-normal leading-8 text-black rounded-2xl basis-0 ${
+        isLarge
+          ? "h-full flex-1 max-w-[400px] min-w-[280px]"
+          : "min-h-60 flex-1 min-w-[200px]"
+      } xxl:max-w-[300px]`}
+    >
       <img
         src={imageSrc}
         alt={title}
