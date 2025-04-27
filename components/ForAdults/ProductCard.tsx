@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <img
         src={imageSrc}
         alt={title}
-        className={`object-contain flex-1 w-full rounded-2xl ${
+        className={`object-contain flex-1 w-full rounded-2xl  ${
           isLarge ? "aspect-[0.68]" : "aspect-[1.21]"
         }`}
       />

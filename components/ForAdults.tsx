@@ -27,20 +27,21 @@ const ForAdults: React.FC = () => {
             imageSrc="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/0592b126763a61d7fdb2a326c676d6767149c37c?placeholderIfAbsent=true"
             title="Valentine's Day"
           />
-          <ProductCard
+          
+          {/* <ProductCard
             imageSrc="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/11a4e9741ebb66c7a4ef460a3a31daac9ceb7585?placeholderIfAbsent=true"
             title="Father's Day"
-          />
+          /> */}
         </div>
 
-        {/* Right Large Card */}
-        <div className="flex-1 min-w-[280px] max-w-sm self-stretch">
+        {/* Right Large Card
+        <div className="flex-1 min-w-[280px]  max-w-sm self-stretch">
           <ProductCard
             imageSrc="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/ea90d964fb1634b3d683c7f41856680a846102f0?placeholderIfAbsent=true"
             title="Weddings"
             isLarge
           />
-        </div>
+        </div> */}
       </div>
     </section>
   );
