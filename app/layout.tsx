@@ -44,10 +44,10 @@ export default function RootLayout({
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="UTF-8" />
           <meta name="author" content="Techzilla" />
-          <meta name="keywords" content="YCT, Payment, Dashboard, Admin" />
+          <meta name="keywords" content="Party Place and Rentalss, Payment, Dashboard, Admin" />
           
           {/* Add the favicon link */}
-          <link rel="icon" href="/Vector.png" type="image/png" />
+          <link rel="icon" href="/favicon-v2.png" type="image/png" />
         </head>
         <body
           className={`${coiny.variable} ${inter.variable} antialiased`}
