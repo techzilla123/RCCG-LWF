@@ -47,7 +47,7 @@ export default function RootLayout({
           <meta name="keywords" content="Party Place and Rentalss, Payment, Dashboard, Admin" />
           
           {/* Add the favicon link */}
-          <link rel="icon" href="/favicon-v2.png" type="image/png" />
+          <link rel="icon" href="/favicon-v2.png?v=3" type="image/png" />
         </head>
         <body
           className={`${coiny.variable} ${inter.variable} antialiased`}
