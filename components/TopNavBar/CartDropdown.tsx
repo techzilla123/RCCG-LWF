@@ -18,20 +18,23 @@ export const CartDropdown = () => {
       </button>
 
       {hovered && (
-        <div className="absolute right-0 z-50 mt-2 w-44 text-white">
-          {/* Pointer */}
-          <div className="absolute top-0 right-3 w-3 h-3 bg-black rotate-45 -translate-y-1/2 z-0" />
-          {/* Dropdown box */}
-          <div className="relative bg-black rounded-xl p-3 pt-4">
-            <div className="text-base">
-              Total: <span className="font-bold text-white">$700</span>
-            </div>
-            <button className="mt-1 text-blue-400 underline text-base hover:text-blue-300 transition">
-              View cart
-            </button>
-          </div>
-        </div>
-      )}
+  <div className="absolute left-1/2 top-full z-50 mt-2 flex flex-col items-center -translate-x-1/2">
+    {/* Pointer */}
+    <div className="w-4 h-4 bg-black rotate-45 -translate-y-1/2" />
+
+    {/* Dropdown box */}
+    <div className="bg-black w-[101px] h-[54px] rounded-lg flex flex-col items-center justify-center text-white px-2 -mt-4">
+      <div className="text-[15px]">
+        Total: <span className="font-bold">$700</span>
+      </div>
+      <button className="mt-0.5 text-blue-400 underline text-[15px] hover:text-blue-300 transition">
+        View cart
+      </button>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };
