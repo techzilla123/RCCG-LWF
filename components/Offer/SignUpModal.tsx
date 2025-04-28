@@ -20,13 +20,13 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
             ✕
           </button>
 
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">Sign up</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2 text-black/80">Sign up</h2>
           <p className="text-center text-gray-500 text-sm mb-6">
             Great start! Create your account to get better shopping experience
           </p>
 
           <div className="flex flex-col gap-3 mb-6">
-            <button className="flex items-center justify-center gap-3 p-3 border rounded-full hover:bg-gray-50 transition text-sm font-medium">
+            <button className="flex items-center justify-center text-black/80 gap-3 p-3 border rounded-full hover:bg-gray-50 transition text-sm font-medium">
               <FcGoogle size={20} />
               Continue with Google
             </button>

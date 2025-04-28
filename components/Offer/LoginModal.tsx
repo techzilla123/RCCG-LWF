@@ -31,13 +31,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
             ✕
           </button>
 
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">Login</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2 text-black/80">Login</h2>
           <p className="text-center text-gray-500 text-sm mb-6">
             Welcome back! Login to continue your shopping adventure
           </p>
 
           <div className="flex flex-col gap-3 mb-6">
-            <button className="flex items-center justify-center gap-3 p-3 border rounded-full hover:bg-gray-50 transition text-sm font-medium">
+            <button className="flex items-center text-black/80 justify-center gap-3 p-3 border rounded-full hover:bg-gray-50 transition text-sm font-medium">
               <FcGoogle size={20} />
               Continue with Google
             </button>
@@ -70,7 +70,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
 
             <button
               type="submit"
-              className="p-3 mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition"
+              className="p-3 mt-2 bg-blue-600  hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition"
             >
               Log in
             </button>
