@@ -14,7 +14,6 @@ const coiny = localFont({
   display: "swap",
 });
 
-
 // New: Inter variable font
 const inter = localFont({
   src: [
@@ -33,7 +32,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <ReactQueryClientProvider>
@@ -44,14 +42,25 @@ export default function RootLayout({
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="UTF-8" />
           <meta name="author" content="Techzilla" />
-          <meta name="keywords" content="Party Place and Rentalss, Payment, Dashboard, Admin" />
+          <meta name="keywords" content="Party Place and Rentals, Payment, Dashboard, Admin" />
           
           {/* Add the favicon link */}
           <link rel="icon" href="/favicon-v2.ico?v=3" type="image/png" />
+
+          {/* Open Graph metadata for social media previews */}
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="Party Place and Rentals" />
+          <meta property="og:description" content="Find the best places and rentals for your party." />
+          <meta property="og:image" content="/hero.png" />  {/* Replace with your website's screenshot */}
+          
+          {/* Twitter Card metadata for better preview on Twitter */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="Party Place and Rentals" />
+          <meta name="twitter:description" content="Find the best places and rentals for your party." />
+          <meta name="twitter:image" content="/hero.png" />  {/* Replace with your website's screenshot */}
+          
         </head>
-        <body
-          className={`${coiny.variable} ${inter.variable} antialiased`}
-        >
+        <body className={`${coiny.variable} ${inter.variable} antialiased`}>
           {children}
         </body>
       </ReactQueryClientProvider>
