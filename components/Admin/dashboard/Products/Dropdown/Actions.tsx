@@ -10,9 +10,10 @@ const Actions = ({ direction = "down" }: { direction?: "up" | "down" }) => {
       } absolute right-0 z-50`}
     >
       <Link href="/admin-customer/order">
-        <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">View</div>
+        <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Edit</div>
       </Link>
-      <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Deactivate</div>
+      <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">View</div>
+      <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Disable</div>
       <div className="px-4 py-2 text-red-500 hover:bg-red-100 cursor-pointer">Delete</div>
     </div>
   );

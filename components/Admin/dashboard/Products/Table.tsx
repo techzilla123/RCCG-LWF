@@ -191,7 +191,7 @@ export const Table = () => {
         ref={(el) => (dropdownRefs.current[index] = el)}
       >
         <div
-          className="flex items-center gap-1 cursor-pointer"
+          className="flex items-center gap-1 cursor-pointer mt-3"
           onClick={() => toggleDropdown(index)}
         >
           <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
