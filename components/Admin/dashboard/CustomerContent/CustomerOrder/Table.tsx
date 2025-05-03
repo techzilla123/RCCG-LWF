@@ -154,7 +154,10 @@ const handleCopy = (id: string) => {
                 </div>
                 <div
                   className="relative"
-                  ref={(el) => (dropdownRefs.current[idx] = el)}
+                  ref={(el) => {
+                    dropdownRefs.current[idx] = el;
+                  }}
+                  
                 >
                   <div
                     className="flex items-center gap-1 cursor-pointer pt-3"
