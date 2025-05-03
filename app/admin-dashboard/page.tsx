@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import  Dash  from "@/components/Admin/dashboard/dashboard-overview/Dash.tsx";
+import  Dash  from "@/components/Admin/dashboard/dashboard-overview/Dash";
 import Footer from "@/components/auth/Footer";
 
 export default function Main() {
