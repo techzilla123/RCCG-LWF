@@ -39,13 +39,12 @@ export const ProfileCard: React.FC = () => {
   const index = 0; // Since there's only one card
 
   return (
-   <article
-  className="relative flex items-center gap-4 p-6 min-h-[180px] rounded-2xl border border-gray-200 bg-white min-w-60 max-md:px-4"
-  ref={(el) => {
-    dropdownRefs.current[index] = el;
-  }}
->
-
+    <article
+      className="relative flex items-center gap-4 p-6 min-h-[180px] rounded-2xl border border-gray-200 bg-white min-w-60 max-md:px-4"
+      ref={(el) => {
+        dropdownRefs.current[index] = el as HTMLDivElement | null;
+      }}
+    >
       <img
         src="https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/d29fe1bf9e21411c4bea0f62af4f6e5e65b0971b?placeholderIfAbsent=true"
         alt="Cynthia Morgan profile"
