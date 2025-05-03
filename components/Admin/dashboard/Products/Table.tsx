@@ -188,7 +188,12 @@ export const Table = () => {
     <TableCell key={index} className="px-4 py-3 text-right">
       <div
         className="relative"
-        ref={(el) => (dropdownRefs.current[index] = el)}
+         ref={
+                    ((el: HTMLDivElement | null) => {
+                      dropdownRefs.current[index] = el;
+                    }) as React.Ref<HTMLDivElement>
+                  }
+                  
       >
         <div
           className="flex items-center gap-1 cursor-pointer mt-3"
