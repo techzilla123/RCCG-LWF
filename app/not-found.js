@@ -34,7 +34,7 @@ export default function NotFound() {
         <PartyPopper color="#ff99cc" /> 404 - Party Not Found
       </h1>
       <p className="text-lg text-gray-300 max-w-md text-center mb-6">
-      The page you're looking for isn’t here. Maybe it got too excited and wandered off to a birthday bash!
+      The page you&apos;re looking for isn&apos;t here. Maybe it got too excited and wandered off to a birthday bash!
       </p>
 
       {/* Back to home */}

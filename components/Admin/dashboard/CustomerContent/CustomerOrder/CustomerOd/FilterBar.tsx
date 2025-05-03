@@ -1,5 +1,5 @@
 "use client";
-import { SearchIcon, LocationIcon, StatusIcon, CaretDownIcon } from "./Icons";
+import { SearchIcon, StatusIcon, CaretDownIcon } from "./Icons";
 
 export const FilterBar = () => {
   return (
