@@ -1,7 +1,7 @@
 "use client";
 import { CustomerManagementHeader } from "./CustomerManagementHeader/CustomerManagementHeader";
 import { FilterBar } from "./CustomerManagementHeader/FilterBar";
-import { StatisticsGrid } from "./CustomerManagementHeader/StatisticsGrid";
+import  StatisticsGrid  from "./CustomerManagementHeader/StatisticsGrid";
 import  Table  from "./Table"
 import { Pagination } from "./CustomerManagementHeader/Pagination";
 

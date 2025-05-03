@@ -5,7 +5,7 @@ import Link from "next/link";
 const Actions = ({ direction = "down" }: { direction?: "up" | "down" }) => {
   return (
     <div
-      className={`w-32 bg-white shadow-lg border rounded-xl py-2 text-sm text-black ${
+      className={`w-32 bg-white shadow-lg border -mx-9 -mt-6 rounded-xl py-2 text-sm text-black ${
         direction === "up" ? "bottom-full mb-2" : "top-full mt-2"
       } absolute right-0 z-50`}
     >

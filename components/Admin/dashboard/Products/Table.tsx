@@ -1,62 +1,12 @@
 "use client";
+import { TableHeader } from './Table/TableHeader';
+import { TableCell } from './Table/TableCell';
+import { StatusTag } from './Table/StatusTag';
 import React, { useState, useRef, useEffect } from "react";
 import Actions from "./Dropdown/Actions";
+import { createPortal } from 'react-dom';
 
-
-const users = [
-  {
-    name: "Cynthia Morgan",
-    email: "cynthiamorgan@gmail.com",
-    location: "USA",
-    date: "03-04-2025",
-    orders: 20,
-    status: "Unverified",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    name: "Mateo Silva",
-    email: "mateosilva@gmail.com",
-    location: "Mexico",
-    date: "03-04-2025",
-    orders: 20,
-    status: "Verified",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    name: "John Carlson",
-    email: "johncarlson@gmail.com",
-    location: "USA",
-    date: "03-04-2025",
-    orders: 20,
-    status: "Verified",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    name: "Fatoumata Diallo",
-    email: "fatoumatadiallo@email.com",
-    location: "Ghana",
-    date: "03-04-2025",
-    orders: 20,
-    status: "Unverified",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    name: "Hiroshi Tana",
-    email: "hiroshitana@email.com",
-    location: "Taiwan",
-    date: "03-04-2025",
-    orders: 20,
-    status: "Verified",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-];
-
-const statusColors: Record<string, string> = {
-  Verified: "bg-green",
-  Unverified: "bg-orange-400",
-};
-
-const Table = () => {
+export const Table = () => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
 
@@ -89,69 +39,186 @@ const Table = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdownIndex]);
-
   return (
-    <div className="mt-6 relative">
+    <div className="w-full overflow-x-auto mt-8">
+    <div className="flex min-w-[900px]"> {/* Added gap between columns */}
 
-      <table className="min-w-full text-sm">
-        <thead className="bg-gray-100 text-left font-medium">
-          <tr>
-            <th className="p-3">Name</th>
-            <th className="p-3">Location</th>
-            <th className="p-3">Date joined</th>
-            <th className="p-3">Orders</th>
-            <th className="p-3">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, idx) => (
-            <tr key={idx} className="border-b">
-              <td className="p-3 flex items-center gap-3">
-                <img
-                  src={user.image}
-                  alt={user.name}
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-                <div>
-                  <div className="font-medium">{user.name}</div>
-                  <div className="text-xs text-gray-500">{user.email}</div>
-                </div>
-              </td>
-              <td className="p-3">{user.location}</td>
-              <td className="p-3">{user.date}</td>
-              <td className="p-3">{user.orders}</td>
-              <td className="p-3 flex items-center justify-between w-full">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`w-2 h-2 rounded-full ${statusColors[user.status]}`}
-                  ></span>
-                  {user.status}
-                </div>
-                <div
-                  className="relative"
-                  ref={(el) => (dropdownRefs.current[idx] = el)}
-                >
-                  <div
-                    className="flex items-center gap-1 cursor-pointer"
-                    onClick={() => toggleDropdown(idx)}
-                  >
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-                  </div>
+  
+        {/* Left Image */}
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/ddea918870f375ce53a047f37bb138b8c9d80a7a?placeholderIfAbsent=true"
+          className="object-contain shrink-0 w-10 aspect-[0.12]"
+          alt=""
+        />
 
-                  {openDropdownIndex === idx && (
-                    <div className="absolute right-0 z-50">
-                      <Actions direction={dropdownDirection} />
-                    </div>
-                  )}
-                </div>
-              </td>
-
-            </tr>
+        {/* Image Column */}
+        <div className="flex-1 min-w-[100px] max-w-[120px]">
+          <TableHeader title="Image" />
+          {[
+            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f787e17a6d7c5de797075819be6e830ad2215ceb?placeholderIfAbsent=true",
+            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/10fe93c6dbfdd551ab0f1bf623522d4ace36355d?placeholderIfAbsent=true",
+            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/fddde9f7a2c5735a183b984f1b45c27794af0cd5?placeholderIfAbsent=true",
+            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/fabc870d34a2df2cd9b3f4d7d5fa1429cb2eead1?placeholderIfAbsent=true",
+            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/b05fe33e78cfea949604e566849a0cde9b93ef5f?placeholderIfAbsent=true"
+          ].map((url, index) => (
+            <TableCell key={index} className="py-3 px-5 justify-center">
+              <img
+                src={url}
+                className="object-contain rounded aspect-[1.7] w-[68px]"
+                alt=""
+              />
+            </TableCell>
           ))}
-        </tbody>
-      </table>
+        </div>
+
+        {/* Product Column */}
+        <div className="flex-1 min-w-[200px]">
+  <TableHeader title="Product" />
+  {[
+    "Colourful Kids Birthday Latex Balloons",
+    "Transparent Bubble Balloon with Custom Sticker...",
+    "Elegant Golden Age Birthday Celebration Set...",
+    "All-In-One Happy Birthday Bash Décor Kit...",
+    "Deluxe Dessert Station Setup Kit – For Insta..."
+  ].map((text, index) => (
+    <TableCell key={index} className="p-2">
+         <div className="text-base text-black truncate mt-2 "   title={text}>{text}</div>
+    </TableCell>
+  ))}
+</div>
+
+
+
+        {/* Category Column */}
+        <div className="flex-1 min-w-[180px]">
+          <TableHeader title="Category" />
+          {[
+            "Birthday shop",
+            "Balloon shop",
+            "Party supplies",
+            "Decoration",
+            "Holidays & Occasions"
+          ].map((text, index) => (
+            <TableCell key={index} className="py-2 px-4">
+              <div className="text-base text-black truncate mt-2"   title={text}>{text}</div>
+            </TableCell>
+          ))}
+        </div>
+
+        {/* Date Column */}
+        <div className="flex-1 min-w-[150px] max-w-[200px]">
+          <TableHeader title="Date added" />
+          {Array(5).fill("03-04-2025").map((date, index) => (
+            <TableCell key={index} className="py-2 px-4 whitespace-nowrap">
+              <div className="text-base text-black mt-2">{date}</div>
+            </TableCell>
+          ))}
+        </div>
+
+        {/* Price Column */}
+        <div className="flex-1 min-w-[100px] max-w-[120px]">
+          <TableHeader title="Price" />
+          {["$720", "$950", "$20", "$120", "$1,020"].map((price, index) => (
+            <TableCell key={index} className="py-2 px-4 text-right">
+              <div className="text-base text-black mt-2">{price}</div>
+            </TableCell>
+          ))}
+        </div>
+
+        {/* Orders Column */}
+        <div className="flex-1 min-w-[100px] max-w-[120px]">
+          <TableHeader title="Orders" />
+          {["20", "120", "10", "700", "10"].map((orders, index) => (
+            <TableCell key={index} className="py-2 px-4 text-right">
+              <div className="text-base text-black mt-2">{orders}</div>
+            </TableCell>
+          ))}
+        </div>
+
+        {/* Sales Column */}
+        <div className="flex-1 min-w-[130px] max-w-[160px]">
+          <TableHeader title="Sales" />
+          {["$14,400", "$45,520", "$200", "$84,000", "$10,200"].map((sales, index) => (
+            <TableCell key={index} className="py-2 px-4 text-right">
+              <div className="text-base text-black mt-2">{sales}</div>
+            </TableCell>
+          ))}
+        </div>
+
+        {/* Stock Column */}
+        <div className="flex-1 min-w-[120px] max-w-[140px]">
+          <TableHeader title="Stock" />
+          {[
+            { value: "200", disabled: false },
+            { value: "314", disabled: false },
+            { value: "400", disabled: false },
+            { value: "0", disabled: true },
+            { value: "5", disabled: false }
+          ].map((stock, index) => (
+            <TableCell
+              key={index}
+              className={`py-2 px-4 text-right ${
+                stock.disabled ? "text-stone-300 font-medium" : "text-black"
+              }`}
+            >
+              <div className="mt-2">{stock.value}</div>
+            </TableCell>
+          ))}
+        </div>
+
+        {/* Status Column */}
+        <div className="flex-1 min-w-[140px] max-w-[160px]">
+          <TableHeader title="Status" />
+          {[
+            "Active",
+            "Disabled",
+            "Active",
+            "Out of stock",
+            "Disabled"
+          ].map((status, index) => (
+            <TableCell key={index} className="px-4 py-3">
+              <StatusTag status={status as 'Active' | 'Disabled' | 'Out of stock'} />
+            </TableCell>
+          ))}
+        </div>
+
+       <div className="flex-1 min-w-[80px] max-w-[100px]">
+  <TableHeader title="" />
+  {Array(5).fill(null).map((_, index) => (
+    <TableCell key={index} className="px-4 py-3 text-right">
+      <div
+        className="relative"
+        ref={(el) => (dropdownRefs.current[index] = el)}
+      >
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={() => toggleDropdown(index)}
+        >
+          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+        </div>
+
+        {openDropdownIndex === index && dropdownRefs.current[index] &&
+  createPortal(
+    <div
+      className="absolute z-[9999]"
+      style={{
+        top: dropdownRefs.current[index].getBoundingClientRect().bottom + window.scrollY,
+        left: dropdownRefs.current[index].getBoundingClientRect().left + window.scrollX,
+      }}
+    >
+      <Actions direction={dropdownDirection} />
+    </div>,
+    document.body
+  )
+}
+      </div>
+    </TableCell>
+  ))}
+</div>
+
+      </div>
     </div>
   );
 };
