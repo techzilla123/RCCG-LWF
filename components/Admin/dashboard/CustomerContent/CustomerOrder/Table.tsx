@@ -154,9 +154,12 @@ const handleCopy = (id: string) => {
                 </div>
                 <div
                   className="relative"
-                  ref={(el) => {
-                    dropdownRefs.current[idx] = el;
-                  }}
+                  ref={
+                    ((el: HTMLDivElement | null) => {
+                      dropdownRefs.current[idx] = el;
+                    }) as React.Ref<HTMLDivElement>
+                  }
+                  
                   
                 >
                   <div
