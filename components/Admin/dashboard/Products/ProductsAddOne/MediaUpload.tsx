@@ -1,10 +1,11 @@
 import { useRef } from 'react';
 import { EyeIcon, CloseIcon } from './Icons';
 
-interface UploadedFile {
+export interface UploadedFile {
   image: string;
   type: string;
 }
+
 
 interface MediaUploadProps {
   files: UploadedFile[]; // Accept files from the parent component
