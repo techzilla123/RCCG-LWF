@@ -39,23 +39,8 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
     }
   };
 
-  const uploadedFiles = [
-    {
-      image:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/56995de21fa17bbc0af9f54f3d7847d28dfd2cab?placeholderIfAbsent=true",
-      type: "image/jpeg",
-    },
-    {
-      image:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/456e353256c3ad4de8fa955db7c537c48044396a?placeholderIfAbsent=true",
-      type: "image/png",
-    },
-    {
-      image:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/48e31308077c89da147d70af19cea3104bc00f40?placeholderIfAbsent=true",
-      type: "video/mp4",
-    },
-  ];
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+
 
   // Step 1 content
   if (step === 1) {
@@ -88,7 +73,7 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
           {/* Use the KeywordTags component directly */}
           <KeywordTags />
 
-          <MediaUpload files={uploadedFiles} />
+          <MediaUpload files={uploadedFiles} onFilesChange={setUploadedFiles} />
         </section>
 
         <FormActions

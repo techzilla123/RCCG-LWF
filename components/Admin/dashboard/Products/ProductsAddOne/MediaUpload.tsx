@@ -6,8 +6,12 @@ interface UploadedFile {
   type: string;
 }
 
-export const MediaUpload = () => {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
+interface MediaUploadProps {
+  files: UploadedFile[]; // Accept files from the parent component
+  onFilesChange: (newFiles: UploadedFile[]) => void; // Callback to update the parent component's state
+}
+
+export const MediaUpload = ({ files, onFilesChange }: MediaUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,11 +23,12 @@ export const MediaUpload = () => {
       type: file.type,
     }));
 
-    setFiles((prev) => [...prev, ...newFiles]);
+    onFilesChange([...files, ...newFiles]); // Update the parent component's state
   };
 
   const handleRemove = (indexToRemove: number) => {
-    setFiles(files.filter((_, i) => i !== indexToRemove));
+    const updatedFiles = files.filter((_, i) => i !== indexToRemove);
+    onFilesChange(updatedFiles); // Update the parent component's state
   };
 
   const handleUploadClick = () => {
