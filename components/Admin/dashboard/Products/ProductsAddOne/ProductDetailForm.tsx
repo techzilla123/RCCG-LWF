@@ -4,6 +4,7 @@ import { InputField } from "./InputField";
 import { URLInput } from "./URLInput";
 import { KeywordTags } from "./KeywordTags";
 import { MediaUpload } from "./MediaUpload";
+import type { UploadedFile } from "./MediaUpload"; // Adjust the path if needed
 import { FormActions } from "./FormActions";
 import { CloseButton } from "./CloseButton";
 import CustomerOptionsForm from "../ProductsAddTwo/CustomerOptionsForm";
