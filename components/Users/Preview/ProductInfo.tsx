@@ -12,6 +12,18 @@ interface ProductInfoProps {
   description: string;
   tags: string[];
 }
+interface LocationInfo {
+  country: string;
+  city: string;
+  deliveryDate: string;
+  deliveryTime: string;
+  address: string;
+  postalCode: string;
+  specialInstructions: string;
+  pickupLocation: string;
+}
+
+
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
   title,
@@ -31,10 +43,17 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
 // const [deliveryDate, setDeliveryDate] = React.useState("");       // Delivery date
 // const [deliveryTime, setDeliveryTime] = React.useState("");       // Delivery time
 // const [deliveryNotes, setDeliveryNotes] = React.useState("");     // Delivery notes
-  const [location, setLocation] = React.useState({
-    country: "USA",
-    city: "Houston, Texas",
-  });
+const [location, setLocation] = React.useState<LocationInfo>({
+  country: "USA",
+  city: "Houston, Texas",
+  deliveryDate: "",
+  deliveryTime: "",
+  address: "",
+  postalCode: "",
+  specialInstructions: "",
+  pickupLocation: "",
+});
+
   const [detailsOpen, setDetailsOpen] = React.useState(true);
  
 
