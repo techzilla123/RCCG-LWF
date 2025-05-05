@@ -26,6 +26,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [selectedSize, setSelectedSize] = React.useState("l");
   const [isInflated, setIsInflated] = React.useState(false);
   const [quantity, setQuantity] = React.useState("1");
+  const [deliveryMethod, setDeliveryMethod] = React.useState("pickup");
+const [pickupLocation, setPickupLocation] = React.useState("");  // Pickup location
+const [deliveryDate, setDeliveryDate] = React.useState("");       // Delivery date
+const [deliveryTime, setDeliveryTime] = React.useState("");       // Delivery time
+const [deliveryNotes, setDeliveryNotes] = React.useState("");     // Delivery notes
   const [location, setLocation] = React.useState({
     country: "USA",
     city: "Houston, Texas",
@@ -165,6 +170,10 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         </Button>
       </div>
 
+    
+
+
+
       {/* Expandable Sections */}
       <section className="pt-6 mt-6 border-t">
         <div
@@ -185,79 +194,193 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         )}
       </section>
 
-      <section className="pt-6 mt-6 border-t">
-        <div
-          className="flex justify-between items-center cursor-pointer"
-          onClick={() => setShippingOpen(!shippingOpen)}
-        >
-          <h3 className="text-base font-semibold text-black">
-            Shipping information
-          </h3>
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/568c68eeaaa026fc9e65ee05b5849ad0b09003cc?placeholderIfAbsent=true"
-            alt="toggle"
-            className="w-5 h-5"
-          />
-        </div>
-        {shippingOpen && (
-          <div className="mt-4 text-sm text-neutral-500">
-            <ul className="space-y-2">
-              <li>
-                Shipped from: <span className="text-black">USA</span>
-              </li>
-              <li>
-                Order now, get by:{" "}
-                <span className="text-black">May 15, 2025</span>
-              </li>
-              <li>
-                Return policy:{" "}
-                <span className="text-black">within 7 days</span>
-              </li>
-              <li>
-                Shipping cost: <span className="text-black">$24.00</span>
-              </li>
-            </ul>
-          </div>
-        )}
-      </section>
 
-      {/* Location Selector */}
-      <div className="mt-6">
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={shipToMe}
-            onChange={(e) => setShipToMe(e.target.checked)}
-            className="w-4 h-4"
-          />
-          <span className="text-sm text-neutral-500">
-            I want this to be shipped to me
-          </span>
-        </label>
+       {/* Delivery Options */}
+<div className="mt-6">
+  <h3 className="text-base font-semibold text-black mb-3">Choose Delivery Method</h3>
+  <div className="flex justify-between gap-4">
+    {/* Pickup Option */}
+    <button
+      onClick={() => setDeliveryMethod("pickup")}
+      className={`flex-1 border border-gray-300 rounded-xl p-3 flex flex-col items-center hover:shadow-md ${deliveryMethod === "pickup" ? "border-black shadow-lg" : ""}`}
+    >
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/684/684908.png"
+        alt="Pickup"
+        className="w-10 h-10 mb-2"
+      />
+      <span className="text-sm text-black font-medium">Pickup</span>
+    </button>
 
-        {shipToMe && (
-          <div className="flex flex-col gap-3 mt-3">
-            <select
-              value={location.country}
-              onChange={(e) =>
-                setLocation({ ...location, country: e.target.value })
-              }
-              className="px-4 py-2 rounded-lg border bg-white"
-            >
-              <option value="USA">USA</option>
-            </select>
-            <select
-              value={location.city}
-              onChange={(e) =>
-                setLocation({ ...location, city: e.target.value })
-              }
-              className="px-4 py-2 rounded-lg border bg-white"
-            >
-              <option value="Houston, Texas">Houston, Texas</option>
-            </select>
-          </div>
-        )}
-      </div>
+    {/* Local Delivery Option */}
+    <button
+      onClick={() => setDeliveryMethod("local")}
+      className={`flex-1 border border-gray-300 rounded-xl p-3 flex flex-col items-center hover:shadow-md ${deliveryMethod === "local" ? "border-black shadow-lg" : ""}`}
+    >
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/893/893226.png"
+        alt="Local Delivery"
+        className="w-10 h-10 mb-2"
+      />
+      <span className="text-sm text-black font-medium">Local Delivery</span>
+    </button>
+
+    {/* Shipping Option */}
+    <button
+      onClick={() => setDeliveryMethod("shipping")}
+      className={`flex-1 border border-gray-300 rounded-xl p-3 flex flex-col items-center hover:shadow-md ${deliveryMethod === "shipping" ? "border-black shadow-lg" : ""}`}
+    >
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/1239/1239525.png"
+        alt="Shipping"
+        className="w-10 h-10 mb-2"
+      />
+      <span className="text-sm text-black font-medium">Shipping</span>
+    </button>
+  </div>
+
+  {/* Conditional Display for Pickup */}
+  {deliveryMethod === "pickup" && (
+    <div className="mt-4 text-sm text-black">
+      <p>Pickup location: <strong>Houston Pickup Center</strong></p>
+      
+    </div>
+  )}
+
+{deliveryMethod === "local" && (
+  <div className="mt-6">
+    <h3 className="text-base font-semibold text-black">Local Delivery</h3>
+    <div className="mt-2">
+      <label className="block text-sm">Delivery Date</label>
+      <input
+        type="date"
+        value={location.deliveryDate}
+        onChange={(e) => setLocation({ ...location, deliveryDate: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Delivery Time</label>
+      <input
+        type="time"
+        value={location.deliveryTime}
+        onChange={(e) => setLocation({ ...location, deliveryTime: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+      />
+    </div>
+    <div className="mt-2">
+      <label className="block text-sm">Shipping Address</label>
+      <input
+        type="text"
+        value={location.address}
+        onChange={(e) => setLocation({ ...location, address: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Enter shipping address"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Postal Code</label>
+      <input
+        type="text"
+        value={location.postalCode}
+        onChange={(e) => setLocation({ ...location, postalCode: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Enter postal code"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Special Instructions</label>
+      <textarea
+        value={location.specialInstructions}
+        onChange={(e) => setLocation({ ...location, specialInstructions: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Any special instructions?"
+      />
+    </div>
+  </div>
+)}
+
+</div>
+
+     {/* Conditionally render based on the selected delivery method */}
+{deliveryMethod === "pickup" && (
+  <div className="mt-6">
+    <h3 className="text-base font-semibold text-black">Pickup Location</h3>
+    <div className="mt-2">
+      <label className="block text-sm">Select Pickup Location</label>
+      <select
+        className="p-2 border rounded-lg w-full"
+        onChange={(e) => setLocation({ ...location, pickupLocation: e.target.value })}
+      >
+        <option value="Store A">Store A</option>
+        <option value="Store B">Store B</option>
+        <option value="Store C">Store C</option>
+      </select>
+    </div>
+  </div>
+)}
+
+
+{deliveryMethod === "shipping" && (
+  <div className="mt-6">
+    <h3 className="text-base font-semibold text-black">Shipping Information</h3>
+    <div className="mt-2">
+      <label className="block text-sm">Shipping Address</label>
+      <input
+        type="text"
+        value={location.address}
+        onChange={(e) => setLocation({ ...location, address: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Enter shipping address"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Postal Code</label>
+      <input
+        type="text"
+        value={location.postalCode}
+        onChange={(e) => setLocation({ ...location, postalCode: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Enter postal code"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Delivery Date</label>
+      <input
+        type="date"
+        value={location.deliveryDate}
+        onChange={(e) => setLocation({ ...location, deliveryDate: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Delivery Time</label>
+      <input
+        type="time"
+        value={location.deliveryTime}
+        onChange={(e) => setLocation({ ...location, deliveryTime: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+      />
+    </div>
+
+    <div className="mt-4">
+      <label className="block text-sm">Special Instructions</label>
+      <textarea
+        value={location.specialInstructions}
+        onChange={(e) => setLocation({ ...location, specialInstructions: e.target.value })}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Any special instructions?"
+      />
+    </div>
+  </div>
+)}
+
     </aside>
   );
 };
