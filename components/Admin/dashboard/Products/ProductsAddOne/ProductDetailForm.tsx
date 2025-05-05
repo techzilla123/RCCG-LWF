@@ -1,5 +1,4 @@
-"use client";
-
+// ProductDetailForm.tsx
 import { useState } from "react";
 import { FormHeader } from "./FormHeader";
 import { InputField } from "./InputField";
@@ -9,9 +8,10 @@ import { MediaUpload } from "./MediaUpload";
 import { FormActions } from "./FormActions";
 import { CloseButton } from "./CloseButton";
 import CustomerOptionsForm from "../ProductsAddTwo/CustomerOptionsForm";
-import PricingForm from "../PricingForm/PricingForm"; // Make sure this import is correct
+import PricingForm from "../PricingForm/PricingForm";
 import PreviewNew from "../PreviewSave/PreviewNew";
 
+// Defining the type for the component props
 type ProductDetailFormProps = {
   onClose: () => void;
 };
@@ -19,6 +19,7 @@ type ProductDetailFormProps = {
 export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
   const [step, setStep] = useState(1);
 
+  // Functions for handling step navigation
   const handleClose = () => {
     onClose();
   };
@@ -38,7 +39,8 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
       setStep((prev) => prev + 1);
     }
   };
-  
+
+  // Keywords array definition
   const keywords = [
     { text: "Balloons", color: "blue" as const },
     { text: "Birthday", color: "green" as const },
@@ -63,6 +65,7 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
     },
   ];
 
+  // Step 1 content
   if (step === 1) {
     return (
       <main className="flex flex-col gap-6 p-10 mx-auto max-w-none bg-white rounded-2xl w-[640px] max-md:p-5 max-md:w-full max-md:max-w-[991px] max-sm:p-4 max-sm:max-w-screen-sm">
@@ -89,7 +92,10 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
           <URLInput />
           <InputField label="Category" required value="Birthday shop" />
           <InputField label="Sub category" required value="Sub category" />
-          <KeywordTags tags={keywords} />
+
+          {/* Pass the tags as props */}
+          <KeywordTags />
+
           <MediaUpload files={uploadedFiles} />
         </section>
 
@@ -125,14 +131,15 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
     return (
       <>
         <PricingForm
-  onCancel={handleCancel}
-  onPrevious={handlePrevious}
-  onNext={handleNext}
-/>
+          onCancel={handleCancel}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+        />
         <CloseButton onClick={handleClose} />
       </>
     );
   }
+
   if (step === 4) {
     return (
       <>
@@ -144,7 +151,7 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
       </>
     );
   }
-  
+
   return null;
 };
 
