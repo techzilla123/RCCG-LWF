@@ -1,5 +1,5 @@
 "use client";
-import { SearchIcon, LocationIcon, StatusIcon, CaretDownIcon } from "./Icons";
+import { SearchIcon, StatusIcon, CartIcon, CaretDownIcon } from "./Icons";
 
 export const FilterBar = () => {
   return (
@@ -9,11 +9,12 @@ export const FilterBar = () => {
         <span className="ml-2">Search</span>
       </div>
 
-      <button className="flex items-center px-2 py-0 h-10 rounded-lg border border-solid border-neutral-300">
-        <LocationIcon />
-        <span className="mx-2">Location: USA</span>
-        <CaretDownIcon />
-      </button>
+      <button className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white">
+          <CartIcon />
+          <span className="mx-2 text-neutral-700">Category: All</span>
+          <CaretDownIcon />
+        </button>
+
 
       <button className="flex items-center px-2 py-0 h-10 rounded-lg border border-solid border-neutral-300">
         <StatusIcon />
