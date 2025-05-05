@@ -27,17 +27,16 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [isInflated, setIsInflated] = React.useState(false);
   const [quantity, setQuantity] = React.useState("1");
   const [deliveryMethod, setDeliveryMethod] = React.useState("pickup");
-const [pickupLocation, setPickupLocation] = React.useState("");  // Pickup location
-const [deliveryDate, setDeliveryDate] = React.useState("");       // Delivery date
-const [deliveryTime, setDeliveryTime] = React.useState("");       // Delivery time
-const [deliveryNotes, setDeliveryNotes] = React.useState("");     // Delivery notes
+// const [pickupLocation, setPickupLocation] = React.useState("");  // Pickup location
+// const [deliveryDate, setDeliveryDate] = React.useState("");       // Delivery date
+// const [deliveryTime, setDeliveryTime] = React.useState("");       // Delivery time
+// const [deliveryNotes, setDeliveryNotes] = React.useState("");     // Delivery notes
   const [location, setLocation] = React.useState({
     country: "USA",
     city: "Houston, Texas",
   });
   const [detailsOpen, setDetailsOpen] = React.useState(true);
-  const [shippingOpen, setShippingOpen] = React.useState(true);
-  const [shipToMe, setShipToMe] = React.useState(false);
+ 
 
   const colorOptions = [
     "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9d6e368c4d3f25e0a425b18c21b33b7db12f7743?placeholderIfAbsent=true",

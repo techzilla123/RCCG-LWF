@@ -1,4 +1,3 @@
-// ProductDetailForm.tsx
 import { useState } from "react";
 import { FormHeader } from "./FormHeader";
 import { InputField } from "./InputField";
@@ -39,13 +38,6 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
       setStep((prev) => prev + 1);
     }
   };
-
-  // Keywords array definition
-  const keywords = [
-    { text: "Balloons", color: "blue" as const },
-    { text: "Birthday", color: "green" as const },
-    { text: "Wedding", color: "red" as const },
-  ];
 
   const uploadedFiles = [
     {
@@ -93,7 +85,7 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
           <InputField label="Category" required value="Birthday shop" />
           <InputField label="Sub category" required value="Sub category" />
 
-          {/* Pass the tags as props */}
+          {/* Use the KeywordTags component directly */}
           <KeywordTags />
 
           <MediaUpload files={uploadedFiles} />
