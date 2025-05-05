@@ -19,7 +19,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
           <a
             key={index}
             href="#"
-            className="block overflow-hidden gap-2 self-stretch pr-4 pl-2 mt-1 w-full rounded-lg shadow-sm bg-black bg-opacity-0 min-h-10 hover:bg-gray-100"
+            className="block overflow-hidden text-black gap-2 self-stretch pr-4 pl-2 mt-1 w-full rounded-lg shadow-sm bg-black bg-opacity-0 min-h-10 hover:bg-gray-100"
           >
             {item}
           </a>

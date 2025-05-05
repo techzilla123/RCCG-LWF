@@ -28,8 +28,9 @@ export const NavigationLinks = () => {
 
   const links = [
     { label: "On sales", path: "/shop" },
-    { label: "Rentals", path: "/rentals" },
     { label: "Balloon Decors", path: "/shop/decorations" },
+    { label: "Rentals", path: "/rentals" },
+  
   ];
 
   return (

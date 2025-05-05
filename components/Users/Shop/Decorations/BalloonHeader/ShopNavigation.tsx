@@ -4,8 +4,8 @@ import * as React from "react";
 
 export const ShopNavigation: React.FC = () => {
   const tabs = [
-    "Balloon arts",
-    "Custom arts",
+    "Balloon Decoration",
+    "Event Decoration",
     
   ];
 
@@ -25,7 +25,7 @@ export const ShopNavigation: React.FC = () => {
           className={`pb-1 text-sm md:text-base font-normal whitespace-nowrap transition-colors border-b-2 ${
             activeTab === tab
               ? "text-black border-black"
-              : "text-[rgba(113,113,113,0.3)] border-transparent"
+              : "text-[rgb(60,60,60)] border-transparent"
           }`}
         >
           {tab}

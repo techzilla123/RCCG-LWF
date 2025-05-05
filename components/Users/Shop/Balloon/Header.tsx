@@ -28,7 +28,7 @@ export default function WishHeader() {
         className="object-contain absolute bottom-0 z-0 max-w-full  aspect-[1.99] h-[169.43px] -right-[10px] w-[224.2px]"
         style={{ marginBottom: "-23px" }}
       />
-      <div className="flex z-0 flex-col justify-center items-center self-center">
+      <div className="flex z-0 flex-col justify-center items-center self-center ">
         <Breadcrumbs items={breadcrumbItems} />
         <h1
           className={`${coiny.className} text-[48px] whitespace-nowrap z-10 max-md:text-4xl`}

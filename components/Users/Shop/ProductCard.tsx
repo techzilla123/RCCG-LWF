@@ -4,14 +4,8 @@ import * as React from "react";
 import { ProductRating } from "./ProductRating";
 import { ProductActions } from "./ProductActions";
 import { FavoriteButton } from "./FavoriteButton";
-import { Inter } from 'next/font/google';
 import { useRouter } from "next/navigation"; 
 
-const inter = Inter({
-  weight: ['500', '600'],
-  subsets: ['latin'],
-  variable: '--font-inter',
-});
 
 interface ProductCardProps {
   image: string;
@@ -66,11 +60,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             reviews={reviews}
             starIcon={starIcon}
           />
-          <h3
-            className={`${inter.variable} font-[var(--font-inter)] font-semibold text-xl tracking-normal leading-[26px] text-black mt-2 mb-2`}
-          >
-            {title}
-          </h3>
+        <h3 className="font-[var(--font-inter)] font-semibold text-xl tracking-normal leading-[26px] text-black mt-2 mb-2">
+  {title}
+</h3>
+
         </div>
         <ProductActions
           price={price}

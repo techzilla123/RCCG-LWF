@@ -10,6 +10,7 @@ export const SideMenu: React.FC = () => {
         <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/36ec17d9786b941b0e883c6bf11e39f2a2b38c99?placeholderIfAbsent=true" label="Holidays & Occasions" />
         <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f3b1bdaac013192d5bc79182008198990569a8b8?placeholderIfAbsent=true" label="Party Supplies" />
         <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/dad70678c904999895db481e1567a7c3089a1dbd?placeholderIfAbsent=true" label="Decoration" />
+        
       </div>
       <div className="pt-2 w-full border-t border-solid border-t-[#D5D5D5]">
         <button className="flex gap-10 justify-between items-center pt-16 pb-8 w-full h-8 bg-black bg-opacity-0 min-h-8 rounded-[50px]">
