@@ -10,14 +10,13 @@ export function AboutContent() {
         <h2 className="mt-1 text-4xl text-black">Who are we?</h2>
       </header>
       <p className="mt-4 text-sm tracking-normal leading-6 text-black max-md:max-w-full">
-        Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod
-        tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,
-        nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit
-        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui
-        officia deserunt mollit anim id est laborum.
-      </p>
+  <strong>Your Ultimate Party Destination — Delivered Fast, Celebrated Big!</strong><br />
+  From eye-catching balloon designs to themed décor, standout costumes, and party-perfect rentals — we have everything to turn your vision into reality.<br /><br />
+  Planning last-minute? No worries! Enjoy same-day delivery and easy rentals that make organizing a breeze. Our warm, helpful team is always ready to guide you to the coolest finds — all at prices that’ll surprise you (in a good way).<br /><br />
+  With wide coverage across the U.S., we bring the celebration straight to your door — fun, fast, and totally stress-free.<br /><br />
+  <strong>Visit today — let’s make your next party unforgettable!</strong>
+</p>
+
     </article>
   );
 }

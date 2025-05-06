@@ -11,19 +11,42 @@ const Offer: React.FC = () => {
   if (!visible) return null;
 
   return (
-    <section className="w-full flex items-center justify-center gap-4 px-4 py-2 text-black bg-yellow-400 relative">
-      <div className="flex flex-wrap gap-2 items-center justify-center text-center">
-        <OfferText />
-        <SignUpLink />
-      </div>
-      <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-black/10 rounded-full transition"
-        onClick={() => setVisible(false)}
-        aria-label="Close offer"
-      >
-        <X className="w-4 h-4" />
-      </button>
-    </section>
+    <>
+      <section className="offer-glow w-full flex items-center justify-center gap-4 px-4 py-2 text-black relative rounded-lg shadow-lg">
+        <div className="flex flex-wrap gap-2 items-center justify-center text-center">
+          <OfferText />
+          <SignUpLink />
+        </div>
+        <button
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-black/10 rounded-full transition"
+          onClick={() => setVisible(false)}
+          aria-label="Close offer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </section>
+
+      <style jsx>{`
+        @keyframes glow {
+          0% {
+            background-color: #facc15; /* yellow-400 */
+            box-shadow: 0 0 10px #facc15;
+          }
+          50% {
+            background-color: #fde68a; /* yellow-300 */
+            box-shadow: 0 0 20px #fde68a;
+          }
+          100% {
+            background-color: #facc15;
+            box-shadow: 0 0 10px #facc15;
+          }
+        }
+
+        .offer-glow {
+          animation: glow 3s ease-in-out infinite;
+        }
+      `}</style>
+    </>
   );
 };
 
