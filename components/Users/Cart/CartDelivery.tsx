@@ -15,7 +15,6 @@ interface LocationInfo {
 }
 
 const DeliveryOptions = () => {
-  const [quantity, setQuantity] = useState(1);
   const [deliveryMethod, setDeliveryMethod] = useState("pickup");
   const [location, setLocation] = useState<LocationInfo>({
     country: "USA",
