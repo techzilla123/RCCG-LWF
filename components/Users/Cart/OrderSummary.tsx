@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SummaryItemType } from "./types";
+import CartDelivery from "./CartDelivery";
 
 interface OrderSummaryProps {
   items: SummaryItemType[];
@@ -12,14 +13,34 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   totalItems,
   total,
 }) => {
-  // Separate Subtotal and Taxes from other items
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Separate Subtotal and Taxes from other items
   const taxes = items.find((item) => item.label.toLowerCase() === "taxes");
   const otherItems = items.filter(
     (item) =>
       item.label.toLowerCase() !== "subtotal" &&
       item.label.toLowerCase() !== "taxes"
   );
+
+  // Open modal and prevent body scroll
+  const handleCheckout = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden"; // Disable body scroll
+  };
+
+  // Close modal and enable body scroll
+  const closeModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = "auto"; // Enable body scroll
+  };
+
+  useEffect(() => {
+    // Cleanup when the component is unmounted
+    return () => {
+      document.body.style.overflow = "auto"; // Ensure scroll is enabled after modal is closed
+    };
+  }, []);
 
   return (
     <aside className="p-6 bg-white rounded-2xl min-w-60 w-[364px] max-md:px-5 border border-solid border-[#EAEAEA]">
@@ -46,12 +67,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             </span>
           </div>
         ))}
-
-        <div className="flex gap-4 items-center py-1 mt-4 w-full border-t border-solid border-t-[color:var(--colour-fill-transparent,rgba(0,0,0,0.00))] min-h-2">
-          <div className="flex-1 shrink self-stretch my-auto w-full bg-gray-200 border border-gray-200 border-solid basis-0 min-h-px min-w-60" />
-        </div>
-
-       
 
         {/* Taxes */}
         {taxes && (
@@ -91,7 +106,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       {/* Checkout Button */}
       <div className="flex gap-2 items-center mt-6 w-full">
-        <button className="flex gap-2 justify-center items-center self-stretch my-auto w-full h-14 bg-blue-600 basis-[0%] flex-1 min-h-14 min-w-60 rounded-[50px] shrink-1">
+        <button
+          className="flex gap-2 justify-center items-center self-stretch my-auto w-full h-14 bg-blue-600 basis-[0%] flex-1 min-h-14 min-w-60 rounded-[50px] shrink-1"
+          onClick={handleCheckout}
+        >
           <span className="self-stretch my-auto text-base font-medium tracking-normal leading-6 text-center text-white">
             Proceed to checkout
           </span>
@@ -104,6 +122,28 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           </div>
         </button>
       </div>
+
+      {/* Modal Popup for Cart Delivery */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto relative">
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-black text-2xl font-bold"
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                zIndex: 1000,
+              }}
+            >
+              &times; {/* This is the "X" character */}
+            </button>
+            <CartDelivery />
+          </div>
+        </div>
+      )}
     </aside>
   );
 };

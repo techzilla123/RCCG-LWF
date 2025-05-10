@@ -83,6 +83,7 @@ export default function CartItem() {
         totalItems={totalItems}
         total="$605.00"
       />
+  
     </main>
   );
 }
