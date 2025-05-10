@@ -4,14 +4,15 @@ import { useState } from "react";
 
 type HeroItem = {
   image: string;
-  content: string;
+  Topic: string;
+  Content: string;
 };
 
 export const General: React.FC = () => {
   const [heroes, setHeroes] = useState<HeroItem[]>([
-    { image: "", content: "" },
-    { image: "", content: "" },
-    { image: "", content: "" },
+    { image: "", Topic: "", Content: "" },
+    { image: "", Topic: "", Content: "" },
+    { image: "", Topic: "", Content: "" },
   ]);
 
   const handleImageChange = (index: number, file: File | null) => {
@@ -25,9 +26,15 @@ export const General: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleContentChange = (index: number, content: string) => {
+  const handleTopicChange = (index: number, Topic: string) => {
     const newHeroes = [...heroes];
-    newHeroes[index].content = content;
+    newHeroes[index].Topic = Topic;
+    setHeroes(newHeroes);
+  };
+
+  const handleContentChange = (index: number, Content: string) => {
+    const newHeroes = [...heroes];
+    newHeroes[index].Content = Content;
     setHeroes(newHeroes);
   };
 
@@ -55,10 +62,16 @@ export const General: React.FC = () => {
               )}
             </div>
             <div>
-              <label className="block font-medium mb-1">Content</label>
+              <label className="block font-medium mb-1">Topic</label>
               <textarea
-                className="w-full border rounded p-2"
-                value={hero.content}
+                className="w-full border text-black rounded p-2"
+                value={hero.Topic}
+                onChange={(e) => handleTopicChange(index, e.target.value)}
+              />
+               <label className="block font-medium mb-1">Content</label>
+               <textarea
+                className="w-full border text-black rounded p-2"
+                value={hero.Content}
                 onChange={(e) => handleContentChange(index, e.target.value)}
               />
             </div>
