@@ -62,7 +62,7 @@ export const NavigationLinks = () => {
 
       {/* Dropdown under Shop */}
       {showCategories && (
-  <div className="absolute left-0 top-full mt-2 w-[calc(100vw-12px)] overflow-x-hidden -ml-[163px] bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+  <div className="absolute left-0 top-full  mt-2 w-[calc(100vw-12px)] overflow-x-hidden -ml-[205px] bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
     <Categorys />
   </div>
 )}

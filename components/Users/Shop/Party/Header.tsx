@@ -45,8 +45,8 @@ export default function WishHeader() {
         >
           Party Supplies
         </h1>
-        <h3 className="text-xl italic tracking-normal leading-8 text-black -mt-2 ">
-        It doesn’t take much to smile and have fun with people you love...
+        <h3 className="text-xl italic tracking-normal leading-8 text-black mt-1 max-md:text-lg max-md:leading-tight max-md:whitespace-pre-wrap max-md:text-center md:whitespace-normal">
+        It doesn’t take much to smile <br className="max-md:block md:hidden" /> and have fun with people you love...
     </h3>
         <ShopNavigation />
       </div>

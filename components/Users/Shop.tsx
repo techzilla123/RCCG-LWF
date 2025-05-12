@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import  FiltersDefault  from "./Shop/FiltersDefault";
 import { ProductCard } from "./Shop/ProductCard";
 import { Pagination } from "./Shop/Pagination";
+import { X } from "lucide-react";
 const products = [
   {
     image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f06e2469f60dcf69c58e22967019fa4149988610?placeholderIfAbsent=true",
@@ -132,17 +133,53 @@ const products = [
 ];
 
 export function Shop() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible((prev) => !prev);
+  };
+
   return (
-    <main className="flex flex-wrap gap-6 px-8 py-6 max-md:px-5"style={{background: "#F8F8F8"}}>
-      <div className="self-start">
+    <main className="flex flex-wrap gap-6 px-8 py-6 max-md:px-5" style={{ background: "#F8F8F8" }}>
+      
+      {/* Show filter button only on mobile */}
+      <div className="max-md:flex max-md:justify-center max-md:w-full max-md:block hidden">
+        <button
+          className="max-md:w-32 max-md:px-4 max-md:py-2 max-md:bg-blue-500 max-md:text-white max-md:rounded-lg max-md:my-4"
+          onClick={toggleModal}
+        >
+          Filters
+        </button>
+      </div>
+
+      {/* Show FiltersDefault as a modal on mobile or as a permanent component on desktop */}
+      {isModalVisible && (
+      <div className="max-md:flex max-md:fixed max-md:top-0 max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:bg-opacity-50 max-md:bg-black max-md:z-50 max-md:justify-center max-md:items-center max-md:overflow-y-auto">
+  <div className="max-md:w-full max-md:h-auto ml-[60px] max-md:max-h-[90vh] max-md:overflow-y-scroll">
+  <button
+          className="fixed md:hidden ml-[100px] p-2 bg-blue-100 rounded-full hover:bg-gray-100 -mt-2 transition"
+          onClick={() => setIsModalVisible(!isModalVisible)}
+          aria-label="Close Menu" 
+        >
+        <X className="w-6 h-6" />
+        </button>
+    <FiltersDefault />
+  </div>
+</div>
+
+      )}
+
+      {/* Filters are permanently visible on desktop */}
+      <div className="max-md:hidden">
         <FiltersDefault />
       </div>
+
       <section className="flex flex-col flex-1 shrink justify-center self-start basis-8 min-w-60 max-md:max-w-full">
-      <div className="flex flex-wrap gap-6 items-start  w-full max-md:max-w-full">
-        {products.map((product, index) => (
-          <ProductCard key={index} {...product} />
-        ))}
-      </div>
+        <div className="flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
+          {products.map((product, index) => (
+            <ProductCard key={index} {...product} />
+          ))}
+        </div>
         <Pagination />
       </section>
     </main>

@@ -12,13 +12,13 @@ const Offer: React.FC = () => {
 
   return (
     <>
-      <section className="offer-glow w-full flex items-center justify-center gap-4 px-4 py-2 text-black relative rounded-lg shadow-lg">
-        <div className="flex flex-wrap gap-2 items-center justify-center text-center">
+      <section className="offer-glow w-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 px-4 py-2 text-black relative rounded-lg shadow-lg">
+        <div className="flex flex-col md:flex-row flex-wrap gap-2 items-center justify-center text-center">
           <OfferText />
           <SignUpLink />
         </div>
         <button
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-black/10 rounded-full transition"
+          className="absolute right-4 top-2 md:top-1/2 md:-translate-y-1/2 p-1 hover:bg-black/10 rounded-full transition"
           onClick={() => setVisible(false)}
           aria-label="Close offer"
         >

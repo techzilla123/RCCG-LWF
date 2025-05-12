@@ -1,3 +1,4 @@
+"use client";
 import { Coiny } from 'next/font/google';
 
 const coiny = Coiny({
@@ -6,49 +7,26 @@ const coiny = Coiny({
   variable: '--font-coiny',
 });
 
-export const HeroHeadline = () => {
+export const HeroHeadline = ({
+  alignment = "left",
+  textParts = [],
+}: {
+  alignment?: "left" | "right";
+  textParts: { text: string; color: string }[];
+}) => {
   return (
     <h1
-    className={`${coiny.variable} font-[var(--font-coiny)] text-[40px] md:text-[64px] leading-[1.1]`}
-  >
-    <span
-      className="custom-shadow text-[#85C8FF] drop-shadow-[3px_3px_0px_#000]"
-      data-text="Shop the "
+      className={`${coiny.variable} font-[var(--font-coiny)] text-[40px] md:text-[64px] leading-[1.1] text-${alignment}`}
     >
-      Shop the{' '}
-    </span>
-    <span
-      className="custom-shadow text-[#FF99AA] drop-shadow-[3px_3px_0px_#000]"
-      data-text="moments "
-    >
-      moments{' '}
-    </span>
-    <span
-      className="custom-shadow text-[#85C8FF] drop-shadow-[3px_3px_0px_#000]"
-      data-text="that "
-    >
-      that{' '}
-    </span>
-    <span
-      className="custom-shadow text-[#85C8FF] drop-shadow-[3px_3px_0px_#000]"
-      data-text="keep You & Your "
-    >
-      keep You & Your{' '}
-    </span>
-    <span
-      className="custom-shadow text-[#85C8FF] drop-shadow-[3px_3px_0px_#000]"
-      data-text="kid"
-    >
-     kids{' '}
-    </span>
-    
-    <span
-      className="custom-shadow text-[#FF99AA] drop-shadow-[3px_3px_0px_#000]"
-      data-text="kids smiling..."
-    >
-     smiling...
-    </span>
-  </h1>
-    
+      {textParts.map((part, i) => (
+        <span
+          key={i}
+          className="custom-shadow drop-shadow-[3px_3px_0px_#000]"
+          style={{ color: part.color }}
+        >
+          {part.text}{" "}
+        </span>
+      ))}
+    </h1>
   );
 };

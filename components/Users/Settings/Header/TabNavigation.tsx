@@ -1,12 +1,11 @@
- "use client"
+"use client";
 import * as React from "react";
 import { Tab } from "./Tab";
-import Content  from "../Content";
-import { Security }  from "../Security";
-import  Billing   from "../Billing";
-import  Notification   from "../Notification";
-import  General   from "../General";
-
+import Content from "../Content";
+import { Security } from "../Security";
+import Billing from "../Billing";
+import Notification from "../Notification";
+import General from "../General";
 
 const TABS = [
   "Profile",
@@ -21,9 +20,9 @@ export const TabNavigation: React.FC = () => {
 
   return (
     <div>
-      {/* Centering tabs horizontally */}
+      {/* Responsive scrollable tab list */}
       <nav
-        className="flex justify-center gap-6 w-full"
+        className="flex overflow-x-auto no-scrollbar justify-start md:justify-center gap-6 w-full px-4"
         role="tablist"
         aria-label="Settings navigation"
       >
@@ -38,20 +37,12 @@ export const TabNavigation: React.FC = () => {
       </nav>
 
       {/* Tab Content */}
-      <div className="mt-6">
-        {activeTab === "Profile" && (<div id="profile-panel"> <Content/></div>)}
-        {activeTab === "Security" && (
-          <div id="security-panel"><Security/></div>
-        )}
-        {activeTab === "Payments" && (
-          <div id="payments-panel"><Billing/></div>
-        )}
-        {activeTab === "Notifications" && (
-          <div id="notifications-panel"><Notification/></div>
-        )}
-        {activeTab === "Preferences" && (
-          <div id="preferences-panel"><General/></div>
-        )}
+      <div className="mt-6 px-4">
+        {activeTab === "Profile" && <div id="profile-panel"><Content /></div>}
+        {activeTab === "Security" && <div id="security-panel"><Security /></div>}
+        {activeTab === "Payments" && <div id="payments-panel"><Billing /></div>}
+        {activeTab === "Notifications" && <div id="notifications-panel"><Notification /></div>}
+        {activeTab === "Preferences" && <div id="preferences-panel"><General /></div>}
       </div>
     </div>
   );

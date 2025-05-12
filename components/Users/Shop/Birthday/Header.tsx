@@ -31,7 +31,7 @@ export default function WishHeader() {
       <div className="flex z-0 flex-col justify-center items-center self-center">
         <Breadcrumbs items={breadcrumbItems} />
         <h1
-          className={`${coiny.className} text-[48px] whitespace-nowrap z-10 max-md:text-4xl`}
+          className={`${coiny.className} text-[48px] mt-2 whitespace-nowrap z-10 max-md:text-4xl`}
           style={{
             color: "black",
             textShadow: `
@@ -45,8 +45,8 @@ export default function WishHeader() {
         >
           Birthday Shop
         </h1>
-        <h3 className="text-xl italic tracking-normal leading-8 text-black -mt-2 ">
-        Make every new age memorable & better than the last one!
+        <h3 className="text-xl italic tracking-normal leading-8 text-black mt-1 max-md:text-lg max-md:leading-tight max-md:whitespace-pre-wrap max-md:text-center md:whitespace-normal">
+        Make every new age memorable  <br className="max-md:block md:hidden" /> & better than the last one!
     </h3>
         <ShopNavigation />
       </div>

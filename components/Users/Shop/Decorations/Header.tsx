@@ -45,7 +45,7 @@ export default function WishHeader() {
         >
           Decorations
         </h1>
-        <h3 className="text-xl italic tracking-normal leading-8 text-black -mt-2 ">
+        <h3 className="text-xl italic tracking-normal leading-8 text-black mt-1 max-md:text-lg max-md:leading-tight max-md:whitespace-pre-wrap max-md:text-center md:whitespace-normal">
         Remake what you see like you want it to be seen!
     </h3>
         <ShopNavigation />

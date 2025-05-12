@@ -9,26 +9,28 @@ const categories = [
   { id: 5, title: "Decorations", image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/2a080eb861a50c09985df1600959b8274afeb86a?placeholderIfAbsent=true" },
   { id: 6, title: "Occasions", image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/26ed0b701260b3350a1b8214ea6183e44fbe0d15?placeholderIfAbsent=true" },
   { id: 7, title: "Party Supplies", image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/86c2cc12b684c43a34251d1a9d67357a80cc0dfa?placeholderIfAbsent=true" },
-  
 ];
 
 interface CategoryListProps {
   scrollRef: React.RefObject<HTMLDivElement>;
 }
 
-
 export const CategoryList: React.FC<CategoryListProps> = ({ scrollRef }) => {
   return (
     <section
       ref={scrollRef}
-      className="flex overflow-x-auto gap-6 items-center mt-6 w-full text-xl tracking-normal leading-8 text-black no-scrollbar max-md:max-w-full"
+      className="flex overflow-x-auto gap-4 sm:gap-6 items-center mt-6 w-full text-xl tracking-normal leading-8 text-black no-scrollbar"
     >
       {categories.map((category) => (
-        <CategoryCard
+        <div
           key={category.id}
-          image={category.image}
-          title={category.title}
-        />
+          className="min-w-[160px] sm:min-w-[200px] md:min-w-[250px] lg:min-w-[300px]" // Adjust minimum width to avoid squeezing
+        >
+          <CategoryCard
+            image={category.image}
+            title={category.title}
+          />
+        </div>
       ))}
     </section>
   );

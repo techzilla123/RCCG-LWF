@@ -35,18 +35,19 @@ export const ProductPage: React.FC = () => {
   return (
     <main className="flex flex-col xl:flex-row gap-10 px-8 py-8 max-w-7xl mx-auto max-md:px-4">
       {/* Info first on small screens */}
-      <div className="flex flex-col order-1 xl:order-2 w-full xl:w-[400px] shrink-0">
-        <ProductInfo
-          title="Transparent Bubble Balloon with Custom Sticker"
-          stock={25}
-          price={400}
-          originalPrice={100}
-          discount={25}
-          countdownTime="4d 04h 25m 40s"
-          description="Material: Premium Vinyl Material, Waterproof and Weatherproof, Strong Adhesive, Easy to Apply, Customizable Design, Residue Free Removal, Multiple Font and Color Options, Perfect for Balloons and Gifts, Versatile Use, Sleek and Professional Finish, Handcrafted Precision, Long Lasting Quality, Eco Friendly"
-          tags={["Balloons", "Birthday", "Latex"]}
-        />
-      </div>
+      <div className="hidden xl:flex flex-col order-1 xl:order-2 w-full xl:w-[400px] shrink-0">
+  <ProductInfo
+    title="Transparent Bubble Balloon with Custom Sticker"
+    stock={25}
+    price={400}
+    originalPrice={100}
+    discount={25}
+    countdownTime="4d 04h 25m 40s"
+    description="Material: Premium Vinyl Material, Waterproof and Weatherproof, Strong Adhesive, Easy to Apply, Customizable Design, Residue Free Removal, Multiple Font and Color Options, Perfect for Balloons and Gifts, Versatile Use, Sleek and Professional Finish, Handcrafted Precision, Long Lasting Quality, Eco Friendly"
+    tags={["Balloons", "Birthday", "Latex"]}
+  />
+</div>
+
 
       {/* Gallery + Reviews */}
       <div className="flex flex-col order-2 xl:order-1 w-full">
@@ -71,6 +72,18 @@ export const ProductPage: React.FC = () => {
     },
   ]}
 />
+<div className="flex xl:hidden flex-col">
+  <ProductInfo
+    title="Transparent Bubble Balloon with Custom Sticker"
+    stock={25}
+    price={400}
+    originalPrice={100}
+    discount={25}
+    countdownTime="4d 04h 25m 40s"
+    description="Material: Premium Vinyl Material, Waterproof and Weatherproof, Strong Adhesive, Easy to Apply, Customizable Design, Residue Free Removal, Multiple Font and Color Options, Perfect for Balloons and Gifts, Versatile Use, Sleek and Professional Finish, Handcrafted Precision, Long Lasting Quality, Eco Friendly"
+    tags={["Balloons", "Birthday", "Latex"]}
+  />
+</div>
 
 
         <ProductRatings />

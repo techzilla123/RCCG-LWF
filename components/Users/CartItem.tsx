@@ -65,9 +65,10 @@ export default function CartItem() {
 
   return (
     <main className="flex flex-wrap gap-6 px-8 py-10 max-md:px-5">
-      <section className="flex flex-col flex-1 shrink justify-center self-start basis-12 min-w-60 max-md:max-w-full">
+    <section className="flex flex-col flex-1 shrink justify-center self-start basis-12 min-w-60 max-md:max-w-full">
+  
+    
         <ProductHeader />
-        <div className="w-full max-md:max-w-full">
           {products.map((product) => (
             <ProductItem
               key={product.id}
@@ -75,15 +76,15 @@ export default function CartItem() {
               onQuantityChange={handleQuantityChange}
             />
           ))}
-        </div>
-        <CouponSection />
-      </section>
-      <OrderSummary
-        items={summaryItems}
-        totalItems={totalItems}
-        total="$605.00"
-      />
   
-    </main>
+      <CouponSection />
+    </section>
+    <OrderSummary
+      items={summaryItems}
+      totalItems={totalItems}
+      total="$605.00"
+    />
+  </main>
+  
   );
 }

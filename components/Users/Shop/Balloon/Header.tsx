@@ -45,9 +45,11 @@ export default function WishHeader() {
         >
           Balloons Shop
         </h1>
-        <h3 className="text-xl italic tracking-normal leading-8 text-black -mt-2 ">
-      Every occasion needs a colorful pop to make it pop!
-    </h3>
+        <h3 className="text-xl italic tracking-normal leading-8 text-black mt-1 max-md:text-lg max-md:leading-tight max-md:whitespace-pre-wrap max-md:text-center md:whitespace-normal">
+  Every occasion needs a colorful pop <br className="max-md:block md:hidden" />
+  to make it pop!
+</h3>
+
         <ShopNavigation />
       </div>
       <img

@@ -13,8 +13,8 @@ export const ProductHeader = () => {
       {/* Divider */}
       <div className="border-r border-gray-300 mx-4 h-6" />
 
-      {/* Quantity Column */}
-      <div className="w-[110px] flex justify-center items-center">
+      {/* Quantity Column - hidden on screens < 548px */}
+      <div className="hidden min-[548px]:flex w-[110px] justify-center items-center">
         <h3 className="text-lg font-semibold">Quantity</h3>
       </div>
 

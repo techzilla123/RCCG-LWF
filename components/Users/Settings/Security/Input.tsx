@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react"; // Eye icons
+import { Eye, EyeOff } from "lucide-react";
 
 interface InputProps {
   label: string;
@@ -21,11 +21,12 @@ export const Input: React.FC<InputProps> = ({
 }) => {
   const inputId = label.toLowerCase().replace(/\s+/g, "-");
   const [showPassword, setShowPassword] = useState(false);
-
   const isPassword = type === "password";
 
   return (
-    <div className={`flex flex-col w-full max-w-[480px] min-w-[320px] ${className}`}>
+    <div
+      className={`flex flex-col w-full max-w-[480px] max-md:max-w-xs ${className}`}
+    >
       <label htmlFor={inputId} className="text-base font-medium text-black mb-2">
         {label}
       </label>
@@ -49,7 +50,7 @@ export const Input: React.FC<InputProps> = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
+          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm max-md:text-xs"
         />
       </div>
     </div>
