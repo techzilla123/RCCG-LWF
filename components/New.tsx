@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRef } from "react";
 import { ProductHeader } from "./New/ProductHeader";
 import { ProductCard } from "./New/ProductCard";
+import { ProductGrid } from "./New/MobileShop/ProductGrid";
 
 const products = [
   {
@@ -134,15 +135,21 @@ const products = [
 ];
 
 export function New() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const desktopScrollRef = useRef<HTMLDivElement>(null);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollTo = direction === "left"
-        ? scrollLeft - clientWidth
-        : scrollLeft + clientWidth;
-      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    const scrollAmount = 300; // Change this value as needed
+
+    const scrollTarget =
+      window.innerWidth < 768 ? mobileScrollRef.current : desktopScrollRef.current;
+
+    if (scrollTarget) {
+      const { scrollLeft } = scrollTarget;
+      scrollTarget.scrollTo({
+        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -152,31 +159,34 @@ export function New() {
 
       {/* Scroll buttons BELOW header, above product row */}
       <div className="flex justify-end gap-4 mt-4 pr-4">
-  <button
-    onClick={() => scroll("left")}
-    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-  >
-    <span className="text-lg text-black">‹</span>
-  </button>
+        <button
+          onClick={() => scroll("left")}
+          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+        >
+          <span className="text-lg text-black">‹</span>
+        </button>
 
-  <button
-    onClick={() => scroll("right")}
-    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-  >
-    <span className="text-lg text-black">›</span>
-  </button>
-</div>
+        <button
+          onClick={() => scroll("right")}
+          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+        >
+          <span className="text-lg text-black">›</span>
+        </button>
+      </div>
 
-
-
-      {/* Scrollable product row */}
+      {/* Desktop scrollable row */}
       <div
-        ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar mt-4 px-12"
+        ref={desktopScrollRef}
+        className="hidden md:flex gap-6 overflow-x-auto scroll-smooth no-scrollbar mt-4 px-12"
       >
-        {products.map((product, index) => (
+          {products.map((product, index) => (
           <ProductCard key={index} {...product} />
         ))}
+      </div>
+
+      {/* Mobile scrollable ProductGrid */}
+      <div className="block md:hidden mt-6 w-full">
+        <ProductGrid scrollRef={mobileScrollRef} />
       </div>
     </section>
   );

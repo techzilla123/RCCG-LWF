@@ -13,20 +13,20 @@ const Header: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState("");
 
   return (
-    <header className="relative flex flex-col items-center justify-center px-6 pt-10 bg-white overflow-hidden max-md:px-4">
-      <h1
-        className={`${coiny.className} text-[48px] whitespace-nowrap z-10 max-md:text-4xl`}
-        style={{
-          color: "black",
-          textShadow: `
-            2px 2px 0 white,
-            -2px -2px 0 white,
-            2px -2px 0 white,
-            -2px 2px 0 white,
-            3px 3px 0 black
-          `,
-        }}
-      >
+    <header className="relative flex flex-col items-center justify-center px-6 pt-10 bg-[#fff1f2] overflow-hidden max-md:px-4">
+     <h1
+              className={`${coiny.className} text-[48px] whitespace-nowrap z-10 max-md:text-4xl`}
+              style={{
+                color: "black",
+                textShadow: `
+                  2px 2px 0 white,
+                  -2px -2px 0 white,
+                  2px -2px 0 white,
+                  -2px 2px 0 white,
+                  3px 3px 0 black
+                `,
+              }}
+            >
         Shop
       </h1>
 

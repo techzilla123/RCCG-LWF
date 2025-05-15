@@ -13,8 +13,6 @@ import Offers from "@/components/Offers"
 import Footer from "@/components/Footer"
 import Reviews from "@/components/Reviews"
 
-// import Footer from "@/components/Footer";
-
 
 export default function Home() {
   return (

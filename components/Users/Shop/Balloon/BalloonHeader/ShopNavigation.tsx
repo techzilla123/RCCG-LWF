@@ -1,10 +1,10 @@
-"use client";
+ "use client"; 
 
 import * as React from "react";
 
 export const ShopNavigation: React.FC = () => {
   const tabs = [
-    "Balloons by type",
+   "Balloons by type",
     "Premium Bouqet",
     "Balloon decorations",
     "Birthday balloons",
@@ -12,16 +12,16 @@ export const ShopNavigation: React.FC = () => {
     "Balloons for occasions",
   ];
 
-  const [activeTab, setActiveTab] = React.useState(tabs[0]);
-  const [isDropdownVisible, setDropdownVisible] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState(0); // Use index instead of the tab name
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!isDropdownVisible);
+  // Function to go to the next tab
+  const handleNextTab = () => {
+    setActiveTab((prev) => (prev + 1) % tabs.length); // Loop to the first tab if at the last one
   };
 
-  const handleTabClick = (tab: string) => {
-    setActiveTab(tab);
-    setDropdownVisible(false);
+  // Function to go to the previous tab
+  const handlePreviousTab = () => {
+    setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length); // Loop to the last tab if at the first one
   };
 
   return (
@@ -32,13 +32,13 @@ export const ShopNavigation: React.FC = () => {
     >
       {/* Desktop view */}
       <div className="hidden md:flex gap-6">
-        {tabs.map((tab) => (
+        {tabs.map((tab, index) => (
           <button
             key={tab}
-            onClick={() => handleTabClick(tab)}
+            onClick={() => setActiveTab(index)}
             role="tab"
             className={`pb-1 text-sm md:text-base font-normal whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === tab
+              activeTab === index
                 ? "text-black border-black"
                 : "text-[rgb(60,60,60)] border-[rgba(113,113,113,0)]"
             }`}
@@ -50,38 +50,38 @@ export const ShopNavigation: React.FC = () => {
 
       {/* Mobile view */}
       <div className="flex flex-col items-center md:hidden relative z-50 overflow-visible w-full">
-  <button
-    onClick={toggleDropdown}
-    className={`pb-1 text-sm font-normal whitespace-nowrap transition-colors border-b-2 mb-2 ${
-      activeTab
-        ? "text-black border-black"
-        : "text-[rgb(60,60,60)] border-[rgba(113,113,113,0)]"
-    }`}
-  >
-    {activeTab} &#8230;
-  </button>
-
-  {isDropdownVisible && (
-    <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-white shadow-md rounded-md w-56 z-50 border border-gray-200 max-h-60 overflow-y-auto">
-      {tabs
-        .filter((tab) => tab !== activeTab)
-        .map((tab) => (
+        <div className="flex items-center gap-4">
+          {/* Left Arrow */}
           <button
-            key={tab}
-            onClick={() => {
-              handleTabClick(tab);
-              toggleDropdown(); // hide dropdown after selecting
-            }}
-            className={`block text-sm font-normal whitespace-nowrap w-full text-left p-2 hover:bg-gray-100 ${
-              tab === activeTab ? "bg-gray-200" : ""
+            onClick={handlePreviousTab}
+            className="text-lg font-semibold"
+            aria-label="Previous tab"
+          >
+            ←
+          </button>
+
+          {/* Active Tab Display */}
+          <button
+            onClick={() => {}}
+            className={`pb-1 text-sm font-normal whitespace-nowrap transition-colors border-b-2 mb-2 ${
+              activeTab !== null
+                ? "text-black border-black"
+                : "text-[rgb(60,60,60)] border-[rgba(113,113,113,0)]"
             }`}
           >
-            {tab}
+            {tabs[activeTab]}
           </button>
-        ))}
-    </div>
-  )}
-</div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={handleNextTab}
+            className="text-lg font-semibold"
+            aria-label="Next tab"
+          >
+            →
+          </button>
+        </div>
+      </div>
     </nav>
   );
 };

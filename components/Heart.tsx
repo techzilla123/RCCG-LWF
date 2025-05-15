@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ProductHeader } from "./Heart/ProductHeader";
 import { ProductCard } from "./Heart/ProductCard";
+import { ProductGrid } from "@/components/Users/Shop/MobileShop/ProductGrid";
 
 
 const products = [
@@ -140,11 +141,14 @@ export function Heart() {
   return (
     <section className="flex overflow-hidden flex-col justify-center self-stretch px-8 py-10 bg-sky-50 max-md:px-5">
       <ProductHeader rightArrowIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/66d546e330544d515b682a58503bcbd12bbada55?placeholderIfAbsent=true" />
-      <div className="flex flex-wrap gap-6 items-start mt-6 w-full max-md:max-w-full">
+      <div className="hidden md:flex flex-wrap gap-6 items-start mt-6 w-full max-md:max-w-ful">
         {products.map((product, index) => (
           <ProductCard key={index} {...product} />
         ))}
       </div>
+      <div className="block mt-6 md:hidden w-full">
+  <ProductGrid />
+</div>
     </section>
   );
 }

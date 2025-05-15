@@ -4,6 +4,7 @@ import { HeroHeadline } from "./Hero/HeroHeadline";
 import { HeroButton } from "./Hero/HeroButton"; 
 import { HeroStats } from "./Hero/HeroStats"; 
 import { Inter } from "next/font/google";
+import CheckoutOptions from "@/components/checkoutop";
 
 const inter = Inter({
   weight: "600",
@@ -84,7 +85,9 @@ function Hero() {
         alt={`Hero background ${currentImage + 1}`}
         className="absolute inset-0 object-cover w-full h-full z-0 transition-opacity duration-500"
       />
-
+ <div className="absolute w-[160px] -top-2 left-1/2 transform -translate-x-1/2 z-20">
+    <CheckoutOptions />
+  </div>
       <div
         className={`relative z-10 max-w-[550px] ${
           content.alignment === "right" ? "ml-auto text-right" : "text-left"

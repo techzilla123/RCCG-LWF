@@ -41,7 +41,7 @@ const DeliveryOptions = () => {
       <div className="flex justify-between gap-4">
         {[
           { method: "pickup", label: "Pickup", icon: "https://cdn-icons-png.flaticon.com/512/684/684908.png" },
-          { method: "local", label: "Local Delivery", icon: "https://cdn-icons-png.flaticon.com/512/893/893226.png" },
+          { method: "local", label: "Local Delivery", icon: "/Branded_Van__1_-removebg-preview.png" },
           { method: "shipping", label: "Shipping", icon: "https://cdn-icons-png.flaticon.com/512/1239/1239525.png" },
         ].map(({ method, label, icon }) => (
           <button
@@ -115,13 +115,13 @@ const DeliveryOptions = () => {
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm">Local Address</label>
+            <label className="block text-sm">Delivery Address</label>
             <input
               type="text"
               value={location.address}
               onChange={(e) => handleLocationChange("address", e.target.value)}
               className="p-2 border rounded-lg w-full"
-              placeholder="Enter shipping address"
+              placeholder="Enter local address"
             />
           </div>
 

@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import  FiltersDefault  from "./Shop/FiltersDefault";
 import { ProductCard } from "./Shop/ProductCard";
 import { Pagination } from "./Shop/Pagination";
+import { ProductGrid } from "./Shop/MobileShop/ProductGrid";
+
 import { X } from "lucide-react";
+
 const products = [
   {
     image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f06e2469f60dcf69c58e22967019fa4149988610?placeholderIfAbsent=true",
@@ -174,12 +177,32 @@ export function Shop() {
         <FiltersDefault />
       </div>
 
+
       <section className="flex flex-col flex-1 shrink justify-center self-start basis-8 min-w-60 max-md:max-w-full">
-        <div className="flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
-          {products.map((product, index) => (
-            <ProductCard key={index} {...product} />
-          ))}
-        </div>
+      <>
+  {/* Desktop layout with multiple ProductCards */}
+  <div className="hidden md:flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
+    {products.map((product, index) => (
+      <ProductCard key={index} {...product} />
+    ))}
+  </div>
+
+  
+  
+  
+
+
+  <div className="block md:hidden w-full">
+  <ProductGrid />
+</div>
+
+
+
+
+</>
+
+
+
         <Pagination />
       </section>
     </main>
