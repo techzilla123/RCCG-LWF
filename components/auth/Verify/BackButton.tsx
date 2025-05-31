@@ -7,7 +7,7 @@ export const BackButton: React.FC = () => {
   const router = useRouter(); // Get router instance
 
   const handleBackClick = () => {
-    router.push("/auth-admin"); // Navigate to /auth-admin when clicked
+    router.push("/auth-forgot"); // Navigate to /auth-admin when clicked
   };
 
   return (
