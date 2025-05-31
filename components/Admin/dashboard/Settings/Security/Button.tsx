@@ -6,6 +6,8 @@ interface ButtonProps {
   variant?: "primary" | "secondary" | "danger" | "disabled";
   onClick?: () => void;
   className?: string;
+  type?: "button" | "submit" | "reset";  // optional
+  disabled?: boolean;                    // optional
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -13,9 +15,11 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   onClick,
   className = "",
+  type = "button",     // default to 'button' if not provided
+  disabled = false,    // default to false if not provided
 }) => {
-  const baseStyles = "inline-flex items-start justify-start gap-2 px-4 py-2 text-base font-medium tracking-normal leading-6 min-h-10 rounded-full";
-
+  const baseStyles =
+    "inline-flex items-start justify-start gap-2 px-4 py-2 text-base font-medium tracking-normal leading-6 min-h-10 rounded-full";
 
   const variantStyles = {
     primary: "text-white bg-blue-600 hover:bg-blue-700",
@@ -26,14 +30,12 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      type={type}
       onClick={onClick}
-      disabled={variant === "disabled"}
+      disabled={disabled}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
     >
-      {/* Make sure icons inside buttons are smaller */}
-      <span className="flex items-center gap-2">
-        {children}
-      </span>
+      <span className="flex items-center gap-2">{children}</span>
     </button>
   );
 };
