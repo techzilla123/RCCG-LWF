@@ -15,9 +15,9 @@ export const AdminSetup: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleBackClick = () => {
-    router.push("/auth-verify");
-  };
+  // const handleBackClick = () => {
+  //   router.push("/auth-verify");
+  // };
 
   const handleLogin = () => {
     router.push("/auth-login");
@@ -62,11 +62,12 @@ export const AdminSetup: React.FC = () => {
       setFirstName("");
       setLastName("");
       setEmail("");
-    } catch (error: any) {
-      setErrorMessage(error.message || "Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+   } catch (error) {
+  const err = error as Error;
+  setErrorMessage(err.message || "Something went wrong. Please try again.");
+} finally {
+  setIsLoading(false);
+}
   };
 
   return (
@@ -130,7 +131,7 @@ export const AdminSetup: React.FC = () => {
           >
             <h2 className="text-xl font-semibold mb-4">Success!</h2>
             <p className="mb-6">
-              The sub admin has been created successfully, generated password has been sent to the sub admin's email.
+              The sub admin has been created successfully, generated password has been sent to the sub admin&apos;s email.
             </p>
             <Button
   variant="primary"
