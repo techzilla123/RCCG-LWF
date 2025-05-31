@@ -36,7 +36,7 @@ const Offer: React.FC = () => {
   <p className="text-gray-700 text-sm">
     🤔 Need help?{" "}
     <a
-      href="mailto:support@example.com"
+      href="mailto:partyplace19@gmail.com"
       className="text-blue-600 hover:underline"
     >
       Contact us
