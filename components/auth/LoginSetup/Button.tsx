@@ -5,6 +5,8 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   onClick?: () => void;
   className?: string;
+  type?: "button" | "submit" | "reset"; // add this
+  disabled?: boolean; // optional: add disabled support if needed
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -12,6 +14,8 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   onClick,
   className = "",
+  type = "button", // default to "button" for normal buttons
+  disabled = false, // default to false
 }) => {
   const baseStyles =
     "p-4 h-14 text-base font-medium leading-6 cursor-pointer rounded-[50px] max-sm:h-12 max-sm:text-sm";
@@ -22,8 +26,10 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      type={type} // pass down the type prop!
       onClick={onClick}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+      disabled={disabled} // pass down the disabled prop!
     >
       {children}
     </button>
