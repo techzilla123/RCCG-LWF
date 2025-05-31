@@ -63,8 +63,15 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ onClose }) => {
       <section className="flex relative flex-col px-10 pt-16 pb-10 bg-white rounded-3xl max-w-[560px] max-md:px-5 w-full animate-fadeIn">
         <SuccessIcon />
         <MessageSection />
-        <ActionButton onClick={onClose} />
-        <CloseButton onClick={onClose} />
+       <ActionButton onClick={() => {
+  onClose();
+  window.dispatchEvent(new Event("accessTokenUpdated"));
+}} />
+
+        <CloseButton onClick={() => {
+  onClose();
+  window.dispatchEvent(new Event("accessTokenUpdated"));
+}} />
       </section>
     </div>
   );

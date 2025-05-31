@@ -3,37 +3,63 @@
 import * as React from "react";
 import { OfferText } from "./Offer/OfferText";
 import { SignUpLink } from "./Offer/SignUpLink";
-import { X } from "lucide-react";
 
 const Offer: React.FC = () => {
-  const [visible, setVisible] = React.useState(true);
+  const [token, setToken] = React.useState<string | null>(null);
 
-  if (!visible) return null;
+  React.useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    setToken(storedToken);
+
+    const handleTokenChange = () => {
+      const updatedToken = localStorage.getItem("accessToken");
+      setToken(updatedToken);
+    };
+
+    window.addEventListener("accessTokenUpdated", handleTokenChange);
+
+    return () => {
+      window.removeEventListener("accessTokenUpdated", handleTokenChange);
+    };
+  }, []);
 
   return (
     <>
-      <section className="offer-glow w-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 px-4 py-2 text-black relative rounded-lg shadow-lg">
-        <div className="flex flex-col md:flex-row flex-wrap gap-2 items-center justify-center text-center">
-          <OfferText />
-          <SignUpLink />
-        </div>
-        <button
-          className="absolute right-4 top-2 md:top-1/2 md:-translate-y-1/2 p-1 hover:bg-black/10 rounded-full transition"
-          onClick={() => setVisible(false)}
-          aria-label="Close offer"
-        >
-          <X className="w-4 h-4" />
-        </button>
+      <section className="offer-glow w-full flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 px-4 py-3 text-black relative rounded-lg shadow-lg text-sm md:text-base text-center">
+        {token ? (
+         <div className="flex flex-col md:flex-row md:gap-4 gap-1 items-center justify-center text-center md:text-left">
+<p className="font-medium">
+  <a href="/shop" className="text-blue-600 hover:underline">Shop now</a> and <span className="text-pink-600">enjoy</span> your exclusive <span className="text-blue-600">discount!</span>
+</p>
+
+
+  <p className="text-gray-700 text-sm">
+    🤔 Need help?{" "}
+    <a
+      href="mailto:support@example.com"
+      className="text-blue-600 hover:underline"
+    >
+      Contact us
+    </a>
+  </p>
+</div>
+
+        ) : (
+          <div className="flex flex-col md:flex-row flex-wrap gap-2 items-center justify-center">
+            <OfferText />
+            <SignUpLink />
+          </div>
+        )}
       </section>
 
       <style jsx>{`
         @keyframes glow {
           0% {
-            background-color: #facc15; /* yellow-400 */
+            background-color: #facc15;
             box-shadow: 0 0 10px #facc15;
           }
           50% {
-            background-color: #fde68a; /* yellow-300 */
+            background-color: #fde68a;
             box-shadow: 0 0 20px #fde68a;
           }
           100% {

@@ -1,5 +1,5 @@
-import * as React from "react";
-import { FcGoogle } from "react-icons/fc";
+import React, { useState } from "react";
+import { FcGoogle } from "react-icons/fc"; 
 import { FaLock, FaEnvelope } from "react-icons/fa6";
 
 interface LoginModalProps {
@@ -9,13 +9,52 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, onLoginSuccess }) => {
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const [email, setEmail] = useState<string>("");  // Manage email state
+  const [password, setPassword] = useState<string>("");  // Manage password state
+  const [isLoading, setIsLoading] = useState<boolean>(false);  // Manage loading state
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (onLoginSuccess) {
-      onLoginSuccess(); // only call if exists
-    } else {
-      onClose(); // fallback: just close modal
+
+    // Form validation
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Make the POST request to the login API
+const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}login`, {
+          method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed, please try again.");
+      }
+
+      const data = await response.json();
+      const token = `Bearer ${data.data.token}`;
+
+      // Save the token in localStorage
+      localStorage.setItem("accessToken", token);
+      // Optionally, trigger the success callback
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      } else {
+        onClose(); // fallback: just close modal
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Login failed, please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,6 +92,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
             <div className="relative">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 className="w-full p-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm"
               />
@@ -62,6 +103,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
             <div className="relative">
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 className="w-full p-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm"
               />
@@ -70,9 +113,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
 
             <button
               type="submit"
-              className="p-3 mt-2 bg-blue-600  hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition"
+              disabled={isLoading}
+              className={`p-3 mt-2 ${isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"} text-white rounded-full text-sm font-semibold transition`}
             >
-              Log in
+              {isLoading ? "Logging in..." : "Log in"}
             </button>
           </form>
 
