@@ -12,9 +12,9 @@ export const LoginSetup: React.FC = () => {
     router.push("/auth-forgot");
   };
 
-  const handleCreate = () => {
-    router.push("/auth-admin");
-  };
+  // const handleCreate = () => {
+  //   router.push("/auth-admin");
+  // };
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +47,8 @@ export const LoginSetup: React.FC = () => {
       const data = await response.json();
 
       const userType = data.data.data.userType;
-      if (userType === "admin" || userType === "subadmin") {
+      localStorage.setItem("userType", userType);
+      if (userType === "admin" || userType === "sub_admin") {
         const token = `Bearer ${data.data.token}`;
         localStorage.setItem("accessToken", token);
 
@@ -97,10 +98,10 @@ export const LoginSetup: React.FC = () => {
           </Button>
         </form>
 
-        <div className="flex justify-between w-full">
-          <Button variant="secondary" onClick={handleCreate}>
+        <div className="flex justify-center w-full">
+          {/* <Button variant="secondary" onClick={handleCreate}>
             Create admin
-          </Button>
+          </Button> */}
           <Button variant="secondary" onClick={handleForgot}>
             Forgot password
           </Button>
