@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc"; 
 import { FaLock, FaEnvelope } from "react-icons/fa6";
+import { ForgotPasswordModal } from "./ForgotPasswordModal"; // Import the modal
 
 interface LoginModalProps {
   onClose: () => void;
@@ -9,6 +10,7 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, onLoginSuccess }) => {
+  const [showForgotModal, setShowForgotModal] = useState(false);
   const [email, setEmail] = useState<string>("");  // Manage email state
   const [password, setPassword] = useState<string>("");  // Manage password state
   const [isLoading, setIsLoading] = useState<boolean>(false);  // Manage loading state
@@ -131,10 +133,18 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}login`, {
                 Create one
               </button>
             </span>
-            <a href="#" className="text-blue-600 hover:underline">
-              Forgot password
-            </a>
+           <button
+  type="button"
+  onClick={() => setShowForgotModal(true)}
+  className="text-blue-600 hover:underline"
+>
+  Forgot password
+</button>
+
           </div>
+          {showForgotModal && (
+  <ForgotPasswordModal onClose={() => setShowForgotModal(false)} />
+)}
         </div>
       </div>
     </div>
