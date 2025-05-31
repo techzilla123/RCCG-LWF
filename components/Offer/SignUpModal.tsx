@@ -40,9 +40,9 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
       if (!res.ok) throw new Error(data.message || "Signup failed");
 
       setStep("verify");
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } catch (err) {
+  setError((err as Error).message);
+} finally {
       setLoading(false);
     }
   };
@@ -68,9 +68,9 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
 
       alert("Account Verified Successfully!");
       onClose(); // Close modal
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+   } catch (err) {
+  setError((err as Error).message);
+} finally {
       setLoading(false);
     }
   };
