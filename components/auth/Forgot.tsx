@@ -65,9 +65,15 @@ export const Forgot: React.FC = () => {
         </form>
 
         <div className="flex flex-col w-full">
-          <Button variant="primary" className="mb-2" onClick={handleResetPassword} isLoading={isLoading}>
-            {isLoading ? "Sending..." : "Reset password"}
-          </Button>
+         <Button
+  variant="primary"
+  className="mb-2"
+  onClick={handleResetPassword}
+  isLoading={isLoading}
+>
+  Reset password
+</Button>
+
 
           <Button variant="secondary" onClick={handleBackToLogin}>
             Back to Login

@@ -5,6 +5,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   onClick?: () => void;
   className?: string;
+  isLoading?: boolean;  // added
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -12,6 +13,7 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   onClick,
   className = "",
+  isLoading = false,  // default
 }) => {
   const baseStyles =
     "p-4 h-14 text-base font-medium leading-6 cursor-pointer rounded-[50px] max-sm:h-12 max-sm:text-sm";
@@ -24,8 +26,9 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+      disabled={isLoading}  // optional: disable while loading
     >
-      {children}
+      {isLoading ? "Loading..." : children}
     </button>
   );
 };
