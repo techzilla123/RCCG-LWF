@@ -3,8 +3,66 @@ import React, { useState, useEffect } from "react";
 import { SearchIcon, SortIcon, StatusIcon, CartIcon, CaretDownIcon } from "./Icons";
 import OrderDetails from "../ProductsAddOne/ProductDetailForm"; // Import modal component (adjust path if needed)
 
+interface Category {
+  categoryId: string;
+  categoryName: string;
+  noOfProducts: number;
+}
+
+
 export const FilterBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+const [selectedStatus, setSelectedStatus] = useState("All");
+const [showCatDropdown, setShowCatDropdown] = useState(false);
+const [selectedCat, setSelectedCat] = useState("All");
+const [categories, setCategories] = useState<Category[]>([]);
+const [isLoading, setIsLoading] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
+
+const fetchCategories = async () => {
+  setIsLoading(true);
+  setErrorMessage("");
+
+  try {
+    const token = localStorage.getItem("accessToken") || "";
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-category`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token && { Authorization: token }),
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch categories.");
+    }
+
+    const data = await response.json();
+
+    setCategories(data.data || []);  // Store full objects here
+  } catch (error) {
+    let message = "Something went wrong. Please try again.";
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === "string") {
+      message = error;
+    }
+    setErrorMessage(message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchCategories();
+}, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -41,17 +99,94 @@ useEffect(() => {
           <CaretDownIcon />
         </button>
 
-        <button className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white">
-          <CartIcon />
-          <span className="mx-2 text-neutral-700">Category: All</span>
-          <CaretDownIcon />
-        </button>
+         <div className="relative inline-block">
+<button
+  className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white"
+  onClick={() => setShowCatDropdown(!showCatDropdown)}
+>
+  <CartIcon />
+  <span className="mx-2 text-neutral-700">Category: {selectedCat}</span>
+  <CaretDownIcon />
+</button>
 
-        <button className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white">
-          <StatusIcon />
-          <span className="mx-2 text-neutral-700">Status: All</span>
-          <CaretDownIcon />
-        </button>
+
+  {showCatDropdown && (
+  <div className="absolute left-0 mt-2 w-40 rounded-md shadow-lg bg-white border border-gray-200 z-10">
+    {/* Show loading message */}
+    {isLoading && (
+      <div className="px-4 py-2 text-sm text-gray-500">Loading categories...</div>
+    )}
+
+    {/* Show error message */}
+    {errorMessage && (
+      <div className="px-4 py-2 text-sm text-red-500">{errorMessage}</div>
+    )}
+
+    {/* Show list only if not loading and no error */}
+    {!isLoading && !errorMessage && (
+      <ul>
+        {/* Optional "All" item */}
+        <li
+          className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+          onClick={() => {
+            setSelectedCat("All");
+            setShowCatDropdown(false);
+          }}
+        >
+          All
+        </li>
+
+        {/* Render categories */}
+        {categories.map((cat) => (
+          <li
+            key={cat.categoryId}
+            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+            onClick={() => {
+              setSelectedCat(cat.categoryName);
+              setShowCatDropdown(false);
+            }}
+          >
+            {cat.categoryName}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+)}
+
+
+</div>
+
+       <div className="relative inline-block">
+  <button
+    className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white"
+    onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+  >
+    <StatusIcon />
+    <span className="mx-2 text-neutral-700">Status: {selectedStatus}</span>
+    <CaretDownIcon />
+  </button>
+
+  {showStatusDropdown && (
+    <div className="absolute left-0 mt-2 w-32 rounded-md shadow-lg bg-white border border-gray-200 z-10">
+      <ul>
+        {["All", "Active", "Declined"].map((status) => (
+          <li
+            key={status}
+            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+            onClick={() => {
+              setSelectedStatus(status);
+              setShowStatusDropdown(false);
+            }}
+          >
+            {status}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
       </div>
 
       {/* Right side: New Product Button */}
