@@ -13,6 +13,7 @@ type SubCategory = {
   categoryId: string;
   subCategoryName: string;
   parentCategoryId: string;
+  subCategoryParentId: string;
   // Add other fields as needed
 };
 
