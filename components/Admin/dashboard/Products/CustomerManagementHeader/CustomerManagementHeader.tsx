@@ -62,17 +62,18 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
       const data = await response.json();
       setCategories(data.data || []);
-    } catch (error) {
-      let message = "Something went wrong. Please try again.";
-      if (error instanceof Error) {
-        message = error.message;
-      } else if (typeof error === "string") {
-        message = error;
-      }
-      setErrorMessage(message);
-    } finally {
-      setIsLoading(false);
-    }
+   } catch (error) {
+  let message = "Something went wrong. Please try again.";
+
+  if (error instanceof Error) {
+    message = error.message;
+  } else if (typeof error === "string") {
+    message = error;
+  }
+
+  setErrorMessage(message);
+}
+
   };
 
   // Fetch subcategories for a category
