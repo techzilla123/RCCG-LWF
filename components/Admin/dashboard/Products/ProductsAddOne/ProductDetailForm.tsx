@@ -64,23 +64,39 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
 
   // Load saved data on mount from localStorage
   useEffect(() => {
-    const fields: (keyof FormData)[] = [
-      "productName",
-      "description",
-      "producer",
-      "url",
-      "category",
-      "subCategory",
-      "categoryId",
-    ];
+  const fields: (keyof FormData)[] = [
+    "productName",
+    "description",
+    "producer",
+    "url",
+    "category",
+    "subCategory",
+    "categoryId",
+    "keywords",
+    "uploadedFiles",
+  ];
 
-    const loaded = { ...formData };
-    fields.forEach((field) => {
-      const saved = localStorage.getItem(field);
-      if (saved) loaded[field] = saved;
-    });
-    setFormData(loaded);
-  }, []);
+  const loaded: FormData = { ...formData };
+
+  fields.forEach((field) => {
+    const saved = localStorage.getItem(field);
+    if (saved) {
+      if (field === "keywords" || field === "uploadedFiles") {
+        try {
+          loaded[field] = JSON.parse(saved);
+        } catch {
+          // fallback in case of parsing error
+          loaded[field] = field === "keywords" ? [] : [];
+        }
+      } else {
+        loaded[field] = saved;
+      }
+    }
+  });
+
+  setFormData(loaded);
+}, []);
+
 
   // Save to localStorage when formData changes (only string fields)
   useEffect(() => {
