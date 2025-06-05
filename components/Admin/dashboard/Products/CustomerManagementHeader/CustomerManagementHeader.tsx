@@ -337,10 +337,16 @@ const handleDeleteSubCategory = async (subCategory: SubCategory) => {
     }
     setShowSuccessModal(true);
   } catch (error) {
-    setErrorMessage(error.message || "Something went wrong");
-  } finally {
-    setIsLoading(false);
+  let message = "Something went wrong. Please try again.";
+
+  if (error instanceof Error) {
+    message = error.message;
+  } else if (typeof error === "string") {
+    message = error;
   }
+
+  setErrorMessage(message);
+}
 };
 
 
