@@ -7,13 +7,14 @@ import { PurchaseOptions } from "./PurchaseOptions";
 import { ProductDetails } from "./ProductDetails";
 import { ShippingInfo } from "./ShippingInfo";
 import { ActionButtons } from "./ActionButtons";
-
+import type { UploadedFile } from "../ProductsAddOne/MediaUpload"; // <-- add this line
 
 type PreviewNewProps = {
   onPrevious: () => void;
   onCancel: () => void;
-  uploadedFiles: UploadedFile[]; // <-- Add this
+  uploadedFiles: UploadedFile[];
 };
+
 
 
 export const PreviewNew = ({ onPrevious, onCancel, uploadedFiles }: PreviewNewProps) => {
