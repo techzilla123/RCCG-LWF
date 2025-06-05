@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { UploadedFile } from "@/components/Admin/dashboard/Products/ProductsAddOne/MediaUpload";
+import type { UploadedFile } from "../ProductsAddOne/MediaUpload"; // or correct relative path
 
 interface ActionButtonsProps {
   onCancel: () => void;
