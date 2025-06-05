@@ -46,7 +46,7 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   
 const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-    const [selectedCategoryIdForSubcategories, setSelectedCategoryIdForSubcategories] = useState("");
+    // const [selectedCategoryIdForSubcategories, setSelectedCategoryIdForSubcategories] = useState("");
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
@@ -160,7 +160,7 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const fetchSubCategories = async (categoryId: string) => {
     setIsLoading(true);
     setErrorMessage("");
-    setSelectedCategoryIdForSubcategories(categoryId);
+    // setSelectedCategoryIdForSubcategories(categoryId);
     try {
       const token = localStorage.getItem("accessToken") || "";
 

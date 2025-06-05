@@ -8,6 +8,13 @@ interface Category {
   noOfProducts: number;
 }
 
+type SubCategory = {
+  subCategoryId: string;
+  subCategoryName: string;
+  parentCategoryId: string;
+  // Add other fields as needed
+};
+
 export const CustomerManagementHeader = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -23,7 +30,7 @@ export const CustomerManagementHeader = () => {
   const [subCategoryName, setSubCategoryName] = useState("");
   const [subCategoryParentId, setSubCategoryParentId] = useState("");
   const [selectedCategoryIdForSubcategories, setSelectedCategoryIdForSubcategories] = useState("");
-  const [subCategories, setSubCategories] = useState<any[]>([]);
+const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [editSubCategoryId, setEditSubCategoryId] = useState("");
 
   // Fetch categories
@@ -460,12 +467,13 @@ export const CustomerManagementHeader = () => {
   };
 
   // Edit existing subcategory (populate fields and open modal)
-  const handleEditSubCategoryClick = (subCategory: any) => {
-    setEditSubCategoryId(subCategory.subCategoryId);
-    setSubCategoryName(subCategory.subCategoryName);
-    setSubCategoryParentId(selectedCategoryIdForSubcategories);
-    setErrorMessage("");
-  };
+const handleEditSubCategoryClick = (subCategory: SubCategory) => {
+  setEditSubCategoryId(subCategory.subCategoryId);
+  setSubCategoryName(subCategory.subCategoryName);
+  setSubCategoryParentId(selectedCategoryIdForSubcategories);
+  setErrorMessage("");
+};
+
 
   // Call fetch categories initially (on component mount)
   React.useEffect(() => {

@@ -88,12 +88,17 @@ formDataToSend.append("shipping_information", combinedShippingInfo);
       
       alert("Product created successfully!");
       setIsSaved(true);
-    } catch (error: any) {
-      console.error("❌ Error saving product:", error);
-      alert(error.message || "Failed to save product");
-    } finally {
-      setIsSubmitting(false);
-    }
+   } catch (error) {
+  console.error("❌ Error saving product:", error);
+
+  if (error instanceof Error) {
+    alert(error.message);
+  } else {
+    alert("Failed to save product");
+  }
+} finally {
+  setIsSubmitting(false);
+}
   };
 
   const handleEdit = () => {
