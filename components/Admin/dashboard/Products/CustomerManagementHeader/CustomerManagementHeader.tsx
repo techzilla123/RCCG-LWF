@@ -10,6 +10,7 @@ interface Category {
 
 type SubCategory = {
   subCategoryId: string;
+  categoryId: string;
   subCategoryName: string;
   parentCategoryId: string;
   // Add other fields as needed
