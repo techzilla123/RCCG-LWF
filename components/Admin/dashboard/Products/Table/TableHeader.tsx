@@ -1,3 +1,4 @@
+import React from 'react';
 import { BorderElement } from './BorderElement';
 import { TableHeaderProps } from './types';
 
