@@ -34,7 +34,7 @@ React.useEffect(() => {
       <header className="flex z-0 flex-col justify-center w-full">
       <BackButton onPrevious={onPrevious} />
         <h1 className="text-3xl font-semibold text-black leading-[40px]">
-          Preview
+          Preview 
         </h1>
       </header>
 
