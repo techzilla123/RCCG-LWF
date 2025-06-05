@@ -16,17 +16,30 @@ interface Category {
   categoryName: string;
   noOfProducts: number;
 }
+
 interface SubCategory {
   subCategoryId: string;
   subCategoryName: string;
 }
+
+type FormData = {
+  productName: string;
+  description: string;
+  producer: string;
+  url: string;
+  category: string;
+  subCategory: string;
+  categoryId: string;
+  keywords: string[];
+  uploadedFiles: UploadedFile[];
+};
 
 type ProductDetailFormProps = {
   onClose: () => void;
 };
 
 export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     productName: "",
     description: "",
     producer: "",
@@ -34,8 +47,8 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
     category: "",
     subCategory: "",
     categoryId: "",
-    keywords: [] as string[],
-    uploadedFiles: [] as UploadedFile[],
+    keywords: [],
+    uploadedFiles: [],
   });
 
   const [step, setStep] = useState(1);
@@ -44,51 +57,32 @@ export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  
-const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-    // const [selectedCategoryIdForSubcategories, setSelectedCategoryIdForSubcategories] = useState("");
-
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Load saved data on mount from localStorage
   useEffect(() => {
-  const stringFields = [
-    "productName",
-    "description",
-    "producer",
-    "url",
-    "category",
-    "subCategory",
-    "categoryId",
-  ];
+    const fields: (keyof FormData)[] = [
+      "productName",
+      "description",
+      "producer",
+      "url",
+      "category",
+      "subCategory",
+      "categoryId",
+    ];
 
-  const arrayFields = ["keywords", "uploadedFiles"];
+    const loaded = { ...formData };
+    fields.forEach((field) => {
+      const saved = localStorage.getItem(field);
+      if (saved) loaded[field] = saved;
+    });
+    setFormData(loaded);
+  }, []);
 
-  const loaded = { ...formData };
-
-  // Load string fields
-  stringFields.forEach((field) => {
-    const saved = localStorage.getItem(field);
-    if (saved) loaded[field] = saved;
-  });
-
-  // Load array fields
-  arrayFields.forEach((field) => {
-    const saved = localStorage.getItem(field);
-    if (saved) {
-      try {
-        loaded[field] = JSON.parse(saved);
-      } catch {
-        loaded[field] = []; // default to empty array if JSON parsing fails
-      }
-    }
-  });
-
-  setFormData(loaded);
-}, []);
-
-
+  // Save to localStorage when formData changes (only string fields)
   useEffect(() => {
     localStorage.setItem("productName", formData.productName);
   }, [formData.productName]);
@@ -117,6 +111,7 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     localStorage.setItem("categoryId", formData.categoryId);
   }, [formData.categoryId]);
 
+  // Close dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -135,6 +130,7 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     };
   }, [isDropdownOpen]);
 
+  // Fetch categories from API
   const fetchCategories = async () => {
     setIsLoading(true);
     setErrorMessage("");
@@ -174,10 +170,10 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     }
   };
 
+  // Fetch subcategories based on categoryId
   const fetchSubCategories = async (categoryId: string) => {
     setIsLoading(true);
     setErrorMessage("");
-    // setSelectedCategoryIdForSubcategories(categoryId);
     try {
       const token = localStorage.getItem("accessToken") || "";
 
@@ -213,17 +209,19 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     }
   };
 
+  // Filter categories for search
   const filteredCategories = categories.filter((cat) =>
     cat.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Navigation handlers
   const handleClose = () => onClose();
   const handleCancel = () => handleClose();
   const handlePrevious = () => setStep((prev) => Math.max(prev - 1, 1));
   const handleNext = () => {
     if (uploadedFiles.length === 0) {
       alert("Please upload at least one image.");
-      return; // stop going forward
+      return;
     }
 
     // Save rest of formData except uploadedFiles to localStorage
@@ -235,11 +233,12 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
       }
     });
 
-    // Do NOT save uploadedFiles in localStorage because they're File objects
+    // Don't save uploadedFiles in localStorage (File objects)
 
     setStep((prev) => Math.min(prev + 1, 4));
   };
 
+  // Step 1 form UI
   if (step === 1) {
     return (
       <main className="flex flex-col gap-6 p-10 mx-auto max-w-none bg-white rounded-2xl w-[640px] max-md:p-5 max-md:w-full max-md:max-w-[991px] max-sm:p-4 max-sm:max-w-screen-sm">
@@ -319,7 +318,7 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
                           localStorage.setItem("categoryId", cat.categoryId);
                           setIsDropdownOpen(false);
                           setSearchTerm("");
-                          fetchSubCategories(cat.categoryId); // fetch subcategories
+                          fetchSubCategories(cat.categoryId);
                         }}
                         className="p-2 hover:bg-gray-100 cursor-pointer"
                       >
@@ -333,30 +332,29 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
           </div>
 
           <label className="block mb-1 font-medium">Sub category</label>
-         <select
-  value={formData.subCategory}
-  onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
-  className="w-full border rounded px-3 py-2"
-  required
->
-  <option value="" disabled>
-    Select a subcategory
-  </option>
+          <select
+            value={formData.subCategory}
+            onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
+            className="w-full border rounded px-3 py-2"
+            required
+          >
+            <option value="" disabled>
+              Select a subcategory
+            </option>
 
-  {subCategories.length === 0 ? (
-    <option disabled>No subcategories available</option>
-  ) : (
-    subCategories.map((subCat, index) => (
-      <option
-        key={subCat.subCategoryId || `${subCat.subCategoryName}-${index}`}
-        value={subCat.subCategoryName}
-      >
-        {subCat.subCategoryName}
-      </option>
-    ))
-  )}
-</select>
-
+            {subCategories.length === 0 ? (
+              <option disabled>No subcategories available</option>
+            ) : (
+              subCategories.map((subCat, index) => (
+                <option
+                  key={subCat.subCategoryId || `${subCat.subCategoryName}-${index}`}
+                  value={subCat.subCategoryName}
+                >
+                  {subCat.subCategoryName}
+                </option>
+              ))
+            )}
+          </select>
 
           <KeywordTags />
           <MediaUpload files={uploadedFiles} onFilesChange={setUploadedFiles} />
