@@ -301,7 +301,7 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
       setIsLoading(false);
     }
   };
-  const handleDeleteSubCategory = async (subCategory) => {
+const handleDeleteSubCategory = async (subCategory: SubCategory) => {
   if (!window.confirm(`Are you sure you want to delete subcategory "${subCategory.subCategoryName}"?`)) {
     return;
   }
