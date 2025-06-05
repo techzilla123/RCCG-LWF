@@ -2,6 +2,26 @@ import * as React from "react";
 
 export const ShippingInfo = () => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [shippingData, setShippingData] = React.useState<{
+    shippedFrom?: string;
+    shippingFee?: string;
+    returnPolicy?: string;
+    waitingTime?: string;
+  }>({});
+
+  // Load shipping info from localStorage on mount
+  React.useEffect(() => {
+    const saved = localStorage.getItem("pricingFormData");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setShippingData({
+        shippedFrom: parsed.shippedFrom || "N/A",
+        shippingFee: parsed.shippingFee || "N/A",
+        returnPolicy: parsed.returnPolicy || "N/A",
+        waitingTime: parsed.waitingTime || "N/A",
+      });
+    }
+  }, []);
 
   return (
     <section className="overflow-hidden pt-4 mt-6 w-full border-t border-solid border-t-[color:var(--colour-stroke-default,#D5D5D5)]">
@@ -26,17 +46,20 @@ export const ShippingInfo = () => {
         <div className="mt-4 text-base tracking-normal leading-6 text-neutral-500">
           <ul>
             <li>
-              Shipped from: <span className="text-black">USA</span>
+              Shipped from:{" "}
+              <span className="text-black">{shippingData.shippedFrom}</span>
             </li>
             <li>
               Order now, get by:{" "}
-              <span className="text-black">May 15, 2025</span>
+              <span className="text-black">{shippingData.waitingTime}</span>
             </li>
             <li>
-              Return policy: <span className="text-black">within 7 days</span>
+              Return policy:{" "}
+              <span className="text-black">{shippingData.returnPolicy}</span>
             </li>
             <li>
-              Shipping cost: <span className="text-black">$24.00</span>
+              Shipping cost:{" "}
+              <span className="text-black">${shippingData.shippingFee}</span>
             </li>
           </ul>
         </div>

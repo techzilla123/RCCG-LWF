@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CloseIcon } from './Icons';
 
 interface KeywordTag {
@@ -13,14 +13,22 @@ const colorStyles = {
 };
 
 export const KeywordTags = () => {
-  const [tags, setTags] = useState<KeywordTag[]>([
-    { text: 'Balloons', color: 'blue' },
-    { text: 'Birthday', color: 'green' },
-    { text: 'Wedding', color: 'red' },
-  ]);
-
+  const [tags, setTags] = useState<KeywordTag[]>([]);
   const [newTag, setNewTag] = useState('');
   const [selectedColor, setSelectedColor] = useState<KeywordTag['color']>('blue');
+
+  // Load tags from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('productTags');
+    if (stored) {
+      setTags(JSON.parse(stored));
+    }
+  }, []);
+
+  // Save tags to localStorage on change
+  useEffect(() => {
+    localStorage.setItem('productTags', JSON.stringify(tags));
+  }, [tags]);
 
   const addTag = () => {
     if (!newTag.trim()) return;
@@ -34,9 +42,7 @@ export const KeywordTags = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-base text-black max-md:text-sm max-sm:text-xs">
-        Keywords
-      </label>
+      <label className="text-base text-black">Keywords</label>
 
       {/* Input to add tag */}
       <div className="flex gap-2">
@@ -66,11 +72,11 @@ export const KeywordTags = () => {
       </div>
 
       {/* Display tags */}
-      <div className="flex flex-wrap gap-2 max-md:gap-1.5 max-sm:gap-1">
+      <div className="flex flex-wrap gap-2 mt-2">
         {tags.map((tag, index) => (
           <div
             key={index}
-            className={`flex items-center px-2 py-1.5 text-sm text-black rounded border border-solid max-md:text-xs max-sm:text-xs ${colorStyles[tag.color]}`}
+            className={`flex items-center px-2 py-1.5 text-sm text-black rounded border ${colorStyles[tag.color]}`}
           >
             <span className="mr-2">{tag.text}</span>
             <button onClick={() => removeTag(index)}>

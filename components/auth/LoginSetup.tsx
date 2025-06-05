@@ -45,9 +45,15 @@ export const LoginSetup: React.FC = () => {
       }
 
       const data = await response.json();
+const user = data.data.data;
 
       const userType = data.data.data.userType;
       localStorage.setItem("userType", userType);
+
+      // ✅ Save name for later display
+const fullName = `${user.firstname} ${user.lastname}`;
+localStorage.setItem("userFullName", fullName);
+
       if (userType === "admin" || userType === "sub_admin") {
         const token = `Bearer ${data.data.token}`;
         localStorage.setItem("accessToken", token);

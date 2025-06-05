@@ -6,25 +6,66 @@ import React, { useState, useRef, useEffect } from "react";
 import Actions from "./Dropdown/Actions";
 import { createPortal } from 'react-dom';
 
+type Product = {
+  productName: string;
+  categoryName: string;
+  created_at: string;
+  imageOne: string;
+  price: number;
+  quantity: number;
+  status: 'Active' | 'Disabled' | 'Out of stock';
+};
+
+
 export const Table = () => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
-
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
+const [products, setProducts] = useState<Product[]>([]);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
-  const toggleDropdown = (index: number) => {
-    if (openDropdownIndex === index) {
-      setOpenDropdownIndex(null);
-      return;
-    }
+  const toggleCheckbox = (index: number) => {
+  setSelectedRows(prev =>
+    prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+  );
+};
 
-    const rect = dropdownRefs.current[index]?.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - (rect?.bottom || 0);
-    setDropdownDirection(spaceBelow < 100 ? "up" : "down");
-    setOpenDropdownIndex(index);
-  };
+const isAllSelected = products.length > 0 && selectedRows.length === products.length;
 
-  // ✅ Handle outside click
+const toggleSelectAll = () => {
+  if (isAllSelected) {
+    setSelectedRows([]);
+  } else {
+    setSelectedRows(products.map((_, index) => index));
+  }
+};
+  // Fetch product data
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const token = localStorage.getItem("accessToken") || "";
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token && { Authorization: token }),
+          },
+        });
+
+        const result = await response.json();
+        if (result?.statusCode === 200) {
+          setProducts(result.data.product || []);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Handle outside click for dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -39,31 +80,55 @@ export const Table = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdownIndex]);
+
+  const toggleDropdown = (index: number) => {
+    if (openDropdownIndex === index) {
+      setOpenDropdownIndex(null);
+      return;
+    }
+
+    const rect = dropdownRefs.current[index]?.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - (rect?.bottom || 0);
+    setDropdownDirection(spaceBelow < 100 ? "up" : "down");
+    setOpenDropdownIndex(index);
+  };
+
+
+
   return (
     <div className="w-full overflow-x-auto mt-8">
-    <div className="flex min-w-[900px]"> {/* Added gap between columns */}
-
-  
-        {/* Left Image */}
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/ddea918870f375ce53a047f37bb138b8c9d80a7a?placeholderIfAbsent=true"
-          className="object-contain shrink-0 w-10 aspect-[0.12]"
-          alt=""
-        />
+      <div className="flex min-w-[900px]">
+       {/* Checkbox Column */}
+<div className="flex-1 min-w-[40px] max-w-[50px]">
+  <TableHeader
+    title={
+      <input
+        type="checkbox"
+        checked={isAllSelected}
+        onChange={toggleSelectAll}
+        className="cursor-pointer"
+      />
+    }
+  />
+  {products.map((_, index) => (
+    <TableCell key={index} className="py-3 px-2 justify-center">
+      <input
+        type="checkbox"
+        checked={selectedRows.includes(index)}
+        onChange={() => toggleCheckbox(index)}
+        className="cursor-pointer"
+      />
+    </TableCell>
+  ))}
+</div>
 
         {/* Image Column */}
         <div className="flex-1 min-w-[100px] max-w-[120px]">
           <TableHeader title="Image" />
-          {[
-            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f787e17a6d7c5de797075819be6e830ad2215ceb?placeholderIfAbsent=true",
-            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/10fe93c6dbfdd551ab0f1bf623522d4ace36355d?placeholderIfAbsent=true",
-            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/fddde9f7a2c5735a183b984f1b45c27794af0cd5?placeholderIfAbsent=true",
-            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/fabc870d34a2df2cd9b3f4d7d5fa1429cb2eead1?placeholderIfAbsent=true",
-            "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/b05fe33e78cfea949604e566849a0cde9b93ef5f?placeholderIfAbsent=true"
-          ].map((url, index) => (
+          {products.map((item, index) => (
             <TableCell key={index} className="py-3 px-5 justify-center">
               <img
-                src={url}
+                src={item.imageOne}
                 className="object-contain rounded aspect-[1.7] w-[68px]"
                 alt=""
               />
@@ -73,34 +138,24 @@ export const Table = () => {
 
         {/* Product Column */}
         <div className="flex-1 min-w-[200px]">
-  <TableHeader title="Product" />
-  {[
-    "Colourful Kids Birthday Latex Balloons",
-    "Transparent Bubble Balloon with Custom Sticker...",
-    "Elegant Golden Age Birthday Celebration Set...",
-    "All-In-One Happy Birthday Bash Décor Kit...",
-    "Deluxe Dessert Station Setup Kit – For Insta..."
-  ].map((text, index) => (
-    <TableCell key={index} className="p-2">
-         <div className="text-base text-black truncate mt-2 "   title={text}>{text}</div>
-    </TableCell>
-  ))}
-</div>
-
-
+          <TableHeader title="Product" />
+          {products.map((item, index) => (
+            <TableCell key={index} className="p-2">
+              <div className="text-base text-black truncate mt-2" title={item.productName}>
+                {item.productName}
+              </div>
+            </TableCell>
+          ))}
+        </div>
 
         {/* Category Column */}
         <div className="flex-1 min-w-[180px]">
           <TableHeader title="Category" />
-          {[
-            "Birthday shop",
-            "Balloon shop",
-            "Party supplies",
-            "Decoration",
-            "Holidays & Occasions"
-          ].map((text, index) => (
+          {products.map((item, index) => (
             <TableCell key={index} className="py-2 px-4">
-              <div className="text-base text-black truncate mt-2"   title={text}>{text}</div>
+              <div className="text-base text-black truncate mt-2" title={item.categoryName}>
+                {item.categoryName}
+              </div>
             </TableCell>
           ))}
         </div>
@@ -108,9 +163,9 @@ export const Table = () => {
         {/* Date Column */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <TableHeader title="Date added" />
-          {Array(5).fill("03-04-2025").map((date, index) => (
+          {products.map((item, index) => (
             <TableCell key={index} className="py-2 px-4 whitespace-nowrap">
-              <div className="text-base text-black mt-2">{date}</div>
+              <div className="text-base text-black mt-2">{item.created_at?.split(" ")[0]}</div>
             </TableCell>
           ))}
         </div>
@@ -118,9 +173,9 @@ export const Table = () => {
         {/* Price Column */}
         <div className="flex-1 min-w-[100px] max-w-[120px]">
           <TableHeader title="Price" />
-          {["$720", "$950", "$20", "$120", "$1,020"].map((price, index) => (
+          {products.map((item, index) => (
             <TableCell key={index} className="py-2 px-4 text-right">
-              <div className="text-base text-black mt-2">{price}</div>
+              <div className="text-base text-black mt-2">${item.price}</div>
             </TableCell>
           ))}
         </div>
@@ -128,9 +183,9 @@ export const Table = () => {
         {/* Orders Column */}
         <div className="flex-1 min-w-[100px] max-w-[120px]">
           <TableHeader title="Orders" />
-          {["20", "120", "10", "700", "10"].map((orders, index) => (
+          {products.map((_, index) => (
             <TableCell key={index} className="py-2 px-4 text-right">
-              <div className="text-base text-black mt-2">{orders}</div>
+              <div className="text-base text-black mt-2">0</div>
             </TableCell>
           ))}
         </div>
@@ -138,9 +193,9 @@ export const Table = () => {
         {/* Sales Column */}
         <div className="flex-1 min-w-[130px] max-w-[160px]">
           <TableHeader title="Sales" />
-          {["$14,400", "$45,520", "$200", "$84,000", "$10,200"].map((sales, index) => (
+          {products.map((_, index) => (
             <TableCell key={index} className="py-2 px-4 text-right">
-              <div className="text-base text-black mt-2">{sales}</div>
+              <div className="text-base text-black mt-2">$0</div>
             </TableCell>
           ))}
         </div>
@@ -148,20 +203,14 @@ export const Table = () => {
         {/* Stock Column */}
         <div className="flex-1 min-w-[120px] max-w-[140px]">
           <TableHeader title="Stock" />
-          {[
-            { value: "200", disabled: false },
-            { value: "314", disabled: false },
-            { value: "400", disabled: false },
-            { value: "0", disabled: true },
-            { value: "5", disabled: false }
-          ].map((stock, index) => (
+          {products.map((item, index) => (
             <TableCell
               key={index}
               className={`py-2 px-4 text-right ${
-                stock.disabled ? "text-stone-300 font-medium" : "text-black"
+                item.quantity === 0 ? "text-stone-300 font-medium" : "text-black"
               }`}
             >
-              <div className="mt-2">{stock.value}</div>
+              <div className="mt-2">{item.quantity}</div>
             </TableCell>
           ))}
         </div>
@@ -169,63 +218,59 @@ export const Table = () => {
         {/* Status Column */}
         <div className="flex-1 min-w-[140px] max-w-[160px]">
           <TableHeader title="Status" />
-          {[
-            "Active",
-            "Disabled",
-            "Active",
-            "Out of stock",
-            "Disabled"
-          ].map((status, index) => (
+          {products.map((item, index) => (
             <TableCell key={index} className="px-4 py-3">
-              <StatusTag status={status as 'Active' | 'Disabled' | 'Out of stock'} />
+              <StatusTag status={item.status as 'Active' | 'Disabled' | 'Out of stock'} />
             </TableCell>
           ))}
         </div>
 
-       <div className="flex-1 min-w-[80px] max-w-[100px]">
-  <TableHeader title="" />
-  {Array(5).fill(null).map((_, index) => (
-    <TableCell key={index} className="px-4 py-3 text-right">
-      <div
-        className="relative"
-         ref={
-                    ((el: HTMLDivElement | null) => {
-                      dropdownRefs.current[index] = el;
-                    }) as React.Ref<HTMLDivElement>
-                  }
-                  
-      >
-        <div
-          className="flex items-center gap-1 cursor-pointer mt-3"
-          onClick={() => toggleDropdown(index)}
-        >
-          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
-          <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+        {/* Actions Column */}
+        <div className="flex-1 min-w-[80px] max-w-[100px]">
+          <TableHeader title="" />
+          {products.map((_, index) => (
+            <TableCell key={index} className="px-4 py-3 text-right">
+              <div
+                className="relative"
+                ref={(el) => {
+                  dropdownRefs.current[index] = el;
+                }}
+              >
+                <div
+                  className="flex items-center gap-1 cursor-pointer mt-3"
+                  onClick={() => toggleDropdown(index)}
+                >
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                </div>
+
+                {openDropdownIndex === index &&
+                  dropdownRefs.current[index] &&
+                  createPortal(
+                    <div
+                      className="absolute z-[9999]"
+                      style={{
+                        top:
+                          dropdownRefs.current[index].getBoundingClientRect().bottom +
+                          window.scrollY,
+                        left:
+                          dropdownRefs.current[index].getBoundingClientRect().left +
+                          window.scrollX,
+                      }}
+                    >
+                      <Actions direction={dropdownDirection} />
+                    </div>,
+                    document.body
+                  )}
+              </div>
+            </TableCell>
+          ))}
         </div>
-
-        {openDropdownIndex === index && dropdownRefs.current[index] &&
-  createPortal(
-    <div
-      className="absolute z-[9999]"
-      style={{
-        top: dropdownRefs.current[index].getBoundingClientRect().bottom + window.scrollY,
-        left: dropdownRefs.current[index].getBoundingClientRect().left + window.scrollX,
-      }}
-    >
-      <Actions direction={dropdownDirection} />
-    </div>,
-    document.body
-  )
-}
-      </div>
-    </TableCell>
-  ))}
-</div>
-
       </div>
     </div>
   );
 };
 
 export default Table;
+  

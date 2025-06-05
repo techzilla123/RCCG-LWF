@@ -2,6 +2,16 @@ import * as React from "react";
 
 export const ProductDetails = () => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [producer, setProducer] = React.useState("");
+  const [url, setUrl] = React.useState("#");
+
+  React.useEffect(() => {
+    const storedProducer = localStorage.getItem("producer");
+    const storedUrl = localStorage.getItem("url");
+
+    if (storedProducer) setProducer(storedProducer);
+    if (storedUrl) setUrl(storedUrl);
+  }, []);
 
   return (
     <section className="overflow-hidden pt-4 mt-6 w-full border-t border-solid border-t-[color:var(--colour-stroke-default,#D5D5D5)]">
@@ -27,15 +37,15 @@ export const ProductDetails = () => {
           <ul>
             <li>
               Producer:{" "}
-              <a href="#" className="underline text-[#0052CE]">
-                Savic Balloons
+              <a href={url} target="_blank" rel="noopener noreferrer" className="underline text-[#0052CE]">
+                {producer || "Unknown"}
               </a>
             </li>
             <li>
-              <span className="text-neutral-500">Occasion: </span>
+              {/* <span className="text-neutral-500">Occasion: </span>
               <span className="text-black">
                 Party decor for gatherings and celebrations
-              </span>
+              </span> */}
             </li>
           </ul>
         </div>

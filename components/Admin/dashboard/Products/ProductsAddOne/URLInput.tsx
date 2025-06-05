@@ -1,19 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CaretDownIcon } from './Icons';
 
-export const URLInput = () => {
+type URLInputProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+export const URLInput = ({ value, onChange }: URLInputProps) => {
   const [subdomain, setSubdomain] = useState('');
   const [domain, setDomain] = useState('.com');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const domainOptions = ['.com', '.net', '.org', '.co'];
 
+  // Split initial value once on mount
+  useEffect(() => {
+    if (value.startsWith('https://')) {
+      const raw = value.replace('https://', '');
+      for (const d of domainOptions) {
+        if (raw.endsWith(d)) {
+          const sub = raw.slice(0, raw.length - d.length);
+          setSubdomain(sub);
+          setDomain(d);
+          break;
+        }
+      }
+    }
+  }, []);
+
+  // Compose full URL on subdomain/domain change
+  useEffect(() => {
+    const newUrl = `https://${subdomain}${domain}`;
+    if (newUrl !== value) {
+      onChange(newUrl);
+    }
+  }, [subdomain, domain]);
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleSelect = (value: string) => {
-    setDomain(value);
+  const handleSelect = (val: string) => {
+    setDomain(val);
     setIsDropdownOpen(false);
   };
 

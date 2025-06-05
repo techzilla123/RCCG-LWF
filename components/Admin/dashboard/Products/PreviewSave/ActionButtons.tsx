@@ -1,14 +1,99 @@
 import * as React from "react";
+import { UploadedFile } from "./MediaUpload";
 
 interface ActionButtonsProps {
   onCancel: () => void;
+  uploadedFiles: UploadedFile[];
 }
 
-export const ActionButtons = ({ onCancel }: ActionButtonsProps) => {
+export const ActionButtons = ({ onCancel, uploadedFiles }: ActionButtonsProps) => {
   const [isSaved, setIsSaved] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+const imageFieldNames = ["image_one", "image_two", "image_three"];
 
-  const handleSave = () => {
-    setIsSaved(true);
+
+  const handleSave = async () => {
+    setIsSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("accessToken") || "";
+      const formDataToSend = new FormData();
+
+      formDataToSend.append("category_id", localStorage.getItem("categoryId") || "");
+      formDataToSend.append("product_name", localStorage.getItem("productName") || "");
+      formDataToSend.append("description", localStorage.getItem("description") || "");
+      formDataToSend.append("producer", localStorage.getItem("producer") || "");
+      formDataToSend.append("classification", localStorage.getItem("category") || "");
+
+const price = localStorage.getItem("price");
+if (price && !isNaN(Number(price))) {
+  formDataToSend.append("price", price);
+}
+const discount = localStorage.getItem("discount") || "0";
+
+formDataToSend.append("discount_price", discount && !isNaN(Number(discount)) ? discount : "0");
+
+formDataToSend.append("quantity", localStorage.getItem("stock") || "");
+ const shippedFrom = localStorage.getItem("shippedFrom") || "";
+const waitingTime = localStorage.getItem("waitingTime") || "";
+const returnPolicy = localStorage.getItem("returnPolicy") || "";
+
+const combinedShippingInfo = [
+  shippedFrom && `Shipped from: ${shippedFrom}`,
+  waitingTime && `Waiting time: ${waitingTime}`,
+  returnPolicy && `Return policy: ${returnPolicy}`
+].filter(Boolean).join(", ");
+
+
+formDataToSend.append("shipping_information", combinedShippingInfo);
+
+    
+      const sizes = JSON.parse(localStorage.getItem("selectedSizes") || "[]");
+      const colors = JSON.parse(localStorage.getItem("selectedColors") || "[]");
+
+      sizes.forEach((size: string) => formDataToSend.append("size[]", size));
+      colors.forEach((color: string) => formDataToSend.append("color[]", color));
+
+      // Append real File objects
+      if (!uploadedFiles || uploadedFiles.length === 0) {
+        alert("Please upload at least one image.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      uploadedFiles.forEach((file, index) => {
+  if (index < imageFieldNames.length) {
+    formDataToSend.append(imageFieldNames[index], file.file);
+  }
+});
+
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/create-product`,
+        {
+          method: "POST",
+          headers: {
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token && { Authorization: token }),
+          },
+          body: formDataToSend,
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Submission failed");
+      }
+
+      
+      alert("Product created successfully!");
+      setIsSaved(true);
+    } catch (error: any) {
+      console.error("❌ Error saving product:", error);
+      alert(error.message || "Failed to save product");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleEdit = () => {
@@ -19,29 +104,23 @@ export const ActionButtons = ({ onCancel }: ActionButtonsProps) => {
     <section className="flex items-center justify-between mt-6 w-full text-base font-medium tracking-normal text-center">
       {!isSaved ? (
         <>
-          <button
-            className="text-base text-black leading-[24px]"
-            onClick={onCancel}
-          >
+          <button className="text-base text-black leading-[24px]" onClick={onCancel}>
             Cancel
           </button>
           <div className="flex-1" />
           <button
             className="px-4 py-0 h-14 text-base font-medium text-white bg-blue-600 cursor-pointer rounded-[50px]"
             onClick={handleSave}
+            disabled={isSubmitting}
           >
-            Save product
+            {isSubmitting ? "Saving..." : "Save product"}
           </button>
         </>
       ) : (
         <>
           <div className="flex gap-6 items-center">
-            <button className="text-base text-red-500 leading-[24px]">
-              Delete
-            </button>
-            <button className="text-base text-black leading-[24px]">
-              Disable
-            </button>
+            <button className="text-base text-red-500 leading-[24px]">Delete</button>
+            <button className="text-base text-black leading-[24px]">Disable</button>
           </div>
           <button
             onClick={handleEdit}

@@ -4,9 +4,16 @@ import * as React from "react";
 export const PurchaseOptions = () => {
   const [selectedSize, setSelectedSize] = React.useState("");
   const [selectedColor, setSelectedColor] = React.useState("");
+  const [availableSizes, setAvailableSizes] = React.useState<string[]>([]);
+  const [availableColors, setAvailableColors] = React.useState<string[]>([]);
 
-  const sizes = ["xl", "l", "md", "sm", "xs"];
-  const colors = ["red", "blue", "purple", "teal", "green"];
+  React.useEffect(() => {
+    const savedSizes = JSON.parse(localStorage.getItem("selectedSizes") || "[]");
+    const savedColors = JSON.parse(localStorage.getItem("selectedColors") || "[]");
+
+    setAvailableSizes(savedSizes);
+    setAvailableColors(savedColors);
+  }, []);
 
   return (
     <section className="p-4 mt-6 w-full rounded-xl bg-stone-50">
@@ -15,7 +22,7 @@ export const PurchaseOptions = () => {
           Select size
         </label>
         <div className="flex flex-wrap gap-10 justify-between items-center mt-1 w-full text-base tracking-normal">
-          {sizes.map((size) => (
+          {availableSizes.map((size) => (
             <button
               key={size}
               onClick={() => setSelectedSize(size)}
@@ -34,7 +41,7 @@ export const PurchaseOptions = () => {
           Choose colour
         </label>
         <div className="flex flex-wrap gap-6 items-center mt-2 w-full">
-          {colors.map((color) => (
+          {availableColors.map((color) => (
             <button
               key={color}
               onClick={() => setSelectedColor(color)}
@@ -44,7 +51,7 @@ export const PurchaseOptions = () => {
                 className={`w-5 h-5 rounded-full border-2 ${
                   selectedColor === color ? "border-black" : "border-transparent"
                 }`}
-                style={{ backgroundColor: color }}
+                style={{ backgroundColor: color.toLowerCase() }}
               />
               <span className="text-xs text-black capitalize">{color}</span>
             </button>

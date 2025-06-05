@@ -1,19 +1,26 @@
-import { useRef } from 'react';
-import { EyeIcon, CloseIcon } from './Icons';
+import { useRef, useEffect } from "react";
+import { EyeIcon, CloseIcon } from "./Icons";
 
 export interface UploadedFile {
-  image: string;
+  image: string; // preview URL
   type: string;
+  name: string;
+  file: File; // actual File object
 }
 
-
 interface MediaUploadProps {
-  files: UploadedFile[]; // Accept files from the parent component
-  onFilesChange: (newFiles: UploadedFile[]) => void; // Callback to update the parent component's state
+  files: UploadedFile[];
+  onFilesChange: (newFiles: UploadedFile[]) => void;
 }
 
 export const MediaUpload = ({ files, onFilesChange }: MediaUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Only save metadata to localStorage, not the actual File object
+    const metadata = files.map(({ image, name, type }) => ({ image, name, type }));
+    localStorage.setItem("uploadedMedia", JSON.stringify(metadata));
+  }, [files]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
@@ -22,14 +29,17 @@ export const MediaUpload = ({ files, onFilesChange }: MediaUploadProps) => {
     const newFiles: UploadedFile[] = Array.from(selectedFiles).map((file) => ({
       image: URL.createObjectURL(file),
       type: file.type,
+      name: file.name,
+      file: file,
     }));
 
-    onFilesChange([...files, ...newFiles]); // Update the parent component's state
+    const updatedFiles = [...files, ...newFiles];
+    onFilesChange(updatedFiles);
   };
 
   const handleRemove = (indexToRemove: number) => {
     const updatedFiles = files.filter((_, i) => i !== indexToRemove);
-    onFilesChange(updatedFiles); // Update the parent component's state
+    onFilesChange(updatedFiles);
   };
 
   const handleUploadClick = () => {
@@ -38,11 +48,8 @@ export const MediaUpload = ({ files, onFilesChange }: MediaUploadProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-base text-black max-md:text-sm max-sm:text-xs">
-        Upload media<span className="text-xl text-neutral-500">*</span>
-      </label>
+      <label className="text-base text-black">Upload media *</label>
 
-      {/* Upload box */}
       <div
         className="flex flex-col gap-2 justify-center items-center p-4 text-xs text-center bg-white rounded-lg border-2 border-dashed border-neutral-300 text-neutral-500 cursor-pointer"
         onClick={handleUploadClick}
@@ -61,17 +68,23 @@ export const MediaUpload = ({ files, onFilesChange }: MediaUploadProps) => {
         />
       </div>
 
-      {/* Previews */}
       <div className="flex flex-wrap gap-3">
         {files.map((file, index) => (
           <div key={index} className="flex gap-2 items-center">
-            <img
-              src={file.image}
-              alt="Uploaded preview"
-              className="w-10 h-10 rounded-sm bg-stone-50 object-cover"
-            />
-            <span className="text-xs text-neutral-500 max-md:text-xs max-sm:text-xs truncate max-w-[100px]">
-              {file.type}
+            {file.type.startsWith("video") ? (
+              <video
+                src={file.image}
+                className="w-10 h-10 rounded-sm bg-stone-50 object-cover"
+              />
+            ) : (
+              <img
+                src={file.image}
+                alt="Uploaded preview"
+                className="w-10 h-10 rounded-sm bg-stone-50 object-cover"
+              />
+            )}
+            <span className="text-xs text-neutral-500 truncate max-w-[100px]">
+              {file.name}
             </span>
             <button aria-label="Remove file" onClick={() => handleRemove(index)}>
               <CloseIcon />
