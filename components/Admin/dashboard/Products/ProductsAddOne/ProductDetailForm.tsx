@@ -53,24 +53,24 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load saved data on mount
-    const fields = [
-      "productName",
-      "description",
-      "producer",
-      "url",
-      "category",
-      "subCategory",
-      "categoryId",
-    ];
+  const fields: (keyof typeof formData)[] = [
+    "productName",
+    "description",
+    "producer",
+    "url",
+    "category",
+    "subCategory",
+    "categoryId",
+  ];
 
-    const loaded = { ...formData };
-    fields.forEach((field) => {
-      const saved = localStorage.getItem(field);
-      if (saved) loaded[field] = saved;
-    });
-    setFormData(loaded);
-  }, []);
+  const loaded = { ...formData };
+  fields.forEach((field) => {
+    const saved = localStorage.getItem(field);
+    if (saved) loaded[field] = saved;  // Now TypeScript is happy
+  });
+  setFormData(loaded);
+}, []);
+
 
   useEffect(() => {
     localStorage.setItem("productName", formData.productName);
