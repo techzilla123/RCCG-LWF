@@ -38,9 +38,7 @@ type ProductDetailFormProps = {
   onClose: () => void;
 };
 
-const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: ProductDetailFormProps) => {
-  
-  
+export const ProductDetailForm = ({ onClose }: ProductDetailFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     productName: "",
     description: "",

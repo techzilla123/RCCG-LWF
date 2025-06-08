@@ -1,9 +1,35 @@
-// "use client"
+"use client";
 import React, { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { MoreHorizontal } from "lucide-react";
 import Actionsp from "../Dropdown/Actionsp";
 
+type Order = {
+  orderId: string;
+  // Add more fields as needed
+};
+
+type CustomerData = {
+  customerId: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  location: string | null;
+  status: "Active" | "Inactive" | "Pending" | string;
+  userType: string;
+  registrationDate: string;
+  shippingAddress: string | null;
+  orderList: Order[];
+  profileImage?: string | null;
+};
+
 export const ProfileCard: React.FC = () => {
+  const searchParams = useSearchParams();
+  const customerId = searchParams.get("customerId");
+
+  const [customer, setCustomer] = useState<CustomerData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
 
@@ -36,7 +62,46 @@ export const ProfileCard: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdownIndex]);
 
-  const index = 0; // Since there's only one card
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      if (!customerId) return;
+
+      try {
+        const token = localStorage.getItem("accessToken") || "";
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/fetch-customer/${customerId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+              ...(token && { Authorization: token }),
+            },
+          }
+        );
+
+        const result = await response.json();
+        if (result.statusCode === 200) {
+          setCustomer(result.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch customer:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCustomer();
+  }, [customerId]);
+
+  const index = 0;
+
+  if (loading) return <div className="p-6">Loading customer data...</div>;
+  if (!customer) return <div className="p-6 text-red-500">Customer not found.</div>;
+
+  const fullName = `${customer.firstname} ${customer.lastname}`;
+  const joinDate = new Date(customer.registrationDate).toLocaleDateString();
+  const isVerified = customer.status.toLowerCase() === "active";
 
   return (
     <article
@@ -45,19 +110,41 @@ export const ProfileCard: React.FC = () => {
         dropdownRefs.current[index] = el as HTMLDivElement | null;
       }}
     >
-      <img
-        src="https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/d29fe1bf9e21411c4bea0f62af4f6e5e65b0971b?placeholderIfAbsent=true"
-        alt="Cynthia Morgan profile"
-        className="w-[120px] aspect-[0.88] object-cover rounded-lg"
-      />
+      <div className="relative flex flex-col items-center">
+        {customer.profileImage ? (
+          <img
+            src={customer.profileImage}
+            alt={fullName}
+            className="w-[120px] aspect-[0.88] object-cover rounded-full"
+          />
+        ) : (
+          <div className="w-[120px] h-[120px] rounded-full bg-gray-200 flex items-center justify-center text-4xl font-semibold text-gray-600">
+            {customer.firstname[0].toUpperCase()}
+          </div>
+        )}
+        <span
+          className={`mt-2 px-3 py-1 rounded-full text-xs flex items-center gap-1 ${
+            isVerified ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+          }`}
+        >
+          <span
+            className={`w-2 h-2 rounded-full ${
+              isVerified ? "bg-green" : "bg-yellow-500"
+            }`}
+          ></span>
+          {isVerified ? "Verified" : "Unverified"}
+        </span>
+      </div>
 
       <div className="flex flex-col justify-center flex-1 text-sm text-black">
-        <h3 className="text-xl font-bold leading-6 mb-2">Cynthia Morgan</h3>
-        <p className="text-sm text-gray-800">cynthiamorgan@email.com</p>
+        <h3 className="text-xl font-bold leading-6 mb-2">{fullName}</h3>
+        <p className="text-sm text-gray-800">{customer.email}</p>
         <p className="mt-2 text-base text-gray-500 mb-2">
-          Joined: <span className="text-black">04-05-2025</span>
+          Joined: <span className="text-black">{joinDate}</span>
         </p>
-        <p className="text-sm text-gray-500">USA, Los Angeles</p>
+        <p className="text-sm text-gray-500">
+          {customer.location ? customer.location : "Location not set"}
+        </p>
       </div>
 
       <button
