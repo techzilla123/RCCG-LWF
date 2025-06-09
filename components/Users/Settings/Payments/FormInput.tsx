@@ -13,11 +13,11 @@ export function FormInput({ label, optional, placeholder, value, onChange }: For
   return (
     <div className="flex flex-col w-full max-w-sm">
       <label className="text-base font-medium text-black mb-1">
-        {label} {optional && <span className="text-neutral-400">(optional)</span>}
+        {label} {optional && <span className="text-black-400">(optional)</span>}
       </label>
       <input
         type="text"
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
