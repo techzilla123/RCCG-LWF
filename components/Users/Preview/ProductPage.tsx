@@ -1,105 +1,199 @@
 "use client";
 import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import { ProductGallery } from "./ProductGallery";
 import { ProductRatings } from "./ProductRatings";
 import { ReviewCard } from "./ReviewCard";
 import { ProductInfo } from "./ProductInfo";
 
+type Product = {
+  productId: string;
+  categoryName: string;
+  subCategoryName: string;
+  productName: string;
+  price: string;
+  discountPrice: string;
+  quantity: string;
+  description: string;
+  classification: string;
+  producer: string;
+  size: string[];
+  color: string[];
+  shippingInformation: string;
+  imageOne: string;
+  imageTwo: string;
+  imageThree: string;
+  review: []; // You can refine this too
+};
+
+
 export const ProductPage: React.FC = () => {
   const [showMoreReviews, setShowMoreReviews] = React.useState(false);
+ const [product, setProduct] = React.useState<Product | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+const [showReviewForm, setShowReviewForm] = React.useState(false);
+const [reviewData, setReviewData] = React.useState({
+  customer_name: "",
+  star: "5",
+  review: "",
+});
+
+ const searchParams = useSearchParams();
+const productId = searchParams.keys().next().value || "";
+
+
+React.useEffect(() => {
+  if (!productId) {
+    setError("Product ID is missing in the URL");
+    setLoading(false);
+    return;
+  }
+
+  const fetchProduct = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        ...(token ? { Authorization: token } : {}),
+      };
+
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`;
+      const res = await fetch(url, {
+        method: "GET",
+        headers,
+      });
+
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+      const json = await res.json();
+      if (json.statusCode === 200 && json.data) {
+        setProduct(json.data);
+        setError(null);
+      } else {
+        throw new Error("Unexpected response");
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
+      setLoading(false); // ✅ Ensure loading ends no matter what
+    }
+  };
+
+  fetchProduct(); // ✅ You forgot to call the async function
+
+}, [productId]); // ✅ Dependency array
+
 
   const reviews = [
     {
-      avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/c969b1ff03f45b83970a38d790cd00f6778622f6?placeholderIfAbsent=true",
+      avatarUrl:
+        "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/c969b1ff03f45b83970a38d790cd00f6778622f6?placeholderIfAbsent=true",
       name: "Hannah Schmitt",
       rating: 4,
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
-      date: "May 8, 2020",
-    },
-    {
-      avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9b611d85fb359c569e2c7cd2b952730bab5d4171?placeholderIfAbsent=true",
-      name: "Hannah Schmitt",
-      rating: 4,
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
-      date: "May 8, 2020",
-    },
-    {
-      avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/3bdd215ffeeda77df976fef6a422ea702734a5a5?placeholderIfAbsent=true",
-      name: "John Maxwell",
-      rating: 4,
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
+      review:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
       date: "May 8, 2020",
     },
   ];
 
+  if (loading) {
+    return <div className="p-8">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="p-8 text-red-500">Error: {error}</div>;
+  }
+
+  if (!product) return null;
+  
+
   return (
     <main className="flex flex-col xl:flex-row gap-10 px-8 py-8 max-w-7xl mx-auto max-md:px-4">
-      {/* Info first on small screens */}
       <div className="hidden xl:flex flex-col order-1 xl:order-2 w-full xl:w-[400px] shrink-0">
-  <ProductInfo
-    title="Transparent Bubble Balloon with Custom Sticker"
-    stock={25}
-    price={400}
-    originalPrice={100}
-    discount={25}
-    countdownTime="4d 04h 25m 40s"
-    description="Material: Premium Vinyl Material, Waterproof and Weatherproof, Strong Adhesive, Easy to Apply, Customizable Design, Residue Free Removal, Multiple Font and Color Options, Perfect for Balloons and Gifts, Versatile Use, Sleek and Professional Finish, Handcrafted Precision, Long Lasting Quality, Eco Friendly"
-    tags={["Balloons", "Birthday", "Latex"]}
-  />
-</div>
-
-
-      {/* Gallery + Reviews */}
-      <div className="flex flex-col order-2 xl:order-1 w-full">
-      <ProductGallery
-  mainImage="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/73d2dbf0b84d36e89cbe74d0b6a0257b6aeef88b?placeholderIfAbsent=true"
-  images={[
-    {
-      thumbnail: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/eb6faa61a8c2d1212bc2c8edb1ec3086254695df?placeholderIfAbsent=true",
-      full: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/73d2dbf0b84d36e89cbe74d0b6a0257b6aeef88b?placeholderIfAbsent=true",
-    },
-    {
-      thumbnail: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/7d52c8bbf33cee33f1f289d46230503a71b14cd6?placeholderIfAbsent=true",
-      full: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/73d2dbf0b84d36e89cbe74d0b6a0257b6aeef88b?placeholderIfAbsent=true",
-    },
-    {
-      thumbnail: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/583aed74a3a6e24a071070b2706f7efb16b81476?placeholderIfAbsent=true",
-      full: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/73d2dbf0b84d36e89cbe74d0b6a0257b6aeef88b?placeholderIfAbsent=true",
-    },
-    {
-      thumbnail: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/4c5b37fe4afed7bd2d6fb31bb8f53e9ab33ef7f9?placeholderIfAbsent=true",
-      full: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/73d2dbf0b84d36e89cbe74d0b6a0257b6aeef88b?placeholderIfAbsent=true",
-    },
-  ]}
+      <ProductInfo
+  title={product.productName}
+  stock={parseInt(product.quantity)}
+  price={parseFloat(product.price.replace(/,/g, ""))}
+  originalPrice={parseFloat((product.discountPrice || product.price).replace(/,/g, ""))}
+  discount={
+    product.discountPrice && product.discountPrice !== "0"
+      ? Math.round(
+          (1 - parseFloat(product.discountPrice.replace(/,/g, "")) /
+            parseFloat(product.price.replace(/,/g, ""))) * 100
+        )
+      : 0
+  }
+  countdownTime="4d 04h 25m 40s"
+  description={product.description}
+  tags={[product.categoryName, product.classification]}
+  sizes={product.size}
+  colors={product.color}
 />
-<div className="flex xl:hidden flex-col">
-  <ProductInfo
-    title="Transparent Bubble Balloon with Custom Sticker"
-    stock={25}
-    price={400}
-    originalPrice={100}
-    discount={25}
-    countdownTime="4d 04h 25m 40s"
-    description="Material: Premium Vinyl Material, Waterproof and Weatherproof, Strong Adhesive, Easy to Apply, Customizable Design, Residue Free Removal, Multiple Font and Color Options, Perfect for Balloons and Gifts, Versatile Use, Sleek and Professional Finish, Handcrafted Precision, Long Lasting Quality, Eco Friendly"
-    tags={["Balloons", "Birthday", "Latex"]}
-  />
-</div>
 
+
+      </div>
+
+      <div className="flex flex-col order-2 xl:order-1 w-full">
+        <ProductGallery
+          mainImage={product.imageOne}
+          images={[
+            {
+              thumbnail: product.imageOne,
+              full: product.imageOne,
+            },
+            {
+              thumbnail: product.imageTwo,
+              full: product.imageTwo,
+            },
+            {
+              thumbnail: product.imageThree,
+              full: product.imageThree,
+            },
+          ]}
+        />
+
+        <div className="flex xl:hidden flex-col">
+        <ProductInfo
+  title={product.productName}
+  stock={parseInt(product.quantity)}
+  price={parseFloat(product.price.replace(/,/g, ""))}
+  originalPrice={parseFloat((product.discountPrice || product.price).replace(/,/g, ""))}
+  discount={
+    product.discountPrice && product.discountPrice !== "0"
+      ? Math.round(
+          (1 - parseFloat(product.discountPrice.replace(/,/g, "")) /
+            parseFloat(product.price.replace(/,/g, ""))) * 100
+        )
+      : 0
+  }
+  countdownTime="4d 04h 25m 40s"
+  description={product.description}
+  tags={[product.categoryName, product.classification]}
+  sizes={product.size}
+  colors={product.color}
+/>
+
+
+        </div>
 
         <ProductRatings />
 
-        {/* Reviews */}
         <section className="flex flex-col justify-center items-center mt-10 w-full">
           <h2 className="text-2xl text-black">Reviews</h2>
 
-          {/* Review Cards */}
-          <div className="w-full mt-6 flex flex-col gap-6 ">
+          <div className="w-full mt-6 flex flex-col gap-6">
             {reviews.map((review, index) => (
               <ReviewCard key={index} {...review} />
             ))}
           </div>
 
-          {/* Show More Button */}
           {!showMoreReviews && (
             <button
               onClick={() => setShowMoreReviews(true)}
@@ -108,6 +202,111 @@ export const ProductPage: React.FC = () => {
               Show more
             </button>
           )}
+
+        {showReviewForm ? (
+  <div className="relative mt-6 w-full max-w-xl p-6 bg-white border rounded-lg shadow-md">
+    {/* Close Button */}
+    <button
+      onClick={() => setShowReviewForm(false)}
+      className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+      aria-label="Close Review Form"
+    >
+      &times;
+    </button>
+
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        try {
+          const token = localStorage.getItem("accessToken");
+          const headers = {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token ? { Authorization: token } : {}),
+          };
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}change-product-review`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              product_id: product.productId,
+              ...reviewData,
+            }),
+          });
+
+          if (!res.ok) throw new Error("Failed to submit review");
+
+          alert("Review submitted!");
+          setReviewData({ customer_name: "", star: "5", review: "" });
+          setShowReviewForm(false);
+        } catch (err) {
+          alert("Error submitting review");
+          console.error(err);
+        }
+      }}
+      className="space-y-5"
+    >
+      <h3 className="text-xl font-semibold text-black">Write a Review</h3>
+
+      <input
+        type="text"
+        placeholder="Your name"
+        value={reviewData.customer_name}
+        onChange={(e) => setReviewData({ ...reviewData, customer_name: e.target.value })}
+        required
+        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+      />
+
+      {/* Star Rating */}
+      <div className="flex justify-center mt-3">
+        <div className="flex items-center space-x-2">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <svg
+              key={star}
+              onClick={() => setReviewData({ ...reviewData, star: star.toString() })}
+              xmlns="http://www.w3.org/2000/svg"
+              fill={star <= parseInt(reviewData.star) ? "#facc15" : "none"}
+              viewBox="0 0 24 24"
+              stroke="#facc15"
+              className="w-6 h-6 cursor-pointer transition-transform transform hover:scale-110"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.125 6.564h6.902c.969 0 1.371 1.24.588 1.81l-5.586 4.042 2.125 6.564c.3.921-.755 1.688-1.54 1.118l-5.586-4.042-5.586 4.042c-.785.57-1.84-.197-1.54-1.118l2.125-6.564-5.586-4.042c-.783-.57-.38-1.81.588-1.81h6.902l2.125-6.564z"
+              />
+            </svg>
+          ))}
+        </div>
+      </div>
+
+      <textarea
+        placeholder="Write your review..."
+        value={reviewData.review}
+        onChange={(e) => setReviewData({ ...reviewData, review: e.target.value })}
+        required
+        className="w-full mt-4 px-4 py-2 border border-gray-300 rounded resize-none h-28 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+      />
+
+      <button
+        type="submit"
+        className="w-full px-6 py-3 text-white bg-yellow-500 rounded-full hover:bg-yellow-600 transition-all"
+      >
+        Submit Review
+      </button>
+    </form>
+  </div>
+) : (
+  <button
+    onClick={() => setShowReviewForm(true)}
+    className="px-6 py-2 mt-6 text-base font-medium text-black bg-yellow-100 rounded-full hover:bg-yellow-200 transition"
+  >
+    Add Review
+  </button>
+)}
+
+
         </section>
       </div>
     </main>

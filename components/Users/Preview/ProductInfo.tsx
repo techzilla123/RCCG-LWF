@@ -11,7 +11,10 @@ interface ProductInfoProps {
   countdownTime: string;
   description: string;
   tags: string[];
+  sizes: string[];
+  colors: string[];
 }
+
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
   title,
@@ -22,19 +25,22 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   countdownTime,
   description,
   tags,
+  sizes,      // ✅ now passed in
+  colors,     // ✅ now passed in
 }) => {
   const [selectedSize, setSelectedSize] = React.useState("l");
   const [isInflated, setIsInflated] = React.useState(false);
   const [quantity, setQuantity] = React.useState(1);
   const [detailsOpen, setDetailsOpen] = React.useState(true);
+const [selectedColor, setSelectedColor] = React.useState<string | null>(null);
 
-  const colorOptions = [
-    "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9d6e368c4d3f25e0a425b18c21b33b7db12f7743?placeholderIfAbsent=true",
-    "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/95d1d28c85e373056f1732442e037b4707b45410?placeholderIfAbsent=true",
-    "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/57da1085acf585de304c0c1368e86bd5a567772d?placeholderIfAbsent=true",
-    "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8d33a4ba28188906d6b370494b704fc9b467e2d9?placeholderIfAbsent=true",
-    "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9b1f1e8197863b741ae2b8143fe7c9aba8e95187?placeholderIfAbsent=true",
-  ];
+  // const colorOptions = [
+  //   "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9d6e368c4d3f25e0a425b18c21b33b7db12f7743?placeholderIfAbsent=true",
+  //   "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/95d1d28c85e373056f1732442e037b4707b45410?placeholderIfAbsent=true",
+  //   "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/57da1085acf585de304c0c1368e86bd5a567772d?placeholderIfAbsent=true",
+  //   "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8d33a4ba28188906d6b370494b704fc9b467e2d9?placeholderIfAbsent=true",
+  //   "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9b1f1e8197863b741ae2b8143fe7c9aba8e95187?placeholderIfAbsent=true",
+  // ];
 
   const handleQuantityChange = (value: number) => {
     if (value >= 1 && value <= stock) {
@@ -45,7 +51,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   return (
     <aside className="flex-1 shrink bg-white rounded-lg basis-0 min-w-60 p-4 max-md:max-w-full">
       <div className="flex flex-col w-full leading-6 max-md:max-w-full">
-        <span className="px-2 py-0.5 text-xs text-black bg-[#E1F7E6] w-[81px] rounded">
+        <span className="px-2 py-0.5 text-xs text-black bg-[#E1F7E6] w-[100px] rounded">
           {stock} In-stock
         </span>
         <h1 className="mt-3 text-2xl font-semibold text-black">{title}</h1>
@@ -82,7 +88,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         <div className="flex flex-col">
           <label className="text-sm font-medium text-black">Select size</label>
           <div className="flex justify-between mt-2">
-            {["xl", "l", "md", "sm", "xs"].map((size) => (
+            {sizes.map((size) => (
+
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -101,14 +108,19 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         <div className="flex flex-col mt-4">
           <label className="text-sm font-medium text-black">Choose colour</label>
           <div className="flex gap-4 mt-2">
-            {colorOptions.map((url, i) => (
-              <button
-                key={i}
-                className="w-7 h-7 rounded-full overflow-hidden border"
-              >
-                <img src={url} alt={`Color ${i + 1}`} className="w-full h-full" />
-              </button>
-            ))}
+          {colors.map((color, i) => (
+  <button
+    key={i}
+    onClick={() => setSelectedColor(color)}
+    className={`w-7 h-7 rounded-full border transition-all duration-200 ${
+      selectedColor === color ? "border-2 border-black scale-110" : "border-gray-300"
+    }`}
+    style={{ backgroundColor: color }}
+    title={color}
+  />
+))}
+
+
           </div>
         </div>
 
