@@ -7,7 +7,6 @@ interface ProductActionsProps {
   isAdded?: boolean;
   isDisabled?: boolean;
   cartIcon: string;
-  onClick?: () => void;
    onAddToCart?: () => void;
 }
 
@@ -16,7 +15,6 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
   isAdded = false,
   isDisabled = false,
   cartIcon,
-  onClick,
    onAddToCart, // ✅ Add this here
 }) => {
   const buttonStyles = isDisabled

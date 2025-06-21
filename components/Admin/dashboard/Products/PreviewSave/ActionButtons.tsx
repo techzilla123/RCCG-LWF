@@ -31,12 +31,13 @@ if (price && !isNaN(Number(price))) {
   formDataToSend.append("price", price);
 }
 const discount = localStorage.getItem("discount") || "0";
+const discountPercent = Number(discount);
 
 const priceValue = Number(localStorage.getItem("price") || "0");
-const discountPercent = Number(localStorage.getItem("discount") || "0");
-
 const discountAmount = priceValue * (discountPercent / 100);
+
 formDataToSend.append("discount_price", discountAmount.toFixed(2));
+
 
 
 formDataToSend.append("quantity", localStorage.getItem("stock") || "");
