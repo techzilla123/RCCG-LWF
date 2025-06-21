@@ -4,46 +4,58 @@ import React, { useEffect, useState } from 'react';
 import { ProductCardM } from './ProductCard';
 import { Product } from './types';
 
+interface RawProduct {
+  productId: string;
+  imageOne: string;
+  productName: string;
+  price: number;
+  quantity: number;
+}
+
 export const ProductGrid: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token ? { Authorization: token } : {}),
-          },
-        });
+  async function fetchProducts() {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token ? { Authorization: token } : {}),
+        },
+      });
 
-        const json = await res.json();
-        if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          const formatted = json.data.product.map((p: any) => ({
-            id: p.productId,
-            image: p.imageOne,
-            title: p.productName,
-            price: p.price,
-            isOutOfStock: p.quantity === 0,
-            isWishlisted: false,
-          }));
-          setProducts(formatted);
-        } else {
-          console.error("Invalid data format");
-        }
-      } catch (err) {
-        console.error("Failed to load products:", err);
-      } finally {
-        setLoading(false);
+      const json: {
+        statusCode: number;
+        data: { product: RawProduct[] };
+      } = await res.json();
+
+      if (json.statusCode === 200 && Array.isArray(json.data.product)) {
+        const formatted: Product[] = json.data.product.map((p) => ({
+          id: p.productId,
+          image: p.imageOne,
+          title: p.productName,
+          price: p.price,
+          isOutOfStock: p.quantity === 0,
+          isWishlisted: false,
+        }));
+        setProducts(formatted);
+      } else {
+        console.error("Invalid data format");
       }
+    } catch (err) {
+      console.error("Failed to load products:", err);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchProducts();
-  }, []);
+  fetchProducts();
+}, []);
 
   if (loading) return <div className="p-4 text-center">Loading...</div>;
 

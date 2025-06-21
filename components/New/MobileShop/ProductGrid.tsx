@@ -3,6 +3,14 @@ import React, { useState, useEffect } from "react";
 import { ProductCardM } from "./ProductCard";
 import { Product } from "./types";
 
+interface APIProduct {
+  productId: string;
+  imageOne: string;
+  productName: string;
+  price: number;
+  quantity: number;
+}
+
 export const ProductGrid: React.FC<{ scrollRef?: React.RefObject<HTMLDivElement> }> = ({ scrollRef }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,12 +28,14 @@ export const ProductGrid: React.FC<{ scrollRef?: React.RefObject<HTMLDivElement>
             ...(token ? { Authorization: token } : {}),
           },
         });
+
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const { statusCode, data } = await res.json();
         if (statusCode !== 200 || !Array.isArray(data.product)) {
           throw new Error("Invalid response format");
         }
-        setProducts(data.product.map((p: any) => ({
+
+        setProducts(data.product.map((p: APIProduct) => ({
           id: p.productId,
           image: p.imageOne,
           title: p.productName,
@@ -33,12 +43,17 @@ export const ProductGrid: React.FC<{ scrollRef?: React.RefObject<HTMLDivElement>
           isOutOfStock: p.quantity === 0,
           isWishlisted: false,
         })));
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("An unexpected error occurred");
+        }
       } finally {
         setLoading(false);
       }
     }
+
     fetchProducts();
   }, []);
 
