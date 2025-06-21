@@ -54,7 +54,8 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
  <article className="relative flex flex-col p-2 bg-white rounded-lg">
-  <Link href="/preview" className="w-full block">
+  <Link href={`/preview?${product.id}`} className="w-full block">
+
     <img
       src={product.image}
       alt={product.title}

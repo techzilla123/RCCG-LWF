@@ -14,6 +14,7 @@ const inter = Inter({
 });
 
 interface ProductCardProps {
+  id: string; // ✅ Added this line
   image: string;
   title: string;
   rating: number;
@@ -24,12 +25,11 @@ interface ProductCardProps {
   favoriteIcon: string;
   isAdded?: boolean;
   isOutOfStock?: boolean;
-   onAddToCart?: () => void; // ✅ Add this line
- 
-
+  onAddToCart?: () => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
+  id, // ✅ Added this
   image,
   title,
   rating,
@@ -40,19 +40,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   favoriteIcon,
   isAdded = false,
   isOutOfStock = false,
-  onAddToCart, // ✅ Add this here
+  onAddToCart,
 }) => {
   const router = useRouter(); 
 
   const [isFavorited, setIsFavorited] = React.useState(false);
 
   const handleProductClick = () => {
-    router.push("/preview");
+    router.push(`/preview?${id}`); // ✅ Send ID in query param
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent clicking favorite from triggering navigation
-    setIsFavorited(prev => !prev); // Toggle favorite state
+    e.stopPropagation();
+    setIsFavorited(prev => !prev);
   };
 
   return (
@@ -61,7 +61,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         src={image}
         alt={title}
         className="cursor-pointer object-contain z-0 w-full aspect-[1.19]"
-        onClick={handleProductClick} 
+        onClick={handleProductClick}
       />
       <div className="z-0 flex-1 px-4 pt-4 pb-6 w-full">
         <div className="flex flex-col flex-1 w-full">
@@ -81,11 +81,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           isAdded={isAdded}
           isDisabled={isOutOfStock}
           cartIcon={cartIcon}
-           onAddToCart={onAddToCart}
+          onAddToCart={onAddToCart}
         />
       </div>
 
-      {/* FavoriteButton with click handling */}
       <div onClick={handleFavoriteClick}>
         <FavoriteButton icon={isFavorited ? "/Vector(2).svg" : favoriteIcon} />
       </div>

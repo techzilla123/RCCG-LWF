@@ -199,8 +199,9 @@ export function New() {
         className="hidden md:flex gap-6 overflow-x-auto scroll-smooth no-scrollbar mt-4 px-12"
       >
         {products.map((p) => (
-          <ProductCard
+           <ProductCard
             key={p.productId}
+            id={p.productId} // ✅ This line sends the productId to ProductCard
             image={p.imageOne}
             title={p.productName}
             rating={4.7}
@@ -213,6 +214,7 @@ export function New() {
             isAdded={p.isAdded}
             onAddToCart={() => handleAddToCart(p.productId)}
           />
+          
         ))}
       </div>
 
