@@ -8,6 +8,7 @@ interface ProductActionsProps {
   isDisabled?: boolean;
   cartIcon: string;
   onClick?: () => void;
+   onAddToCart?: () => void;
 }
 
 export const ProductActions: React.FC<ProductActionsProps> = ({
@@ -16,6 +17,7 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
   isDisabled = false,
   cartIcon,
   onClick,
+   onAddToCart, // ✅ Add this here
 }) => {
   const buttonStyles = isDisabled
     ? "bg-gray-200"
@@ -29,6 +31,12 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
       ? "text-black"
       : "text-white";
 
+      const handleClick = () => {
+  if (!isDisabled && onAddToCart) {
+    onAddToCart();
+  }
+};
+
   return (
     <div className="flex gap-4 items-center mt-2 w-full">
       <p className="self-stretch my-auto text-base font-medium tracking-normal leading-6 text-black whitespace-nowrap">
@@ -36,7 +44,7 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
       </p>
       <div className="flex flex-1 shrink gap-2 items-center self-stretch my-auto basis-0">
         <button
-          onClick={onClick}
+          onClick={handleClick} // ✅ change from `onClick` to `handleClick`
           disabled={isDisabled}
           className={`flex gap-2 justify-center items-center self-stretch w-full rounded-[50px] py-2 px-4 ${buttonStyles}`}
         >

@@ -28,7 +28,8 @@ type FormData = {
   producer: string;
   url: string;
   category: string;
-  subCategory: string;
+ subCategoryId: string; // optional: can rename this to subCategoryId to make it clear
+  subCategoryName: string;
   categoryId: string;
   keywords: string[];
   uploadedFiles: UploadedFile[];
@@ -47,7 +48,8 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
     producer: "",
     url: "",
     category: "",
-    subCategory: "",
+   subCategoryId: "", // ✅ use correct key
+  subCategoryName: "",
     categoryId: "",
     keywords: [],
     uploadedFiles: [],
@@ -72,7 +74,8 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
     "producer",
     "url",
     "category",
-    "subCategory",
+     "subCategoryId", // ✅ correct
+  "subCategoryName", // ✅ added
     "categoryId",
     "keywords",
     "uploadedFiles",
@@ -98,6 +101,8 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
 
   setFormData(loaded);
 }, []);
+
+
 
 
   // Save to localStorage when formData changes (only string fields)
@@ -147,6 +152,8 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  
 
   // Fetch categories from API
   const fetchCategories = async () => {
@@ -331,7 +338,9 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
                             ...formData,
                             category: cat.categoryName,
                             categoryId: cat.categoryId,
-                            subCategory: "", // clear subcategory on new category
+                              subCategoryId: "",   // ✅ correct
+                            subCategoryName: "", // ✅ correct
+
                           });
                           localStorage.setItem("categoryId", cat.categoryId);
                           setIsDropdownOpen(false);
@@ -350,29 +359,39 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
           </div>
 
           <label className="block mb-1 font-medium">Sub category</label>
-          <select
-            value={formData.subCategory}
-            onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
-            className="w-full border rounded px-3 py-2"
-            required
-          >
-            <option value="" disabled>
-              Select a subcategory
-            </option>
+       <select
+  value={formData.subCategoryId} // ✅ use subCategoryId here
+  onChange={(e) => {
+    const selectedId = e.target.value;
+    const selectedSub = subCategories.find(
+      (sub) => sub.subCategoryId === selectedId
+    );
 
-            {subCategories.length === 0 ? (
-              <option disabled>No subcategories available</option>
-            ) : (
-              subCategories.map((subCat, index) => (
-                <option
-                  key={subCat.subCategoryId || `${subCat.subCategoryName}-${index}`}
-                  value={subCat.subCategoryName}
-                >
-                  {subCat.subCategoryName}
-                </option>
-              ))
-            )}
-          </select>
+    setFormData({
+      ...formData,
+      subCategoryId: selectedId, // ✅ correct key
+      subCategoryName: selectedSub?.subCategoryName || "",
+    });
+
+    localStorage.setItem("subCategoryId", selectedId);
+    localStorage.setItem("subCategoryName", selectedSub?.subCategoryName || "");
+  }}
+  className="w-full border rounded px-3 py-2"
+  required
+>
+  <option value="" disabled>Select a subcategory</option>
+
+  {subCategories.length === 0 ? (
+    <option disabled>No subcategories available</option>
+  ) : (
+    subCategories.map((subCat) => (
+      <option key={subCat.subCategoryId} value={subCat.subCategoryId}>
+        {subCat.subCategoryName}
+      </option>
+    ))
+  )}
+</select>
+
 
           <KeywordTags />
           <MediaUpload files={uploadedFiles} onFilesChange={setUploadedFiles} />
@@ -389,6 +408,11 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
       </main>
     );
   }
+  if (!formData.subCategoryId) {
+  alert("Please select a valid subcategory.");
+  return;
+}
+
 
   if (step === 2) {
     return (

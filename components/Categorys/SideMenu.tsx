@@ -1,16 +1,47 @@
 import * as React from "react";
 import { MenuButton } from "./MenuButton";
 
-export const SideMenu: React.FC = () => {
+type SideMenuProps = {
+  selectedCategory: string;
+  onSelect: (label: string) => void;
+};
+
+export const SideMenu: React.FC<SideMenuProps> = ({ selectedCategory, onSelect }) => {
+  const menuItems = [
+    {
+      label: "Balloons",
+      icon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/88a215d095a9cc37f0fbf899503dc8dec471dea2?placeholderIfAbsent=true",
+    },
+    {
+      label: "Birthdays",
+      icon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/99669d3261e528df3456c6036e91dcac48d26dad?placeholderIfAbsent=true",
+    },
+    {
+      label: "Holidays & Occasions",
+      icon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/36ec17d9786b941b0e883c6bf11e39f2a2b38c99?placeholderIfAbsent=true",
+    },
+    {
+      label: "Party Supplies",
+      icon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f3b1bdaac013192d5bc79182008198990569a8b8?placeholderIfAbsent=true",
+    },
+    {
+      label: "Decoration",
+      icon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/dad70678c904999895db481e1567a7c3089a1dbd?placeholderIfAbsent=true",
+    },
+  ];
+
   return (
     <nav className="p-4 rounded-2xl bg-stone-50 min-w-60 w-[267px]">
       <div className="flex-1 w-full">
-        <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/88a215d095a9cc37f0fbf899503dc8dec471dea2?placeholderIfAbsent=true" label="Balloons" isActive={true} />
-        <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/99669d3261e528df3456c6036e91dcac48d26dad?placeholderIfAbsent=true" label="Birthdays" />
-        <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/36ec17d9786b941b0e883c6bf11e39f2a2b38c99?placeholderIfAbsent=true" label="Holidays & Occasions" />
-        <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f3b1bdaac013192d5bc79182008198990569a8b8?placeholderIfAbsent=true" label="Party Supplies" />
-        <MenuButton icon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/dad70678c904999895db481e1567a7c3089a1dbd?placeholderIfAbsent=true" label="Decoration" />
-        
+        {menuItems.map(({ label, icon }) => (
+          <MenuButton
+            key={label}
+            icon={icon}
+            label={label}
+            isActive={selectedCategory === label}
+            onClick={() => onSelect(label)}
+          />
+        ))}
       </div>
       <div className="pt-2 w-full border-t border-solid border-t-[#D5D5D5]">
         <button className="flex gap-10 justify-between items-center pt-16 pb-8 w-full h-8 bg-black bg-opacity-0 min-h-8 rounded-[50px]">

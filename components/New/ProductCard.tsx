@@ -24,6 +24,9 @@ interface ProductCardProps {
   favoriteIcon: string;
   isAdded?: boolean;
   isOutOfStock?: boolean;
+   onAddToCart?: () => void; // ✅ Add this line
+ 
+
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -37,6 +40,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   favoriteIcon,
   isAdded = false,
   isOutOfStock = false,
+  onAddToCart, // ✅ Add this here
 }) => {
   const router = useRouter(); 
 
@@ -77,6 +81,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           isAdded={isAdded}
           isDisabled={isOutOfStock}
           cartIcon={cartIcon}
+           onAddToCart={onAddToCart}
         />
       </div>
 

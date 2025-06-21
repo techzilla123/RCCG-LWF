@@ -18,6 +18,7 @@ type SubCategory = {
 };
 
 export const CustomerManagementHeader = () => {
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [categoryName, setCategoryName] = useState("");
@@ -117,52 +118,53 @@ const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   };
 
   // Create new category
-  const handleCreateCategory = async () => {
-    if (!categoryName.trim()) {
-      setErrorMessage("Category name is required.");
-      return;
+const handleCreateCategory = async () => {
+  if (!categoryName.trim()) {
+    setErrorMessage("Category name is required.");
+    return;
+  }
+
+  setIsCreatingCategory(true);
+  setErrorMessage("");
+
+  try {
+    const token = localStorage.getItem("accessToken") || "";
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/create-product-category`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token && { Authorization: token }),
+        },
+        body: JSON.stringify({ name: categoryName }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to create category.");
     }
 
-    setIsLoading(true);
-    setErrorMessage("");
-
-    try {
-      const token = localStorage.getItem("accessToken") || "";
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/create-product-category`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token && { Authorization: token }),
-          },
-          body: JSON.stringify({ name: categoryName }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create category.");
-      }
-
-      setShowCreateModal(false);
-      setCategoryName("");
-      setShowSuccessModal(true);
-      fetchCategories();
-    } catch (error) {
-      let message = "Something went wrong. Please try again.";
-      if (error instanceof Error) {
-        message = error.message;
-      } else if (typeof error === "string") {
-        message = error;
-      }
-      setErrorMessage(message);
-    } finally {
-      setIsLoading(false);
+    setShowCreateModal(false);
+    setCategoryName("");
+    setShowSuccessModal(true);
+    fetchCategories();
+  } catch (error) {
+    let message = "Something went wrong. Please try again.";
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === "string") {
+      message = error;
     }
-  };
+    setErrorMessage(message);
+  } finally {
+    setIsCreatingCategory(false);
+  }
+};
+
 
   // Update existing category
   const handleUpdateCategory = async () => {
@@ -441,6 +443,7 @@ const handleDeleteSubCategory = async (subCategory: SubCategory) => {
     setErrorMessage("");
   };
 
+  
   const handleCloseSubCategoryModal = () => {
     setShowSubCategoryModal(false);
     setSubCategoryName("");
@@ -533,17 +536,18 @@ const handleEditSubCategoryClick = (subCategory: SubCategory) => {
               <button
                 className="bg-gray-200 px-4 py-2 rounded"
                 onClick={handleCloseCreateModal}
-                disabled={isLoading}
+                disabled={false}
               >
                 Cancel
               </button>
-              <button
-                className="bg-black text-white px-4 py-2 rounded"
-                onClick={handleCreateCategory}
-                disabled={isLoading}
-              >
-                {isLoading ? "Creating..." : "Create"}
-              </button>
+            <button
+  className="bg-black text-white px-4 py-2 rounded"
+  onClick={handleCreateCategory}
+  disabled={isCreatingCategory}
+>
+  {isCreatingCategory ? "Creating..." : "Create"}
+</button>
+
             </div>
           </div>
         </div>

@@ -1,186 +1,202 @@
 "use client";
 
-import * as React from "react";
-import { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ProductHeader } from "./New/ProductHeader";
 import { ProductCard } from "./New/ProductCard";
 import { ProductGrid } from "./New/MobileShop/ProductGrid";
-
-const products = [
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f06e2469f60dcf69c58e22967019fa4149988610?placeholderIfAbsent=true",
-    title: "Colourful Kids Birthday Latex Balloons",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/6bd3320c78972703d7c34d6d67c2049c51abf6c1?placeholderIfAbsent=true",
-    title: "Transparent Bubble Balloon with Custom Sti...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/057374aad3f176f674a5d460fde109d940ab3ecb?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/93c875b96d14af05838420f074f8f210f0e96359?placeholderIfAbsent=true",
-    isAdded: true,
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/355208e8951835bcab4b9a74aec7484770476d88?placeholderIfAbsent=true",
-    title: "Elegant Golden Age Birthday Celebration Se...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/90050c11fb15de678054befb8201346fb2059e7f?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f47d567bb0bea8866be751f7746e5d3e6385902f?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/adf8737dee8b2f0bcc06cf30467a87ff7a020e9c?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/aef92c183f5abac4d898816d141b41d64ab743f3?placeholderIfAbsent=true",
-    title: "All-In-One Happy Birthday Bash Décor Kit...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/90050c11fb15de678054befb8201346fb2059e7f?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/5cca25d278a8f322c0fa7b24894a2720cc1c8608?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/5ad48c7571ffe9d475588a71106ddb8b7b8ed6f7?placeholderIfAbsent=true",
-    isOutOfStock: true,
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/1f567a89328d5280863f16997cf9bf8ce582f6c8?placeholderIfAbsent=true",
-    title: "Deluxe Dessert Station Setup Kit – For Insta...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/5c34b6ce08b959c30c4db9a02e9226c6ef39fdde?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/fe53f1f225afcd869b74edac8c283aba622c050a?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/d19379726cb326f40bd088f574386879d5752a63?placeholderIfAbsent=true",
-    title: "Sparkle & Shine Birthday Cake Topper Set with...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/eca0832f97fa9892ff22b425fee1e837d14f11ae?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f8668567263b1a81c44635a9440205c3f21f9c73?placeholderIfAbsent=true",
-    isAdded: true,
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/91f5437e2bd8c65c0396e14c5e41de7b5824ffd0?placeholderIfAbsent=true",
-    title: "Transparent Bubble Balloon with Custom Sti...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/90050c11fb15de678054befb8201346fb2059e7f?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/2ffbc07c3b4810264406b7aeadf59821ffd1ca72?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/b0e2542cefa52a839aaa07db6889d34b053c466d?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/24dc37ff0efa9d1bacc0d332c22f09f9d953078c?placeholderIfAbsent=true",
-    title: "Magical Number Celebration Balloon Kit...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/90050c11fb15de678054befb8201346fb2059e7f?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/a5972bb174752f1f8e512e63aadc853ee58f2e94?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/fc3d9f08c94eaf658d6d0dbdfc9876baf72c01cc?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/9701adafc1e199145a7cc740fff0909da6e10983?placeholderIfAbsent=true",
-    title: "Sweet Treats Birthday Table Display Set Confe...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/410bc26380950af284003bd423cde84bdb4fcf6f?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f8bd1b005f74400f7ee696b8d20ec14a99b25029?placeholderIfAbsent=true",
-    isOutOfStock: true,
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/565bccda9add7db9fe3c91f2ef5b1accb220045a?placeholderIfAbsent=true",
-    title: "Boho Bliss Birthday Accessory Kit with Stre...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/20ba25afe941cf331864165c819502648d4c960b?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/6008ffb85fdd748e23b2b69fcf18009a270bbeee?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/49b41f16b99ea75ea77125444f70eb443b8e9001?placeholderIfAbsent=true",
-    title: "Color Explosion Birthday Party Decoration Meg...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/90050c11fb15de678054befb8201346fb2059e7f?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/11c79c5dbf56d7e904c23c32467d0261ac660752?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cd3e85ce042eaa9a5965ae3d85e1f6e73054643?placeholderIfAbsent=true",
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/98cce869caa2d0f6ac45eb685b81c33e6f8e6a4c?placeholderIfAbsent=true",
-    title: "Royal Celebration Birthday Décor Box – F...",
-    rating: 4.7,
-    reviews: 400,
-    price: "$40,000",
-    starIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/90050c11fb15de678054befb8201346fb2059e7f?placeholderIfAbsent=true",
-    cartIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/569faed34843ac33003c3e81975555e493000508?placeholderIfAbsent=true",
-    favoriteIcon: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/bf868aabd8a4d05c016ccedd693f795c6c6979a3?placeholderIfAbsent=true",
-    isAdded: true,
-  },
-];
+import { SignUpModal } from "./Offer/SignUpModal";
+import { LoginModal } from "./Offer/LoginModal";
+import { SuccessModal } from "./Offer/SuccessModal";
 
 export function New() {
-  const desktopScrollRef = useRef<HTMLDivElement>(null);
-  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null);
+
+  const desktopScrollRef = useRef<HTMLDivElement | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollMobile = (direction: "left" | "right") => {
+  if (mobileScrollRef.current) {
+    const scrollAmount = 200;
+    mobileScrollRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  }
+};
+
+  useEffect(() => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
+
+    async function fetchProducts() {
+      try {
+        const token = localStorage.getItem("accessToken");
+
+        const headers = {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token ? { Authorization: token } : {}),
+        };
+
+        const res = await fetch(url, {
+          method: "GET",
+          headers,
+        });
+
+        if (!res.ok) {
+          throw new Error(`Server error: ${res.status}`);
+        }
+
+        const json = await res.json();
+
+        if (json.statusCode === 200 && Array.isArray(json.data.product)) {
+          setProducts(json.data.product.map(p => ({ ...p, isAdded: false })));
+        } else {
+          throw new Error("Unexpected response structure");
+        }
+      } catch (e) {
+        console.error("Fetch error:", e);
+        setError(e.message || "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
+  const handleAddToCart = async (productId: string) => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      setModalType("signup");
+      return;
+    }
+
+    try {
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart/${productId}`;
+
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        Authorization: token,
+      };
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.statusCode === 200) {
+        setProducts(prev =>
+          prev.map(p =>
+            p.productId === productId ? { ...p, isAdded: true } : p
+          )
+        );
+        setModalType("success");
+      } else {
+        console.error("Unexpected response:", data);
+      }
+    } catch (err) {
+      console.error("Add to cart failed:", err);
+    }
+  };
+
+  const handleClose = () => setModalType(null);
+  const handleLoginSuccess = () => setModalType("success");
 
   const scroll = (direction: "left" | "right") => {
-    const scrollAmount = 300; // Change this value as needed
-
-    const scrollTarget =
-      window.innerWidth < 768 ? mobileScrollRef.current : desktopScrollRef.current;
-
-    if (scrollTarget) {
-      const { scrollLeft } = scrollTarget;
-      scrollTarget.scrollTo({
-        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+    if (desktopScrollRef.current) {
+      const scrollAmount = 300;
+      const container = desktopScrollRef.current;
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
       });
     }
   };
 
+  if (loading) {
+    return (
+      <section className="flex justify-center items-center p-8 bg-sky-50">
+        <p>Loading products...</p>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="flex justify-center items-center p-8 bg-sky-50">
+        <p className="text-red-500">Error: {error}</p>
+      </section>
+    );
+  }
+
   return (
     <section className="relative px-8 py-10 bg-sky-50 max-md:px-5">
       <ProductHeader />
+      {/* Mobile scroll buttons */}
+<div className="flex md:hidden justify-end gap-4 mt-4 pr-4">
+  <button
+    onClick={() => scrollMobile("left")}
+    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+  >
+    <span className="text-lg text-black">‹</span>
+  </button>
+  <button
+    onClick={() => scrollMobile("right")}
+    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+  >
+    <span className="text-lg text-black">›</span>
+  </button>
+</div>
 
-      {/* Scroll buttons BELOW header, above product row */}
-      <div className="flex justify-end gap-4 mt-4 pr-4">
-        <button
-          onClick={() => scroll("left")}
-          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-        >
-          <span className="text-lg text-black">‹</span>
-        </button>
 
-        <button
-          onClick={() => scroll("right")}
-          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-        >
-          <span className="text-lg text-black">›</span>
-        </button>
-      </div>
+      {/* Scroll buttons BELOW header, above product row (desktop only) */}
+<div className="hidden md:flex justify-end gap-4 mt-4 pr-4">
+  <button
+    onClick={() => scroll("left")}
+    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+  >
+    <span className="text-lg text-black">‹</span>
+  </button>
+
+  <button
+    onClick={() => scroll("right")}
+    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+  >
+    <span className="text-lg text-black">›</span>
+  </button>
+</div>
 
       {/* Desktop scrollable row */}
       <div
         ref={desktopScrollRef}
         className="hidden md:flex gap-6 overflow-x-auto scroll-smooth no-scrollbar mt-4 px-12"
       >
-          {products.map((product, index) => (
-          <ProductCard key={index} {...product} />
+        {products.map((p) => (
+          <ProductCard
+            key={p.productId}
+            image={p.imageOne}
+            title={p.productName}
+            rating={4.7}
+            reviews={0}
+            price={`$${p.price}`}
+            starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
+            cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
+            favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"
+            isOutOfStock={p.quantity === 0}
+            isAdded={p.isAdded}
+            onAddToCart={() => handleAddToCart(p.productId)}
+          />
         ))}
       </div>
 
@@ -188,6 +204,26 @@ export function New() {
       <div className="block md:hidden mt-6 w-full">
         <ProductGrid scrollRef={mobileScrollRef} />
       </div>
+
+      {/* Modals */}
+      <>
+        {modalType === "signup" && (
+          <SignUpModal
+            onClose={handleClose}
+            onOpenLogin={() => setModalType("login")}
+          />
+        )}
+        {modalType === "login" && (
+          <LoginModal
+            onClose={handleClose}
+            onOpenSignUp={() => setModalType("signup")}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        )}
+        {modalType === "success" && (
+          <SuccessModal onClose={handleClose} />
+        )}
+      </>
     </section>
   );
 }

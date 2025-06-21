@@ -8,23 +8,29 @@ import Categorys from "@/components/Categorys";
 export const NavigationLinks = () => {
   const [showCategories, setShowCategories] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+const handleCategoryClick = (category: string) => {
+  setSelectedCategory(category);
+  setShowCategories(true);
+};
   const router = useRouter();
 
-  const toggleDropdown = () => setShowCategories((prev) => !prev);
+  // const toggleDropdown = () => setShowCategories((prev) => !prev);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowCategories(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (
+  //       dropdownRef.current &&
+  //       !dropdownRef.current.contains(event.target as Node)
+  //     ) {
+  //       setShowCategories(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   const links = [
     { label: "On sales", path: "/shop" },
@@ -39,13 +45,14 @@ export const NavigationLinks = () => {
       <div className="flex gap-4 items-center w-full">
         {/* Shop button with dropdown toggle */}
         <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={toggleDropdown}
-            className="flex items-center gap-1 text-black text-base h-10 px-4 rounded-full hover:bg-gray-100 transition"
-          >
-            Shop
-            <ChevronDown className="w-4 h-4" />
-          </button>
+         <button
+  onClick={() => handleCategoryClick("Balloons")}
+  className="flex items-center gap-1 text-black text-base h-10 px-4 rounded-full hover:bg-gray-100 transition"
+>
+  Shop
+  <ChevronDown className="w-4 h-4" />
+</button>
+
         </div>
 
         {/* Other navigation buttons */}
@@ -61,11 +68,12 @@ export const NavigationLinks = () => {
       </div>
 
       {/* Dropdown under Shop */}
-      {showCategories && (
-  <div className="absolute left-0 top-full  mt-2 w-[calc(100vw-12px)] overflow-x-hidden -ml-[205px] bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
-    <Categorys />
+     {showCategories && (
+  <div className="absolute left-0 top-full mt-2 w-[calc(100vw-12px)] overflow-x-hidden -ml-[205px] bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+    <Categorys selectedCategory={selectedCategory} />
   </div>
 )}
+
 
 
 

@@ -9,7 +9,7 @@ interface ActionButtonsProps {
 export const ActionButtons = ({ onCancel, uploadedFiles }: ActionButtonsProps) => {
   const [isSaved, setIsSaved] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-const imageFieldNames = ["image_one", "image_two", "image_three"];
+// const imageFieldNames = ["image_one", "image_two", "image_three"];
 
 
   const handleSave = async () => {
@@ -24,6 +24,7 @@ const imageFieldNames = ["image_one", "image_two", "image_three"];
       formDataToSend.append("description", localStorage.getItem("description") || "");
       formDataToSend.append("producer", localStorage.getItem("producer") || "");
       formDataToSend.append("classification", localStorage.getItem("category") || "");
+formDataToSend.append("sub_category_id", localStorage.getItem("subCategoryId") || "");
 
 const price = localStorage.getItem("price");
 if (price && !isNaN(Number(price))) {
@@ -31,21 +32,33 @@ if (price && !isNaN(Number(price))) {
 }
 const discount = localStorage.getItem("discount") || "0";
 
-formDataToSend.append("discount_price", discount && !isNaN(Number(discount)) ? discount : "0");
+const priceValue = Number(localStorage.getItem("price") || "0");
+const discountPercent = Number(localStorage.getItem("discount") || "0");
+
+const discountAmount = priceValue * (discountPercent / 100);
+formDataToSend.append("discount_price", discountAmount.toFixed(2));
+
 
 formDataToSend.append("quantity", localStorage.getItem("stock") || "");
  const shippedFrom = localStorage.getItem("shippedFrom") || "";
 const waitingTime = localStorage.getItem("waitingTime") || "";
 const returnPolicy = localStorage.getItem("returnPolicy") || "";
 
-const combinedShippingInfo = [
-  shippedFrom && `Shipped from: ${shippedFrom}`,
-  waitingTime && `Waiting time: ${waitingTime}`,
-  returnPolicy && `Return policy: ${returnPolicy}`
-].filter(Boolean).join(", ");
+const shippingInfoParts = [];
 
+if (shippedFrom && shippedFrom !== "null") {
+  shippingInfoParts.push(`Shipped from: ${shippedFrom}`);
+}
+if (waitingTime && waitingTime !== "null") {
+  shippingInfoParts.push(`Waiting time: ${waitingTime}`);
+}
+if (returnPolicy && returnPolicy !== "null") {
+  shippingInfoParts.push(`Return policy: ${returnPolicy}`);
+}
 
+const combinedShippingInfo = shippingInfoParts.join(", ");
 formDataToSend.append("shipping_information", combinedShippingInfo);
+
 
     
       const sizes = JSON.parse(localStorage.getItem("selectedSizes") || "[]");
@@ -61,11 +74,22 @@ formDataToSend.append("shipping_information", combinedShippingInfo);
         return;
       }
 
-      uploadedFiles.forEach((file, index) => {
+ const imageFieldNames = [
+  "image_one", "image_two", "image_three", "image_four", "image_five",
+  "image_six", "image_seven", "image_eight", "image_nine", "image_ten",
+  "image_eleven", "image_twelve", "image_thirteen", "image_fourteen",
+  "image_fifteen", "image_sixteen", "image_seventeen", "image_eighteen",
+  "image_nineteen", "image_twenty"
+];
+
+uploadedFiles.forEach((file, index) => {
   if (index < imageFieldNames.length) {
     formDataToSend.append(imageFieldNames[index], file.file);
   }
 });
+
+
+
 
 
       const response = await fetch(

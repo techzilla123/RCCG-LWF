@@ -6,15 +6,18 @@ interface MenuButtonProps {
   icon: string;
   label: string;
   isActive?: boolean;
+  onClick?: () => void; // Add this line
 }
 
 export const MenuButton: React.FC<MenuButtonProps> = ({
   icon,
   label,
   isActive = false,
+  onClick, // And this line
 }) => {
   return (
     <button
+      onClick={onClick} // Enable clicking
       className={`flex overflow-hidden gap-2 items-center pr-4 pl-2 w-full rounded-lg min-h-10 ${
         isActive ? "bg-gray-200" : "shadow-sm bg-black bg-opacity-0"
       }`}
