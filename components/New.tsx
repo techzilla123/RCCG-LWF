@@ -8,24 +8,37 @@ import { SignUpModal } from "./Offer/SignUpModal";
 import { LoginModal } from "./Offer/LoginModal";
 import { SuccessModal } from "./Offer/SuccessModal";
 
+// --- Define API and UI product types ---
+interface ProductApiResponse {
+  productId: string;
+  productName: string;
+  imageOne: string;
+  price: number;
+  quantity: number;
+}
+
+interface Product extends ProductApiResponse {
+  isAdded: boolean;
+}
+
 export function New() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null);
 
   const desktopScrollRef = useRef<HTMLDivElement | null>(null);
   const mobileScrollRef = useRef<HTMLDivElement | null>(null);
 
   const scrollMobile = (direction: "left" | "right") => {
-  if (mobileScrollRef.current) {
-    const scrollAmount = 200;
-    mobileScrollRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-  }
-};
+    if (mobileScrollRef.current) {
+      const scrollAmount = 200;
+      mobileScrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
@@ -52,13 +65,18 @@ export function New() {
         const json = await res.json();
 
         if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          setProducts(json.data.product.map(p => ({ ...p, isAdded: false })));
+          const formattedProducts: Product[] = json.data.product.map((p: ProductApiResponse) => ({
+            ...p,
+            isAdded: false,
+          }));
+          setProducts(formattedProducts);
         } else {
           throw new Error("Unexpected response structure");
         }
-      } catch (e) {
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "An unknown error occurred";
         console.error("Fetch error:", e);
-        setError(e.message || "An error occurred");
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -96,8 +114,8 @@ export function New() {
       const data = await res.json();
 
       if (data.statusCode === 200) {
-        setProducts(prev =>
-          prev.map(p =>
+        setProducts((prev) =>
+          prev.map((p) =>
             p.productId === productId ? { ...p, isAdded: true } : p
           )
         );
@@ -116,8 +134,7 @@ export function New() {
   const scroll = (direction: "left" | "right") => {
     if (desktopScrollRef.current) {
       const scrollAmount = 300;
-      const container = desktopScrollRef.current;
-      container.scrollBy({
+      desktopScrollRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
       });
@@ -143,39 +160,38 @@ export function New() {
   return (
     <section className="relative px-8 py-10 bg-sky-50 max-md:px-5">
       <ProductHeader />
+
       {/* Mobile scroll buttons */}
-<div className="flex md:hidden justify-end gap-4 mt-4 pr-4">
-  <button
-    onClick={() => scrollMobile("left")}
-    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-  >
-    <span className="text-lg text-black">‹</span>
-  </button>
-  <button
-    onClick={() => scrollMobile("right")}
-    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-  >
-    <span className="text-lg text-black">›</span>
-  </button>
-</div>
+      <div className="flex md:hidden justify-end gap-4 mt-4 pr-4">
+        <button
+          onClick={() => scrollMobile("left")}
+          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+        >
+          <span className="text-lg text-black">‹</span>
+        </button>
+        <button
+          onClick={() => scrollMobile("right")}
+          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+        >
+          <span className="text-lg text-black">›</span>
+        </button>
+      </div>
 
-
-      {/* Scroll buttons BELOW header, above product row (desktop only) */}
-<div className="hidden md:flex justify-end gap-4 mt-4 pr-4">
-  <button
-    onClick={() => scroll("left")}
-    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-  >
-    <span className="text-lg text-black">‹</span>
-  </button>
-
-  <button
-    onClick={() => scroll("right")}
-    className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
-  >
-    <span className="text-lg text-black">›</span>
-  </button>
-</div>
+      {/* Desktop scroll buttons */}
+      <div className="hidden md:flex justify-end gap-4 mt-4 pr-4">
+        <button
+          onClick={() => scroll("left")}
+          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+        >
+          <span className="text-lg text-black">‹</span>
+        </button>
+        <button
+          onClick={() => scroll("right")}
+          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100"
+        >
+          <span className="text-lg text-black">›</span>
+        </button>
+      </div>
 
       {/* Desktop scrollable row */}
       <div
@@ -220,9 +236,7 @@ export function New() {
             onLoginSuccess={handleLoginSuccess}
           />
         )}
-        {modalType === "success" && (
-          <SuccessModal onClose={handleClose} />
-        )}
+        {modalType === "success" && <SuccessModal onClose={handleClose} />}
       </>
     </section>
   );
