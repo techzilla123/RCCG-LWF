@@ -28,48 +28,51 @@ export function Heart() {
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null);
 
   useEffect(() => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
 
-    async function fetchProducts() {
-      try {
-        const token = localStorage.getItem("accessToken");
+  async function fetchProducts() {
+    try {
+      const token = localStorage.getItem("accessToken");
 
-        const headers = {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-          ...(token ? { Authorization: token } : {}),
-        };
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        ...(token ? { Authorization: token } : {}),
+      };
 
-        const res = await fetch(url, {
-          method: "GET",
-          headers,
-        });
+      const res = await fetch(url, {
+        method: "GET",
+        headers,
+      });
 
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`);
-        }
-
-        const json = await res.json();
-
-        if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          const formatted: Product[] = json.data.product.map((p: ProductApiResponse) => ({
-            ...p,
-            isAdded: false,
-          }));
-          setProducts(formatted);
-        } else {
-          throw new Error("Unexpected response structure");
-        }
-      } catch (e: any) {
-        console.error("Fetch error:", e);
-        setError(e.message || "An error occurred");
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
       }
-    }
 
-    fetchProducts();
-  }, []);
+      const json = await res.json();
+
+      if (json.statusCode === 200 && Array.isArray(json.data.product)) {
+        const formatted: Product[] = json.data.product.map((p: ProductApiResponse) => ({
+          ...p,
+          isAdded: false,
+        }));
+        setProducts(formatted);
+      } else {
+        throw new Error("Unexpected response structure");
+      }
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : "An unknown error occurred";
+      console.error("Fetch error:", e);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  fetchProducts();
+}, []);
+
 
   if (loading) {
     return (
