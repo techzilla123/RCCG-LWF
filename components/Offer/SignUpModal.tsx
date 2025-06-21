@@ -14,6 +14,8 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
   const [password, setPassword] = React.useState("");
   const [code, setCode] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [loadingVerify, setLoadingVerify] = React.useState(false);
+const [loadingResend, setLoadingResend] = React.useState(false);
   const [step, setStep] = React.useState<"signup" | "verify">("signup");
   const [error, setError] = React.useState("");
 
@@ -48,32 +50,59 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
   };
 
   const handleVerify = async () => {
-    setLoading(true);
-    setError("");
+  setLoadingVerify(true);
+  setError("");
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}verify-customer-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-          email_address: email,
-        }),
-      });
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}verify-customer-email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      },
+      body: JSON.stringify({
+        code,
+        email_address: email,
+      }),
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Verification failed");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Verification failed");
 
-      alert("Account Verified Successfully!");
-      onClose(); // Close modal
-   } catch (err) {
-  setError((err as Error).message);
-} finally {
-      setLoading(false);
-    }
-  };
+    alert("Account Verified Successfully!");
+    onClose();
+  } catch (err) {
+    setError((err as Error).message);
+  } finally {
+    setLoadingVerify(false);
+  }
+};
+
+ const handleResendCode = async () => {
+  setLoadingResend(true);
+  setError("");
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}regenerate-registration-otp/${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Resend failed");
+
+    alert("Verification code resent to your email.");
+  } catch (err) {
+    setError((err as Error).message);
+  } finally {
+    setLoadingResend(false);
+  }
+};
+
+
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
@@ -153,6 +182,7 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
                 >
                   {loading ? "Creating..." : "Create account"}
                 </button>
+
               </form>
 
               <p className="text-center text-sm text-gray-500 mt-6">
@@ -178,15 +208,27 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({ onClose, onOpenLogin }
               />
 
               {error && <p className="text-red-600 text-sm text-center mb-2">{error}</p>}
+<div className="flex justify-between items-center gap-4 mt-4">
+  <button 
+    type="button"
+    onClick={handleResendCode}
+    disabled={loadingResend}
+    className="p-3 bg-gray-400 hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition"
+  >
+    {loadingResend ? "Resending..." : "Resend code"}
+  </button>
 
-              <button
-                type="button"
-                onClick={handleVerify}
-                disabled={loading}
-                className="p-3 bg-blue-500 hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition"
-              >
-                {loading ? "Verifying..." : "Verify Email"}
-              </button>
+  <button
+    type="button"
+    onClick={handleVerify}
+    disabled={loadingVerify}
+    className="p-3 bg-blue-500 hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition"
+  >
+    {loadingVerify ? "Verifying..." : "Verify Email"}
+  </button>
+</div>
+
+
             </>
           )}
         </div>
