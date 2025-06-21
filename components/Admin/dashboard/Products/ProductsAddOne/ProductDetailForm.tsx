@@ -127,7 +127,7 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
   }, [formData.category]);
 
   useEffect(() => {
-    localStorage.setItem("subCategory", formData.subCategory);
+localStorage.setItem("subCategoryName", formData.subCategoryName); // ✅ correct
   }, [formData.subCategory]);
 
   useEffect(() => {
