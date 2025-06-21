@@ -4,13 +4,17 @@ import * as React from "react";
 import { SideMenu } from "./Categorys/SideMenu";
 import { CategoryList } from "./Categorys/CategoryList";
 
-const Categorys: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState<string>("Balloons");
+type CategorysProps = {
+  selectedCategory: string;
+};
+
+const Categorys: React.FC<CategorysProps> = ({ selectedCategory }) => {
+  const [localCategory, setLocalCategory] = React.useState<string>(selectedCategory);
 
   return (
     <div className="flex bg-white w-full py-6 px-4 overflow-x-auto">
-      <SideMenu selectedCategory={selectedCategory} onSelect={setSelectedCategory} />
-      <CategoryList selectedCategory={selectedCategory} />
+      <SideMenu selectedCategory={localCategory} onSelect={setLocalCategory} />
+      <CategoryList selectedCategory={localCategory} />
     </div>
   );
 };

@@ -70,7 +70,8 @@ const handleCategoryClick = (category: string) => {
       {/* Dropdown under Shop */}
      {showCategories && (
   <div className="absolute left-0 top-full mt-2 w-[calc(100vw-12px)] overflow-x-hidden -ml-[205px] bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
-    <Categorys selectedCategory={selectedCategory} />
+    <Categorys selectedCategory={selectedCategory || "Balloons"} />
+
   </div>
 )}
 
