@@ -1,32 +1,28 @@
-// import Hero from "@/components/Hero";
+'use client'; // if needed — but likely this file is a server component, so better to keep this part clean
+
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
-import ProductPage from "@/components/Users/Preview/ProductPage"
-import SimilarProducts from "@/components/Users/Preview/SimilarProducts"
-
-
-
-
-import Footer from "@/components/Footer"
-
-
-// import Footer from "@/components/Footer";
-
+import ProductPage from "@/components/Users/Preview/ProductPage";
+import SimilarProducts from "@/components/Users/Preview/SimilarProducts";
+import Footer from "@/components/Footer";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
-    <div className="min-h-scren bg-white">
+    <div className="min-h-screen bg-white">
       <Offer />
-      <TopNavBar/>
-      <ProductPage/>
-      <SimilarProducts/>
-     
-    
-      <Footer/>
+      <TopNavBar />
 
+      {/* Wrap the client-side components that use useSearchParams */}
+      <Suspense fallback={<div className="p-4 text-center">Loading product...</div>}>
+        <ProductPage />
+      </Suspense>
 
-      {/* <Footer />
-     */}
+      <Suspense fallback={<div className="p-4 text-center">Loading similar products...</div>}>
+        <SimilarProducts />
+      </Suspense>
+
+      <Footer />
     </div>
   );
 }
