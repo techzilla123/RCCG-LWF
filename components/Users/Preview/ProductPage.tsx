@@ -6,6 +6,12 @@ import { ProductRatings } from "./ProductRatings";
 import { ReviewCard } from "./ReviewCard";
 import { ProductInfo } from "./ProductInfo";
 
+type Review = {
+  review: string;
+  star: number;
+  customerName: string;
+};
+
 type Product = {
   productId: string;
   categoryName: string;
@@ -23,8 +29,10 @@ type Product = {
   imageOne: string;
   imageTwo: string;
   imageThree: string;
-  review: []; // You can refine this too
+  review: Review[];
 };
+
+
 
 
 export const ProductPage: React.FC = () => {
@@ -42,6 +50,42 @@ const [reviewData, setReviewData] = React.useState({
  const searchParams = useSearchParams();
 const productId = searchParams.keys().next().value || "";
 
+const fetchProduct = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const headers = {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      ...(token ? { Authorization: token } : {}),
+    };
+
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+    const json = await res.json();
+    if (json.statusCode === 200 && json.data) {
+      setProduct(json.data);
+      setError(null);
+    } else {
+      throw new Error("Unexpected response");
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      setError(err.message);
+    } else {
+      setError("An unknown error occurred");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 React.useEffect(() => {
   if (!productId) {
@@ -50,58 +94,33 @@ React.useEffect(() => {
     return;
   }
 
-  const fetchProduct = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
+  fetchProduct();
+}, [productId]);
 
-      const headers = {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-        ...(token ? { Authorization: token } : {}),
-      };
+React.useEffect(() => {
+  const firstname = localStorage.getItem("firstname") || "";
+  const lastname = localStorage.getItem("lastname") || "";
 
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`;
-      const res = await fetch(url, {
-        method: "GET",
-        headers,
-      });
-
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
-
-      const json = await res.json();
-      if (json.statusCode === 200 && json.data) {
-        setProduct(json.data);
-        setError(null);
-      } else {
-        throw new Error("Unexpected response");
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred");
-      }
-    } finally {
-      setLoading(false); // ✅ Ensure loading ends no matter what
-    }
-  };
-
-  fetchProduct(); // ✅ You forgot to call the async function
-
-}, [productId]); // ✅ Dependency array
+  if (firstname || lastname) {
+    setReviewData((prev) => ({
+      ...prev,
+      customer_name: `${firstname} ${lastname}`.trim(),
+    }));
+  }
+}, []);
 
 
-  const reviews = [
-    {
-      avatarUrl:
-        "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/c969b1ff03f45b83970a38d790cd00f6778622f6?placeholderIfAbsent=true",
-      name: "Hannah Schmitt",
-      rating: 4,
-      review:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
-      date: "May 8, 2020",
-    },
-  ];
+
+const reviews = product?.review?.map((r) => ({
+  avatarUrl: "https://i.pravatar.cc/150?u=" + r.customerName,
+  name: r.customerName,
+  rating: r.star,
+  review: r.review,
+  date: "N/A",
+})) || [];
+
+
+
 
   if (loading) {
     return <div className="p-8">Loading...</div>;
@@ -225,7 +244,8 @@ React.useEffect(() => {
             ...(token ? { Authorization: token } : {}),
           };
 
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}change-product-review`, {
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/change-product-review`, {
             method: "POST",
             headers,
             body: JSON.stringify({
@@ -233,12 +253,16 @@ React.useEffect(() => {
               ...reviewData,
             }),
           });
+          
 
           if (!res.ok) throw new Error("Failed to submit review");
 
           alert("Review submitted!");
           setReviewData({ customer_name: "", star: "5", review: "" });
           setShowReviewForm(false);
+          setLoading(true); // Optional: show loading state
+await fetchProduct(); // ✅ Refetch product details including reviews
+
         } catch (err) {
           alert("Error submitting review");
           console.error(err);
@@ -248,14 +272,13 @@ React.useEffect(() => {
     >
       <h3 className="text-xl font-semibold text-black">Write a Review</h3>
 
-      <input
-        type="text"
-        placeholder="Your name"
-        value={reviewData.customer_name}
-        onChange={(e) => setReviewData({ ...reviewData, customer_name: e.target.value })}
-        required
-        className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-      />
+    <input
+  type="text"
+  value={reviewData.customer_name}
+  readOnly
+  className="w-full px-4 py-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
+/>
+
 
       {/* Star Rating */}
       <div className="flex justify-center mt-3">

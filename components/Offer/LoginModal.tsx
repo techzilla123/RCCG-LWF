@@ -15,50 +15,55 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
   const [password, setPassword] = useState<string>("");  // Manage password state
   const [isLoading, setIsLoading] = useState<boolean>(false);  // Manage loading state
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // Form validation
-    if (!email || !password) {
-      alert("Please enter both email and password.");
-      return;
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Login failed, please try again.");
     }
 
-    setIsLoading(true);
+    const result = await response.json();
+    const token = `Bearer ${result.data.token}`;
 
-    try {
-      // Make the POST request to the login API
-const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}login`, {
-          method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    // Save token
+    localStorage.setItem("accessToken", token);
 
-      if (!response.ok) {
-        throw new Error("Login failed, please try again.");
-      }
+    // Save firstname and lastname
+    const userData = result.data.data; // ✅ this is the inner data object
+    localStorage.setItem("firstname", userData.firstname);
+    localStorage.setItem("lastname", userData.lastname);
 
-      const data = await response.json();
-      const token = `Bearer ${data.data.token}`;
-
-      // Save the token in localStorage
-      localStorage.setItem("accessToken", token);
-      // Optionally, trigger the success callback
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      } else {
-        onClose(); // fallback: just close modal
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      alert("Login failed, please try again.");
-    } finally {
-      setIsLoading(false);
+    // Trigger success callback or close modal
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    } else {
+      onClose();
     }
-  };
+  } catch (error) {
+    console.error("Error during login:", error);
+    alert("Login failed, please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
