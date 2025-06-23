@@ -4,8 +4,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+type ApiProduct = {
+  productName: string;
+  categoryName: string;
+  price: string | number;
+};
+
+type Product = {
+  name: string;
+  shop: string;
+  sales: string;
+};
 export const TopProducts = () => {
-  const [products, setProducts] = useState([]);
+
+const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,12 +39,11 @@ export const TopProducts = () => {
           response.data?.data?.product &&
           Array.isArray(response.data.data.product)
         ) {
-          const formatted = response.data.data.product.slice(0, 5).map((item) => ({
-            name: item.productName?.slice(0, 30),
-            shop: item.categoryName,
-            sales: `$${Number(String(item.price).replace(/,/g, "")).toLocaleString()}`,
-
-          }));
+         const formatted = (response.data.data.product as ApiProduct[]).slice(0, 5).map((item) => ({
+  name: item.productName?.slice(0, 30),
+  shop: item.categoryName,
+  sales: `$${Number(String(item.price).replace(/,/g, "")).toLocaleString()}`,
+}));
 
           setProducts(formatted);
         }
