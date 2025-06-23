@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { StatisticsCard } from "./StatisticsCard";
 import { PieChartsSection } from "./PieChartsSection";
 import { CashflowChart } from "./CashflowChart";
@@ -7,32 +9,95 @@ import { TopProducts } from "./TopProducts";
 import { RecentOrders } from "./RecentOrders";
 
 export const DashboardContent = () => {
-  const statistics = [
+  const [statistics, setStatistics] = useState([
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/e04b8b6a7f9829c4388bd4acc12c0063434c3306?placeholderIfAbsent=true",
+      id: "customers",
+      icon:
+        "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/e04b8b6a7f9829c4388bd4acc12c0063434c3306?placeholderIfAbsent=true",
       title: "Customers",
-      value: "350,000",
-      growth: { value: "17.54%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
+      value: "Loading...",
+       growth: { value: "17.54%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/7ca6a3ab756358ff00aa888ac2327f2a1f0e8f69?placeholderIfAbsent=true",
+      id: "revenue",
+      icon:
+        "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/7ca6a3ab756358ff00aa888ac2327f2a1f0e8f69?placeholderIfAbsent=true",
       title: "Revenue",
       value: "$500,000",
-      growth: { value: "5.40%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
+      growth: {
+        value: "5.40%",
+        trend:
+          "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true",
+      },
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/0a57ee82fbca8fcad62a7308b4764e86f43e025a?placeholderIfAbsent=true",
+      id: "profit",
+      icon:
+        "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/0a57ee82fbca8fcad62a7308b4764e86f43e025a?placeholderIfAbsent=true",
       title: "Profit",
       value: "60.54%",
-      growth: { value: "10.20%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
+      growth: {
+        value: "10.20%",
+        trend:
+          "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true",
+      },
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/d0df740ccdafbfc12cb23e7d96b623820d92b068?placeholderIfAbsent=true",
+      id: "orders",
+      icon:
+        "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/d0df740ccdafbfc12cb23e7d96b623820d92b068?placeholderIfAbsent=true",
       title: "Orders",
-      value: "2,040",
-      growth: { value: "1.22%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
+      value: "Loading...",
+        growth: { value: "17.54%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const token = localStorage.getItem("accessToken");
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        Authorization: token || "",
+      };
+
+      try {
+        const [customerRes, orderRes] = await Promise.all([
+          fetch(`${baseUrl}admin/customer-analytics`, { headers }),
+          fetch(`${baseUrl}admin/order-analytics`, { headers }),
+        ]);
+
+        const customerData = await customerRes.json();
+        const orderData = await orderRes.json();
+
+        const noOfCustomer = customerData.data?.noOfCustomer ?? 0;
+        const totalOrder = orderData.data?.totalOrder ?? 0;
+
+        setStatistics((prev) =>
+          prev.map((stat) => {
+            if (stat.id === "customers") {
+              return {
+                ...stat,
+                value: noOfCustomer.toLocaleString(),
+              };
+            }
+            if (stat.id === "orders") {
+              return {
+                ...stat,
+                value: totalOrder.toLocaleString(),
+              };
+            }
+            return stat;
+          })
+        );
+      } catch (err) {
+        console.error("Failed to fetch dashboard statistics:", err);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   return (
     <section className="pr-8 pb-8 pl-6 mt-6 min-h-screen w-full bg-white max-md:px-5 max-md:max-w-full">
@@ -50,32 +115,28 @@ export const DashboardContent = () => {
         ))}
       </div>
 
-      {/* Section with custom 1600px media query */}
-<div className="flex flex-wrap gap-6 items-start mt-6 w-full">
-  <div className="flex-1 shrink basis-0 min-w-60">
-    <PieChartsSection />
-    <CashflowChart />
-    <OrdersChart />
-  </div>
+      <div className="flex flex-wrap gap-6 items-start mt-6 w-full">
+        <div className="flex-1 shrink basis-0 min-w-60">
+          <PieChartsSection />
+          <CashflowChart />
+          <OrdersChart />
+        </div>
 
-  {/* Adjusted aside with max-width adjustment for screens < 1600px */}
-  <aside className="flex-1 shrink basis-0 min-w-[360px] max-w-[420px] w-full custom-max-width-1600">
-    <TopProducts />
-    <RecentOrders />
-  </aside>
-</div>
+        <aside className="flex-1 shrink basis-0 min-w-[360px] max-w-[420px] w-full custom-max-width-1600">
+          <TopProducts />
+          <RecentOrders />
+        </aside>
+      </div>
 
-{/* Custom media query for screens greater than 1600px */}
-<style>
-  {`
-    @media (min-width: 1600px) {
-      .custom-max-width-1600 {
-        max-width: 100% !important;
-      }
-    }
-  `}
-</style>
-
+      <style>
+        {`
+          @media (min-width: 1600px) {
+            .custom-max-width-1600 {
+              max-width: 100% !important;
+            }
+          }
+        `}
+      </style>
     </section>
   );
 };

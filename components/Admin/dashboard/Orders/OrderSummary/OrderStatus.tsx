@@ -1,18 +1,68 @@
 import React from 'react';
 import { StatusIcon } from './StatusIcon';
 
-export const OrderStatus: React.FC = () => {
+interface OrderStatusProps {
+  status: string | null;
+}
+
+export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
+  const getIconType = (step: 'start' | 'middle' | 'end') => {
+    if (!status) return 'pending';
+
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return step === 'start' ? 'pending' : 'inactive';
+      case 'success':
+      case 'delivered':
+        return 'success';
+      case 'cancelled':
+        return step === 'start' ? 'cancelled' : 'inactive';
+      default:
+        return 'pending';
+    }
+  };
+
+  const getMiddleOuterBgColor = () => {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-400';
+      case 'success':
+      case 'delivered':
+        return 'bg-green-100';
+      case 'cancelled':
+        return 'bg-red-200';
+      default:
+        return 'bg-gray-200';
+    }
+  };
+
+  const getMiddleInnerBgColor = () => {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-400';
+      case 'success':
+      case 'delivered':
+        return 'bg-green-500';
+      case 'cancelled':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-300';
+    }
+  };
+
   return (
     <section className="flex items-center px-0 py-1.5 w-full">
-      <StatusIcon type="pending" />
+      <StatusIcon type={getIconType('start')} />
       <div className="flex-1 h-px bg-gray-200" />
-      <div className="flex justify-center items-center w-10 h-10 bg-green-100 rounded-full">
-        <div className="flex justify-center items-center bg-white rounded-full h-[25px] w-[25px]">
-          <StatusIcon type="success" />
+
+      <div className={`flex justify-center items-center w-10 h-10 ${getMiddleOuterBgColor()} rounded-full`}>
+        <div className={`flex justify-center items-center ${getMiddleInnerBgColor()} rounded-full h-[25px] w-[25px]`}>
+          <StatusIcon type={getIconType('middle')} />
         </div>
       </div>
+
       <div className="flex-1 h-px bg-gray-200" />
-      <StatusIcon type="pending" />
+      <StatusIcon type={getIconType('end')} />
     </section>
   );
 };

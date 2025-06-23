@@ -1,38 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ItemCard } from './ItemCard';
 
-const items = [
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/TEMP/f67ac980db8f827f1f5dd1dabd3ab3e9f0c06e77?placeholderIfAbsent=true",
-    title: "Transparent bubble balloon w...",
-    quantity: 1
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/TEMP/aa6627b0ab6cd9185c898e6327a6b655cc53aba3?placeholderIfAbsent=true",
-    title: "Sweet Treats Birthday Table Display...",
-    quantity: 3
-  },
-  {
-    image: "https://cdn.builder.io/api/v1/image/assets/TEMP/20de1d94123a69e06ceef6040ccc53fb7c579a2e?placeholderIfAbsent=true",
-    title: "Latex multiple colour balloons",
-    quantity: 5
-  }
-];
+interface OrderItemsProps {
+  id: number;
+  orderId: string;
+}
 
-export const OrderItems: React.FC = () => {
+export const OrderItems: React.FC<OrderItemsProps> = ({ id, orderId }) => {
+  const [item, setItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const headers = {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          Authorization: token || "",
+        };
+
+        const res = await fetch(`${baseUrl}admin/fetch-order/${id}/${orderId}`, { headers });
+        const json = await res.json();
+
+        if (json.statusCode === 200) {
+          const order = json.data;
+          const product = order.productDetails;
+
+          setItem({
+            image: product.imageOne,
+            title: `${product.productName} (${order.color}, ${order.size})`,
+            quantity: order.quantity
+          });
+        } else {
+          console.error("API error:", json.message);
+        }
+      } catch (err) {
+        console.error("Failed to fetch order item:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [id, orderId]);
+
+  if (loading) return <div>Loading item...</div>;
+  if (!item) return <div>Item not found.</div>;
+
   return (
     <section className="flex flex-col w-full">
       <h2 className="pb-3 w-full text-xl font-bold text-black border-b border-solid border-b-neutral-300 max-md:text-lg max-sm:text-base">
         Items
       </h2>
-      {items.map((item, index) => (
-        <ItemCard
-          key={index}
-          image={item.image}
-          title={item.title}
-          quantity={item.quantity}
-        />
-      ))}
+      <ItemCard
+        image={item.image}
+        title={item.title}
+        quantity={item.quantity}
+      />
     </section>
   );
 };
