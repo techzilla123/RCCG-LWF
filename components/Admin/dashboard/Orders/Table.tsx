@@ -144,10 +144,13 @@ const Table: React.FC = () => {
                   {order.orderStatus}
                 </div>
 
-                <div
-                  className="relative"
-                  ref={(el) => (dropdownRefs.current[idx] = el)}
-                >
+             <div
+  className="relative"
+  ref={(el) => {
+    dropdownRefs.current[idx] = el;
+  }}
+>
+
                   <div
                     className="flex items-center gap-1 cursor-pointer pt-3"
                     onClick={() => toggleDropdown(idx)}
