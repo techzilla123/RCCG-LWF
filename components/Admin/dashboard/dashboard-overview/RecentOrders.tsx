@@ -4,9 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // ✅ CORRECT for App Router
 import axios from "axios";
 
+type Order = {
+  id: number;
+  orderId: string;
+  orderStatus: string;
+  amount: string;
+};
 
 export const RecentOrders = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
  const router = useRouter();
 
   useEffect(() => {
