@@ -6,8 +6,14 @@ interface OrderItemsProps {
   orderId: string;
 }
 
+interface Item {
+  image: string;
+  title: string;
+  quantity: number;
+}
+
 export const OrderItems: React.FC<OrderItemsProps> = ({ id, orderId }) => {
-  const [item, setItem] = useState<any>(null);
+  const [item, setItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,11 +34,13 @@ export const OrderItems: React.FC<OrderItemsProps> = ({ id, orderId }) => {
           const order = json.data;
           const product = order.productDetails;
 
-          setItem({
+          const formattedItem: Item = {
             image: product.imageOne,
             title: `${product.productName} (${order.color}, ${order.size})`,
-            quantity: order.quantity
-          });
+            quantity: order.quantity,
+          };
+
+          setItem(formattedItem);
         } else {
           console.error("API error:", json.message);
         }
