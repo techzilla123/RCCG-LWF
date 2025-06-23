@@ -9,6 +9,7 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
   const getIconType = (step: 'start' | 'middle' | 'end') => {
     if (!status) return 'pending';
 
+    
     switch (status.toLowerCase()) {
       case 'pending':
         return step === 'start' ? 'pending' : 'inactive';
