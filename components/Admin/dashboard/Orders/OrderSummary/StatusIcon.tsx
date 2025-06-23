@@ -1,8 +1,9 @@
 import React from 'react';
 
 interface StatusIconProps {
-  type: 'pending' | 'success';
+  type: 'pending' | 'success' | 'inactive' | 'cancelled';
 }
+
 
 export const StatusIcon: React.FC<StatusIconProps> = ({ type }) => {
   if (type === 'success') {
