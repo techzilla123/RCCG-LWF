@@ -1,10 +1,53 @@
-"use client";
-import { useState } from "react";
-import { ShoppingCart } from "lucide-react";
-import { NotificationBadge } from "./NotificationBadge";
+"use client"
+
+import { useEffect, useState } from "react"
+import { ShoppingCart } from "lucide-react"
+import { NotificationBadge } from "./NotificationBadge"
 
 export const CartDropdown = () => {
-  const [hovered, setHovered] = useState(false);
+  const [hovered, setHovered] = useState(false)
+  const [cartTotal, setCartTotal] = useState(0)
+  const [itemCount, setItemCount] = useState(0)
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const token = localStorage.getItem("accessToken") || ""
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/cart-list`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token && { Authorization: token }),
+          },
+        })
+
+        const result = await response.json()
+        const items = result?.data || []
+
+        let total = 0
+        let count = 0
+
+        for (const item of items) {
+          const details = item?.productDetails || {}
+          const price = parseFloat(details.price || "0")
+          const discount = parseFloat(details.discountPrice || "0")
+          const finalPrice = price - discount
+          const qty = parseInt(item?.quantity || "0")
+
+          total += finalPrice * qty
+          count += qty
+        }
+
+        setCartTotal(total)
+        setItemCount(count)
+      } catch (error) {
+        console.error("Failed to fetch cart", error)
+      }
+    }
+
+    fetchCart()
+  }, [])
 
   return (
     <div
@@ -14,27 +57,25 @@ export const CartDropdown = () => {
     >
       <button className="relative w-10 h-10 flex items-center justify-center">
         <ShoppingCart className="w-5 h-5 text-black" />
-        <NotificationBadge count={3} />
+        <NotificationBadge count={itemCount} />
       </button>
 
       {hovered && (
-  <div className="absolute left-1/2 top-full z-50 mt-2 flex flex-col items-center -translate-x-1/2">
-    {/* Pointer */}
-    <div className="w-4 h-4 bg-black rotate-45 -translate-y-1/2" />
+        <div className="absolute left-1/2 top-full z-50 mt-2 flex flex-col items-center -translate-x-1/2">
+          {/* Pointer */}
+          <div className="w-4 h-4 bg-black rotate-45 -translate-y-1/2" />
 
-    {/* Dropdown box */}
-    <div className="bg-black w-[101px] h-[54px] rounded-lg flex flex-col items-center justify-center text-white px-2 -mt-4">
-      <div className="text-[15px]">
-        Total: <span className="font-bold">$700</span>
-      </div>
-      <button className="mt-0.5 text-blue-400 underline text-[15px] hover:text-blue-300 transition">
-        View cart
-      </button>
+          {/* Dropdown box */}
+          <div className="bg-black w-[140px] h-[60px] rounded-lg flex flex-col items-center justify-center text-white px-2 -mt-4">
+            <div className="text-[15px]">
+              Total: <span className="font-bold">${cartTotal.toFixed(2)}</span>
+            </div>
+            <button className="mt-0.5 text-blue-400 underline text-[15px] hover:text-blue-300 transition">
+              View cart
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-)}
-
-
-    </div>
-  );
-};
+  )
+}
