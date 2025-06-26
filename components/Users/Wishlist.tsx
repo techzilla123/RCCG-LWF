@@ -93,9 +93,9 @@ export function Wishlist() {
   rating={4.7}
   reviews={400}
   price={`$${product.discountPrice}`}
-  starIcon="/star.svg"
-  cartIcon="/cart.svg"
-  favoriteIcon="/Vector(2).svg"
+  starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
+  cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
+  favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"
 />
 
                 );
