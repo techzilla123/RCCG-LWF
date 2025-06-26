@@ -136,7 +136,8 @@ const reviews = product?.review?.map((r) => ({
   return (
     <main className="flex flex-col xl:flex-row gap-10 px-8 py-8 max-w-7xl mx-auto max-md:px-4">
       <div className="hidden xl:flex flex-col order-1 xl:order-2 w-full xl:w-[400px] shrink-0">
-      <ProductInfo
+    <ProductInfo
+     productId={product.productId} 
   title={product.productName}
   stock={parseInt(product.quantity)}
   price={parseFloat(product.price.replace(/,/g, ""))}
@@ -154,6 +155,7 @@ const reviews = product?.review?.map((r) => ({
   tags={[product.categoryName, product.classification]}
   sizes={product.size}
   colors={product.color}
+  shippingInfo={product.shippingInformation} // ✅ added here
 />
 
 
@@ -179,7 +181,8 @@ const reviews = product?.review?.map((r) => ({
         />
 
         <div className="flex xl:hidden flex-col">
-        <ProductInfo
+      <ProductInfo
+       productId={product.productId} 
   title={product.productName}
   stock={parseInt(product.quantity)}
   price={parseFloat(product.price.replace(/,/g, ""))}
@@ -197,7 +200,9 @@ const reviews = product?.review?.map((r) => ({
   tags={[product.categoryName, product.classification]}
   sizes={product.size}
   colors={product.color}
+  shippingInfo={product.shippingInformation} // ✅ added here
 />
+
 
 
         </div>

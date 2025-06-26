@@ -26,6 +26,7 @@ interface ProductCardProps {
   isAdded?: boolean;
   isOutOfStock?: boolean;
   onAddToCart?: () => void;
+   onAddToWishlist: () => void; 
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -41,6 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isAdded = false,
   isOutOfStock = false,
   onAddToCart,
+   onAddToWishlist, 
 }) => {
   const router = useRouter(); 
 
@@ -50,10 +52,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     router.push(`/preview?${id}`); // ✅ Send ID in query param
   };
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFavorited(prev => !prev);
-  };
+const handleFavoriteClick = (e: React.MouseEvent) => {
+  e.stopPropagation();
+  setIsFavorited(prev => !prev);
+  onAddToWishlist(); // ✅ trigger wishlist API call
+};
+
 
   return (
     <article className="overflow-hidden relative flex-1 shrink bg-white rounded-2xl basis-0 max-w-[360px] min-h-[440px] min-w-[280px]">
@@ -86,8 +90,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div onClick={handleFavoriteClick}>
-        <FavoriteButton icon={isFavorited ? "/Vector(2).svg" : favoriteIcon} />
-      </div>
+  <FavoriteButton icon={isFavorited ? "/Vector(2).svg" : favoriteIcon} />
+</div>
+
 
       {isOutOfStock && (
         <div className="absolute top-0 left-0 bg-[#F03] text-white text-[14px] font-medium px-2.5 py-1 rounded-tl-[6px] rounded-br-[6px] z-10">

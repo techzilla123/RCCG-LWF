@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-interface LocationInfo {
+// 1. Define the LocationInfo type
+type LocationInfo = {
   country: string;
   city: string;
   deliveryDate: string;
@@ -12,11 +13,15 @@ interface LocationInfo {
   pickupLocation: string;
   pickupDate: string;
   pickupTime: string;
-}
+  phoneNumber: string;
+};
 
-const DeliveryOptions = () => {
-  const [deliveryMethod, setDeliveryMethod] = useState("pickup");
-  const [location, setLocation] = useState<LocationInfo>({
+// 2. Define the delivery methods
+type DeliveryMethod = "pickup" | "local" | "shipping";
+
+// 3. Define defaultLocations with proper typing
+const defaultLocations: Record<DeliveryMethod, LocationInfo> = {
+  pickup: {
     country: "USA",
     city: "Houston, Texas",
     deliveryDate: "",
@@ -27,26 +32,102 @@ const DeliveryOptions = () => {
     pickupLocation: "",
     pickupDate: "",
     pickupTime: "",
-  });
+    phoneNumber: "",
+  },
+  local: {
+    country: "USA",
+    city: "Houston, Texas",
+    deliveryDate: "",
+    deliveryTime: "",
+    address: "",
+    postalCode: "",
+    specialInstructions: "",
+    pickupLocation: "",
+    pickupDate: "",
+    pickupTime: "",
+    phoneNumber: "",
+  },
+  shipping: {
+    country: "USA",
+    city: "Houston, Texas",
+    deliveryDate: "",
+    deliveryTime: "",
+    address: "",
+    postalCode: "",
+    specialInstructions: "",
+    pickupLocation: "",
+    pickupDate: "",
+    pickupTime: "",
+    phoneNumber: "",
+  },
+};
 
+const DeliveryOptions = () => {
+  const savedMethod =
+    typeof window !== "undefined"
+      ? (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
+      : "pickup";
+
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>(
+    savedMethod
+  );
+
+  const savedLocation =
+    typeof window !== "undefined"
+      ? localStorage.getItem("deliveryLocation")
+      : null;
+
+  const [location, setLocation] = useState<LocationInfo>(
+    savedLocation
+      ? JSON.parse(savedLocation)
+      : defaultLocations[savedMethod]
+  );
+
+  useEffect(() => {
+    localStorage.setItem("deliveryLocation", JSON.stringify(location));
+  }, [location]);
+
+  useEffect(() => {
+    localStorage.setItem("deliveryMethod", deliveryMethod);
+    setLocation(defaultLocations[deliveryMethod]); // Reset location when method changes
+  }, [deliveryMethod]);
+
+  
   const handleLocationChange = (key: keyof LocationInfo, value: string) => {
-    setLocation({ ...location, [key]: value });
+    setLocation((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   return (
     <div className="mt-6">
-      <h3 className="text-base font-semibold text-black mb-3">Choose Delivery Method</h3>
+      <h3 className="text-base font-semibold text-black mb-3">
+        Choose Delivery Method
+      </h3>
 
       {/* Delivery Method Options */}
       <div className="flex justify-between gap-4">
         {[
-          { method: "pickup", label: "Pickup", icon: "https://cdn-icons-png.flaticon.com/512/684/684908.png" },
-          { method: "local", label: "Local Delivery", icon: "/Branded_Van__1_-removebg-preview.png" },
-          { method: "shipping", label: "Shipping", icon: "https://cdn-icons-png.flaticon.com/512/1239/1239525.png" },
+          {
+            method: "pickup",
+            label: "Pickup",
+            icon: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+          },
+          {
+            method: "local",
+            label: "Local Delivery",
+            icon: "/Branded_Van__1_-removebg-preview.png",
+          },
+          {
+            method: "shipping",
+            label: "Shipping",
+            icon: "https://cdn-icons-png.flaticon.com/512/1239/1239525.png",
+          },
         ].map(({ method, label, icon }) => (
           <button
             key={method}
-            onClick={() => setDeliveryMethod(method)}
+            onClick={() => setDeliveryMethod(method as DeliveryMethod)}
             className={`flex-1 border border-gray-300 rounded-xl p-3 flex flex-col items-center hover:shadow-md ${
               deliveryMethod === method ? "border-black shadow-lg" : ""
             }`}
@@ -61,7 +142,6 @@ const DeliveryOptions = () => {
       {deliveryMethod === "pickup" && (
         <div className="mt-6">
           <h3 className="text-base font-semibold text-black">Pickup Location</h3>
-          {/* Static Address for Pickup */}
           <div className="mt-2">
             <p className="text-sm text-black">
               <strong>Address:</strong> 1919 Faithon P Lucas Sr. Blvd, #135, Mesquite TX 75181
@@ -87,6 +167,18 @@ const DeliveryOptions = () => {
               className="p-2 border rounded-lg w-full"
             />
           </div>
+          
+          <div className="mt-4">
+            <label className="block text-sm">Phone Number</label>
+            <input
+              type="tel"
+              value={location.phoneNumber}
+              onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Enter phone number"
+            />
+          </div>
+
         </div>
       )}
 
@@ -122,6 +214,17 @@ const DeliveryOptions = () => {
               onChange={(e) => handleLocationChange("address", e.target.value)}
               className="p-2 border rounded-lg w-full"
               placeholder="Enter local address"
+            />
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm">Phone Number</label>
+            <input
+              type="tel"
+              value={location.phoneNumber}
+              onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Enter phone number"
             />
           </div>
 
@@ -171,6 +274,17 @@ const DeliveryOptions = () => {
               onChange={(e) => handleLocationChange("postalCode", e.target.value)}
               className="p-2 border rounded-lg w-full"
               placeholder="Enter Zip code"
+            />
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm">Phone Number</label>
+            <input
+              type="tel"
+              value={location.phoneNumber}
+              onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Enter phone number"
             />
           </div>
 

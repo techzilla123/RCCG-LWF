@@ -1,11 +1,16 @@
 "use client";
+
 import React from "react";
 import Rating from "./Rating";
 import AddToCartButton from "./AddToCartButton";
 import WishlistButton from "./WishlistButton";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
-interface ProductCardProps {
+// This matches the transformed API response structure
+
+
+export interface ProductCardProps {
+  id: string;
   image: string;
   rating: number;
   reviews: number;
@@ -13,16 +18,19 @@ interface ProductCardProps {
   price: string;
 }
 
+
 const ProductCard: React.FC<ProductCardProps> = ({
+  id,
   image,
   rating,
   reviews,
   title,
   price,
 }) => {
-  const router = useRouter(); 
+  const router = useRouter();
+
   const handleProductClick = () => {
-    router.push("/preview");
+    router.push(`/preview?${id}`);
   };
 
   return (
@@ -31,9 +39,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         src={image}
         alt={title}
         className="cursor-pointer object-contain z-0 w-full aspect-[1.33]"
-        onClick={handleProductClick} 
+        onClick={handleProductClick}
       />
-
       <div className="z-0 flex-1 px-4 pt-4 pb-6 w-full">
         <div className="flex flex-col flex-1 w-full">
           <Rating rating={rating} reviews={reviews} />
@@ -41,17 +48,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {title}
           </h3>
         </div>
-
         <div className="flex gap-4 items-center mt-2 w-full">
           <span className="self-stretch my-auto text-base font-medium tracking-normal leading-6 text-black whitespace-nowrap">
             {price}
           </span>
           <div className="flex flex-1 shrink gap-2 items-center self-stretch my-auto basis-0">
-            <AddToCartButton />
+          <AddToCartButton productId={id} />
+
           </div>
         </div>
       </div>
-
       <div className="flex absolute top-3 right-3 z-0 flex-col items-end w-10">
         <WishlistButton />
       </div>

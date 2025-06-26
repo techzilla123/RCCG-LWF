@@ -1,24 +1,72 @@
 "use client";
 
-import React, { useRef } from "react";
-import ProductCard from "./Similar/ProductCard";
+import React, { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import ProductCard, { ProductCardProps } from "./Similar/ProductCard";
 import NavigationButton from "./Similar/NavigationButton";
 import { ProductGrid } from "./Similar/MobileShop/ProductGrid";
+
+type Product = {
+  productId: string;
+  imageOne: string;
+  productName: string;
+  price: number;
+};
 
 const SimilarProducts: React.FC = () => {
   const desktopScrollRef = useRef<HTMLDivElement>(null);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const productId = searchParams.keys().next().value || "";
 
- 
+ const [products, setProducts] = useState<ProductCardProps[]>([]);
+
+useEffect(() => {
+  const fetchSimilarProducts = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      };
+
+      if (token) headers["Authorization"] = token;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`,
+        { method: "GET", headers }
+      );
+      const json = await res.json();
+
+      if (json.statusCode === 200 && Array.isArray(json.data?.similarProducts)) {
+        const formatted: ProductCardProps[] = json.data.similarProducts.map((product: Product) => ({
+          id: product.productId,
+          image: product.imageOne,
+          rating: 4.7,
+          reviews: 400,
+          title: product.productName,
+          price: `$${product.price}`,
+        }));
+        setProducts(formatted);
+      }
+    } catch (error) {
+      console.error("Failed to fetch similar products:", error);
+    }
+  };
+
+  if (productId) {
+    fetchSimilarProducts();
+  }
+}, [productId]);
+
+
   const scroll = (direction: "left" | "right") => {
-    const scrollAmount = 300; // Adjust as needed
-  
+    const scrollAmount = 300;
     const scrollTarget =
       window.innerWidth < 768 ? mobileScrollRef.current : desktopScrollRef.current;
-  
+
     if (scrollTarget) {
       const { scrollLeft } = scrollTarget;
-  
       scrollTarget.scrollTo({
         left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
         behavior: "smooth",
@@ -26,49 +74,7 @@ const SimilarProducts: React.FC = () => {
     }
   };
 
-
-  const products = [
-    {
-      id: 1,
-      image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/6cf0e98e8c2f2e0b68fcd6dfd1b762fdb5730ca5?placeholderIfAbsent=true",
-      rating: 4.7,
-      reviews: 400,
-      title: "Colourful Artistic Party Handbag - Gift Style",
-      price: "$40,000",
-    },
-    {
-      id: 2,
-      image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/a9d15a18691d4ac6c3299fd7e1eac4a9900811ca?placeholderIfAbsent=true",
-      rating: 4.7,
-      reviews: 400,
-      title: "Festive Colorful Confetti Patterned Party Hat - Modern",
-      price: "$40,000",
-    },
-    {
-      id: 3,
-      image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/029ae28f51f8336455e402a58aa1daa69e875263?placeholderIfAbsent=true",
-      rating: 4.7,
-      reviews: 400,
-      title: "Whimsical Sky High Helium Balloon Party Extravaganza Pack",
-      price: "$40,000",
-    },
-    {
-      id: 4,
-      image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/6cf0e98e8c2f2e0b68fcd6dfd1b762fdb5730ca5?placeholderIfAbsent=true",
-      rating: 4.7,
-      reviews: 400,
-      title: "All-In-One Happy Birthday Bash Décor Kit with Banners, Tassels & More",
-      price: "$40,000",
-    },
-    {
-      id: 5,
-      image: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/a9d15a18691d4ac6c3299fd7e1eac4a9900811ca?placeholderIfAbsent=true",
-      rating: 4.7,
-      reviews: 400,
-      title: "Sweet Treats Birthday Table Display Set – Confetti, Skirts & Centerpieces",
-      price: "$40,000",
-    },
-  ];
+  if (!products.length) return null;
 
   return (
     <section className="flex flex-col px-8 py-10 bg-stone-50 max-md:px-4">
@@ -89,7 +95,6 @@ const SimilarProducts: React.FC = () => {
         </div>
       </header>
 
- 
       {/* Product List (Desktop) */}
       <div
         ref={desktopScrollRef}

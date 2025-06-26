@@ -6,38 +6,51 @@ interface KeywordTag {
   color: 'blue' | 'green' | 'red';
 }
 
+interface KeywordTagsProps {
+  onChange?: (tags: KeywordTag[]) => void;
+}
+
 const colorStyles = {
   blue: 'bg-blue-100 border-blue-300',
   green: 'bg-green-100 border-emerald-200',
   red: 'bg-red-100 border-red-300',
 };
 
-export const KeywordTags = () => {
+export const KeywordTags = ({ onChange }: KeywordTagsProps) => {
   const [tags, setTags] = useState<KeywordTag[]>([]);
   const [newTag, setNewTag] = useState('');
   const [selectedColor, setSelectedColor] = useState<KeywordTag['color']>('blue');
 
-  // Load tags from localStorage on mount
+  // ✅ Load tags from localStorage on mount ONLY
   useEffect(() => {
     const stored = localStorage.getItem('productTags');
     if (stored) {
-      setTags(JSON.parse(stored));
+      try {
+        const parsed: KeywordTag[] = JSON.parse(stored);
+        setTags(parsed);
+        // ❌ Do NOT call onChange here to avoid infinite loop
+      } catch {
+        console.warn('Failed to parse productTags from localStorage');
+      }
     }
-  }, []);
+  }, []); // 👈 empty dependency array
 
-  // Save tags to localStorage on change
+  // ✅ Save tags to localStorage and notify parent on change
   useEffect(() => {
     localStorage.setItem('productTags', JSON.stringify(tags));
-  }, [tags]);
+    onChange?.(tags);
+  }, [tags, onChange]);
 
   const addTag = () => {
     if (!newTag.trim()) return;
-    setTags([...tags, { text: newTag.trim(), color: selectedColor }]);
+    const updated = [...tags, { text: newTag.trim(), color: selectedColor }];
+    setTags(updated);
     setNewTag('');
   };
 
   const removeTag = (indexToRemove: number) => {
-    setTags(tags.filter((_, i) => i !== indexToRemove));
+    const updated = tags.filter((_, i) => i !== indexToRemove);
+    setTags(updated);
   };
 
   return (

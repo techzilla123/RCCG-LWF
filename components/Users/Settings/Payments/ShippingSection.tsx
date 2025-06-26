@@ -120,40 +120,43 @@ export function ShippingSection() {
     Wyoming: ["Cheyenne", "Casper", "Laramie"],
   };
 
-  React.useEffect(() => {
-    const fetchShippingAddress = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") || "";
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/account/fetch-shipping-address`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-              ...(token && { Authorization: token }),
-            },
-          }
-        );
+ React.useEffect(() => {
+  const fetchShippingAddress = async () => {
+    try {
+      const token = localStorage.getItem("accessToken") || "";
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/account/fetch-shipping-address`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token && { Authorization: token }),
+          },
+        }
+      );
 
-        if (!response.ok) throw new Error("Failed to fetch shipping address");
+      if (!response.ok) throw new Error("Failed to fetch shipping address");
 
-        const data = await response.json();
-        setCountry(data.country || "USA");
-        setState(data.state || "");
-        setZipCode(data.zip_code || "");
-        setAddress(data.address || "");
+      const res = await response.json();
+      const data = res.data;
 
-        setTimeout(() => {
-          setCity(data.city || "");
-        }, 50);
-      } catch (error) {
-        console.error("Error fetching shipping address:", error);
-      }
-    };
+      setCountry(data.country || "USA");
+      setState(data.state || "");
+      setZipCode(data.zipCode || ""); // ✅ corrected
+      setAddress(data.address || "");
 
-    fetchShippingAddress();
-  }, []);
+      setTimeout(() => {
+        setCity(data.city || "");
+      }, 50);
+    } catch (error) {
+      console.error("Error fetching shipping address:", error);
+    }
+  };
+
+  fetchShippingAddress();
+}, []);
+
 
   const handleSubmit = async () => {
     setIsLoading(true);

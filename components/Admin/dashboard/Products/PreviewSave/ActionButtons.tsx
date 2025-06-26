@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { UploadedFile } from "../ProductsAddOne/MediaUpload"; // or correct relative path
+import type { UploadedFile } from "../ProductsAddOne/MediaUpload"; // Adjust if path is different
 
 interface ActionButtonsProps {
   onCancel: () => void;
@@ -7,10 +7,11 @@ interface ActionButtonsProps {
 }
 
 export const ActionButtons = ({ onCancel, uploadedFiles }: ActionButtonsProps) => {
+
+
+
   const [isSaved, setIsSaved] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-// const imageFieldNames = ["image_one", "image_two", "image_three"];
-
 
   const handleSave = async () => {
     setIsSubmitting(true);
@@ -19,80 +20,95 @@ export const ActionButtons = ({ onCancel, uploadedFiles }: ActionButtonsProps) =
       const token = localStorage.getItem("accessToken") || "";
       const formDataToSend = new FormData();
 
+      // Product Info
       formDataToSend.append("category_id", localStorage.getItem("categoryId") || "");
+      formDataToSend.append("sub_category_id", localStorage.getItem("subCategoryId") || "");
+      formDataToSend.append("general_category_id", localStorage.getItem("generalCategoryId") || "");
       formDataToSend.append("product_name", localStorage.getItem("productName") || "");
       formDataToSend.append("description", localStorage.getItem("description") || "");
       formDataToSend.append("producer", localStorage.getItem("producer") || "");
       formDataToSend.append("classification", localStorage.getItem("category") || "");
-formDataToSend.append("sub_category_id", localStorage.getItem("subCategoryId") || "");
+  const keywords = JSON.parse(localStorage.getItem("keywords") || "[]");
+keywords.forEach((sku: string) => {
+  formDataToSend.append("sku[]", sku);
+});
 
-const price = localStorage.getItem("price");
-if (price && !isNaN(Number(price))) {
-  formDataToSend.append("price", price);
+
+
+      const pricingFormData = JSON.parse(localStorage.getItem("pricingFormData") || "{}");
+
+const price = pricingFormData.price || "0";
+formDataToSend.append("price", price);
+
+const priceValue = Number(price);
+
+const rawDiscount = pricingFormData.discount || "0";
+const cleanedDiscount = rawDiscount.replace('%', '').trim();
+const discountPercent = Number(cleanedDiscount);
+
+if (!isNaN(discountPercent)) {
+  const discountAmount = priceValue * (discountPercent / 100);
+  formDataToSend.append("discount_price", discountAmount.toFixed(2));
+} else {
+  formDataToSend.append("discount_price", "0.00");
 }
-const discount = localStorage.getItem("discount") || "0";
-const discountPercent = Number(discount);
 
-const priceValue = Number(localStorage.getItem("price") || "0");
-const discountAmount = priceValue * (discountPercent / 100);
-
-formDataToSend.append("discount_price", discountAmount.toFixed(2));
-
-
-
+// Quantity
 formDataToSend.append("quantity", localStorage.getItem("stock") || "");
- const shippedFrom = localStorage.getItem("shippedFrom") || "";
-const waitingTime = localStorage.getItem("waitingTime") || "";
-const returnPolicy = localStorage.getItem("returnPolicy") || "";
 
-const shippingInfoParts = [];
+     
 
-if (shippedFrom && shippedFrom !== "null") {
-  shippingInfoParts.push(`Shipped from: ${shippedFrom}`);
+const shippingInfoParts: string[] = [];
+
+if (pricingFormData.shippedFrom && pricingFormData.shippedFrom !== "null") {
+  shippingInfoParts.push(`Shipped from: ${pricingFormData.shippedFrom}`);
 }
-if (waitingTime && waitingTime !== "null") {
-  shippingInfoParts.push(`Waiting time: ${waitingTime}`);
+
+if (pricingFormData.waitingTime && pricingFormData.waitingTime !== "null") {
+  shippingInfoParts.push(`Order now, get by: ${pricingFormData.waitingTime}`);
 }
-if (returnPolicy && returnPolicy !== "null") {
-  shippingInfoParts.push(`Return policy: ${returnPolicy}`);
+
+if (pricingFormData.returnPolicy && pricingFormData.returnPolicy !== "null") {
+  shippingInfoParts.push(`Return policy: ${pricingFormData.returnPolicy}`);
+}
+
+if (pricingFormData.shippingFee && pricingFormData.shippingFee !== "null") {
+  shippingInfoParts.push(`Shipping cost: $${pricingFormData.shippingFee}`);
 }
 
 const combinedShippingInfo = shippingInfoParts.join(", ");
 formDataToSend.append("shipping_information", combinedShippingInfo);
 
 
-    
+      // Sizes & Colors
       const sizes = JSON.parse(localStorage.getItem("selectedSizes") || "[]");
       const colors = JSON.parse(localStorage.getItem("selectedColors") || "[]");
 
       sizes.forEach((size: string) => formDataToSend.append("size[]", size));
       colors.forEach((color: string) => formDataToSend.append("color[]", color));
 
-      // Append real File objects
+      // Validate and Append Images
       if (!uploadedFiles || uploadedFiles.length === 0) {
         alert("Please upload at least one image.");
         setIsSubmitting(false);
         return;
       }
 
- const imageFieldNames = [
-  "image_one", "image_two", "image_three", "image_four", "image_five",
-  "image_six", "image_seven", "image_eight", "image_nine", "image_ten",
-  "image_eleven", "image_twelve", "image_thirteen", "image_fourteen",
-  "image_fifteen", "image_sixteen", "image_seventeen", "image_eighteen",
-  "image_nineteen", "image_twenty"
-];
+      const imageFieldNames = [
+        "image_one", "image_two", "image_three", "image_four", "image_five",
+        "image_six", "image_seven", "image_eight", "image_nine", "image_ten",
+        "image_eleven", "image_twelve", "image_thirteen", "image_fourteen",
+        "image_fifteen", "image_sixteen", "image_seventeen", "image_eighteen",
+        "image_nineteen", "image_twenty"
+      ];
 
-uploadedFiles.forEach((file, index) => {
-  if (index < imageFieldNames.length) {
-    formDataToSend.append(imageFieldNames[index], file.file);
-  }
-});
+      uploadedFiles.forEach((file, index) => {
+        if (index < imageFieldNames.length) {
+          formDataToSend.append(imageFieldNames[index], file.file);
+        }
+      });
 
-
-
-
-
+      // Submit to backend
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/create-product`,
         {
@@ -110,20 +126,19 @@ uploadedFiles.forEach((file, index) => {
         throw new Error(error.message || "Submission failed");
       }
 
-      
       alert("Product created successfully!");
-      setIsSaved(true);
-   } catch (error) {
-  console.error("❌ Error saving product:", error);
+window.location.reload();
 
-  if (error instanceof Error) {
-    alert(error.message);
-  } else {
-    alert("Failed to save product");
-  }
-} finally {
-  setIsSubmitting(false);
-}
+    } catch (error) {
+      console.error("❌ Error saving product:", error);
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("Failed to save product");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleEdit = () => {

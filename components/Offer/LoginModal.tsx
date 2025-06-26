@@ -49,6 +49,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onOpenSignUp, o
     const userData = result.data.data; // ✅ this is the inner data object
     localStorage.setItem("firstname", userData.firstname);
     localStorage.setItem("lastname", userData.lastname);
+    localStorage.setItem("userId", userData.userId);
+    localStorage.setItem("email", userData.email);
+
 
     // Trigger success callback or close modal
     if (onLoginSuccess) {

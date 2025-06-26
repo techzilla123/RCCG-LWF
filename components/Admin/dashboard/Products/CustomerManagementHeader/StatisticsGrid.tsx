@@ -1,40 +1,81 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { StatCard } from "./StatCard";
 
-const statsData = [
-  {
-    iconSrc: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/bdf0deebf19631f3b5ade00e2c10d69253dc1eb0?placeholderIfAbsent=true",
-    amount: "240",
-    title: "Total Products"
-  },
-  {
-    iconSrc: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/7c4e5e4d88da7d44004d32cee4b76237c55e44bf?placeholderIfAbsent=true",
-    amount: "180",
-    title: "On Sale"
-  },
-  {
-    iconSrc: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/db48820fcaea9984803fa99f9c87fe9930bc3751?placeholderIfAbsent=true",
-    amount: "60",
-    title: "Rentals"
-  },
-  {
-    iconSrc: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/9c6b670d9a53565e35d6a1891cb73bcab9d96bd6?placeholderIfAbsent=true",
-    amount: "$503,000",
-    title: "Total Sales"
-  }
-];
+interface StatsApiResponse {
+  totalProducts: string;
+  totalActive: string;
+  totalOutOfStock: string;
+  totalPrice: string;
+}
 
 export default function StatisticsGrid() {
+  const [stats, setStats] = useState<StatsApiResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const token = localStorage.getItem("accessToken");
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+      try {
+        const response = await fetch(`${baseUrl}admin/products/analytics`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            Authorization: token || "",
+          },
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result?.data?.data) {
+          setStats(result.data.data);
+        } else {
+          console.error("Failed to load stats:", result);
+        }
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const iconMap = {
+    totalProducts: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/bdf0deebf19631f3b5ade00e2c10d69253dc1eb0?placeholderIfAbsent=true",
+    totalActive: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/7c4e5e4d88da7d44004d32cee4b76237c55e44bf?placeholderIfAbsent=true",
+    totalOutOfStock: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/db48820fcaea9984803fa99f9c87fe9930bc3751?placeholderIfAbsent=true",
+    totalPrice: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/9c6b670d9a53565e35d6a1891cb73bcab9d96bd6?placeholderIfAbsent=true",
+  };
+
+  const statTitles = {
+    totalProducts: "Total Products",
+    totalActive: "On Sale",
+    totalOutOfStock: "On Rental",
+    totalPrice: "Total Price",
+  };
+
+  if (loading) {
+    return <div>Loading statistics...</div>;
+  }
+
+  if (!stats) {
+    return <div>Failed to load statistics.</div>;
+  }
+
   return (
-    <section className="flex flex-wrap gap-10  items-start">
-      {statsData.map((stat, index) => (
+    <section className="flex flex-wrap gap-10 items-start">
+      {Object.entries(stats).map(([key, value]) => (
         <StatCard
-          key={index}
-          iconSrc={stat.iconSrc}
-          amount={stat.amount}
-          title={stat.title}
+          key={key}
+          iconSrc={iconMap[key as keyof StatsApiResponse]}
+          amount={key === "totalPrice" ? `$${value}` : value}
+          title={statTitles[key as keyof StatsApiResponse]}
         />
       ))}
     </section>

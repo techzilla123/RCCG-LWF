@@ -1,10 +1,51 @@
 "use client";
+
 import React from "react";
 
-const AddToCartButton: React.FC = () => {
-  const handleAddToCart = () => {
-    // Add to cart functionality would go here
-    console.log("Added to cart");
+interface AddToCartButtonProps {
+  productId: string;
+}
+
+const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) => {
+  const handleAddToCart = async () => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+
+    try {
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          quantity: "1",
+          size: "",
+          color: "",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.statusCode === 200) {
+        alert("Product added to cart");
+        console.log("Cart response:", data);
+      } else {
+        console.error("Cart add failed:", data);
+        alert("Could not add product to cart.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Something went wrong while adding to cart.");
+    }
   };
 
   return (

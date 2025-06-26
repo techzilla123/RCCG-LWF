@@ -89,49 +89,102 @@ export function Heart() {
       </section>
     );
   }
+  const handleAddToWishlist = async (productId: string) => {
+  const token = localStorage.getItem("accessToken");
 
-  const handleAddToCart = async (productId: string) => {
-    const token = localStorage.getItem("accessToken");
+  if (!token) {
+    setModalType("signup");
+    return;
+  }
 
-    if (!token) {
-      setModalType("signup");
-      return;
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-wish-list`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      Authorization: token,
+    };
+
+    const body = JSON.stringify({
+      product_id: productId,
+      quantity: "1",
+      size: "",
+      color: "",
+    });
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body,
+    });
+
+    const data = await res.json();
+
+    if (data.statusCode === 200) {
+      alert("Product added to wishlist");
+      console.log("Wishlist response:", data);
+    } else {
+      console.error("Failed to add to wishlist:", data);
+      alert("Could not add product to wishlist.");
+    }
+  } catch (err) {
+    console.error("Wishlist error:", err);
+    alert("Something went wrong while adding to wishlist.");
+  }
+};
+
+
+ const handleAddToCart = async (productId: string) => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    setModalType("signup");
+    return;
+  }
+
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      Authorization: token,
+    };
+
+    const body = JSON.stringify({
+      product_id: productId,
+      quantity: "1",
+      size: "",
+      color: "",
+    });
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body,
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server error: ${res.status}`);
     }
 
-    try {
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart/${productId}`;
+    const data = await res.json();
 
-      const headers = {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-        Authorization: token,
-      };
-
-      const res = await fetch(url, {
-        method: "GET",
-        headers,
-      });
-
-      if (!res.ok) {
-        throw new Error(`Server error: ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      if (data.statusCode === 200) {
-        setProducts((prev) =>
-          prev.map((p) =>
-            p.productId === productId ? { ...p, isAdded: true } : p
-          )
-        );
-        setModalType("success");
-      } else {
-        console.error("Unexpected response:", data);
-      }
-    } catch (err) {
-      console.error("Add to cart failed:", err);
+    if (data.statusCode === 200) {
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.productId === productId ? { ...p, isAdded: true } : p
+        )
+      );
+    
+    } else {
+      console.error("Unexpected response:", data);
     }
-  };
+  } catch (err) {
+    console.error("Add to cart failed:", err);
+  }
+};
 
   const handleClose = () => setModalType(null);
   const handleLoginSuccess = () => setModalType("success");
@@ -158,6 +211,7 @@ export function Heart() {
   isOutOfStock={p.quantity === 0}
   isAdded={p.isAdded}
   onAddToCart={() => handleAddToCart(p.productId)}
+    onAddToWishlist={() => handleAddToWishlist(p.productId)}
 />
 
         ))}
