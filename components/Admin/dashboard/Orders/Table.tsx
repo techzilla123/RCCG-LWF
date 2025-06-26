@@ -13,10 +13,16 @@ type Order = {
   amount: string;
   noOfItem: number;
   orderStatus: string;
+  customerName: string; // <-- Add this line
 };
 
+
 const statusColors: Record<string, string> = {
-  successful: "bg-green-500",
+  APPROVED: "bg-green",
+  IN_PROGRESS: "bg-blue-400",
+  SHIPPED: "bg-purple-400",
+  DELIVERED: "bg-green",
+  CANCELLED: "bg-red-400",
   pending: "bg-orange-400",
   returned: "bg-stone-400",
   rejected: "bg-red-700",
@@ -43,7 +49,7 @@ const Table: React.FC = () => {
         const res = await fetch(`${baseUrl}admin/order-list`, { headers });
         const json = await res.json();
         if (json.statusCode === 200 && Array.isArray(json.data)) {
-          setOrders(json.data.slice(0, 5));
+          setOrders(json.data); 
         } else {
           console.error("Unexpected data", json);
         }
@@ -123,11 +129,11 @@ const Table: React.FC = () => {
                   )}
                 </div>
               </td>
-              <td className="p-3">
-                <div className="flex items-center gap-2 relative">
-                  <span className="text-gray-700">—</span> {/* Placeholder */}
-                </div>
-              </td>
+             <td className="p-3">
+  <div className="flex items-center gap-2 relative">
+    <span className="text-gray-700">{order.customerName}</span>
+  </div>
+</td>
               <td className="p-3">{new Date(order.orderDate).toLocaleDateString()}</td>
               <td className="p-3">
                 {order.deliveryDate

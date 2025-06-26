@@ -23,33 +23,49 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
     }
   };
 
-  const getMiddleOuterBgColor = () => {
-    switch (status?.toLowerCase()) {
-      case 'pending':
-        return 'bg-yellow-400';
-      case 'success':
-      case 'delivered':
-        return 'bg-green-100';
-      case 'cancelled':
-        return 'bg-red-200';
-      default:
-        return 'bg-gray-200';
-    }
-  };
+ const getMiddleOuterBgColor = () => {
+  switch (status?.toLowerCase()) {
+    case 'approved':
+    case 'delivered':
+      return 'bg-green';
+    case 'in_progress':
+      return 'bg-blue-400';
+    case 'shipped':
+      return 'bg-purple-400';
+    case 'cancelled':
+      return 'bg-red-400';
+    case 'pending':
+      return 'bg-orange-400';
+    case 'returned':
+      return 'bg-stone-400';
+    case 'rejected':
+      return 'bg-red-700';
+    default:
+      return 'bg-gray-200';
+  }
+};
 
-  const getMiddleInnerBgColor = () => {
-    switch (status?.toLowerCase()) {
-      case 'pending':
-        return 'bg-yellow-400';
-      case 'success':
-      case 'delivered':
-        return 'bg-green-500';
-      case 'cancelled':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-300';
-    }
-  };
+const getMiddleInnerBgColor = () => {
+  switch (status?.toLowerCase()) {
+    case 'approved':
+    case 'delivered':
+      return 'bg-green';
+    case 'in_progress':
+      return 'bg-blue-400';
+    case 'shipped':
+      return 'bg-purple-400';
+    case 'cancelled':
+      return 'bg-red-400'; // Could use 'bg-red-500' if you prefer stronger contrast
+    case 'pending':
+      return 'bg-orange-400';
+    case 'returned':
+      return 'bg-stone-400';
+    case 'rejected':
+      return 'bg-red-700';
+    default:
+      return 'bg-gray-300';
+  }
+};
 
   return (
     <section className="flex items-center px-0 py-1.5 w-full">
