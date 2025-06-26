@@ -28,8 +28,20 @@ interface GroupedOrder {
   items: OrderItem[]
 }
 
+interface IndividualOrderDetail {
+  id: number
+  orderId: string
+  quantity: number
+  size: string | null
+  color: string | null
+  status: string
+  deliveryAddress: string
+  orderType: string
+  amount: string
+  deliveryDate: string | null
+}
+
 export default function ProfessionalOrderManagement() {
-  const [orders, setOrders] = useState<OrderItem[]>([])
   const [groupedOrders, setGroupedOrders] = useState<GroupedOrder[]>([])
   const [selectedOrder, setSelectedOrder] = useState<GroupedOrder | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -37,7 +49,7 @@ export default function ProfessionalOrderManagement() {
   const [error, setError] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [selectedIndividualOrder, setSelectedIndividualOrder] = useState<any>(null)
+  const [selectedIndividualOrder, setSelectedIndividualOrder] = useState<IndividualOrderDetail | null>(null)
   const [isIndividualLoading, setIsIndividualLoading] = useState(false)
 
   // API helper function
@@ -66,7 +78,6 @@ export default function ProfessionalOrderManagement() {
       }
 
       const data = await response.json()
-      setOrders(data.data || [])
       groupOrdersByOrderId(data.data || [])
     } catch (error) {
       setError("Failed to load orders. Please try again.")
