@@ -42,6 +42,8 @@ useEffect(() => {
     setCategoryId("c7d6c7e5-aafe-439d-a714-63dd3910d3f9");
   } else if (currentPath === "/shop/decorations") {
     setCategoryId("1fc158a6-5dbc-43e9-b385-4cadb8434a76");
+  } else if (currentPath === "/shop/holiday") {
+    setCategoryId("6f30f52f-47f2-4196-996c-7b0daabcd495");
   } else if (currentPath === "/shop") {
     setCategoryId(null);
   } else {
@@ -51,6 +53,7 @@ useEffect(() => {
 
   setReady(true); // mark as ready after setting category
 }, [pathname]);
+
 
 
   // Fetch products every time categoryId changes
