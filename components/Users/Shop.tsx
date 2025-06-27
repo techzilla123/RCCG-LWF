@@ -31,7 +31,7 @@ export function Shop() {
 const [ready, setReady] = useState(false);
 
   const pathname = usePathname();
-  const isDefaultShopPage = pathname === "/shop";
+  // const isDefaultShopPage = pathname === "/shop";
 
   const [categoryId, setCategoryId] = useState<string | null>(null);
 

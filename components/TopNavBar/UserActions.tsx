@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { NotificationBadge } from "./NotificationBadge";
 import { CartDropdown } from "./CartDropdown";
 import { useRouter } from "next/navigation";

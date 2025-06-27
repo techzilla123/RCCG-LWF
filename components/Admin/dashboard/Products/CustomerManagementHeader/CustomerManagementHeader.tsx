@@ -38,7 +38,6 @@ export const CustomerManagementHeader = () => {
   const [showEditModal, setShowEditModal] = useState(false)
   const [categoryName, setCategoryName] = useState("")
   const [editCategoryId, setEditCategoryId] = useState("")
-  const [categories, setCategories] = useState<Category[]>([])
   const [allCategories, setAllCategories] = useState<Category[]>([]) // For showing all categories in edit modal
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -48,8 +47,6 @@ export const CustomerManagementHeader = () => {
   const [showSubCategoryModal, setShowSubCategoryModal] = useState(false)
   const [subCategoryName, setSubCategoryName] = useState("")
   const [subCategoryParentId, setSubCategoryParentId] = useState("")
-  const [selectedCategoryIdForSubcategories, setSelectedCategoryIdForSubcategories] = useState("")
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([])
   const [allSubCategories, setAllSubCategories] = useState<{ [categoryId: string]: SubCategory[] }>({})
   const [editSubCategoryId, setEditSubCategoryId] = useState("")
 
@@ -183,86 +180,12 @@ export const CustomerManagementHeader = () => {
             const data = await response.json()
             subCatMap[cat.categoryId] = data.data || []
           }
-        } catch (error) {
+        } catch {
           // Continue if subcategory fetch fails
           subCatMap[cat.categoryId] = []
         }
       }
       setAllSubCategories(subCatMap)
-    } catch (error) {
-      let message = "Something went wrong. Please try again."
-      if (error instanceof Error) {
-        message = error.message
-      } else if (typeof error === "string") {
-        message = error
-      }
-      setErrorMessage(message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Updated fetch categories to use general category ID
-  const fetchCategories = async (generalCategoryId?: string) => {
-    setIsLoading(true)
-    setErrorMessage("")
-
-    try {
-      const categoryId = generalCategoryId || selectedGeneralCategoryId
-      if (!categoryId) {
-        setErrorMessage("Please select a general category first.")
-        return
-      }
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-category/${categoryId}`,
-        {
-          method: "GET",
-          headers: getApiHeaders(),
-        },
-      )
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || "Failed to fetch categories.")
-      }
-
-      const data = await response.json()
-      setCategories(data.data || [])
-    } catch (error) {
-      let message = "Something went wrong. Please try again."
-      if (error instanceof Error) {
-        message = error.message
-      } else if (typeof error === "string") {
-        message = error
-      }
-      setErrorMessage(message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Fetch subcategories for a category
-  const fetchSubCategories = async (categoryId: string) => {
-    setIsLoading(true)
-    setErrorMessage("")
-    setSelectedCategoryIdForSubcategories(categoryId)
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-sub-category/${categoryId}`,
-        {
-          method: "GET",
-          headers: getApiHeaders(),
-        },
-      )
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || "Failed to fetch subcategories.")
-      }
-
-      const data = await response.json()
-      setSubCategories(data.data || [])
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -310,7 +233,7 @@ export const CustomerManagementHeader = () => {
       setCategoryName("")
       setSelectedGeneralCategoryId("")
       setShowSuccessModal(true)
-      fetchCategories()
+      fetchAllCategories()
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -559,13 +482,6 @@ export const CustomerManagementHeader = () => {
     fetchAllCategories() // Load all data when opening edit modal
   }
 
-  const handleOpenSubCategoryModal = () => {
-    setShowSubCategoryModal(true)
-    setSubCategoryName("")
-    setSubCategoryParentId("")
-    setErrorMessage("")
-  }
-
   // Modal close handlers
   const handleCloseCreateModal = () => {
     setShowCreateModal(false)
@@ -578,8 +494,6 @@ export const CustomerManagementHeader = () => {
     setShowEditModal(false)
     setCategoryName("")
     setEditCategoryId("")
-    setSelectedCategoryIdForSubcategories("")
-    setSubCategories([])
     setAllCategories([])
     setAllSubCategories({})
     setEditSubCategoryId("")

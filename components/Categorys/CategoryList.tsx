@@ -36,7 +36,6 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
   const [isLoading, setIsLoading] = React.useState(false)
   const [generalCategories, setGeneralCategories] = React.useState<GeneralCategory[]>([])
 
-  // API helper function
   const getApiHeaders = () => {
     const token = localStorage.getItem("accessToken") || ""
     return {
@@ -46,20 +45,6 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     }
   }
 
-  // Map API category names to display names
-  const mapCategoryName = (apiName: string): string => {
-    const mapping: { [key: string]: string } = {
-      Balloon: "Balloons",
-      "Birthday Shop": "Birthdays",
-      "Holidays & Occassions": "Holidays & Occasions",
-      "Party Supplies": "Party Supplies",
-      Decoration: "Decoration",
-      Rentals: "Rentals",
-    }
-    return mapping[apiName] || apiName
-  }
-
-  // Reverse map display names to API names
   const reverseMapCategoryName = (displayName: string): string => {
     const mapping: { [key: string]: string } = {
       Balloons: "Balloon",
@@ -72,7 +57,6 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     return mapping[displayName] || displayName
   }
 
-  // Fetch general categories
   const fetchGeneralCategories = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product-general-category`, {
@@ -80,9 +64,7 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
         headers: getApiHeaders(),
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch general categories")
-      }
+      if (!response.ok) throw new Error("Failed to fetch general categories")
 
       const data = await response.json()
       setGeneralCategories(data.data || [])
@@ -91,7 +73,6 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     }
   }
 
-  // Fetch product categories for a general category
   const fetchProductCategories = async (generalCategoryId: string) => {
     try {
       const response = await fetch(
@@ -102,9 +83,7 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
         },
       )
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch product categories")
-      }
+      if (!response.ok) throw new Error("Failed to fetch product categories")
 
       const data = await response.json()
       return data.data || []
@@ -114,7 +93,6 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     }
   }
 
-  // Fetch sub categories for a product category
   const fetchSubCategories = async (categoryId: string) => {
     try {
       const response = await fetch(
@@ -125,9 +103,7 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
         },
       )
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch sub categories")
-      }
+      if (!response.ok) throw new Error("Failed to fetch sub categories")
 
       const data = await response.json()
       return data.data || []
@@ -137,14 +113,12 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     }
   }
 
-  // Load categories when selected category changes
   React.useEffect(() => {
     const loadCategories = async () => {
       if (!selectedCategory) return
 
       setIsLoading(true)
 
-      // Find the general category ID for the selected category
       const apiCategoryName = reverseMapCategoryName(selectedCategory)
       const generalCategory = generalCategories.find((cat) => cat.name === apiCategoryName)
 
@@ -154,14 +128,11 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
       }
 
       try {
-        // Fetch product categories
         const productCategories: ProductCategory[] = await fetchProductCategories(generalCategory.generalCategoryId)
 
-        // Fetch sub categories for each product category
         const categoriesWithSubs = await Promise.all(
           productCategories.map(async (productCategory) => {
             const subCategories: SubCategory[] = await fetchSubCategories(productCategory.categoryId)
-
             return {
               parent: selectedCategory,
               title: productCategory.categoryName,
@@ -182,7 +153,6 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     loadCategories()
   }, [selectedCategory, generalCategories])
 
-  // Load general categories on mount
   React.useEffect(() => {
     fetchGeneralCategories()
   }, [])
