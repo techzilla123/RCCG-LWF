@@ -13,6 +13,7 @@ interface Category {
   categoryName: string
   noOfProducts: number
   generalCategoryId?: string
+  generalCategoryName?: string
 }
 
 type SubCategory = {
@@ -38,6 +39,7 @@ export const CustomerManagementHeader = () => {
   const [categoryName, setCategoryName] = useState("")
   const [editCategoryId, setEditCategoryId] = useState("")
   const [categories, setCategories] = useState<Category[]>([])
+  const [allCategories, setAllCategories] = useState<Category[]>([]) // For showing all categories in edit modal
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -48,6 +50,7 @@ export const CustomerManagementHeader = () => {
   const [subCategoryParentId, setSubCategoryParentId] = useState("")
   const [selectedCategoryIdForSubcategories, setSelectedCategoryIdForSubcategories] = useState("")
   const [subCategories, setSubCategories] = useState<SubCategory[]>([])
+  const [allSubCategories, setAllSubCategories] = useState<{ [categoryId: string]: SubCategory[] }>({})
   const [editSubCategoryId, setEditSubCategoryId] = useState("")
 
   // API helper function
@@ -132,6 +135,70 @@ export const CustomerManagementHeader = () => {
       setErrorMessage(message)
     } finally {
       setIsCreatingGeneralCategory(false)
+    }
+  }
+
+  // Fetch all categories for comprehensive view
+  const fetchAllCategories = async () => {
+    setIsLoading(true)
+    setErrorMessage("")
+
+    try {
+      // Fetch all categories from all general categories
+      const allCats: Category[] = []
+      for (const genCat of generalCategories) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-category/${genCat.generalCategoryId}`,
+          {
+            method: "GET",
+            headers: getApiHeaders(),
+          },
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          const categoriesWithGenName = (data.data || []).map((cat: Category) => ({
+            ...cat,
+            generalCategoryName: genCat.name,
+            generalCategoryId: genCat.generalCategoryId,
+          }))
+          allCats.push(...categoriesWithGenName)
+        }
+      }
+      setAllCategories(allCats)
+
+      // Fetch subcategories for each category
+      const subCatMap: { [categoryId: string]: SubCategory[] } = {}
+      for (const cat of allCats) {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-sub-category/${cat.categoryId}`,
+            {
+              method: "GET",
+              headers: getApiHeaders(),
+            },
+          )
+
+          if (response.ok) {
+            const data = await response.json()
+            subCatMap[cat.categoryId] = data.data || []
+          }
+        } catch (error) {
+          // Continue if subcategory fetch fails
+          subCatMap[cat.categoryId] = []
+        }
+      }
+      setAllSubCategories(subCatMap)
+    } catch (error) {
+      let message = "Something went wrong. Please try again."
+      if (error instanceof Error) {
+        message = error.message
+      } else if (typeof error === "string") {
+        message = error
+      }
+      setErrorMessage(message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -264,6 +331,11 @@ export const CustomerManagementHeader = () => {
       return
     }
 
+    if (!selectedGeneralCategoryId) {
+      setErrorMessage("Please select a general category.")
+      return
+    }
+
     setIsLoading(true)
     setErrorMessage("")
 
@@ -285,11 +357,11 @@ export const CustomerManagementHeader = () => {
         throw new Error(errorData.message || "Failed to update category.")
       }
 
-      setShowEditModal(false)
-      setCategoryName("")
       setEditCategoryId("")
+      setCategoryName("")
+      setSelectedGeneralCategoryId("")
       setShowSuccessModal(true)
-      fetchCategories()
+      fetchAllCategories() // Refresh the comprehensive view
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -333,8 +405,9 @@ export const CustomerManagementHeader = () => {
 
       setEditSubCategoryId("")
       setSubCategoryName("")
+      setSubCategoryParentId("")
       setShowSuccessModal(true)
-      fetchSubCategories(subCategoryParentId)
+      fetchAllCategories() // Refresh the comprehensive view
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -369,7 +442,8 @@ export const CustomerManagementHeader = () => {
         throw new Error(errorData.message || "Failed to delete category.")
       }
 
-      fetchCategories()
+      setShowSuccessModal(true)
+      fetchAllCategories() // Refresh the comprehensive view
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -404,11 +478,8 @@ export const CustomerManagementHeader = () => {
         throw new Error("Failed to delete subcategory")
       }
 
-      // Refresh subcategories list after deletion
-      if (selectedCategoryIdForSubcategories) {
-        fetchSubCategories(selectedCategoryIdForSubcategories)
-      }
       setShowSuccessModal(true)
+      fetchAllCategories() // Refresh the comprehensive view
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -458,7 +529,7 @@ export const CustomerManagementHeader = () => {
       setSubCategoryName("")
       setSubCategoryParentId("")
       setShowSuccessModal(true)
-      fetchCategories()
+      fetchAllCategories() // Refresh the comprehensive view
     } catch (error) {
       let message = "Something went wrong. Please try again."
       if (error instanceof Error) {
@@ -485,6 +556,7 @@ export const CustomerManagementHeader = () => {
     setCategoryName("")
     setEditCategoryId("")
     setErrorMessage("")
+    fetchAllCategories() // Load all data when opening edit modal
   }
 
   const handleOpenSubCategoryModal = () => {
@@ -506,6 +578,11 @@ export const CustomerManagementHeader = () => {
     setShowEditModal(false)
     setCategoryName("")
     setEditCategoryId("")
+    setSelectedCategoryIdForSubcategories("")
+    setSubCategories([])
+    setAllCategories([])
+    setAllSubCategories({})
+    setEditSubCategoryId("")
     setErrorMessage("")
   }
 
@@ -548,7 +625,7 @@ export const CustomerManagementHeader = () => {
   const handleEditCategoryClick = (category: Category) => {
     setEditCategoryId(category.categoryId)
     setCategoryName(category.categoryName)
-    setShowEditModal(true)
+    setSelectedGeneralCategoryId(category.generalCategoryId || "")
     setErrorMessage("")
   }
 
@@ -556,7 +633,7 @@ export const CustomerManagementHeader = () => {
   const handleEditSubCategoryClick = (subCategory: SubCategory) => {
     setEditSubCategoryId(subCategory.subCategoryId)
     setSubCategoryName(subCategory.subCategoryName)
-    setSubCategoryParentId(selectedCategoryIdForSubcategories)
+    setSubCategoryParentId(subCategory.categoryId)
     setErrorMessage("")
   }
 
@@ -692,189 +769,206 @@ export const CustomerManagementHeader = () => {
         </div>
       )}
 
-      {/* Edit Category Modal */}
+      {/* Comprehensive Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Edit Product Categories</h2>
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-auto">
+            <h2 className="text-xl font-bold mb-4">Manage Categories & Subcategories</h2>
             {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
 
-            {/* Category list */}
-            <ul className="mb-4 max-h-60 overflow-y-auto border border-gray-300 rounded p-2">
-              {categories.length === 0 && <li className="text-gray-500">No categories found.</li>}
-              {categories.map((category) => (
-                <li
-                  key={category.categoryId}
-                  className="flex justify-between items-center py-1 border-b last:border-b-0"
-                >
-                  <span>{category.categoryName}</span>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleEditCategoryClick(category)} className="text-blue-600 hover:underline">
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCategory(category.categoryId)}
-                      className="text-red-600 hover:text-red-800"
-                      aria-label="Delete Category"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => fetchSubCategories(category.categoryId)}
-                      className="text-green-600 hover:underline"
-                    >
-                      Subcategories
-                    </button>
+            {/* Comprehensive Hierarchical View */}
+            <div className="space-y-6">
+              {generalCategories.map((genCat) => {
+                const categoriesInGenCat = allCategories.filter(
+                  (cat) => cat.generalCategoryId === genCat.generalCategoryId,
+                )
+
+                return (
+                  <div key={genCat.generalCategoryId} className="border border-gray-200 rounded-lg p-4">
+                    {/* General Category Header */}
+                    <div className="bg-green-50 p-3 rounded-lg mb-4">
+                      <h3 className="text-lg font-semibold text-green-800">📁 {genCat.name}</h3>
+                      <p className="text-sm text-green-600">General Category</p>
+                    </div>
+
+                    {/* Product Categories under this General Category */}
+                    <div className="ml-4 space-y-3">
+                      {categoriesInGenCat.length === 0 ? (
+                        <p className="text-gray-500 italic">No product categories found</p>
+                      ) : (
+                        categoriesInGenCat.map((category) => (
+                          <div key={category.categoryId} className="border border-gray-100 rounded-lg p-3">
+                            {/* Product Category */}
+                            {editCategoryId === category.categoryId ? (
+                              // Edit mode for category
+                              <div className="bg-blue-50 p-3 rounded mb-3">
+                                <h4 className="text-sm font-medium text-blue-800 mb-2">Edit Product Category</h4>
+                                <div className="space-y-2">
+                                  <select
+                                    value={selectedGeneralCategoryId}
+                                    onChange={handleGeneralCategoryChange}
+                                    className="border border-gray-300 rounded px-2 py-1 w-full text-sm"
+                                  >
+                                    <option value="">Select General Category</option>
+                                    {generalCategories.map((genCat) => (
+                                      <option key={genCat.generalCategoryId} value={genCat.generalCategoryId}>
+                                        {genCat.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <input
+                                    type="text"
+                                    value={categoryName}
+                                    onChange={handleCategoryNameChange}
+                                    className="border border-gray-300 rounded px-2 py-1 w-full text-sm"
+                                    placeholder="Category name"
+                                  />
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={handleUpdateCategory}
+                                      className="bg-green-600 text-white px-3 py-1 rounded text-xs"
+                                      disabled={isLoading}
+                                    >
+                                      {isLoading ? "Saving..." : "Save"}
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setEditCategoryId("")
+                                        setCategoryName("")
+                                        setSelectedGeneralCategoryId("")
+                                      }}
+                                      className="bg-gray-300 px-3 py-1 rounded text-xs"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              // View mode for category
+                              <div className="bg-blue-50 p-3 rounded mb-3">
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <h4 className="font-medium text-blue-800">📂 {category.categoryName}</h4>
+                                    <p className="text-xs text-blue-600">
+                                      Product Category • {category.noOfProducts} products
+                                    </p>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => handleEditCategoryClick(category)}
+                                      className="text-blue-600 hover:underline text-xs"
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteCategory(category.categoryId)}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      Delete
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setSubCategoryParentId(category.categoryId)
+                                        setShowSubCategoryModal(true)
+                                      }}
+                                      className="text-green-600 hover:underline text-xs"
+                                    >
+                                      + Add Subcategory
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Subcategories under this Product Category */}
+                            <div className="ml-4 space-y-2">
+                              {allSubCategories[category.categoryId]?.length === 0 ||
+                              !allSubCategories[category.categoryId] ? (
+                                <p className="text-gray-400 text-sm italic">No subcategories</p>
+                              ) : (
+                                allSubCategories[category.categoryId]?.map((subCategory) => (
+                                  <div key={subCategory.subCategoryId} className="bg-gray-50 p-2 rounded">
+                                    {editSubCategoryId === subCategory.subCategoryId ? (
+                                      // Edit mode for subcategory
+                                      <div className="space-y-2">
+                                        <input
+                                          type="text"
+                                          value={subCategoryName}
+                                          onChange={handleSubCategoryNameChange}
+                                          className="border border-gray-300 rounded px-2 py-1 w-full text-sm"
+                                          placeholder="Subcategory name"
+                                        />
+                                        <select
+                                          value={subCategoryParentId}
+                                          onChange={handleSubCategoryParentChange}
+                                          className="border border-gray-300 rounded px-2 py-1 w-full text-sm"
+                                        >
+                                          <option value="">Select Parent Category</option>
+                                          {allCategories.map((cat) => (
+                                            <option key={cat.categoryId} value={cat.categoryId}>
+                                              {cat.categoryName}
+                                            </option>
+                                          ))}
+                                        </select>
+                                        <div className="flex gap-2">
+                                          <button
+                                            onClick={handleUpdateSubCategory}
+                                            className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+                                            disabled={isLoading}
+                                          >
+                                            {isLoading ? "Saving..." : "Save"}
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              setEditSubCategoryId("")
+                                              setSubCategoryName("")
+                                              setSubCategoryParentId("")
+                                            }}
+                                            className="bg-gray-300 px-2 py-1 rounded text-xs"
+                                          >
+                                            Cancel
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      // View mode for subcategory
+                                      <div className="flex justify-between items-center">
+                                        <div>
+                                          <span className="text-sm">📄 {subCategory.subCategoryName}</span>
+                                          <p className="text-xs text-gray-500">Subcategory</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                          <button
+                                            onClick={() => handleEditSubCategoryClick(subCategory)}
+                                            className="text-blue-600 hover:underline text-xs"
+                                          >
+                                            Edit
+                                          </button>
+                                          <button
+                                            onClick={() => handleDeleteSubCategory(subCategory)}
+                                            className="text-red-600 hover:text-red-800 text-xs"
+                                          >
+                                            Delete
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-
-            {/* If a category is selected, show its subcategories */}
-            {selectedCategoryIdForSubcategories && (
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Subcategories for selected category</h3>
-                {errorMessage && <p className="text-red-600 mb-2">{errorMessage}</p>}
-                <ul className="mb-4 max-h-40 overflow-y-auto border border-gray-300 rounded p-2">
-                  {subCategories.length === 0 && <li className="text-gray-500">No subcategories found.</li>}
-                  {subCategories.map((subCategory) => (
-                    <li
-                      key={subCategory.subCategoryId}
-                      className="flex justify-between items-center py-1 border-b last:border-b-0"
-                    >
-                      <span>{subCategory.subCategoryName}</span>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEditSubCategoryClick(subCategory)}
-                          className="text-blue-600 hover:underline"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteSubCategory(subCategory)}
-                          className="text-red-600 hover:text-red-800"
-                          aria-label="Delete Subcategory"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <button className="bg-black text-white px-3 py-1 rounded" onClick={handleOpenSubCategoryModal}>
-                  Add Subcategory
-                </button>
-              </div>
-            )}
-
-            {/* Edit category name input if editing a specific category */}
-            {editCategoryId && (
-              <div className="mt-4">
-                <input
-                  type="text"
-                  placeholder="Edit category name"
-                  value={categoryName}
-                  onChange={handleCategoryNameChange}
-                  className="border border-gray-300 rounded px-3 py-2 w-full mb-4"
-                />
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="bg-gray-200 px-4 py-2 rounded"
-                    onClick={() => {
-                      setEditCategoryId("")
-                      setCategoryName("")
-                      setErrorMessage("")
-                    }}
-                    disabled={isLoading}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="bg-black text-white px-4 py-2 rounded"
-                    onClick={handleUpdateCategory}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Updating..." : "Update"}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Edit subcategory modal inline */}
-            {editSubCategoryId && (
-              <div className="mt-6 p-4 border border-gray-300 rounded">
-                <h4 className="text-lg font-semibold mb-2">Edit Subcategory</h4>
-                <input
-                  type="text"
-                  placeholder="Subcategory name"
-                  value={subCategoryName}
-                  onChange={handleSubCategoryNameChange}
-                  className="border border-gray-300 rounded px-3 py-2 w-full mb-4"
-                />
-                <select
-                  value={subCategoryParentId}
-                  onChange={handleSubCategoryParentChange}
-                  className="border border-gray-300 rounded px-3 py-2 w-full mb-4"
-                >
-                  <option value="">Select Parent Category</option>
-                  {categories.map((cat) => (
-                    <option key={cat.categoryId} value={cat.categoryId}>
-                      {cat.categoryName}
-                    </option>
-                  ))}
-                </select>
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="bg-gray-200 px-4 py-2 rounded"
-                    onClick={() => {
-                      setEditSubCategoryId("")
-                      setSubCategoryName("")
-                      setSubCategoryParentId("")
-                      setErrorMessage("")
-                    }}
-                    disabled={isLoading}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="bg-black text-white px-4 py-2 rounded"
-                    onClick={handleUpdateSubCategory}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Updating..." : "Update"}
-                  </button>
-                </div>
-              </div>
-            )}
+                )
+              })}
+            </div>
 
             <div className="flex justify-end mt-6">
-              <button className="bg-gray-300 px-4 py-2 rounded" onClick={handleCloseEditModal} disabled={isLoading}>
+              <button className="bg-gray-300 px-4 py-2 rounded" onClick={handleCloseEditModal}>
                 Close
               </button>
             </div>
@@ -901,9 +995,9 @@ export const CustomerManagementHeader = () => {
               className="border border-gray-300 rounded px-3 py-2 w-full mb-4"
             >
               <option value="">Select Parent Category</option>
-              {categories.map((cat) => (
+              {allCategories.map((cat) => (
                 <option key={cat.categoryId} value={cat.categoryId}>
-                  {cat.categoryName}
+                  {cat.categoryName} ({cat.generalCategoryName})
                 </option>
               ))}
             </select>

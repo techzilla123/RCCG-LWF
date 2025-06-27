@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Heart } from "lucide-react";
-import { CartDropdown } from "./CartDropdown";
+import { Heart, ShoppingCart } from "lucide-react";
 import { NotificationBadge } from "./NotificationBadge";
+import { CartDropdown } from "./CartDropdown";
 import { useRouter } from "next/navigation";
 import { LoginModal } from "@/components/Offer/LoginModal";
 import { SignUpModal } from "@/components/Offer/SignUpModal";
@@ -16,9 +16,9 @@ export const UserActions = () => {
   const [token, setToken] = useState<string | null>(null);
   const [modalState, setModalState] = useState<ModalState>("none");
 
-  // ✅ NEW STATE for profile
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [initials, setInitials] = useState<string>("");
+  const [wishlistCount, setWishlistCount] = useState(0); // ✅ Wishlist state
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
@@ -38,7 +38,7 @@ export const UserActions = () => {
     };
   }, []);
 
-  // ✅ Fetch profile on token change
+  // ✅ Fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("accessToken");
@@ -76,6 +76,38 @@ export const UserActions = () => {
     fetchProfile();
   }, [token]);
 
+  // ✅ Fetch wishlist count & auto-update on custom event
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const token = localStorage.getItem("accessToken") || "";
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/wish-list`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token && { Authorization: token }),
+          },
+        });
+
+        const result = await response.json();
+        const items = result?.data || [];
+        setWishlistCount(items.length);
+      } catch (error) {
+        console.error("Failed to fetch wishlist", error);
+      }
+    };
+
+    fetchWishlist(); // initial fetch
+
+    const handleWishlistChange = () => fetchWishlist();
+    window.addEventListener("wishlistUpdated", handleWishlistChange);
+
+    return () => {
+      window.removeEventListener("wishlistUpdated", handleWishlistChange);
+    };
+  }, []);
+
   const handleGoToWishlist = () => router.push("/wishlist");
   const handleGoToCart = () => router.push("/cart");
   const handleGoToSettings = () => router.push("/settings");
@@ -87,13 +119,13 @@ export const UserActions = () => {
   return (
     <>
       <div className="flex gap-3 items-center">
-        {/* Wishlist */}
+        {/* ✅ Wishlist with real-time updating count */}
         <div
           className="relative w-10 h-10 flex items-center justify-center cursor-pointer"
           onClick={handleGoToWishlist}
         >
           <Heart className="w-5 h-5 text-black" />
-          <NotificationBadge count={1} />
+          <NotificationBadge count={wishlistCount} />
         </div>
 
         {/* Cart */}
@@ -101,7 +133,7 @@ export const UserActions = () => {
           <CartDropdown />
         </div>
 
-        {/* User Avatar or Sign In */}
+        {/* User Avatar or Log In */}
         {token ? (
           <div
             className="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 text-xs font-semibold text-white overflow-hidden cursor-pointer"
@@ -127,7 +159,7 @@ export const UserActions = () => {
         )}
       </div>
 
-      {/* Login Modal */}
+      {/* Modals */}
       {modalState === "login" && (
         <LoginModal
           onClose={() => setModalState("none")}
@@ -136,7 +168,6 @@ export const UserActions = () => {
         />
       )}
 
-      {/* Sign Up Modal */}
       {modalState === "signup" && (
         <SignUpModal
           onClose={() => setModalState("none")}
@@ -144,7 +175,6 @@ export const UserActions = () => {
         />
       )}
 
-      {/* Success Modal */}
       {modalState === "success" && (
         <SuccessModal onClose={() => setModalState("none")} />
       )}

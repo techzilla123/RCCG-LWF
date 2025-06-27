@@ -201,7 +201,7 @@ export function Heart() {
   key={p.productId}
   id={p.productId} // ✅ This line sends the productId to ProductCard
   image={p.imageOne}
-  title={p.productName}
+  title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
   rating={4.7}
   reviews={0}
   price={`$${p.price}`}

@@ -31,7 +31,6 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
   return (
     <section className="flex flex-col justify-center min-w-60 w-[756px] max-md:w-full max-md:px-4 max-md:py-2">
       <div className="flex flex-col justify-center w-full max-w-[756px] max-md:w-full max-md:min-h-0">
-        
         <div className="relative flex justify-center items-center w-full max-h-[500px]">
           <button
             onClick={handlePrev}
@@ -41,12 +40,19 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
             &#10094;
           </button>
 
-          <img
-            src={selectedImage}
-            alt="Product preview"
-            className="object-contain w-full max-h-[500px]"
-          />
- <button
+          {selectedImage ? (
+            <img
+              src={selectedImage}
+              alt="Product preview"
+              className="object-contain w-full max-h-[500px]"
+            />
+          ) : (
+            <div className="w-full h-[500px] flex items-center justify-center bg-gray-100 text-gray-400 text-xl">
+              No Image
+            </div>
+          )}
+
+          <button
             onClick={handleNext}
             className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-2 text-lg font-bold text-white bg-gray-400 rounded-full shadow hover:bg-gray-800 transition-all z-10"
             aria-label="Next Image"
@@ -60,22 +66,22 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
         </p>
 
         <div className="hide-scrollbar flex overflow-x-auto gap-4 mt-2 w-full min-h-[120px] max-md:gap-2 max-md:min-h-[100px]">
-          {images.map((image, index) => (
-         <img
-  key={index}
-  src={image.thumbnail}
-  alt={`Product thumbnail ${index + 1}`}
-  className={`object-contain aspect-[1.67] w-[200px] min-w-[160px] max-md:w-[140px] max-md:min-w-[140px] cursor-pointer rounded-md transition-all duration-200 border-2 ${
-    selectedIndex === index
-      ? "border-gray-300"
-      : "border-transparent hover:border-gray-300"
-  }`}
-  onClick={() => handleThumbnailClick(index)}
-/>
-
-          ))}
+          {images.map((image, index) =>
+            image.thumbnail ? (
+              <img
+                key={index}
+                src={image.thumbnail}
+                alt={`Product thumbnail ${index + 1}`}
+                className={`object-contain aspect-[1.67] w-[200px] min-w-[160px] max-md:w-[140px] max-md:min-w-[140px] cursor-pointer rounded-md transition-all duration-200 border-2 ${
+                  selectedIndex === index
+                    ? "border-gray-300"
+                    : "border-transparent hover:border-gray-300"
+                }`}
+                onClick={() => handleThumbnailClick(index)}
+              />
+            ) : null
+          )}
         </div>
-        
       </div>
     </section>
   );

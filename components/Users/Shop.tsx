@@ -28,69 +28,77 @@ export function Shop() {
   const [error, setError] = useState<string | null>(null);
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+const [ready, setReady] = useState(false);
 
   const pathname = usePathname();
   const isDefaultShopPage = pathname === "/shop";
 
   const [categoryId, setCategoryId] = useState<string | null>(null);
 
-  useEffect(() => {
+useEffect(() => {
+  const currentPath = pathname;
+
+  if (currentPath === "/rentals") {
+    setCategoryId("c7d6c7e5-aafe-439d-a714-63dd3910d3f9");
+  } else if (currentPath === "/shop/decorations") {
+    setCategoryId("1fc158a6-5dbc-43e9-b385-4cadb8434a76");
+  } else if (currentPath === "/shop") {
+    setCategoryId(null);
+  } else {
     const savedCategoryId = localStorage.getItem("activeCategoryId");
     setCategoryId(savedCategoryId);
-  }, []);
+  }
 
-  useEffect(() => {
-    if (!isDefaultShopPage) {
-      const savedCategoryId = localStorage.getItem("activeCategoryId");
-      setCategoryId(savedCategoryId);
-    } else {
-      setCategoryId(null);
-    }
-  }, [isDefaultShopPage]);
+  setReady(true); // mark as ready after setting category
+}, [pathname]);
+
 
   // Fetch products every time categoryId changes
-  useEffect(() => {
-    const url = categoryId
-      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${categoryId}`
-      : `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
+ useEffect(() => {
+  if (!ready) return; // wait until pathname/categoryId logic is finished
 
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem("accessToken");
-        const res = await fetch(url, {
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token ? { Authorization: token } : {})
-          }
-        });
+  const url = categoryId
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${categoryId}`
+    : `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
 
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
-        const json = await res.json();
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token ? { Authorization: token } : {})
+        }
+      });
 
-        const productList = Array.isArray(json.data?.product)
-          ? json.data.product
-          : Array.isArray(json.data)
-            ? json.data
-            : [];
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const json = await res.json();
 
-        const formatted = productList.map((p: ProductApiResponse) => ({
-          ...p,
-          isAdded: false,
-        }));
+      const productList = Array.isArray(json.data?.product)
+        ? json.data.product
+        : Array.isArray(json.data)
+        ? json.data
+        : [];
 
-        setProducts(formatted);
-      } catch (e: unknown) {
-        console.error("Fetch error:", e);
-        setError(e instanceof Error ? e.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    };
+      const formatted = productList.map((p: ProductApiResponse) => ({
+        ...p,
+        isAdded: false,
+      }));
 
-    fetchProducts();
-  }, [categoryId]);
+      setProducts(formatted);
+    } catch (e: unknown) {
+      console.error("Fetch error:", e);
+      setError(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [categoryId, ready]);
+
 
   const handleAddToCart = async (productId: string) => {
     const token = localStorage.getItem("accessToken");
@@ -197,7 +205,7 @@ export function Shop() {
               key={p.productId}
               id={p.productId}
               image={p.imageOne}
-              title={p.productName}
+              title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
               rating={4.7}
               reviews={400}
               price={`$${p.price}`}
