@@ -40,7 +40,7 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
 
   const router = useRouter()
 
-const handleItemClick = (item: string) => {
+const handleItemClick = () => {
   const category = selectedCategory.toLowerCase()
 
   if (category === "rentals") {
