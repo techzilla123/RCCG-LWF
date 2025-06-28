@@ -3,6 +3,8 @@
 import * as React from "react"
 import { CategorySection } from "./CategorySection"
 import { ScrollBar } from "./ScrollBar"
+import { useRouter } from "next/navigation"
+
 
 type CategoryListProps = {
   selectedCategory: string
@@ -35,6 +37,28 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
   const [categories, setCategories] = React.useState<CategoryData[]>([])
   const [isLoading, setIsLoading] = React.useState(false)
   const [generalCategories, setGeneralCategories] = React.useState<GeneralCategory[]>([])
+
+  const router = useRouter()
+
+const handleItemClick = (item: string) => {
+  const category = selectedCategory.toLowerCase()
+
+  if (category === "rentals") {
+    router.push("/rentals")
+  } else if (category === "balloons") {
+    router.push("/shop/balloon")
+  } else if (category === "party supplies") {
+    router.push("/shop/party-supplies")
+  } else if (category === "decoration") {
+    router.push("/shop/decorations")
+  } else if (category === "birthdays") {
+    router.push("/shop/birthday")
+  } else if (category === "holidays & occasions") {
+    router.push("/shop/holiday")
+  } else {
+    console.log("No matching route for:", category)
+  }
+}
 
   const getApiHeaders = () => {
     const token = localStorage.getItem("accessToken") || ""
@@ -173,7 +197,13 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
   return (
     <section className="flex relative flex-wrap flex-1 shrink gap-10 items-start px-4 h-full basis-0 min-w-60 max-md:max-w-full">
       {categories.map((category, index) => (
-        <CategorySection key={index} title={category.title} items={category.items} />
+       <CategorySection
+  key={index}
+  title={category.title}
+  items={category.items}
+  onItemClick={handleItemClick}
+/>
+
       ))}
       <div className="flex z-0 flex-1 shrink basis-0 h-[100px] w-[209px]" />
       <ScrollBar />

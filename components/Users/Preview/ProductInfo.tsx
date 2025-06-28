@@ -8,7 +8,6 @@
     stock: number;
     price: number;
     originalPrice: number;
-    discount: number;
     countdownTime: string;
     description: string;
     tags: string[];
@@ -25,7 +24,6 @@
     stock,
     price,
     originalPrice,
-    discount,
     countdownTime,
     description,
     tags,
@@ -166,14 +164,17 @@ const [showViewCart, setShowViewCart] = React.useState(false);
           <div className="pt-2 mt-3">
             <div className="flex items-center gap-2">
               <span className="text-xl font-semibold text-black">${price - originalPrice}</span>
-              <span className="text-sm line-through text-neutral-500">
-                ${price }
-              </span>
-            {discount > 0 ? (
-    <span className="px-2 py-0.5 text-xs text-green-600 bg-green-50 rounded">
-      You save ${originalPrice} - Now {Math.round((originalPrice / price) * 100)}% off price!
+           {originalPrice > 0 && (
+    <span className="text-sm line-through text-neutral-500">
+      ${price}
     </span>
-  ) : null}
+  )}
+          {originalPrice > 0 ? (
+  <span className="px-2 py-0.5 text-xs text-green-600 bg-green-50 rounded">
+    You save ${originalPrice} — Now {Math.round((originalPrice / price) * 100)}% off!
+  </span>
+) : null}
+
 
             </div>
             <p className="mt-1.5 text-sm font-medium">

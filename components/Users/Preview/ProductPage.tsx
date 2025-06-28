@@ -142,14 +142,6 @@ const reviews = product?.review?.map((r) => ({
   stock={parseInt(product.quantity)}
   price={parseFloat(product.price.replace(/,/g, ""))}
   originalPrice={parseFloat((product.discountPrice || product.price).replace(/,/g, ""))}
-  discount={
-    product.discountPrice && product.discountPrice !== "0"
-      ? Math.round(
-          (1 - parseFloat(product.discountPrice.replace(/,/g, "")) /
-            parseFloat(product.price.replace(/,/g, ""))) * 100
-        )
-      : 0
-  }
   countdownTime="4d 04h 25m 40s"
   description={product.description}
   tags={[product.categoryName, product.classification]}
@@ -187,14 +179,7 @@ const reviews = product?.review?.map((r) => ({
   stock={parseInt(product.quantity)}
   price={parseFloat(product.price.replace(/,/g, ""))}
   originalPrice={parseFloat((product.discountPrice || product.price).replace(/,/g, ""))}
-  discount={
-    product.discountPrice && product.discountPrice !== "0"
-      ? Math.round(
-          (1 - parseFloat(product.discountPrice.replace(/,/g, "")) /
-            parseFloat(product.price.replace(/,/g, ""))) * 100
-        )
-      : 0
-  }
+
   countdownTime="4d 04h 25m 40s"
   description={product.description}
   tags={[product.categoryName, product.classification]}

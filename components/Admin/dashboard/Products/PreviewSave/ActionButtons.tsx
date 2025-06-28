@@ -42,16 +42,17 @@ formDataToSend.append("price", price);
 
 const priceValue = Number(price);
 
-const rawDiscount = pricingFormData.discount || "0";
+const rawDiscount = pricingFormData.discount ?? "0";
 const cleanedDiscount = rawDiscount.replace('%', '').trim();
-const discountPercent = Number(cleanedDiscount);
+const discountPercent = parseFloat(cleanedDiscount);
 
-if (!isNaN(discountPercent)) {
+if (!isNaN(discountPercent) && discountPercent > 0) {
   const discountAmount = priceValue * (discountPercent / 100);
-  formDataToSend.append("discount_price", discountAmount.toFixed(2));
+  formDataToSend.append("discount_price", discountAmount.toFixed(2)); // Just use toFixed directly
 } else {
   formDataToSend.append("discount_price", "0.00");
 }
+
 
 // Quantity
 formDataToSend.append("quantity", localStorage.getItem("stock") || "");
