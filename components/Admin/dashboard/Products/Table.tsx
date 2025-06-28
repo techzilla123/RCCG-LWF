@@ -189,6 +189,19 @@ export const Table = () => {
       closeDropdown();
     }
   };
+  useEffect(() => {
+  if (isModalOpen) {
+    document.body.style.overflow = 'hidden'; // Disable scroll
+  } else {
+    document.body.style.overflow = 'auto';   // Re-enable scroll
+  }
+
+  // Clean up on unmount
+  return () => {
+    document.body.style.overflow = 'auto';
+  };
+}, [isModalOpen]);
+
 
 
   return (
@@ -402,7 +415,8 @@ export const Table = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
           <div className="min-h-screen flex items-center justify-center p-4">
-            <OrderDetails onClose={handleCloseModal}  />
+            <OrderDetails onClose={handleCloseModal} productId={selectedProductId} />
+
           </div>
         </div>
       )}

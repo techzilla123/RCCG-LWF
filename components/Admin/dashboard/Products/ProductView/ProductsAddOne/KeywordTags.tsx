@@ -1,62 +1,82 @@
-import { useState, useEffect } from 'react';
-import { CloseIcon } from './Icons';
+"use client"
+
+import { useState, useEffect } from "react"
+import { CloseIcon } from "./Icons"
 
 interface KeywordTag {
-  text: string;
-  color: 'blue' | 'green' | 'red';
+  text: string
+  color: "blue" | "green" | "red"
 }
 
 interface KeywordTagsProps {
-  onChange?: (tags: KeywordTag[]) => void;
+  onChange?: (tags: KeywordTag[]) => void
+  initialKeywords?: string[] // Add this prop to accept initial keywords
 }
 
 const colorStyles = {
-  blue: 'bg-blue-100 border-blue-300',
-  green: 'bg-green-100 border-emerald-200',
-  red: 'bg-red-100 border-red-300',
-};
+  blue: "bg-blue-100 border-blue-300",
+  green: "bg-green-100 border-emerald-200",
+  red: "bg-red-100 border-red-300",
+}
 
-export const KeywordTags = ({ onChange }: KeywordTagsProps) => {
-  const [tags, setTags] = useState<KeywordTag[]>([]);
-  const [newTag, setNewTag] = useState('');
-  const [selectedColor, setSelectedColor] = useState<KeywordTag['color']>('blue');
+export const KeywordTags = ({ onChange, initialKeywords }: KeywordTagsProps) => {
+  const [tags, setTags] = useState<KeywordTag[]>([])
+  const [newTag, setNewTag] = useState("")
+  const [selectedColor, setSelectedColor] = useState<KeywordTag["color"]>("blue")
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  // ✅ Load tags from localStorage on mount ONLY
+  // Load tags from localStorage or initialKeywords on mount
   useEffect(() => {
-    const stored = localStorage.getItem('productTags');
+    if (isInitialized) return
+
+    let tagsToLoad: KeywordTag[] = []
+
+    // First, try to load from localStorage
+    const stored = localStorage.getItem("productTags")
     if (stored) {
       try {
-        const parsed: KeywordTag[] = JSON.parse(stored);
-        setTags(parsed);
-        // ❌ Do NOT call onChange here to avoid infinite loop
+        tagsToLoad = JSON.parse(stored)
       } catch {
-        console.warn('Failed to parse productTags from localStorage');
+        console.warn("Failed to parse productTags from localStorage")
       }
     }
-  }, []); // 👈 empty dependency array
 
-  // ✅ Save tags to localStorage and notify parent on change
+    // If no localStorage data and we have initialKeywords, use those
+    if (tagsToLoad.length === 0 && initialKeywords && initialKeywords.length > 0) {
+      tagsToLoad = initialKeywords.map((keyword) => ({ text: keyword, color: "blue" as const }))
+    }
+
+    if (tagsToLoad.length > 0) {
+      setTags(tagsToLoad)
+    }
+
+    setIsInitialized(true)
+  }, [initialKeywords, isInitialized])
+
+  // Save tags to localStorage and notify parent on change
   useEffect(() => {
-    localStorage.setItem('productTags', JSON.stringify(tags));
-    onChange?.(tags);
-  }, [tags, onChange]);
+    if (!isInitialized) return // Don't save during initialization
+
+    localStorage.setItem("productTags", JSON.stringify(tags))
+    onChange?.(tags)
+  }, [tags, onChange, isInitialized])
 
   const addTag = () => {
-    if (!newTag.trim()) return;
-    const updated = [...tags, { text: newTag.trim(), color: selectedColor }];
-    setTags(updated);
-    setNewTag('');
-  };
+    if (!newTag.trim()) return
+
+    const updated = [...tags, { text: newTag.trim(), color: selectedColor }]
+    setTags(updated)
+    setNewTag("")
+  }
 
   const removeTag = (indexToRemove: number) => {
-    const updated = tags.filter((_, i) => i !== indexToRemove);
-    setTags(updated);
-  };
+    const updated = tags.filter((_, i) => i !== indexToRemove)
+    setTags(updated)
+  }
 
   return (
     <div className="flex flex-col gap-2">
       <label className="text-base text-black">Keywords</label>
-
       {/* Input to add tag */}
       <div className="flex gap-2">
         <input
@@ -68,18 +88,14 @@ export const KeywordTags = ({ onChange }: KeywordTagsProps) => {
         />
         <select
           value={selectedColor}
-          onChange={(e) => setSelectedColor(e.target.value as KeywordTag['color'])}
+          onChange={(e) => setSelectedColor(e.target.value as KeywordTag["color"])}
           className="border border-neutral-300 rounded-md text-sm px-2"
         >
           <option value="blue">Blue</option>
           <option value="green">Green</option>
           <option value="red">Red</option>
         </select>
-        <button
-          type="button"
-          onClick={addTag}
-          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md"
-        >
+        <button type="button" onClick={addTag} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">
           Add
         </button>
       </div>
@@ -99,5 +115,5 @@ export const KeywordTags = ({ onChange }: KeywordTagsProps) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

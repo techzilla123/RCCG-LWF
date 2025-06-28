@@ -7,6 +7,7 @@ export interface UploadedFile {
   name: string;
   file: File; // actual File object
   
+  
 }
 
 interface MediaUploadProps {
