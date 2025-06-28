@@ -44,6 +44,8 @@ useEffect(() => {
     setCategoryId("1fc158a6-5dbc-43e9-b385-4cadb8434a76");
   } else if (currentPath === "/shop/holiday") {
     setCategoryId("6f30f52f-47f2-4196-996c-7b0daabcd495");
+  } else if (currentPath === "/shop/balloon") {
+    setCategoryId("91a306bf-4df5-4940-8740-d28e0260c10d");
   } else if (currentPath === "/shop") {
     setCategoryId(null);
   } else {
