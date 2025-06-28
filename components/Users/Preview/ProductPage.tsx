@@ -40,6 +40,7 @@ export const ProductPage: React.FC = () => {
  const [product, setProduct] = React.useState<Product | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  const [isNamePrefilled, setIsNamePrefilled] = React.useState(false);
 const [showReviewForm, setShowReviewForm] = React.useState(false);
 const [reviewData, setReviewData] = React.useState({
   customer_name: "",
@@ -106,8 +107,12 @@ React.useEffect(() => {
       ...prev,
       customer_name: `${firstname} ${lastname}`.trim(),
     }));
+    setIsNamePrefilled(true);
+  } else {
+    setIsNamePrefilled(false);
   }
 }, []);
+
 
 
 
@@ -264,10 +269,15 @@ await fetchProduct(); // ✅ Refetch product details including reviews
 
     <input
   type="text"
+  placeholder="Your name"
   value={reviewData.customer_name}
-  readOnly
-  className="w-full px-4 py-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
+  onChange={(e) => setReviewData({ ...reviewData, customer_name: e.target.value })}
+  readOnly={isNamePrefilled}
+  className={`w-full px-4 py-2 border rounded ${
+    isNamePrefilled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+  }`}
 />
+
 
 
       {/* Star Rating */}
