@@ -260,7 +260,7 @@ export const PricingForm: React.FC<PricingFormProps> = ({ productId, onCancel, o
       <header className="flex flex-col gap-6">
         <div className="flex gap-1 items-center">
           <span className="text-base font-bold text-blue-600">3/3</span>
-          <span className="text-base text-neutral-500">Add product</span>
+          <span className="text-base text-neutral-500">Update product price</span>
         </div>
         <h1 className="text-3xl font-bold text-black">Pricing</h1>
       </header>
