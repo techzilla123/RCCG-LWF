@@ -26,6 +26,7 @@ interface ProductCardProps {
   isAdded?: boolean;
   isOutOfStock?: boolean;
   onAddToCart?: () => void;
+   onAddToWishlist?: (productId: string) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -41,6 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isAdded = false,
   isOutOfStock = false,
   onAddToCart,
+   onAddToWishlist,
 }) => {
   const router = useRouter(); 
 
@@ -51,9 +53,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFavorited(prev => !prev);
-  };
+  e.stopPropagation();
+  setIsFavorited(prev => !prev);
+
+  if (onAddToWishlist) {
+    onAddToWishlist(id); // ✅ call parent handler
+  }
+};
 
   return (
     <article className="overflow-hidden relative flex-1 shrink bg-white rounded-2xl basis-0 max-w-[360px] min-h-[440px] min-w-[280px]">

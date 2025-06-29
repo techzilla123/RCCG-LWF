@@ -54,13 +54,14 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
  <article className="relative flex flex-col p-2 bg-white rounded-lg">
-  <Link href={`/preview?${product.id}`} className="w-full block">
-
-    <img
-      src={product.image}
-      alt={product.title}
-      className="w-full h-auto object-contain rounded-t max-h-[150px] cursor-pointer"
-    />
+  <Link href={`/preview?${product.id}`} className="block w-full">
+    <div className="w-full h-[160px] overflow-hidden rounded-t">
+      <img
+        src={product.image}
+        alt={product.title}
+        className="w-full h-full object-cover cursor-pointer"
+      />
+    </div>
   </Link>
 
   <div className="mt-2 flex-1">

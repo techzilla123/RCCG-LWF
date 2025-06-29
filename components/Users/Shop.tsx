@@ -183,27 +183,32 @@ useEffect(() => {
       <div className="hidden md:block"><FiltersDefault /></div>
 
       <section className="flex-1">
-        <button
-          className="md:hidden mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          onClick={() => setIsModalVisible(true)}
+      <div className="flex justify-center md:hidden mb-4">
+  <button
+    className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+    onClick={() => setIsModalVisible(true)}
+  >
+    Filters
+  </button>
+</div>
+
+
+             {/* Show FiltersDefault as a modal on mobile or as a permanent component on desktop */}
+      {isModalVisible && (
+      <div className="max-md:flex max-md:fixed max-md:top-0 max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:bg-opacity-50 max-md:bg-black max-md:z-50 max-md:justify-center max-md:items-center max-md:overflow-y-auto">
+  <div className="max-md:w-full max-md:h-auto ml-[60px] max-md:max-h-[90vh] max-md:overflow-y-scroll">
+  <button
+          className="fixed md:hidden ml-[100px] p-2 bg-blue-100 rounded-full hover:bg-gray-100 -mt-2 transition"
+          onClick={() => setIsModalVisible(!isModalVisible)}
+          aria-label="Close Menu" 
         >
-          Filters
+        <X className="w-6 h-6" />
         </button>
+    <FiltersDefault />
+  </div>
+</div>
 
-        {isModalVisible && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-start pt-20 z-50">
-            <div className="bg-white w-full max-w-md p-6 overflow-y-auto max-h-screen">
-              <button
-                onClick={() => setIsModalVisible(false)}
-                className="absolute top-4 right-4 p-2 bg-gray-100 rounded-full"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              <FiltersDefault />
-            </div>
-          </div>
-        )}
-
+      )}
         <div className="hidden md:flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
           {products.map(p => (
             <ProductCard

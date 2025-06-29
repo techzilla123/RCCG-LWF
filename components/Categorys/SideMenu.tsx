@@ -86,6 +86,15 @@ export const SideMenu: React.FC<SideMenuProps> = ({ selectedCategory, onSelect }
     icon: categoryIcons[mapCategoryName(category.name)] || categoryIcons["Balloons"],
     generalCategoryId: category.generalCategoryId,
   }))
+  // Reorder to make "Decoration" second to last
+menuItems.sort((a, b) => {
+    if (a.label === "Rentals") return 1
+  if (b.label === "Rentals") return -1
+  if (a.label === "Decoration") return 1
+  if (b.label === "Decoration") return -1
+
+  return 0
+})
 
   if (isLoading) {
     return (

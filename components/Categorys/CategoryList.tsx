@@ -158,14 +158,15 @@ const handleItemClick = () => {
           productCategories.map(async (productCategory) => {
             const subCategories: SubCategory[] = await fetchSubCategories(productCategory.categoryId)
             return {
-              parent: selectedCategory,
-              title: productCategory.categoryName,
-              items: subCategories.map((sub) => sub.subCategoryName),
-            }
+  parent: selectedCategory,
+  title: productCategory.categoryName,
+  items: subCategories.map((sub) => sub.subCategoryName).reverse(),
+}
           }),
         )
 
-        setCategories(categoriesWithSubs)
+        setCategories([...categoriesWithSubs].reverse()) // This will flip last → first
+
       } catch (error) {
         console.error("Error loading categories:", error)
         setCategories([])

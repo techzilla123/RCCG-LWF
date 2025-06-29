@@ -84,6 +84,50 @@ export function New() {
 
     fetchProducts();
   }, []);
+const handleAddToWishlist = async (productId: string) => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    setModalType("signup");
+    return;
+  }
+
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-wish-list`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      Authorization: token,
+    };
+
+    const body = JSON.stringify({
+      product_id: productId,
+      quantity: "1",
+      size: "",
+      color: "",
+    });
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body,
+    });
+
+    const data = await res.json();
+
+    if (data.statusCode === 200) {
+      alert("Product added to wishlist");
+      console.log("Wishlist response:", data);
+    } else {
+      console.error("Failed to add to wishlist:", data);
+      alert("Could not add product to wishlist.");
+    }
+  } catch (err) {
+    console.error("Wishlist error:", err);
+    alert("Something went wrong while adding to wishlist.");
+  }
+};
 
   const handleAddToCart = async (productId: string) => {
     const token = localStorage.getItem("accessToken");
@@ -157,6 +201,7 @@ export function New() {
     );
   }
 
+
   return (
     <section className="relative px-8 py-10 bg-sky-50 max-md:px-5">
       <ProductHeader />
@@ -213,6 +258,7 @@ export function New() {
             isOutOfStock={p.quantity === 0}
             isAdded={p.isAdded}
             onAddToCart={() => handleAddToCart(p.productId)}
+             onAddToWishlist={() => handleAddToWishlist(p.productId)}
           />
           
         ))}

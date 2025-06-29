@@ -740,7 +740,7 @@ export const CustomerManagementHeader = () => {
                                   <div className="flex gap-2">
                                     <button
                                       onClick={handleUpdateCategory}
-                                      className="bg-green-600 text-white px-3 py-1 rounded text-xs"
+                                      className="bg-green text-white px-3 py-1 rounded text-xs"
                                       disabled={isLoading}
                                     >
                                       {isLoading ? "Saving..." : "Save"}
@@ -828,7 +828,7 @@ export const CustomerManagementHeader = () => {
                                         <div className="flex gap-2">
                                           <button
                                             onClick={handleUpdateSubCategory}
-                                            className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+                                            className="bg-green text-white px-2 py-1 rounded text-xs"
                                             disabled={isLoading}
                                           >
                                             {isLoading ? "Saving..." : "Save"}

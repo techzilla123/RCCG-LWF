@@ -128,7 +128,13 @@ const reviews = product?.review?.map((r) => ({
 
 
   if (loading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="flex items-center justify-center h-[80vh]">
+        <div className="relative w-24 h-48">
+          <div className="w-16 h-20 bg-pink-400 rounded-full shadow-lg mx-auto animate-bounce" />
+          <div className="w-3 h-3 bg-pink-500 mx-auto mt-1 rotate-45" />
+          <div className="absolute top-[88px] left-1/2 transform -translate-x-1/2 w-px h-24 bg-gray-300 animate-pulse" />
+        </div>
+      </div>;
   }
 
   if (error) {

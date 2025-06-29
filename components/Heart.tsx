@@ -27,6 +27,10 @@ export function Heart() {
   const [error, setError] = useState<string | null>(null);
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null);
 
+  function shuffleArray<T>(array: T[]): T[] {
+  return [...array].sort(() => Math.random() - 0.5);
+}
+
   useEffect(() => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`;
 
@@ -53,10 +57,14 @@ export function Heart() {
 
       if (json.statusCode === 200 && Array.isArray(json.data.product)) {
         const formatted: Product[] = json.data.product.map((p: ProductApiResponse) => ({
-          ...p,
-          isAdded: false,
-        }));
-        setProducts(formatted);
+  ...p,
+  isAdded: false,
+}));
+
+const shuffledAndLimited = shuffleArray(formatted).slice(0, 16);
+setProducts(shuffledAndLimited);
+
+        setProducts(formatted); // remove this when needed  
       } else {
         throw new Error("Unexpected response structure");
       }
@@ -76,9 +84,14 @@ export function Heart() {
 
   if (loading) {
     return (
-      <section className="flex justify-center items-center p-8 bg-sky-50">
-        <p>Loading products...</p>
-      </section>
+      <div className="flex items-center  justify-center h-[80vh]">
+        <div className="relative w-24 h-48">
+          <div className="w-16 h-20 bg-pink-400 rounded-full shadow-lg mx-auto animate-bounce" />
+          <div className="w-3 h-3 bg-pink-500 mx-auto mt-1 rotate-45" />
+          <div className="absolute top-[88px] left-1/2 transform -translate-x-1/2 w-px h-24 bg-gray-300 animate-pulse" />
+        </div>
+      </div>
+
     );
   }
 
