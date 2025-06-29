@@ -465,7 +465,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
                 <br />
                 {errorMessage}
                 <div className="mt-2 text-sm">
-                  💡 <strong>Tip:</strong> Select "Shipping" below to continue with your order.
+                  💡 <strong>Tip:</strong> Select &quot;Shipping&quot; below to continue with your order.
                 </div>
               </div>
             )}

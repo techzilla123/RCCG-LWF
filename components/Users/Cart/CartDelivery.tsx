@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from "react"
 import type { google } from "google-maps"
 
+declare global {
+  interface Window {
+    initGoogleMaps: () => void
+  }
+}
+
 // 1. Define the LocationInfo type
 type LocationInfo = {
   country: string
@@ -113,11 +119,12 @@ const DeliveryOptions = ({ onSave }: DeliveryOptionsProps) => {
         script.defer = true
 
         // Add callback function to window
-        ;(window as any).initGoogleMaps = () => {
-          isGoogleMapsLoaded = true
-          isGoogleMapsLoading = false
-          setIsGoogleMapsReady(true)
-        }
+        window.initGoogleMaps = () => {
+  isGoogleMapsLoaded = true
+  isGoogleMapsLoading = false
+  setIsGoogleMapsReady(true)
+}
+
 
         document.head.appendChild(script)
       }
@@ -228,7 +235,7 @@ const DeliveryOptions = ({ onSave }: DeliveryOptionsProps) => {
             <div>
               <strong>Shipping Recommended:</strong>
               <br />
-              Your delivery address exceeds our 50-mile local delivery limit. Please select "Shipping" to continue.
+              Your delivery address exceeds our 50-mile local delivery limit. Please select &quot;Shipping&quot; to continue.
             </div>
           </div>
         </div>
@@ -391,7 +398,7 @@ const DeliveryOptions = ({ onSave }: DeliveryOptionsProps) => {
           <h3 className="text-base font-semibold text-black">Shipping Information</h3>
           {showShippingRecommendation && (
             <div className="mb-4 p-2 bg-green-100 border border-green-300 text-green-700 rounded text-sm">
-              ✅ Great choice! Shipping is available nationwide with no distance restrictions.
+              ✅ Great choice! Shipping is available in everywhere USA with no distance restrictions.
             </div>
           )}
           <div className="mt-2">
