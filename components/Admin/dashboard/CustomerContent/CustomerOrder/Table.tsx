@@ -1,70 +1,77 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import Actions from "./Dropdown/Actions";
-import { Copy } from 'lucide-react'; 
 
-const users = [
-  {
-    id: 'ORD-9284FHT7',
-    location: "03-04-2025",
-    date: "03-04-2025",
-    orders: "$200",
-    cart: 20,
-    status: "Pending",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    id: 'HBD-58YVJ2K9',
-    location: "03-04-2025",
-    date: "03-04-2025",
-    orders: "$200",
-    cart: 20,
-    status: "Successful",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    id: 'PAS-9K3VJ2K0',
-    location: "03-04-2025",
-    date: "03-04-2025",
-    orders: "$200",
-    cart: 20,
-    status: "Returned",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    id: 'DEC-8492DK201',
-    location: "03-04-2025",
-    date: "03-04-2025",
-    orders: "$200",
-    cart: 20,
-    status: "Rejected",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-  {
-    id: 'HOO-0KMSL9E0D',
-    location: "03-04-2025",
-    date: "03-04-2025",
-    orders: "$200",
-    cart: 20,
-    
-    status: "Successful",
-    image: "/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg",
-  },
-];
+import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { Copy } from "lucide-react";
+import Actions from "./Dropdown/Actions";
+
+type Order = {
+  id: number;
+  orderId: string;
+  orderDate: string;
+  deliveryDate: string | null;
+  orderStatus: string;
+  amount: string;
+  noOfItem: number;
+  productName: string;
+  customerName: string;
+};
 
 const statusColors: Record<string, string> = {
   Successful: "bg-green",
   Pending: "bg-orange-400",
   Returned: "bg-stone-400",
   Rejected: "bg-red-700",
-
+  pending: "bg-yellow-500", // for API status values
 };
 
 const Table = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
-
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const searchParams = useSearchParams();
+  const customerId = searchParams.get("customerId");
+
+  useEffect(() => {
+    const fetchCustomerOrders = async () => {
+      if (!customerId) return;
+
+      try {
+        const token = localStorage.getItem("accessToken") || "";
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/fetch-customer/${customerId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+              ...(token && { Authorization: token }),
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (data.statusCode === 200) {
+          setOrders(data.data.orderList);
+        } else {
+          console.error("Failed to fetch orders");
+        }
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchCustomerOrders();
+  }, [customerId]);
+
+  const handleCopy = (id: string) => {
+    navigator.clipboard.writeText(id);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   const toggleDropdown = (index: number) => {
     if (openDropdownIndex === index) {
@@ -78,7 +85,6 @@ const Table = () => {
     setOpenDropdownIndex(index);
   };
 
-  // ✅ Handle outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -94,63 +100,55 @@ const Table = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdownIndex]);
 
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-const handleCopy = (id: string) => {
-  navigator.clipboard.writeText(id);
-  setCopiedId(id);
-  setTimeout(() => setCopiedId(null), 2000); // hide after 2 seconds
-};
-
   return (
-    <div className="mt-6 relative">
-
-      <table className="min-w-full text-sm">
-        <thead className="bg-gray-100 text-left font-medium">
+    <div className="mt-6 relative overflow-x-auto">
+      <table className="min-w-full text-sm text-left">
+        <thead className="bg-gray-100 font-medium">
           <tr>
-            <th className="p-3">Order Id</th>
-            <th className="p-3">Date initiated</th>
-            <th className="p-3">Date delivered</th>
+            <th className="p-3">Order ID</th>
+            <th className="p-3">Product</th>
+            <th className="p-3">Order Date</th>
+            <th className="p-3">Delivery Date</th>
             <th className="p-3">Amount</th>
-            <th className="p-3">Cart items</th>
+            <th className="p-3">Items</th>
             <th className="p-3">Status</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user, idx) => (
-            <tr key={idx} className="border-b">
-          <td className="p-3">
-  <div className="flex items-center gap-2 relative">
-    <a href="#" className="text-blue-600 underline hover:text-blue-800">
-      {user.id}
-    </a>
-    <button
-      onClick={() => handleCopy(user.id)}
-      className="text-gray-500 hover:text-gray-800"
-      title="Copy ID"
-    >
-      <Copy size={16} />
-    </button>
-    {copiedId === user.id && (
-      <span className="absolute top-full mt-1 text-xs text-green-600 bg-white px-1 rounded shadow">
-        Copied!
-      </span>
-    )}
-  </div>
-</td>
-
-
-              <td className="p-3">{user.location}</td>
-              <td className="p-3">{user.date}</td>
-              <td className="p-3">{user.orders}</td>
-              <td className="p-6">{user.cart  }</td>
-              
+          {orders.map((order, idx) => (
+            <tr key={order.id} className="border-b">
+              <td className="p-3">
+                <div className="flex items-center gap-2 relative">
+                  <span className="text-blue-600 underline hover:text-blue-800">
+                    {order.orderId}
+                  </span>
+                  <button
+                    onClick={() => handleCopy(order.orderId)}
+                    className="text-gray-500 hover:text-gray-800"
+                    title="Copy Order ID"
+                  >
+                    <Copy size={16} />
+                  </button>
+                  {copiedId === order.orderId && (
+                    <span className="absolute top-full mt-1 text-xs text-green-600 bg-white px-1 rounded shadow">
+                      Copied!
+                    </span>
+                  )}
+                </div>
+              </td>
+              <td className="p-3">{order.productName}</td>
+              <td className="p-3">{order.orderDate}</td>
+              <td className="p-3">{order.deliveryDate || "Not delivered"}</td>
+              <td className="p-3">${order.amount}</td>
+              <td className="p-3">{order.noOfItem}</td>
               <td className="p-3 flex items-center justify-between w-full">
                 <div className="flex items-center gap-2 pt-3">
                   <span
-                    className={`w-2 h-2 rounded-full ${statusColors[user.status]}`}
+                    className={`w-2 h-2 rounded-full ${
+                      statusColors[order.orderStatus] || "bg-gray-300"
+                    }`}
                   ></span>
-                  {user.status}
+                  {order.orderStatus}
                 </div>
                 <div
                   className="relative"
@@ -159,8 +157,6 @@ const handleCopy = (id: string) => {
                       dropdownRefs.current[idx] = el;
                     }) as React.Ref<HTMLDivElement>
                   }
-                  
-                  
                 >
                   <div
                     className="flex items-center gap-1 cursor-pointer pt-3"
@@ -178,7 +174,6 @@ const handleCopy = (id: string) => {
                   )}
                 </div>
               </td>
-
             </tr>
           ))}
         </tbody>

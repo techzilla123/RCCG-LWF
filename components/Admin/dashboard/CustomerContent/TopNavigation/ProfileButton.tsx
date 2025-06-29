@@ -52,7 +52,7 @@ export const ProfileButton: React.FC = () => {
         className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition"
       >
         <img
-          src="/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg"
+          src="https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/2edaecb760d5ecfabe8b85b71f478b16584a22ac?placeholderIfAbsent=true"
           alt="Profile"
           className="w-7 h-7 rounded-full object-cover"
         />

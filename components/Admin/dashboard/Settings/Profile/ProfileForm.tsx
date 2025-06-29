@@ -61,7 +61,7 @@ export default function ProfileForm() {
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                   <img
-                    src="/16c4794e-7a23-43f1-b674-4e9c3aa38270.jpg"
+                    src="https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/2edaecb760d5ecfabe8b85b71f478b16584a22ac?placeholderIfAbsent=true"
                     alt="Default Profile"
                     width={96}
                     height={96}
