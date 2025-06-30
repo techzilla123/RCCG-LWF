@@ -284,6 +284,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
         }
       }
+    
 
       const cleanTotal = total.replace(/[$,]/g, "")
       const totalAmount = Number.parseFloat(cleanTotal)
