@@ -459,16 +459,28 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
             >
               &times;
             </button>
-            {errorMessage && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                <strong>Distance Limit Exceeded:</strong>
-                <br />
-                {errorMessage}
-                <div className="mt-2 text-sm">
-                  💡 <strong>Tip:</strong> Select &quot;Shipping&quot; below to continue with your order.
-                </div>
-              </div>
-            )}
+           {errorMessage && (
+  errorMessage === "Please complete all required delivery information." ? (
+    <div
+      className="mb-4 p-3 rounded"
+      style={{ backgroundColor: "#d1fae5", border: "1px solid #10b981", color: "#065f46" }}
+    >
+      <strong>Kind Reminder:</strong>
+      <br />
+      Kindly fill in all required fields to continue.
+    </div>
+  ) : (
+    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+      <strong>Maximum Limit Exceeded:</strong>
+      <br />
+      {errorMessage}
+      <div className="mt-2 text-sm">
+        💡 <strong>Tip:</strong> Select &quot;Shipping&quot; below to continue with your order.
+      </div>
+    </div>
+  )
+)}
+
             <CartDelivery onSave={closeModal} />
           </div>
         </div>
