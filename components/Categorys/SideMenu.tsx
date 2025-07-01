@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { MenuButton } from "./MenuButton"
+import { useRouter } from "next/navigation"
 
 type SideMenuProps = {
   selectedCategory: string
@@ -14,6 +15,7 @@ interface GeneralCategory {
 }
 
 export const SideMenu: React.FC<SideMenuProps> = ({ selectedCategory, onSelect }) => {
+  const router = useRouter()
   const [generalCategories, setGeneralCategories] = React.useState<GeneralCategory[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
 
@@ -124,18 +126,22 @@ menuItems.sort((a, b) => {
         ))}
       </div>
       <div className="pt-2 w-full border-t border-solid border-t-[#D5D5D5]">
-        <button className="flex gap-10 justify-between items-center pt-16 pb-8 w-full h-8 bg-black bg-opacity-0 min-h-8 rounded-[50px]">
-          <span className="self-stretch my-auto text-sm tracking-normal leading-6 text-center text-blue-600">
-            View all
-          </span>
-          <span className="flex gap-2.5 justify-center items-center self-stretch my-auto w-4">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/eeb4c98c4293661beb0261761ebda38f9ed3beaf?placeholderIfAbsent=true"
-              className="object-contain self-stretch my-auto w-4 aspect-square"
-              alt=""
-            />
-          </span>
-        </button>
+      <button
+  onClick={() => router.push("/shop")}
+  className="flex gap-10 justify-between items-center pt-16 pb-8 w-full h-8 bg-black bg-opacity-0 min-h-8 rounded-[50px]"
+>
+  <span className="self-stretch my-auto text-sm tracking-normal leading-6 text-center text-blue-600">
+    View all
+  </span>
+  <span className="flex gap-2.5 justify-center items-center self-stretch my-auto w-4">
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/eeb4c98c4293661beb0261761ebda38f9ed3beaf?placeholderIfAbsent=true"
+      className="object-contain self-stretch my-auto w-4 aspect-square"
+      alt=""
+    />
+  </span>
+</button>
+
       </div>
     </nav>
   )

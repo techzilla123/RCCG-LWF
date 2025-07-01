@@ -154,18 +154,32 @@ const handleItemClick = () => {
       try {
         const productCategories: ProductCategory[] = await fetchProductCategories(generalCategory.generalCategoryId)
 
-        const categoriesWithSubs = await Promise.all(
-          productCategories.map(async (productCategory) => {
-            const subCategories: SubCategory[] = await fetchSubCategories(productCategory.categoryId)
-            return {
-  parent: selectedCategory,
-  title: productCategory.categoryName,
-  items: subCategories.map((sub) => sub.subCategoryName).reverse(),
-}
-          }),
-        )
+     const categoriesWithSubs: CategoryData[] = []
+const categoriesWithoutSubs: CategoryData[] = []
 
-        setCategories([...categoriesWithSubs].reverse()) // This will flip last → first
+for (const productCategory of productCategories) {
+  const subCategories: SubCategory[] = await fetchSubCategories(productCategory.categoryId)
+
+  if (subCategories.length > 0) {
+    categoriesWithSubs.push({
+      parent: selectedCategory,
+      title: productCategory.categoryName,
+      items: subCategories.map((sub) => sub.subCategoryName).reverse(),
+    })
+  } else {
+    categoriesWithoutSubs.push({
+      parent: selectedCategory,
+      title: productCategory.categoryName,
+      items: [productCategory.categoryName],
+    })
+  }
+}
+
+// Final sorted list: with subs first, without subs last
+const sortedCategories = [...categoriesWithSubs.reverse(), ...categoriesWithoutSubs.reverse()]
+setCategories(sortedCategories)
+
+
 
       } catch (error) {
         console.error("Error loading categories:", error)
