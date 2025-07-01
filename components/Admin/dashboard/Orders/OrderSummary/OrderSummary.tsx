@@ -11,6 +11,8 @@ interface Order {
   orderDate: string | null;
   deliveryDate: string | null;
   orderId: string;
+   delivery_type: string;
+  deliveryAddress: string;
 }
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
@@ -110,8 +112,19 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
               />
             </svg>
           </button>
+
         </div>
+        
       </div>
+      <div className="flex justify-between w-full">
+  <span className="text-base text-neutral-500">Delivery Type:</span>
+  <span className="text-base text-black capitalize">{order.delivery_type}</span>
+</div>
+<div className="flex justify-between w-full">
+  <span className="text-base text-neutral-500">Delivery Address:</span>
+  <span className="text-base text-black">{order.deliveryAddress}</span>
+</div>
+
     </section>
   );
 };

@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Actions from "./Dropdown/Actions";
 import { Copy } from "lucide-react";
-
 
 type Order = {
   id: number;
@@ -13,9 +12,12 @@ type Order = {
   amount: string;
   noOfItem: number;
   orderStatus: string;
-  customerName: string; // <-- Add this line
+  customerName: string;
 };
 
+type TableProps = {
+  orders: Order[];
+};
 
 const statusColors: Record<string, string> = {
   APPROVED: "bg-green",
@@ -28,38 +30,11 @@ const statusColors: Record<string, string> = {
   rejected: "bg-red-700",
 };
 
-const Table: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
+const Table: React.FC<TableProps> = ({ orders }) => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const token = localStorage.getItem("accessToken");
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      const headers = {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-        Authorization: token || "",
-      };
-
-      try {
-        const res = await fetch(`${baseUrl}admin/order-list`, { headers });
-        const json = await res.json();
-        if (json.statusCode === 200 && Array.isArray(json.data)) {
-          setOrders(json.data); 
-        } else {
-          console.error("Unexpected data", json);
-        }
-      } catch (err) {
-        console.error("Error fetching orders", err);
-      }
-    };
-
-    fetchOrders();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -71,6 +46,7 @@ const Table: React.FC = () => {
         setOpenDropdownIndex(null);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdownIndex]);
@@ -80,6 +56,7 @@ const Table: React.FC = () => {
       setOpenDropdownIndex(null);
       return;
     }
+
     const rect = dropdownRefs.current[i]?.getBoundingClientRect();
     const spaceBelow = window.innerHeight - (rect?.bottom || 0);
     setDropdownDirection(spaceBelow < 100 ? "up" : "down");
@@ -129,34 +106,28 @@ const Table: React.FC = () => {
                   )}
                 </div>
               </td>
-             <td className="p-3">
-  <div className="flex items-center gap-2 relative">
-    <span className="text-gray-700">{order.customerName}</span>
-  </div>
-</td>
+              <td className="p-3 text-gray-700">{order.customerName}</td>
               <td className="p-3">{new Date(order.orderDate).toLocaleDateString()}</td>
               <td className="p-3">
-                {order.deliveryDate
-                  ? new Date(order.deliveryDate).toLocaleDateString()
-                  : "-"}
+                {order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString() : "-"}
               </td>
               <td className="p-3">${Number(order.amount).toLocaleString()}</td>
-              <td className="p-6">{order.noOfItem}</td>
+              <td className="p-3">{order.noOfItem}</td>
               <td className="p-3 flex items-center justify-between w-full">
                 <div className="flex items-center gap-2 pt-3">
                   <span
-                    className={`w-2 h-2 rounded-full ${statusColors[order.orderStatus] || "bg-gray-400"}`}
+                    className={`w-2 h-2 rounded-full ${
+                      statusColors[order.orderStatus] || "bg-gray-400"
+                    }`}
                   ></span>
                   {order.orderStatus}
                 </div>
-
-             <div
-  className="relative"
-  ref={(el) => {
-    dropdownRefs.current[idx] = el;
-  }}
->
-
+                <div
+                  className="relative"
+                  ref={(el) => {
+                    dropdownRefs.current[idx] = el;
+                  }}
+                >
                   <div
                     className="flex items-center gap-1 cursor-pointer pt-3"
                     onClick={() => toggleDropdown(idx)}
@@ -165,13 +136,14 @@ const Table: React.FC = () => {
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                   </div>
-
-                 {openDropdownIndex === idx && (
-  <div className="absolute right-0 z-50">
-    <Actions direction={dropdownDirection} order={{ id: order.id, orderId: order.orderId }} />
-  </div>
-)}
-
+                  {openDropdownIndex === idx && (
+                    <div className="absolute right-0 z-50">
+                      <Actions
+                        direction={dropdownDirection}
+                        order={{ id: order.id, orderId: order.orderId }}
+                      />
+                    </div>
+                  )}
                 </div>
               </td>
             </tr>
