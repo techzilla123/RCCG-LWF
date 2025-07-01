@@ -64,7 +64,7 @@ export function Heart() {
 const shuffledAndLimited = shuffleArray(formatted).slice(0, 16);
 setProducts(shuffledAndLimited);
 
-        setProducts(formatted); // remove this when needed  
+        // setProducts(formatted); // remove this when needed  
       } else {
         throw new Error("Unexpected response structure");
       }

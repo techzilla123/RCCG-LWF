@@ -163,15 +163,15 @@ const [showViewCart, setShowViewCart] = React.useState(false);
 
           <div className="pt-2 mt-3">
             <div className="flex items-center gap-2">
-              <span className="text-xl font-semibold text-black">${price - originalPrice}</span>
+              <span className="text-xl font-semibold text-black"> ${(price - originalPrice).toFixed(2)}</span>
            {originalPrice > 0 && (
     <span className="text-sm line-through text-neutral-500">
-      ${price}
+     ${price.toFixed(2)}
     </span>
   )}
           {originalPrice > 0 ? (
   <span className="px-2 py-0.5 text-xs text-green-600 bg-green-50 rounded">
-    You save ${originalPrice} — Now {Math.round((originalPrice / price) * 100)}% off!
+    You save ${originalPrice.toFixed(2)} — Now {Math.round((originalPrice / price) * 100)}% off!
   </span>
 ) : null}
 
