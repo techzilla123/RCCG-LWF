@@ -311,7 +311,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         total_amount: totalAmount,
         delivery_address: deliveryAddressString,
         logistics_price: logisticsPrice, // Add logistics price to the request
-        delivery_method: finalDeliveryMethod, // Add delivery method to the request
+        delivery_type: finalDeliveryMethod, // Add delivery method to the request
         orders: correctedOrders,
       }
 
