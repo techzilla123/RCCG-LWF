@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('/TextFonts/Inter/static/Inter_18pt-Italic.ttf');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+.title-text {
+  font-family: 'Inter', sans-serif;
+}
+
+.roboto-text {
+  font-family: 'Roboto', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 32.81px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+.head-h-lg32 {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 38.73px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
