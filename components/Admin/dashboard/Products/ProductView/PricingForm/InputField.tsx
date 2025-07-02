@@ -36,7 +36,11 @@ export const InputField: React.FC<InputFieldProps> = ({
           type="text"
           value={value}
           onChange={handleChange} // Bind onChange event to handle typing
+<<<<<<< HEAD
           className="flex-1 text-base text-black-500 bg-transparent border-none outline-none"
+=======
+          className="flex-1 text-base text-neutral-500 bg-transparent border-none outline-none"
+>>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
         />
         {suffix}
       </div>

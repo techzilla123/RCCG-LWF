@@ -1,7 +1,11 @@
 "use client"; // ← add this as the very first line
 
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { useRouter } from "next/navigation";
+=======
+import { useRouter } from "next/navigation"; // ✅ CORRECT for App Router
+>>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
 import axios from "axios";
 
 type Order = {
@@ -9,12 +13,19 @@ type Order = {
   orderId: string;
   orderStatus: string;
   amount: string;
+<<<<<<< HEAD
   orderDate: string;
+=======
+>>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
 };
 
 export const RecentOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+<<<<<<< HEAD
   const router = useRouter();
+=======
+ const router = useRouter();
+>>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
 
   useEffect(() => {
     const fetchRecentOrders = async () => {
@@ -31,6 +42,7 @@ export const RecentOrders = () => {
           headers,
         });
 
+<<<<<<< HEAD
         if (
           response.status === 200 &&
           Array.isArray(response.data.data.orders)
@@ -44,6 +56,10 @@ export const RecentOrders = () => {
           );
 
           const topFiveOrders = allOrders.slice(0, 5);
+=======
+        if (response.status === 200 && Array.isArray(response.data.data)) {
+          const topFiveOrders = response.data.data.slice(0, 5);
+>>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
           setOrders(topFiveOrders);
         }
       } catch (error) {

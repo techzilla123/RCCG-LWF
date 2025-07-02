@@ -96,6 +96,7 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
     }
   }
 
+<<<<<<< HEAD
 //   // Load saved data on mount from localStorage
 //  useEffect(() => {
 //   const fields: (keyof FormData)[] = [
@@ -135,6 +136,47 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose }: Produc
 //     ...loaded,
 //   }))
 // }, []) // <- EMPTY dependency array
+=======
+  // Load saved data on mount from localStorage
+ useEffect(() => {
+  const fields: (keyof FormData)[] = [
+    "productName",
+    "description",
+    "producer",
+    "url",
+    "generalCategory",
+    "generalCategoryId",
+    "category",
+    "subCategoryId",
+    "subCategoryName",
+    "categoryId",
+    "keywords",
+    "uploadedFiles",
+  ]
+
+  const loaded: Partial<FormData> = {}
+
+  fields.forEach((field) => {
+    const saved = localStorage.getItem(field)
+    if (saved) {
+      if (field === "keywords" || field === "uploadedFiles") {
+        try {
+          loaded[field] = JSON.parse(saved)
+        } catch {
+          loaded[field] = []
+        }
+      } else {
+        loaded[field] = saved
+      }
+    }
+  })
+
+  setFormData((prev) => ({
+    ...prev,
+    ...loaded,
+  }))
+}, []) // <- EMPTY dependency array
+>>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
 
 
   // Save to localStorage when formData changes
