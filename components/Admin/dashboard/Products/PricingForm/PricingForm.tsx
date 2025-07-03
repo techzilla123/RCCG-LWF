@@ -10,7 +10,6 @@ interface PricingFormProps {
 }
 
 export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, onNext }) => {
-<<<<<<< HEAD
   // // Load saved form data
   // useEffect(() => {
   //   const saved = localStorage.getItem('pricingFormData');
@@ -29,26 +28,6 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
   //     setReturnPolicy(parsed.returnPolicy ?? '');
   //   }
   // }, []);
-=======
-  // Load saved form data
-  useEffect(() => {
-    const saved = localStorage.getItem('pricingFormData');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setEnableDiscount(parsed.enableDiscount ?? true);
-      setEnableShipping(parsed.enableShipping ?? true);
-      setPrice(parsed.price ?? '');
-      setStock(parsed.stock ?? '');
-      setDiscount(parsed.discount ?? '');
-      setDiscountExpires(parsed.discountExpires ?? '');
-      setCouponCode(parsed.couponCode ?? '');
-      setShippedFrom(parsed.shippedFrom ?? '');
-      setShippingFee(parsed.shippingFee ?? '');
-      setWaitingTime(parsed.waitingTime ?? '');
-      setReturnPolicy(parsed.returnPolicy ?? '');
-    }
-  }, []);
->>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
 
   // State definitions
   const [enableDiscount, setEnableDiscount] = useState(true);
@@ -110,26 +89,17 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
   required
   prefix="$"
   value={price}
-<<<<<<< HEAD
   defaultValue="120.00"
   onChange={(value) => {
     setPrice(value);
     localStorage.setItem("price", value);
-=======
-  onChange={(value) => {
-    setPrice(value);
-    localStorage.setItem("price", value); // ✅ manually store it
->>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
   }}
 />
 <InputField
   label="Initial stock"
   required
   value={stock}
-<<<<<<< HEAD
   defaultValue="100"
-=======
->>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
   onChange={(value) => {
     setStock(value);
     localStorage.setItem("stock", value);
@@ -142,7 +112,6 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
         {enableDiscount && (
           <>
             <div className="flex gap-4">
-<<<<<<< HEAD
              <InputField
   label="Discount"
   value={discount}
@@ -159,10 +128,6 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
   suffix={<CalendarIcon />}
 />
 
-=======
-              <InputField label="Discount" value={discount} onChange={setDiscount} suffix={<CaretDownIcon />} />
-              <InputField label="Discount expires" value={discountExpires} onChange={setDiscountExpires} suffix={<CalendarIcon />} />
->>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
             </div>
             <div className="flex gap-3 items-center">
               <input
@@ -184,7 +149,6 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
         {enableShipping && (
           <>
             <div className="flex gap-4">
-<<<<<<< HEAD
               <InputField
   label="Shipped from"
   value={shippedFrom}
@@ -215,14 +179,6 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
   onChange={setReturnPolicy}
   suffix={<CaretDownIcon />}
 />
-=======
-              <InputField label="Shipped from" value={shippedFrom} onChange={setShippedFrom} />
-              <InputField label="Shipping fee" prefix="$" value={shippingFee} onChange={setShippingFee} />
-            </div>
-            <div className="flex gap-4">
-              <InputField label="Waiting time" value={waitingTime} onChange={setWaitingTime} suffix={<CaretDownIcon />} />
-              <InputField label="Return policy" value={returnPolicy} onChange={setReturnPolicy} suffix={<CaretDownIcon />} />
->>>>>>> 3fb9c63ca731fd536dfd6a37fbacb746b7000412
             </div>
           </>
         )}
