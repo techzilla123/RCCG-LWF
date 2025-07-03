@@ -20,6 +20,8 @@ interface ProductCardProps {
   rating: number;
   reviews: number;
   price: string;
+  originalPrice?: string;
+
   starIcon: string;
   cartIcon: string;
   favoriteIcon: string;
@@ -36,6 +38,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   rating,
   reviews,
   price,
+   originalPrice,
+
   starIcon,
   cartIcon,
   favoriteIcon,
@@ -80,13 +84,17 @@ const handleFavoriteClick = (e: React.MouseEvent) => {
             {title}
           </h3>
         </div>
-        <ProductActions
-          price={price}
-          isAdded={isAdded}
-          isDisabled={isOutOfStock}
-          cartIcon={cartIcon}
-          onAddToCart={onAddToCart}
-        />
+       <div className="flex flex-col gap-1 mb-2">
+          {originalPrice && <span className="text-gray-500 line-through text-sm font-medium">{originalPrice}</span>}
+          <ProductActions
+            price={price}
+            isAdded={isAdded}
+            isDisabled={isOutOfStock}
+            cartIcon={cartIcon}
+            onAddToCart={onAddToCart}
+          />
+        </div>
+  
       </div>
 
       <div onClick={handleFavoriteClick}>

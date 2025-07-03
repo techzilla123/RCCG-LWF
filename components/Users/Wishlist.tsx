@@ -11,7 +11,8 @@ interface ProductDetails {
   productId: string;
   productName: string;
   imageOne: string;
-  discountPrice: number;
+  price: string; // Original price
+  discountPrice: string; // Discount amount
 }
 
 interface WishlistItem {
@@ -27,7 +28,6 @@ export function Wishlist() {
     const fetchWishlist = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-
         const headers = {
           "Content-Type": "application/json",
           "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
@@ -35,14 +35,12 @@ export function Wishlist() {
         };
 
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/wish-list`;
-
         const res = await fetch(url, {
           method: "GET",
           headers,
         });
 
         const result = await res.json();
-
         if (res.ok && result.statusCode === 200) {
           setWishlistItems(result.data || []);
         } else {
@@ -62,6 +60,18 @@ export function Wishlist() {
     fetchWishlist();
   }, []);
 
+  const handleRemoveFromWishlist = (productId: string) => {
+    setWishlistItems(prevItems => 
+      prevItems.filter(item => item.productDetails.productId !== productId)
+    );
+  };
+
+  const calculateDiscountedPrice = (originalPrice: string, discountAmount: string) => {
+    const original = parseFloat(originalPrice);
+    const discount = parseFloat(discountAmount);
+    return (original - discount).toFixed(2);
+  };
+
   return (
     <main
       className="flex flex-wrap gap-6 px-8 py-6 max-md:px-5"
@@ -70,7 +80,6 @@ export function Wishlist() {
       <div className="self-start">
         <FiltersDefault />
       </div>
-
       <section className="flex flex-col flex-1 shrink justify-center self-start basis-8 min-w-60 max-md:max-w-full">
         {loading ? (
           <p className="text-center w-full">Loading wishlist...</p>
@@ -84,20 +93,24 @@ export function Wishlist() {
             <div className="hidden md:flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
               {wishlistItems.map((item, index) => {
                 const product = item.productDetails;
+                const discountedPrice = calculateDiscountedPrice(product.price, product.discountPrice);
+                
                 return (
                   <ProductCard
-  key={product.productId || index}
-  productId={product.productId} // <- Pass it here
-  image={product.imageOne}
-  title={product.productName}
-  rating={4.7}
-  reviews={400}
-  price={`$${product.discountPrice}`}
-  starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
-  cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
-  favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"
-/>
-
+                    key={product.productId || index}
+                    productId={product.productId}
+                    image={product.imageOne}
+                    title={product.productName}
+                    rating={4.7}
+                    reviews={400}
+                    price={`$${discountedPrice}`}
+                    originalPrice={`$${product.price}`}
+                    starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
+                    cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
+                    favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"
+                    isInWishlist={true}
+                    onRemoveFromWishlist={handleRemoveFromWishlist}
+                  />
                 );
               })}
             </div>

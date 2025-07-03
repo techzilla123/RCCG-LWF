@@ -1,106 +1,117 @@
-import React from "react";
-import { QuantityStepper } from "./QuantityStepper";
-import { ProductItemType } from "./types";
+"use client"
+
+import type React from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { QuantityStepper } from "./QuantityStepper"
+import type { ProductItemType } from "./types"
 
 interface ProductItemProps {
-  product: ProductItemType;
-  onQuantityChange: (id: string, newQuantity: number) => void;
+  product: ProductItemType
+  onQuantityChange: (id: string, newQuantity: number) => void
+  onRemoveFromCart: (productId: string) => void
 }
 
-export const ProductItem: React.FC<ProductItemProps> = ({
-  product,
-  onQuantityChange,
-}) => {
+export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange, onRemoveFromCart }) => {
+  const router = useRouter()
+  const [isRemoving, setIsRemoving] = useState(false)
+
   const handleIncrement = () => {
-    onQuantityChange(product.id, product.quantity + 1);
-  };
+    onQuantityChange(product.id, product.quantity + 1)
+  }
 
   const handleDecrement = () => {
     if (product.quantity > 1) {
-      onQuantityChange(product.id, product.quantity - 1);
+      onQuantityChange(product.id, product.quantity - 1)
     }
-  };
+  }
+
+  const handleRemove = async () => {
+    setIsRemoving(true)
+    try {
+      await onRemoveFromCart(product.id)
+    } catch (error) {
+      console.error("Error removing item:", error)
+    } finally {
+      setIsRemoving(false)
+    }
+  }
+
+  const handleImageClick = () => {
+    router.push(`/preview?${product.id}`)
+  }
 
   return (
     <article className="flex flex-wrap items-start justify-between py-5 px-6 w-full border-b border-gray-200">
-  {/* Product Column */}
-  <div className="flex-1 min-w-0 flex flex-col sm:flex-row gap-4 items-start">
-    {/* Image */}
-    <div className="w-20 h-20 max-md:w-16 max-md:h-16 flex-shrink-0">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-full object-contain rounded-md"
-      />
-    </div>
-
-    {/* Text */}
-    <div className="flex flex-col">
-      <div className="text-base font-medium text-black">
-        ${product.price}{" "}
-        {product.discount && (
-          <span className="text-sm text-gray-500">
-            ({product.discount.percentage}% off)
-          </span>
-        )}
-      </div>
-      <h3 className="text-sm sm:text-lg font-semibold max-w-full w-[140px] sm:w-auto">{product.name}</h3> {/* Title with adjusted font size */}
-      <p className="text-sm text-gray-500">
-        Color: {product.color}, Size: {product.size}
-      </p>
-    </div>
-  </div>
-
-  {/* Quantity + Total Container */}
-  <div className="flex flex-col sm:flex-row sm:items-center sm:ml-auto gap-2 sm:gap-5 w-full sm:w-auto items-end mt-4 sm:mt-0">
-    {/* Quantity Column */}
-    <div className="w-[110px] flex justify-center sm:justify-end items-center">
-      <QuantityStepper
-        quantity={product.quantity}
-        onIncrement={handleIncrement}
-        onDecrement={handleDecrement}
-      />
-    </div>
-
-    {/* Total Column */}
-    <div className="flex items-end justify-end gap-5">
-      <div className="w-[100px] text-end text-base font-medium text-black">
-        ${product.price * product.quantity}
-      </div>
-      <div className="flex flex-col items-center gap-3">
-        {/* X Button */}
-        <button className="flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-
-        {/* Vector(2).svg */}
-        <button className="flex items-center justify-center">
+      {/* Product Column */}
+      <div className="flex-1 min-w-0 flex flex-col sm:flex-row gap-4 items-start">
+        {/* Image */}
+        <div className="w-20 h-20 max-md:w-16 max-md:h-16 flex-shrink-0">
           <img
-            src="/Vector(2).svg"
-            alt="Remove item"
-            className="w-4 aspect-auto"
+            src={product.image || "/placeholder.svg"}
+            alt={product.name}
+            className="w-full h-full object-contain rounded-md cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handleImageClick}
           />
-        </button>
-      </div>
-    </div>
-  </div>
-</article>
+        </div>
 
-  
-  );
-};
+        {/* Text */}
+        <div className="flex flex-col">
+          <div className="text-base font-medium text-black">
+            ${product.price}{" "}
+            {product.discount && <span className="text-sm text-gray-500">({product.discount.percentage}% off)</span>}
+          </div>
+          <h3 className="text-sm sm:text-lg font-semibold max-w-full w-[140px] sm:w-auto">{product.name}</h3>
+          <p className="text-sm text-gray-500">
+            Color: {product.color}, Size: {product.size}
+          </p>
+        </div>
+      </div>
+
+      {/* Quantity + Total Container */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:ml-auto gap-2 sm:gap-5 w-full sm:w-auto items-end mt-4 sm:mt-0">
+        {/* Quantity Column */}
+        <div className="w-[110px] flex justify-center sm:justify-end items-center">
+          <QuantityStepper quantity={product.quantity} onIncrement={handleIncrement} onDecrement={handleDecrement} />
+        </div>
+
+        {/* Total Column */}
+        <div className="flex items-end justify-end gap-5">
+          <div className="w-[100px] text-end text-base font-medium text-black">${product.price * product.quantity}</div>
+          <div className="flex flex-col items-center gap-3">
+            {/* X Button - Remove Item */}
+            <button
+              className={`flex items-center justify-center transition-opacity ${
+                isRemoving ? "opacity-50 cursor-not-allowed" : "hover:opacity-70"
+              }`}
+              onClick={handleRemove}
+              disabled={isRemoving}
+              aria-label="Remove item from cart"
+            >
+              {isRemoving ? (
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-red-500 rounded-full animate-spin" />
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </button>
+
+            {/* Vector(2).svg - Keep as is */}
+            <button className="flex items-center justify-center">
+              <img src="/Vector(2).svg" alt="Additional action" className="w-4 aspect-auto" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}

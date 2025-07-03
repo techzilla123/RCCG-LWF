@@ -1,80 +1,93 @@
-"use client";
+"use client"
 
-import React, { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import ProductCard, { ProductCardProps } from "./Similar/ProductCard";
-import NavigationButton from "./Similar/NavigationButton";
-import { ProductGrid } from "./Similar/MobileShop/ProductGrid";
+import type React from "react"
+
+import { useEffect, useRef, useState } from "react"
+import { useSearchParams } from "next/navigation"
+import ProductCard, { type ProductCardProps } from "./Similar/ProductCard"
+import NavigationButton from "./Similar/NavigationButton"
+import { ProductGrid } from "./Similar/MobileShop/ProductGrid"
 
 type Product = {
-  productId: string;
-  imageOne: string;
-  productName: string;
-  price: number;
-};
+  productId: string
+  imageOne: string
+  productName: string
+  price: number
+  discountPrice?: number // Add discount price from API
+}
 
 const SimilarProducts: React.FC = () => {
-  const desktopScrollRef = useRef<HTMLDivElement>(null);
-  const mobileScrollRef = useRef<HTMLDivElement>(null);
-  const searchParams = useSearchParams();
-  const productId = searchParams.keys().next().value || "";
+  const desktopScrollRef = useRef<HTMLDivElement>(null)
+  const mobileScrollRef = useRef<HTMLDivElement>(null)
+  const searchParams = useSearchParams()
+  const productId = searchParams.keys().next().value || ""
 
- const [products, setProducts] = useState<ProductCardProps[]>([]);
+  const [products, setProducts] = useState<ProductCardProps[]>([])
 
-useEffect(() => {
-  const fetchSimilarProducts = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-      };
+  useEffect(() => {
+    const fetchSimilarProducts = async () => {
+      try {
+        const token = localStorage.getItem("accessToken")
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        }
 
-      if (token) headers["Authorization"] = token;
+        if (token) headers["Authorization"] = token
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`,
-        { method: "GET", headers }
-      );
-      const json = await res.json();
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`, {
+          method: "GET",
+          headers,
+        })
 
-      if (json.statusCode === 200 && Array.isArray(json.data?.similarProducts)) {
-        const formatted: ProductCardProps[] = json.data.similarProducts.map((product: Product) => ({
-          id: product.productId,
-          image: product.imageOne,
-          rating: 4.7,
-          reviews: 400,
-          title: product.productName,
-          price: `$${product.price}`,
-        }));
-        setProducts(formatted);
+        const json = await res.json()
+
+        if (json.statusCode === 200 && Array.isArray(json.data?.similarProducts)) {
+          const formatted: ProductCardProps[] = json.data.similarProducts.map((product: Product) => {
+            // Calculate correct price (original - discount)
+            const originalPrice = Number(product.price) || 0
+            const discountAmount = Number(product.discountPrice) || 0
+            const finalPrice = originalPrice - discountAmount
+
+            return {
+              id: product.productId,
+              image: product.imageOne,
+              rating: 4.7,
+              reviews: 400,
+               title: product.productName.length > 26 
+    ? product.productName.slice(0, 23) + "..." 
+    : product.productName,
+              price: `$${(finalPrice > 0 ? finalPrice : originalPrice).toFixed(2)}`,
+              originalPrice: discountAmount > 0 ? `$${originalPrice.toFixed(2)}` : undefined,
+            }
+          })
+
+          setProducts(formatted)
+        }
+      } catch (error) {
+        console.error("Failed to fetch similar products:", error)
       }
-    } catch (error) {
-      console.error("Failed to fetch similar products:", error);
     }
-  };
 
-  if (productId) {
-    fetchSimilarProducts();
-  }
-}, [productId]);
-
+    if (productId) {
+      fetchSimilarProducts()
+    }
+  }, [productId])
 
   const scroll = (direction: "left" | "right") => {
-    const scrollAmount = 300;
-    const scrollTarget =
-      window.innerWidth < 768 ? mobileScrollRef.current : desktopScrollRef.current;
+    const scrollAmount = 300
+    const scrollTarget = window.innerWidth < 768 ? mobileScrollRef.current : desktopScrollRef.current
 
     if (scrollTarget) {
-      const { scrollLeft } = scrollTarget;
+      const { scrollLeft } = scrollTarget
       scrollTarget.scrollTo({
         left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
         behavior: "smooth",
-      });
+      })
     }
-  };
+  }
 
-  if (!products.length) return null;
+  if (!products.length) return null
 
   return (
     <section className="flex flex-col px-8 py-10 bg-stone-50 max-md:px-4">
@@ -122,7 +135,7 @@ useEffect(() => {
         </button>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default SimilarProducts;
+export default SimilarProducts

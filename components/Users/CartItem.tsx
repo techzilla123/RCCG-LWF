@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { ProductHeader } from "./Cart/ProductHeader";
 import { ProductItem } from "./Cart/ProductItem";
@@ -23,7 +24,6 @@ export interface ApiCartItem {
   };
 }
 
-
 export default function CartItem() {
   const [products, setProducts] = useState<ProductItemType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +31,6 @@ export default function CartItem() {
   const fetchCartItems = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-
       const headers = {
         "Content-Type": "application/json",
         "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
@@ -39,43 +38,39 @@ export default function CartItem() {
       };
 
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/cart-list`;
-
       const res = await fetch(url, {
         method: "GET",
         headers,
       });
 
       const result = await res.json();
-
       if (res.ok && result.statusCode === 200) {
-     const transformed: ProductItemType[] = result.data.map((item: ApiCartItem) => {
-  const details = item.productDetails;
-  const price = Number(details.price);
-  const discountPrice = Number(details.discountPrice);
-  const hasDiscount = discountPrice > 0;
+        const transformed: ProductItemType[] = result.data.map((item: ApiCartItem) => {
+          const details = item.productDetails;
+          const price = Number(details.price);
+          const discountPrice = Number(details.discountPrice);
+          const hasDiscount = discountPrice > 0;
 
-  return {
-    id: item.productId,
-    name: details.productName,
-    image: details.imageOne,
-    quantity: item.quantity,
-    color: item.color || "",
-    size: item.size || "",
-    price: price - discountPrice,
-    discount: hasDiscount
-      ? {
-          percentage: Math.round((discountPrice / price) * 100),
-          originalPrice: price,
-        }
-      : undefined,
-    categoryName: details.categoryName,
-    subCategoryName: details.subCategoryName,
-    rawPrice: price,
-    rawDiscountPrice: discountPrice,
-  };
-});
-
-
+          return {
+            id: item.productId,
+            name: details.productName,
+            image: details.imageOne,
+            quantity: item.quantity,
+            color: item.color || "",
+            size: item.size || "",
+            price: price - discountPrice,
+            discount: hasDiscount
+              ? {
+                  percentage: Math.round((discountPrice / price) * 100),
+                  originalPrice: price,
+                }
+              : undefined,
+            categoryName: details.categoryName,
+            subCategoryName: details.subCategoryName,
+            rawPrice: price,
+            rawDiscountPrice: discountPrice,
+          };
+        });
 
         setProducts(transformed);
       } else {
@@ -100,6 +95,39 @@ export default function CartItem() {
     );
   };
 
+  const handleRemoveFromCart = async (productId: string) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        alert("You must be logged in to remove items from cart.");
+        return;
+      }
+
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        Authorization: token,
+      };
+
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/remove-from-cart/${productId}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers,
+      });
+
+      const result = await response.json();
+      if (!response.ok || result.statusCode !== 200) {
+        throw new Error(result.message || "Failed to remove from cart");
+      }
+
+      // Remove item from local state
+      setProducts((prev) => prev.filter((product) => product.id !== productId));
+    } catch (error) {
+      console.error("Remove from cart failed:", error);
+      alert("Could not remove item from cart.");
+    }
+  };
+
   const totalItems = products.reduce(
     (sum, product) => sum + product.quantity,
     0,
@@ -112,25 +140,24 @@ export default function CartItem() {
 
   const summaryItems = [
     { label: "Item(s) total", amount: `$${itemTotal.toFixed(2)}`, bold: true },
-    { label: "Coupon discount", amount: "-$0.00", bold: true }, // Update if you apply real coupons
+    { label: "Coupon discount", amount: "-$0.00", bold: true },
     { label: "Sub total", amount: `$${itemTotal.toFixed(2)}`, bold: true },
     { label: "Taxes", amount: "$5.00", bold: true },
   ];
 
   const orderDetails = products.map((product) => ({
-  amount: (product.price * product.quantity).toFixed(2),
-  quantity: product.quantity.toString(),
-  product_id: product.id,
-  product_name: product.name,
-  size: product.size,
-  color: product.color,
-}));
+    amount: (product.price * product.quantity).toFixed(2),
+    quantity: product.quantity.toString(),
+    product_id: product.id,
+    product_name: product.name,
+    size: product.size,
+    color: product.color,
+  }));
 
   return (
     <main className="flex flex-wrap gap-6 px-8 py-10 max-md:px-5">
       <section className="flex flex-col flex-1 shrink justify-center self-start basis-12 min-w-60 max-md:max-w-full">
         <ProductHeader />
-
         {isLoading ? (
           <p>Loading cart items...</p>
         ) : products.length > 0 ? (
@@ -139,22 +166,20 @@ export default function CartItem() {
               key={product.id}
               product={product}
               onQuantityChange={handleQuantityChange}
+              onRemoveFromCart={handleRemoveFromCart}
             />
           ))
         ) : (
           <p>No products in cart.</p>
         )}
-
         <CouponSection />
       </section>
-
       <OrderSummary
-  items={summaryItems}
-  totalItems={totalItems}
-  total={`$${(itemTotal + 5).toFixed(2)}`}
-  orders={orderDetails}
-/>
-
+        items={summaryItems}
+        totalItems={totalItems}
+        total={`$${(itemTotal + 5).toFixed(2)}`}
+        orders={orderDetails}
+      />
     </main>
   );
 }
