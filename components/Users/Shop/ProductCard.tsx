@@ -1,5 +1,4 @@
 "use client"
-
 import type * as React from "react"
 import { useState } from "react"
 import { ProductRating } from "./ProductRating"
@@ -21,7 +20,7 @@ interface ProductCardProps {
   rating: number
   reviews: number
   price: string
-  originalPrice?: string // Added originalPrice prop
+  originalPrice?: string
   starIcon: string
   cartIcon: string
   favoriteIcon: string
@@ -38,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   rating,
   reviews,
   price,
-  originalPrice, // Added originalPrice
+  originalPrice,
   starIcon,
   cartIcon,
   favoriteIcon,
@@ -54,10 +53,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     router.push(`/preview?${id}`)
   }
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleFavoriteClick = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation()
+    }
     setIsFavorited((prev) => !prev)
     onAddToWishlist()
+  }
+
+  const handleAddToCartClick = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation()
+    }
+    if (onAddToCart) {
+      onAddToCart()
+    }
   }
 
   return (
@@ -77,7 +87,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {title}
           </h3>
         </div>
-
         {/* Price Section with Original Price Display */}
         <div className="flex flex-col gap-1 mb-2">
           {originalPrice && <span className="text-gray-500 line-through text-sm font-medium">{originalPrice}</span>}
@@ -86,15 +95,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             isAdded={isAdded}
             isDisabled={isOutOfStock}
             cartIcon={cartIcon}
-            onAddToCart={onAddToCart}
+            onAddToCart={handleAddToCartClick}
           />
         </div>
       </div>
-
       <div onClick={handleFavoriteClick}>
         <FavoriteButton icon={isFavorited ? "/Vector(2).svg" : favoriteIcon} />
       </div>
-
       {isOutOfStock && (
         <div className="absolute top-0 left-0 bg-[#F03] text-white text-[14px] font-medium px-2.5 py-1 rounded-tl-[6px] rounded-br-[6px] z-10">
           Out of stock

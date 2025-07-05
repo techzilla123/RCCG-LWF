@@ -1,11 +1,118 @@
 "use client";
 import React, { useState } from "react";
 
-const WishlistButton: React.FC = () => {
+interface ProductData {
+  id: string;
+  title: string;
+  price: string;
+  originalPrice?: string;
+  discountPrice?: number;
+  image: string;
+}
+
+interface WishlistButtonProps {
+  productId: string;
+  productData: ProductData;
+}
+
+// Interface for localStorage wishlist items
+interface LocalStorageWishlistItem {
+  product_id: string;
+  quantity: string;
+  size: string;
+  color: string;
+  productName?: string;
+  price?: number;
+  discountPrice?: number;
+  finalPrice?: number;
+  imageOne?: string;
+}
+
+const WishlistButton: React.FC<WishlistButtonProps> = ({ productId, productData }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  const handleToggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
+  // Helper function to save wishlist items to localStorage
+  const saveWishlistToLocalStorage = (productId: string, productData: ProductData) => {
+    try {
+      const existingWishlist = localStorage.getItem("localWishlist");
+      const wishlistItems: LocalStorageWishlistItem[] = existingWishlist ? JSON.parse(existingWishlist) : [];
+      
+      // Check if item already exists
+      const existingItemIndex = wishlistItems.findIndex((item) => item.product_id === productId);
+      
+      if (existingItemIndex > -1) {
+        // Item already in wishlist
+        return false;
+      }
+
+      // Parse price (remove $ and convert to number)
+      const priceNum = parseFloat(productData.price.replace('$', '')) || 0;
+      const originalPriceNum = productData.originalPrice ? parseFloat(productData.originalPrice.replace('$', '')) || 0 : 0;
+      const discountAmount = productData.discountPrice || 0;
+
+      const newItem: LocalStorageWishlistItem = {
+        product_id: productId,
+        quantity: "1",
+        size: "",
+        color: "",
+        productName: productData.title,
+        price: originalPriceNum > 0 ? originalPriceNum : priceNum,
+        discountPrice: discountAmount,
+        finalPrice: priceNum,
+        imageOne: productData.image,
+      };
+
+      wishlistItems.push(newItem);
+      localStorage.setItem("localWishlist", JSON.stringify(wishlistItems));
+      return true;
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+      return false;
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    const token = localStorage.getItem("accessToken");
+    
+    if (!token) {
+      // Save to localStorage instead of making API call
+      const saved = saveWishlistToLocalStorage(productId, productData);
+      if (saved) {
+        setIsWishlisted(true);
+        alert("Product saved to wishlist! Sign in to sync your wishlist.");
+      } else {
+        alert("Product is already in your wishlist!");
+      }
+      return;
+    }
+
+    try {
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-wish-list`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          product_id: productId,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.statusCode === 200) {
+        setIsWishlisted(true);
+        alert("Product added to wishlist.");
+        console.log("Wishlist response:", data);
+      } else {
+        console.error("Wishlist add failed:", data);
+        alert("Could not add product to wishlist.");
+      }
+    } catch (err) {
+      console.error("Error adding to wishlist:", err);
+      alert("Something went wrong while adding to wishlist.");
+    }
   };
 
   return (

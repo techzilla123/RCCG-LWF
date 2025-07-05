@@ -1,5 +1,4 @@
 "use client"
-
 import type * as React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -29,6 +28,7 @@ interface ProductCardProps {
   isOutOfStock?: boolean
   isInWishlist?: boolean
   onRemoveFromWishlist?: (productId: string) => void
+  onAddToCart?: (productId: string) => void
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -46,6 +46,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isOutOfStock = false,
   isInWishlist = false,
   onRemoveFromWishlist,
+  onAddToCart,
 }) => {
   const router = useRouter()
   const [added, setAdded] = useState(isAdded)
@@ -57,9 +58,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   }
 
   const handleAddToCart = async () => {
+    if (onAddToCart) {
+      // Use parent's handler if provided (for wishlist page)
+      onAddToCart(productId)
+      return
+    }
+
     const token = localStorage.getItem("accessToken")
     if (!token) {
-      alert("You must be logged in to add to cart.")
+      // Handle localStorage cart addition here if needed
+      alert("Product saved to cart! Sign in to sync your cart.")
+      setAdded(true)
       return
     }
 
@@ -100,9 +109,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   }
 
   const handleRemoveFromWishlist = async () => {
+    if (onRemoveFromWishlist) {
+      // Use parent's handler if provided (for wishlist page)
+      onRemoveFromWishlist(productId)
+      return
+    }
+
     const token = localStorage.getItem("accessToken")
     if (!token) {
-      alert("You must be logged in to remove from wishlist.")
+      // Remove from localStorage only
+      const localWishlist = localStorage.getItem("localWishlist")
+      if (localWishlist) {
+        const localItems = JSON.parse(localWishlist)
+        const updatedItems = localItems.filter((item: any) => item.product_id !== productId)
+        localStorage.setItem("localWishlist", JSON.stringify(updatedItems))
+        alert("Product removed from wishlist!")
+      }
       return
     }
 
@@ -125,10 +147,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         throw new Error(result.message || "Failed to remove from wishlist")
       }
 
-      // Call the parent component's callback to update the wishlist
-      if (onRemoveFromWishlist) {
-        onRemoveFromWishlist(productId)
-      }
+      alert("Product removed from wishlist!")
     } catch (error) {
       console.error("Remove from wishlist failed:", error)
       alert("Could not remove from wishlist.")

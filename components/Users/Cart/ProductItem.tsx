@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -15,14 +14,29 @@ interface ProductItemProps {
 export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange, onRemoveFromCart }) => {
   const router = useRouter()
   const [isRemoving, setIsRemoving] = useState(false)
+  const [isUpdatingQuantity, setIsUpdatingQuantity] = useState(false)
 
-  const handleIncrement = () => {
-    onQuantityChange(product.id, product.quantity + 1)
+  const handleIncrement = async () => {
+    setIsUpdatingQuantity(true)
+    try {
+      await onQuantityChange(product.id, product.quantity + 1)
+    } catch (error) {
+      console.error("Error updating quantity:", error)
+    } finally {
+      setIsUpdatingQuantity(false)
+    }
   }
 
-  const handleDecrement = () => {
+  const handleDecrement = async () => {
     if (product.quantity > 1) {
-      onQuantityChange(product.id, product.quantity - 1)
+      setIsUpdatingQuantity(true)
+      try {
+        await onQuantityChange(product.id, product.quantity - 1)
+      } catch (error) {
+        console.error("Error updating quantity:", error)
+      } finally {
+        setIsUpdatingQuantity(false)
+      }
     }
   }
 
@@ -54,7 +68,6 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
             onClick={handleImageClick}
           />
         </div>
-
         {/* Text */}
         <div className="flex flex-col">
           <div className="text-base font-medium text-black">
@@ -67,17 +80,24 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
           </p>
         </div>
       </div>
-
       {/* Quantity + Total Container */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:ml-auto gap-2 sm:gap-5 w-full sm:w-auto items-end mt-4 sm:mt-0">
         {/* Quantity Column */}
         <div className="w-[110px] flex justify-center sm:justify-end items-center">
-          <QuantityStepper quantity={product.quantity} onIncrement={handleIncrement} onDecrement={handleDecrement} />
+          <div className={`${isUpdatingQuantity ? "opacity-50" : ""}`}>
+            <QuantityStepper
+              quantity={product.quantity}
+              onIncrement={handleIncrement}
+              onDecrement={handleDecrement}
+              disabled={isUpdatingQuantity}
+            />
+          </div>
         </div>
-
         {/* Total Column */}
         <div className="flex items-end justify-end gap-5">
-          <div className="w-[100px] text-end text-base font-medium text-black">${product.price * product.quantity}</div>
+          <div className="w-[100px] text-end text-base font-medium text-black">
+            ${(product.price * product.quantity).toFixed(2)}
+          </div>
           <div className="flex flex-col items-center gap-3">
             {/* X Button - Remove Item */}
             <button
@@ -104,7 +124,6 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
                 </svg>
               )}
             </button>
-
             {/* Vector(2).svg - Keep as is */}
             <button className="flex items-center justify-center">
               <img src="/Vector(2).svg" alt="Additional action" className="w-4 aspect-auto" />

@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState } from "react"
 import FiltersDefault from "./Shop/FiltersDefault"
 import { ProductCard } from "./Shop/ProductCard"
@@ -15,14 +14,27 @@ interface ProductApiResponse {
   productId: string
   productName: string
   imageOne: string
-  price: number
-  discountPrice?: number // Add discount price from API
+  price: number | string
+  discountPrice: number | string
   quantity: number
 }
 
 interface Product extends ProductApiResponse {
   isAdded: boolean
   finalPrice: number // Calculated price after discount
+}
+
+// Interface for localStorage items
+interface LocalStorageItem {
+  product_id: string
+  quantity: string
+  size: string
+  color: string
+  productName?: string
+  price?: number
+  discountPrice?: number
+  finalPrice?: number
+  imageOne?: string
 }
 
 export function Shop() {
@@ -32,10 +44,100 @@ export function Shop() {
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [ready, setReady] = useState(false)
-
   const pathname = usePathname()
-
   const [categoryId, setCategoryId] = useState<string | null>(null)
+
+  // Helper function to calculate final price
+  const calculateFinalPrice = (price: number | string, discountPrice: number | string): number => {
+    const priceNum = typeof price === "string" ? Number.parseFloat(price) || 0 : price || 0
+    const discountNum = typeof discountPrice === "string" ? Number.parseFloat(discountPrice) || 0 : discountPrice || 0
+    return Math.max(0, priceNum - discountNum) // Ensure price doesn't go below 0
+  }
+
+  // Helper function to save cart items to localStorage
+  const saveCartToLocalStorage = (productId: string, productData?: Product) => {
+    try {
+      const existingCart = localStorage.getItem("localCart")
+      const cartItems: LocalStorageItem[] = existingCart ? JSON.parse(existingCart) : []
+
+      // Check if item already exists
+      const existingItemIndex = cartItems.findIndex((item) => item.product_id === productId)
+
+      const newItem: LocalStorageItem = {
+        product_id: productId,
+        quantity: "1",
+        size: "",
+        color: "",
+        ...(productData && {
+          productName: productData.productName,
+          price:
+            typeof productData.price === "string" ? Number.parseFloat(productData.price) || 0 : productData.price || 0,
+          discountPrice:
+            typeof productData.discountPrice === "string"
+              ? Number.parseFloat(productData.discountPrice) || 0
+              : productData.discountPrice || 0,
+          finalPrice: productData.finalPrice,
+          imageOne: productData.imageOne,
+        }),
+      }
+
+      if (existingItemIndex > -1) {
+        // Update existing item quantity
+        const currentQty = Number.parseInt(cartItems[existingItemIndex].quantity) || 1
+        cartItems[existingItemIndex].quantity = (currentQty + 1).toString()
+      } else {
+        // Add new item
+        cartItems.push(newItem)
+      }
+
+      localStorage.setItem("localCart", JSON.stringify(cartItems))
+      return true
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+      return false
+    }
+  }
+
+  // Helper function to save wishlist items to localStorage
+  const saveWishlistToLocalStorage = (productId: string, productData?: Product) => {
+    try {
+      const existingWishlist = localStorage.getItem("localWishlist")
+      const wishlistItems: LocalStorageItem[] = existingWishlist ? JSON.parse(existingWishlist) : []
+
+      // Check if item already exists
+      const existingItemIndex = wishlistItems.findIndex((item) => item.product_id === productId)
+
+      if (existingItemIndex > -1) {
+        // Item already in wishlist
+        return false
+      }
+
+      const newItem: LocalStorageItem = {
+        product_id: productId,
+        quantity: "1",
+        size: "",
+        color: "",
+        ...(productData && {
+          productName: productData.productName,
+          price:
+            typeof productData.price === "string" ? Number.parseFloat(productData.price) || 0 : productData.price || 0,
+          discountPrice:
+            typeof productData.discountPrice === "string"
+              ? Number.parseFloat(productData.discountPrice) || 0
+              : productData.discountPrice || 0,
+          finalPrice: productData.finalPrice,
+          imageOne: productData.imageOne,
+        }),
+      }
+
+      wishlistItems.push(newItem)
+      localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
+      return true
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+      return false
+    }
+  }
 
   useEffect(() => {
     const currentPath = pathname
@@ -86,17 +188,11 @@ export function Shop() {
             : []
 
         const formatted = productList.map((p: ProductApiResponse) => {
-          // Ensure proper number conversion
-          const originalPrice = Number(p.price) || 0
-          const discountAmount = Number(p.discountPrice) || 0
-          const finalPrice = originalPrice - discountAmount
-
+          const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
           return {
             ...p,
-            price: originalPrice, // Store as number
-            discountPrice: discountAmount, // Store as number
             isAdded: false,
-            finalPrice: finalPrice > 0 ? finalPrice : originalPrice,
+            finalPrice,
           }
         })
 
@@ -115,7 +211,16 @@ export function Shop() {
   const handleAddToCart = async (productId: string) => {
     const token = localStorage.getItem("accessToken")
     if (!token) {
-      setModalType("signup")
+      // Save to localStorage instead of showing modal
+      const productData = products.find((p) => p.productId === productId)
+      const saved = saveCartToLocalStorage(productId, productData)
+      if (saved) {
+        // Update UI to show item as added
+        setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
+        alert("Product saved to cart! Sign in to sync your cart.")
+      } else {
+        alert("Failed to save product to cart.")
+      }
       return
     }
 
@@ -144,7 +249,14 @@ export function Shop() {
   const handleAddToWishlist = async (productId: string) => {
     const token = localStorage.getItem("accessToken")
     if (!token) {
-      setModalType("signup")
+      // Save to localStorage instead of showing modal
+      const productData = products.find((p) => p.productId === productId)
+      const saved = saveWishlistToLocalStorage(productId, productData)
+      if (saved) {
+        alert("Product saved to wishlist! Sign in to sync your wishlist.")
+      } else {
+        alert("Product is already in your wishlist!")
+      }
       return
     }
 
@@ -171,7 +283,6 @@ export function Shop() {
   }
 
   const handleCloseModal = () => setModalType(null)
-
   const handleLoginSuccess = () => setModalType("success")
 
   if (loading) {
@@ -193,7 +304,6 @@ export function Shop() {
       <div className="hidden md:block">
         <FiltersDefault />
       </div>
-
       <section className="flex-1">
         <div className="flex justify-center md:hidden mb-4">
           <button className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={() => setIsModalVisible(true)}>
@@ -226,8 +336,12 @@ export function Shop() {
               title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
               rating={4.7}
               reviews={400}
-              price={`$${p.finalPrice.toFixed(2)}`}
-              originalPrice={p.discountPrice && p.discountPrice > 0 ? `$${Number(p.price).toFixed(2)}` : undefined}
+              price={`$${Number(p.finalPrice || 0).toFixed(2)}`}
+              originalPrice={
+                (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
+                  ? `$${Number(p.price || 0).toFixed(2)}`
+                  : undefined
+              }
               starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
               cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
               favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"

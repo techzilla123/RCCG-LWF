@@ -1,10 +1,12 @@
 "use client"
-
 import type React from "react"
 import { useState, useEffect } from "react"
 import type { SummaryItemType } from "./types"
 import CartDelivery from "./CartDelivery"
 import { calculateDistanceAction } from "./routes"
+import { SignUpModal } from "../../Offer/SignUpModal"
+import { LoginModal } from "../../Offer/LoginModal"
+import { SuccessModal } from "../../Offer/SuccessModal"
 
 interface OrderSummaryProps {
   items: SummaryItemType[]
@@ -45,12 +47,21 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [isShippingCalculated, setIsShippingCalculated] = useState(false)
   const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null)
 
+  // New state for signin modal
+  const [isSigninModalOpen, setIsSigninModalOpen] = useState(false)
+  const [guestEmail, setGuestEmail] = useState("")
+  const [guestFirstName, setGuestFirstName] = useState("")
+  const [guestLastName, setGuestLastName] = useState("")
+  const [nameError, setNameError] = useState("")
+  const [emailError, setEmailError] = useState("")
+  const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
+  const [hasProvidedGuestInfo, setHasProvidedGuestInfo] = useState(false)
+
   // Update delivery method when localStorage changes
   useEffect(() => {
     const updateDeliveryMethod = () => {
       const method = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
       setDeliveryMethod(method)
-
       // Reset shipping calculation when method changes
       if (method === "pickup") {
         setCalculatedShipping(0)
@@ -61,15 +72,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
       }
       setCalculatedDistance(null)
     }
-
     updateDeliveryMethod()
-
     // Listen for storage changes
     window.addEventListener("storage", updateDeliveryMethod)
-
     // Custom event for same-tab updates
     window.addEventListener("deliveryMethodChanged", updateDeliveryMethod)
-
     return () => {
       window.removeEventListener("storage", updateDeliveryMethod)
       window.removeEventListener("deliveryMethodChanged", updateDeliveryMethod)
@@ -90,17 +97,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const validateRequiredFields = (): boolean => {
     const deliveryData = localStorage.getItem("deliveryLocation")
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
-
     console.log("Validating for method:", currentMethod)
-
     if (!deliveryData) {
       console.log("No delivery data found")
       return false
     }
-
     const parsedDeliveryData: LocationInfo = JSON.parse(deliveryData)
     const requiredFields = requiredFieldsMap[currentMethod]
-
     const isValid = requiredFields.every((field) => {
       const value = parsedDeliveryData[field as keyof LocationInfo]
       const isFieldValid = value && value.toString().trim() !== ""
@@ -109,7 +112,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
       }
       return isFieldValid
     })
-
     console.log(`Validation result for ${currentMethod}:`, isValid)
     return isValid
   }
@@ -117,7 +119,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const calculateDistance = async (destination: string): Promise<{ distance: number; duration: string } | null> => {
     try {
       const result = await calculateDistanceAction(destination)
-
       if (result.success) {
         return {
           distance: result.distance,
@@ -142,9 +143,95 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     return Math.ceil(distance) * 50 // $50 per mile, rounded up
   }
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const validateGuestInfo = (): boolean => {
+    if (!guestFirstName.trim()) {
+      setNameError("Please enter your first name")
+      return false
+    }
+    if (!guestLastName.trim()) {
+      setNameError("Please enter your last name")
+      return false
+    }
+    if (!guestEmail.trim()) {
+      setEmailError("Please enter your email address")
+      return false
+    }
+    if (!validateEmail(guestEmail)) {
+      setEmailError("Please enter a valid email address")
+      return false
+    }
+    setNameError("")
+    setEmailError("")
+    return true
+  }
+
+  const handleEmailSubmit = () => {
+    if (!validateGuestInfo()) {
+      return
+    }
+    setHasProvidedGuestInfo(true)
+    setIsSigninModalOpen(false)
+    document.body.style.overflow = "auto"
+    // Continue with checkout process
+    proceedWithCheckout()
+  }
+
+  const closeSigninModal = () => {
+    setIsSigninModalOpen(false)
+    setGuestEmail("")
+    setGuestFirstName("")
+    setGuestLastName("")
+    setEmailError("")
+    setNameError("")
+    setModalType(null)
+    setHasProvidedGuestInfo(false)
+    document.body.style.overflow = "auto"
+  }
+
+  const handleClose = () => {
+    setModalType(null)
+    setHasProvidedGuestInfo(false)
+    document.body.style.overflow = "auto"
+  }
+
+  const handleLoginSuccess = () => {
+    setModalType("success")
+  }
+
+  const handleOpenSignUp = () => {
+    setIsSigninModalOpen(false)
+    setModalType("signup")
+  }
+
+  const handleOpenLogin = () => {
+    setIsSigninModalOpen(false)
+    setModalType("login")
+  }
+
   const handleCheckout = async () => {
     setErrorMessage("") // Clear any previous errors
 
+    // Check if user is signed in
+    const token = localStorage.getItem("accessToken")
+    const isSignedIn = !!token
+
+    if (!isSignedIn && !hasProvidedGuestInfo) {
+      // Show signin/email modal
+      setIsSigninModalOpen(true)
+      document.body.style.overflow = "hidden"
+      return
+    }
+
+    // Continue with existing checkout logic
+    await proceedWithCheckout()
+  }
+
+  const proceedWithCheckout = async () => {
     // Get current delivery method from localStorage
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
     setDeliveryMethod(currentMethod)
@@ -166,12 +253,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     // Calculate shipping for local delivery
     if (currentMethod === "local") {
       setIsCalculatingShipping(true)
-
       try {
         const deliveryData = localStorage.getItem("deliveryLocation")
         if (deliveryData) {
           const parsedDeliveryData: LocationInfo = JSON.parse(deliveryData)
-
           if (!parsedDeliveryData.address || parsedDeliveryData.address.trim() === "") {
             setErrorMessage("Please enter a valid delivery address.")
             setIsModalOpen(true)
@@ -179,12 +264,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
             setIsCalculatingShipping(false)
             return
           }
-
           const distanceData = await calculateDistance(parsedDeliveryData.address)
-
           if (distanceData) {
             setCalculatedDistance(distanceData.distance)
-
             if (distanceData.distance > 50) {
               // Show popup instead of auto-switching
               setErrorMessage(
@@ -199,7 +281,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
               setCalculatedShipping(logisticsPrice)
               setIsShippingCalculated(true)
               console.log(`Distance: ${distanceData.distance} miles, Logistics Price: $${logisticsPrice}`)
-
               // Show success message with shipping details
               alert(
                 `✅ Delivery Confirmed!\n\nDistance: ${distanceData.distance} miles\nDelivery Cost: $${logisticsPrice}\n\nClick "Complete Order" to finalize your purchase.`,
@@ -233,18 +314,15 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     setIsModalOpen(false)
     setErrorMessage("") // Clear error when closing modal
     document.body.style.overflow = "auto"
-
     // Update delivery method when modal closes
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
     setDeliveryMethod(currentMethod)
-
     // Reset shipping calculation if method changed
     if (currentMethod !== deliveryMethod) {
       setCalculatedShipping(null)
       setIsShippingCalculated(false)
       setCalculatedDistance(null)
     }
-
     // Dispatch custom event
     window.dispatchEvent(new Event("deliveryMethodChanged"))
   }
@@ -258,6 +336,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const createOrder = async (logisticsPrice: number, finalDeliveryMethod: DeliveryMethod) => {
     try {
       const token = localStorage.getItem("accessToken")
+      const isSignedIn = !!token // Convert to boolean - true if token exists, false if not
+
       const userData = {
         firstname: localStorage.getItem("firstname"),
         lastname: localStorage.getItem("lastname"),
@@ -284,16 +364,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
         }
       }
-    
 
       const cleanTotal = total.replace(/[$,]/g, "")
       const totalAmount = Number.parseFloat(cleanTotal)
-
       const correctedOrders = orders.map((order) => {
         const quantity = Number.parseInt(order.quantity)
         const totalAmountForItem = Number.parseFloat(order.amount)
         const unitPrice = quantity > 1 ? totalAmountForItem / quantity : totalAmountForItem
-
         return {
           ...order,
           amount: unitPrice.toFixed(2),
@@ -301,17 +378,17 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
       })
 
       const requestBody = {
-        is_signed_in: true,
+        is_signed_in: isSignedIn,
         customer_id: userData.userId,
         create_account: false,
-        email: userData.email,
-        firstname: userData.firstname,
-        lastname: userData.lastname,
+        email: isSignedIn ? userData.email : guestEmail,
+        firstname: isSignedIn ? userData.firstname : guestFirstName,
+        lastname: isSignedIn ? userData.lastname : guestLastName,
         phone_number: deliveryDetails.phoneNumber,
         total_amount: totalAmount,
         delivery_address: deliveryAddressString,
-        logistics_price: logisticsPrice, // Add logistics price to the request
-        delivery_type: finalDeliveryMethod, // Add delivery method to the request
+        logistics_price: logisticsPrice,
+        delivery_type: finalDeliveryMethod,
         orders: correctedOrders,
       }
 
@@ -358,11 +435,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     if (deliveryMethod === "pickup") {
       return "$0.00"
     }
-
     if (calculatedShipping !== null) {
       return `$${calculatedShipping.toFixed(2)}`
     }
-
     return "Calculated at checkout"
   }
 
@@ -370,11 +445,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     if (isCalculatingShipping) {
       return "Calculating..."
     }
-
     if (isShippingCalculated && deliveryMethod === "local" && calculatedShipping !== null) {
       return "Complete Order"
     }
-
     return "Proceed to checkout"
   }
 
@@ -406,9 +479,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
             {calculatedDistance && (
               <span className="text-xs text-gray-400">
                 Distance: {calculatedDistance} miles
-                {calculatedDistance > 50 && (
-                  <span className="text-red-500 ml-1">(Exceeds 50-mile limit)</span>
-                )}
+                {calculatedDistance > 50 && <span className="text-red-500 ml-1">(Exceeds 50-mile limit)</span>}
               </span>
             )}
           </div>
@@ -445,6 +516,122 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           )}
         </button>
       </div>
+
+      {/* Signin/Email Modal */}
+      {isSigninModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={closeSigninModal}
+              className="absolute top-4 right-4 text-black text-2xl font-bold"
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                zIndex: 1000,
+              }}
+            >
+              &times;
+            </button>
+
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold mb-2">Continue Your Order</h3>
+              <p className="text-gray-600">Please provide your information to continue</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="guest-firstname" className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name
+                  </label>
+                  <input
+                    id="guest-firstname"
+                    type="text"
+                    value={guestFirstName}
+                    onChange={(e) => {
+                      setGuestFirstName(e.target.value)
+                      setNameError("")
+                    }}
+                    placeholder="First name"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="guest-lastname" className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name
+                  </label>
+                  <input
+                    id="guest-lastname"
+                    type="text"
+                    value={guestLastName}
+                    onChange={(e) => {
+                      setGuestLastName(e.target.value)
+                      setNameError("")
+                    }}
+                    placeholder="Last name"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
+
+              <div>
+                <label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  id="guest-email"
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => {
+                    setGuestEmail(e.target.value)
+                    setEmailError("")
+                  }}
+                  placeholder="Enter your email address"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+              </div>
+
+              <button
+                onClick={handleEmailSubmit}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Continue as Guest
+              </button>
+
+              <div className="text-center">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">or</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={handleOpenLogin}
+                  className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-[#10b988] focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={handleOpenSignUp}
+                  className="w-full bg-[#10b981] text-white py-2 px-4 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Existing delivery modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-8 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto relative">
@@ -460,32 +647,40 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
             >
               &times;
             </button>
-           {errorMessage && (
-  errorMessage === "Please complete all required delivery information." ? (
-    <div
-      className="mb-4 p-3 rounded"
-      style={{ backgroundColor: "#d1fae5", border: "1px solid #10b981", color: "#065f46" }}
-    >
-      <strong>Kind Reminder:</strong>
-      <br />
-      Kindly fill in all required fields to continue.
-    </div>
-  ) : (
-    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-      <strong>Maximum Limit Exceeded:</strong>
-      <br />
-      {errorMessage}
-      <div className="mt-2 text-sm">
-        💡 <strong>Tip:</strong> Select &quot;Shipping&quot; below to continue with your order.
-      </div>
-    </div>
-  )
-)}
-
+            {errorMessage &&
+              (errorMessage === "Please complete all required delivery information." ? (
+                <div
+                  className="mb-4 p-3 rounded"
+                  style={{ backgroundColor: "#d1fae5", border: "1px solid #10b981", color: "#065f46" }}
+                >
+                  <strong>Kind Reminder:</strong>
+                  <br />
+                  Kindly fill in all required fields to continue.
+                </div>
+              ) : (
+                <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                  <strong>Maximum Limit Exceeded:</strong>
+                  <br />
+                  {errorMessage}
+                  <div className="mt-2 text-sm">
+                    💡 <strong>Tip:</strong> Select &quot;Shipping&quot; below to continue with your order.
+                  </div>
+                </div>
+              ))}
             <CartDelivery onSave={closeModal} />
           </div>
         </div>
       )}
+      {/* Auth Modals */}
+      {modalType === "signup" && <SignUpModal onClose={handleClose} onOpenLogin={() => setModalType("login")} />}
+      {modalType === "login" && (
+        <LoginModal
+          onClose={handleClose}
+          onOpenSignUp={() => setModalType("signup")}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+      {modalType === "success" && <SuccessModal onClose={handleClose} />}
     </aside>
   )
 }

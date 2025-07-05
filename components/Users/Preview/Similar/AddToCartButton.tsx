@@ -1,23 +1,93 @@
 "use client";
-
 import React from "react";
+
+interface ProductData {
+  id: string;
+  title: string;
+  price: string;
+  originalPrice?: string;
+  discountPrice?: number;
+  image: string;
+}
 
 interface AddToCartButtonProps {
   productId: string;
+  productData: ProductData;
 }
 
-const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) => {
+// Interface for localStorage cart items
+interface LocalStorageCartItem {
+  product_id: string;
+  quantity: string;
+  size: string;
+  color: string;
+  productName?: string;
+  price?: number;
+  discountPrice?: number;
+  finalPrice?: number;
+  imageOne?: string;
+}
+
+const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId, productData }) => {
+  // Helper function to save cart items to localStorage
+  const saveCartToLocalStorage = (productId: string, productData: ProductData) => {
+    try {
+      const existingCart = localStorage.getItem("localCart");
+      const cartItems: LocalStorageCartItem[] = existingCart ? JSON.parse(existingCart) : [];
+      
+      // Check if item already exists
+      const existingItemIndex = cartItems.findIndex((item) => item.product_id === productId);
+      
+      // Parse price (remove $ and convert to number)
+      const priceNum = parseFloat(productData.price.replace('$', '')) || 0;
+      const originalPriceNum = productData.originalPrice ? parseFloat(productData.originalPrice.replace('$', '')) || 0 : 0;
+      const discountAmount = productData.discountPrice || 0;
+      
+      const newItem: LocalStorageCartItem = {
+        product_id: productId,
+        quantity: "1",
+        size: "",
+        color: "",
+        productName: productData.title,
+        price: originalPriceNum > 0 ? originalPriceNum : priceNum,
+        discountPrice: discountAmount,
+        finalPrice: priceNum,
+        imageOne: productData.image,
+      };
+
+      if (existingItemIndex > -1) {
+        // Update existing item quantity
+        const currentQty = parseInt(cartItems[existingItemIndex].quantity) || 1;
+        cartItems[existingItemIndex].quantity = (currentQty + 1).toString();
+      } else {
+        // Add new item
+        cartItems.push(newItem);
+      }
+
+      localStorage.setItem("localCart", JSON.stringify(cartItems));
+      return true;
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+      return false;
+    }
+  };
+
   const handleAddToCart = async () => {
     const token = localStorage.getItem("accessToken");
-
+    
     if (!token) {
-      alert("Please log in to add items to your cart.");
+      // Save to localStorage instead of making API call
+      const saved = saveCartToLocalStorage(productId, productData);
+      if (saved) {
+        alert("Product saved to cart! Sign in to sync your cart.");
+      } else {
+        alert("Failed to save product to cart.");
+      }
       return;
     }
 
     try {
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`;
-
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -34,7 +104,6 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) => {
       });
 
       const data = await res.json();
-
       if (data.statusCode === 200) {
         alert("Product added to cart");
         console.log("Cart response:", data);

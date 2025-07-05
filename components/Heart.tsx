@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
 import { ProductHeader } from "./Heart/ProductHeader"
 import { ProductCard } from "./Heart/ProductCard"
 import { ProductGrid } from "@/components/Users/Shop/MobileShop/ProductGrid"
@@ -71,8 +70,12 @@ export function Heart() {
         color: "",
         ...(productData && {
           productName: productData.productName,
-          price: productData.price,
-          discountPrice: productData.discountPrice,
+          price:
+            typeof productData.price === "string" ? Number.parseFloat(productData.price) || 0 : productData.price || 0,
+          discountPrice:
+            typeof productData.discountPrice === "string"
+              ? Number.parseFloat(productData.discountPrice) || 0
+              : productData.discountPrice || 0,
           finalPrice: productData.finalPrice,
           imageOne: productData.imageOne,
         }),
@@ -116,8 +119,12 @@ export function Heart() {
         color: "",
         ...(productData && {
           productName: productData.productName,
-          price: productData.price,
-          discountPrice: productData.discountPrice,
+          price:
+            typeof productData.price === "string" ? Number.parseFloat(productData.price) || 0 : productData.price || 0,
+          discountPrice:
+            typeof productData.discountPrice === "string"
+              ? Number.parseFloat(productData.discountPrice) || 0
+              : productData.discountPrice || 0,
           finalPrice: productData.finalPrice,
           imageOne: productData.imageOne,
         }),
@@ -138,7 +145,6 @@ export function Heart() {
     async function fetchProducts() {
       try {
         const token = localStorage.getItem("accessToken")
-
         const headers = {
           "Content-Type": "application/json",
           "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
@@ -207,7 +213,6 @@ export function Heart() {
       // Save to localStorage instead of showing modal
       const productData = products.find((p) => p.productId === productId)
       const saved = saveWishlistToLocalStorage(productId, productData)
-
       if (saved) {
         alert("Product saved to wishlist! Sign in to sync your wishlist.")
       } else {
@@ -259,7 +264,6 @@ export function Heart() {
       // Save to localStorage instead of showing modal
       const productData = products.find((p) => p.productId === productId)
       const saved = saveCartToLocalStorage(productId, productData)
-
       if (saved) {
         // Update UI to show item as added
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
@@ -324,7 +328,11 @@ export function Heart() {
             rating={4.7}
             reviews={0}
             price={`$${Number(p.finalPrice || 0).toFixed(2)}`}
-            originalPrice={p.discountPrice > 0 ? `$${Number(p.price || 0).toFixed(2)}` : undefined}
+            originalPrice={
+              (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
+                ? `$${Number(p.price || 0).toFixed(2)}`
+                : undefined
+            }
             starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
             cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
             favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"

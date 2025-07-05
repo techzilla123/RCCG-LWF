@@ -1,7 +1,5 @@
 "use client"
-
 import type React from "react"
-
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import ProductCard, { type ProductCardProps } from "./Similar/ProductCard"
@@ -21,7 +19,6 @@ const SimilarProducts: React.FC = () => {
   const mobileScrollRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
   const productId = searchParams.keys().next().value || ""
-
   const [products, setProducts] = useState<ProductCardProps[]>([])
 
   useEffect(() => {
@@ -41,7 +38,6 @@ const SimilarProducts: React.FC = () => {
         })
 
         const json = await res.json()
-
         if (json.statusCode === 200 && Array.isArray(json.data?.similarProducts)) {
           const formatted: ProductCardProps[] = json.data.similarProducts.map((product: Product) => {
             // Calculate correct price (original - discount)
@@ -54,14 +50,12 @@ const SimilarProducts: React.FC = () => {
               image: product.imageOne,
               rating: 4.7,
               reviews: 400,
-               title: product.productName.length > 26 
-    ? product.productName.slice(0, 23) + "..." 
-    : product.productName,
+              title: product.productName.length > 26 ? product.productName.slice(0, 23) + "..." : product.productName,
               price: `$${(finalPrice > 0 ? finalPrice : originalPrice).toFixed(2)}`,
               originalPrice: discountAmount > 0 ? `$${originalPrice.toFixed(2)}` : undefined,
+              discountPrice: discountAmount,
             }
           })
-
           setProducts(formatted)
         }
       } catch (error) {
@@ -77,7 +71,6 @@ const SimilarProducts: React.FC = () => {
   const scroll = (direction: "left" | "right") => {
     const scrollAmount = 300
     const scrollTarget = window.innerWidth < 768 ? mobileScrollRef.current : desktopScrollRef.current
-
     if (scrollTarget) {
       const { scrollLeft } = scrollTarget
       scrollTarget.scrollTo({

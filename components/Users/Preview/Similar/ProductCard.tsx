@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import Rating from "./Rating";
 import AddToCartButton from "./AddToCartButton";
@@ -7,8 +6,6 @@ import WishlistButton from "./WishlistButton";
 import { useRouter } from "next/navigation";
 
 // This matches the transformed API response structure
-
-
 export interface ProductCardProps {
   id: string;
   image: string;
@@ -16,8 +13,9 @@ export interface ProductCardProps {
   reviews: number;
   title: string;
   price: string;
+  originalPrice?: string;
+  discountPrice?: number;
 }
-
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
@@ -26,6 +24,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   reviews,
   title,
   price,
+  originalPrice,
+  discountPrice,
 }) => {
   const router = useRouter();
 
@@ -36,7 +36,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <article className="overflow-hidden relative flex-1 shrink self-stretch my-auto bg-white rounded-2xl basis-0 max-w-[360px] min-h-[440px] min-w-80">
       <img
-        src={image}
+        src={image || "/placeholder.svg"}
         alt={title}
         className="cursor-pointer object-contain z-0 w-full aspect-[1.33]"
         onClick={handleProductClick}
@@ -53,13 +53,32 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {price}
           </span>
           <div className="flex flex-1 shrink gap-2 items-center self-stretch my-auto basis-0">
-          <AddToCartButton productId={id} />
-
+            <AddToCartButton 
+              productId={id} 
+              productData={{
+                id,
+                title,
+                price,
+                originalPrice,
+                discountPrice,
+                image
+              }}
+            />
           </div>
         </div>
       </div>
       <div className="flex absolute top-3 right-3 z-0 flex-col items-end w-10">
-        <WishlistButton />
+        <WishlistButton 
+          productId={id} 
+          productData={{
+            id,
+            title,
+            price,
+            originalPrice,
+            discountPrice,
+            image
+          }}
+        />
       </div>
     </article>
   );
