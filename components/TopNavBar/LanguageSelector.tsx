@@ -1,9 +1,15 @@
 "use client";
+
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export const LanguageSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear(); // or localStorage.removeItem("accessToken") if you only want to remove token
+    location.reload(); // Refresh the page
+  };
 
   return (
     <div className="relative h-10">
@@ -19,9 +25,15 @@ export const LanguageSelector = () => {
         <span className="text-sm text-black">EN</span>
         <ChevronDown className="w-4 h-4 text-black" />
       </button>
+
       {isOpen && (
-        <div className="absolute top-full mt-2 bg-white shadow-md rounded-lg p-2 z-10">
-          {/* Language options here */}
+        <div className="absolute top-full mt-2 bg-white shadow-md rounded-lg p-2 z-10 min-w-[120px]">
+          <button
+            onClick={handleLogout}
+            className="block w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-gray-100 rounded"
+          >
+            Logout
+          </button>
         </div>
       )}
     </div>
