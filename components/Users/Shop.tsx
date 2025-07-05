@@ -1,4 +1,5 @@
 "use client"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import FiltersDefault from "./Shop/FiltersDefault"
 import { ProductCard } from "./Shop/ProductCard"
@@ -46,6 +47,7 @@ export function Shop() {
   const [ready, setReady] = useState(false)
   const pathname = usePathname()
   const [categoryId, setCategoryId] = useState<string | null>(null)
+  const searchParams = useSearchParams()
 
   // Helper function to calculate final price
   const calculateFinalPrice = (price: number | string, discountPrice: number | string): number => {
@@ -140,31 +142,67 @@ export function Shop() {
   }
 
   useEffect(() => {
-    const currentPath = pathname
+  const currentPath = pathname
+  const SCT = searchParams.get("SCT")
+  const PCT = searchParams.get("PCT")
+
+  if (SCT) {
+    // subcategory has highest priority
+    setCategoryId(`SCT:${SCT}`)
+  } else if (PCT) {
+    // then category
+    setCategoryId(`PCT:${PCT}`)
+  } else {
+    // fallback to pathname or saved category
     if (currentPath === "/rentals") {
-      setCategoryId("c7d6c7e5-aafe-439d-a714-63dd3910d3f9")
+      setCategoryId("GCT:c7d6c7e5-aafe-439d-a714-63dd3910d3f9")
     } else if (currentPath === "/shop/decorations") {
-      setCategoryId("1fc158a6-5dbc-43e9-b385-4cadb8434a76")
+      setCategoryId("GCT:1fc158a6-5dbc-43e9-b385-4cadb8434a76")
     } else if (currentPath === "/shop/holiday") {
-      setCategoryId("6f30f52f-47f2-4196-996c-7b0daabcd495")
+      setCategoryId("GCT:6f30f52f-47f2-4196-996c-7b0daabcd495")
+    } else if (currentPath === "/shop/party-supplies") {
+      setCategoryId("GCT:a72e830e-69ba-4977-b8e9-9250a196dd50")
+    } else if (currentPath === "/shop/birthday") {
+      setCategoryId("GCT:a48bac0e-05b1-4511-a23e-99e31dc6abec")
     } else if (currentPath === "/shop/balloon") {
-      setCategoryId("91a306bf-4df5-4940-8740-d28e0260c10d")
+      setCategoryId("GCT:91a306bf-4df5-4940-8740-d28e0260c10d")
     } else if (currentPath === "/shop") {
       setCategoryId(null)
     } else {
       const savedCategoryId = localStorage.getItem("activeCategoryId")
-      setCategoryId(savedCategoryId)
+      setCategoryId(savedCategoryId ? `GCT:${savedCategoryId}` : null)
     }
-    setReady(true) // mark as ready after setting category
-  }, [pathname])
+  }
+
+  setReady(true)
+}, [pathname, searchParams])
 
   // Fetch products every time categoryId changes
   useEffect(() => {
     if (!ready) return // wait until pathname/categoryId logic is finished
 
-    const url = categoryId
-      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${categoryId}`
-      : `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+  const url = (() => {
+  if (!categoryId) {
+    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+  }
+
+  if (categoryId.startsWith("SCT:")) {
+    const id = categoryId.replace("SCT:", "")
+    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
+  }
+
+  if (categoryId.startsWith("PCT:")) {
+    const id = categoryId.replace("PCT:", "")
+    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
+  }
+
+  if (categoryId.startsWith("GCT:")) {
+    const id = categoryId.replace("GCT:", "")
+    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
+  }
+
+  return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+})()
 
     const fetchProducts = async () => {
       setLoading(true)

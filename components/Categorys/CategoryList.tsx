@@ -30,8 +30,11 @@ interface SubCategory {
 interface CategoryData {
   parent: string
   title: string
-  items: string[]
+  categoryId: string
+  items: { name: string; id: string; isSub: boolean }[]
+  
 }
+
 
 export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) => {
   const [categories, setCategories] = React.useState<CategoryData[]>([])
@@ -40,25 +43,25 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
 
   const router = useRouter()
 
-const handleItemClick = () => {
+const handleItemClick = (item: { name: string; id: string; isSub: boolean }) => {
   const category = selectedCategory.toLowerCase()
+  let basePath = ""
 
-  if (category === "rentals") {
-    router.push("/rentals")
-  } else if (category === "balloons") {
-    router.push("/shop/balloon")
-  } else if (category === "party supplies") {
-    router.push("/shop/party-supplies")
-  } else if (category === "decoration") {
-    router.push("/shop/decorations")
-  } else if (category === "birthdays") {
-    router.push("/shop/birthday")
-  } else if (category === "holidays & occasions") {
-    router.push("/shop/holiday")
-  } else {
+  if (category === "rentals") basePath = "/rentals"
+  else if (category === "balloons") basePath = "/shop/balloon"
+  else if (category === "party supplies") basePath = "/shop/party-supplies"
+  else if (category === "decoration") basePath = "/shop/decorations"
+  else if (category === "birthdays") basePath = "/shop/birthday"
+  else if (category === "holidays & occasions") basePath = "/shop/holiday"
+  else {
     console.log("No matching route for:", category)
+    return
   }
+
+  const queryParam = item.isSub ? `?SCT=${item.id}` : `?PCT=${item.id}`
+  router.push(`${basePath}${queryParam}`)
 }
+
 
   const getApiHeaders = () => {
     const token = localStorage.getItem("accessToken") || ""
@@ -164,16 +167,27 @@ for (const productCategory of productCategories) {
     categoriesWithSubs.push({
       parent: selectedCategory,
       title: productCategory.categoryName,
-      items: subCategories.map((sub) => sub.subCategoryName).reverse(),
+      categoryId: productCategory.categoryId,
+      items: subCategories.map((sub) => ({
+        name: sub.subCategoryName,
+        id: sub.subCategoryId,
+        isSub: true,
+      })).reverse(),
     })
   } else {
     categoriesWithoutSubs.push({
       parent: selectedCategory,
       title: productCategory.categoryName,
-      items: [productCategory.categoryName],
+      categoryId: productCategory.categoryId,
+      items: [{
+        name: productCategory.categoryName,
+        id: productCategory.categoryId,
+        isSub: false,
+      }],
     })
   }
 }
+
 
 // Final sorted list: with subs first, without subs last
 const sortedCategories = [...categoriesWithSubs.reverse(), ...categoriesWithoutSubs.reverse()]
@@ -212,9 +226,10 @@ setCategories(sortedCategories)
   return (
     <section className="flex relative flex-wrap flex-1 shrink gap-10 items-start px-4 h-full basis-0 min-w-60 max-md:max-w-full">
       {categories.map((category, index) => (
-       <CategorySection
+     <CategorySection
   key={index}
   title={category.title}
+  categoryId={category.categoryId}
   items={category.items}
   onItemClick={handleItemClick}
 />

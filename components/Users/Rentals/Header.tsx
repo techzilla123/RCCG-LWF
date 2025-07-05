@@ -45,9 +45,10 @@ export default function WishHeader() {
         >
           Rentals
         </h1>
-        <h3 className="text-xl italic tracking-normal leading-8 text-black -mt-2 ">
-        Everything you need to rent, celebrate, and create unforgettable moments.
-    </h3>
+        <h3 className="text-xl italic tracking-normal leading-8 text-black -mt-2 text-center max-w-md mx-auto px-2 max-md:text-base max-md:leading-6 max-md:mt-4">
+  Everything you need to rent, celebrate, and create unforgettable moments.
+</h3>
+
         <ShopNavigation />
       </div>
       <img
