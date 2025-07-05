@@ -13,6 +13,11 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
+type WishlistItem = {
+  product_id: string
+  // Add other fields if needed
+}
+
 interface ProductCardProps {
   productId: string
   image: string
@@ -118,13 +123,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const token = localStorage.getItem("accessToken")
     if (!token) {
       // Remove from localStorage only
-      const localWishlist = localStorage.getItem("localWishlist")
-      if (localWishlist) {
-        const localItems = JSON.parse(localWishlist)
-        const updatedItems = localItems.filter((item: any) => item.product_id !== productId)
-        localStorage.setItem("localWishlist", JSON.stringify(updatedItems))
-        alert("Product removed from wishlist!")
-      }
+     const localWishlist = localStorage.getItem("localWishlist")
+if (localWishlist) {
+  const localItems: WishlistItem[] = JSON.parse(localWishlist)
+  const updatedItems = localItems.filter((item) => item.product_id !== productId)
+  localStorage.setItem("localWishlist", JSON.stringify(updatedItems))
+  alert("Product removed from wishlist!")
+}
       return
     }
 
