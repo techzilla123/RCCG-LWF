@@ -65,23 +65,23 @@ export default function CartItem() {
     }
   }
 
-  // Function to add/update item in localStorage (replaces existing item with same product_id)
-  const addToLocalCart = (newItem: LocalStorageCartItem): void => {
-    try {
-      const localCart = localStorage.getItem("localCart")
-      const cartItems: LocalStorageCartItem[] = localCart ? JSON.parse(localCart) : []
+  // // Function to add/update item in localStorage (replaces existing item with same product_id)
+  // const addToLocalCart = (newItem: LocalStorageCartItem): void => {
+  //   try {
+  //     const localCart = localStorage.getItem("localCart")
+  //     const cartItems: LocalStorageCartItem[] = localCart ? JSON.parse(localCart) : []
 
-      // Remove any existing item with the same product_id
-      const filteredItems = cartItems.filter((item) => item.product_id !== newItem.product_id)
+  //     // Remove any existing item with the same product_id
+  //     const filteredItems = cartItems.filter((item) => item.product_id !== newItem.product_id)
 
-      // Add the new item
-      filteredItems.push(newItem)
+  //     // Add the new item
+  //     filteredItems.push(newItem)
 
-      localStorage.setItem("localCart", JSON.stringify(filteredItems))
-    } catch (error) {
-      console.error("Error adding to local cart:", error)
-    }
-  }
+  //     localStorage.setItem("localCart", JSON.stringify(filteredItems))
+  //   } catch (error) {
+  //     console.error("Error adding to local cart:", error)
+  //   }
+  // }
 
   // Function to sync localStorage cart to server
   const syncLocalCartToServer = async (token: string) => {
