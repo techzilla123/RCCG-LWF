@@ -20,7 +20,7 @@ export const ProductGrid: React.FC = () => {
   async function fetchProducts() {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/wish-list`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
