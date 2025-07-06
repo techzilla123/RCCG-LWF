@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { FiltersDefault } from "./Wish/FiltersDefault"
 import { ProductCard } from "./Wish/ProductCard"
 import { Pagination } from "./Wish/Pagination"
-import { ProductGrid } from "./Shop/MobileShop/ProductGrid"
+import { ProductGrid } from "./Wish/MobileShop/ProductGrid"
 
 // Define types
 interface ProductDetails {

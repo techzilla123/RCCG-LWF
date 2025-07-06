@@ -20,8 +20,9 @@ export default function Home() {
 
       <Header/>
       </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
       <Shop/>
-      
+      </Suspense>
     
 
       <Footer/>
