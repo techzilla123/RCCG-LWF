@@ -12,31 +12,33 @@ import Link from "next/link"
 
 interface ProductCardProps {
   product: Product
-  onRemoveFromWishlist?: (productId: string) => void
   onAddToCart?: (productId: string) => void
+  onAddToWishlist?: (productId: string) => void
 }
 
-export const ProductCardM: React.FC<ProductCardProps> = ({ product, onRemoveFromWishlist, onAddToCart }) => {
+export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart, onAddToWishlist }) => {
   const [isWishlisted, setIsWishlisted] = useState(product.isWishlisted || false)
   const [isInCart, setIsInCart] = useState(product.isAdded || false)
   const [loading, setLoading] = useState(false)
-  const [removingFromWishlist, setRemovingFromWishlist] = useState(false)
+  const [wishlistLoading, setWishlistLoading] = useState(false)
 
   const handleWishlist = async () => {
-    if (isWishlisted && onRemoveFromWishlist) {
-      // Remove from wishlist
-      setRemovingFromWishlist(true)
-      try {
-        await onRemoveFromWishlist(product.id)
-        setIsWishlisted(false)
-      } catch (error) {
-        console.error("Error removing from wishlist:", error)
-      } finally {
-        setRemovingFromWishlist(false)
+    if (wishlistLoading) return
+
+    setWishlistLoading(true)
+    try {
+      if (onAddToWishlist) {
+        // Use parent's handler if provided
+        await onAddToWishlist(product.id)
+        setIsWishlisted(true)
+      } else {
+        // Fallback to original logic
+        setIsWishlisted((prev) => !prev)
       }
-    } else {
-      // Add to wishlist logic (if needed)
-      setIsWishlisted((prev) => !prev)
+    } catch (error) {
+      console.error("Error with wishlist:", error)
+    } finally {
+      setWishlistLoading(false)
     }
   }
 
@@ -104,12 +106,12 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onRemoveFrom
 
       <div className="mt-2 flex-1">
         <h3 className="text-xs font-semibold truncate">{product.title}</h3>
-        <p className="mt-1 font-bold">${product.price.toLocaleString()}</p>
+        <p className="mt-1 font-bold">${Number(product.price || 0).toFixed(2)}</p>
       </div>
 
       <div className="absolute top-2 right-2 flex flex-col gap-1">
-        <IconButton onClick={handleWishlist} ariaLabel="Remove from wishlist" disabled={removingFromWishlist}>
-          {removingFromWishlist ? (
+        <IconButton onClick={handleWishlist} ariaLabel="Add to wishlist" disabled={wishlistLoading}>
+          {wishlistLoading ? (
             <div className="w-3 h-3 border border-gray-300 border-t-red-500 rounded-full animate-spin" />
           ) : (
             <HeartIcon filled={isWishlisted} />
