@@ -3,6 +3,7 @@ import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
 import WishHeader from "@/components/Users/WishHeader"
 import { Wishlist } from "@/components/Users/Wishlist"
+import BotpressChat from "@/components/BotpressChat"; 
 
 
 
@@ -19,7 +20,7 @@ export default function Home() {
       <WishHeader/>
       <Wishlist/>
       
-    
+    <BotpressChat />
 
       <Footer/>
 

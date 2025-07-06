@@ -2,7 +2,8 @@
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
 import Header from "@/components/Users/Settings/Header"
-
+import BotpressChat from "@/components/BotpressChat"; 
+ 
 
 
 
@@ -18,7 +19,7 @@ export default function Home() {
       <TopNavBar/>
       <Header/>
      
-      
+      <BotpressChat />
     
 
       <Footer/>

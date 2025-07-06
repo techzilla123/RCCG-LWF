@@ -4,7 +4,8 @@ import TopNavBar from "@/components/TopNavBar";
 import Header from "@/components/Users/Rentals/Header"
 import { Shop } from "@/components/Users/Shop"
 import { Suspense } from "react";
-
+import BotpressChat from "@/components/BotpressChat"; 
+ 
 
 import Footer from "@/components/Footer"
 
@@ -23,7 +24,7 @@ export default function Home() {
         <Shop />
       </Suspense>
       
-    
+    <BotpressChat />
 
       <Footer/>
 

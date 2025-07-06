@@ -54,6 +54,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${coiny.variable} ${inter.variable} antialiased`}>
         <ReactQueryClientProvider>
+         
           {children}
         </ReactQueryClientProvider>
       </body>

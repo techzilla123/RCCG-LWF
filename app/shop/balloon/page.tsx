@@ -5,7 +5,8 @@ import Header from "@/components/Users/Shop/Balloon/Header"
 import { Shop } from "@/components/Users/Shop"
 import { Suspense } from "react";
 
-
+import BotpressChat from "@/components/BotpressChat"; 
+ 
 import Footer from "@/components/Footer"
 
 // import Footer from "@/components/Footer";
@@ -23,7 +24,7 @@ export default function Home() {
       <Suspense fallback={<div>Loading...</div>}>
       <Shop/>
       </Suspense>
-    
+    <BotpressChat />
 
       <Footer/>
 

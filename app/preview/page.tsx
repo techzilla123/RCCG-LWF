@@ -6,7 +6,8 @@ import ProductPage from "@/components/Users/Preview/ProductPage";
 import SimilarProducts from "@/components/Users/Preview/SimilarProducts";
 import Footer from "@/components/Footer";
 import { Suspense } from "react";
-
+import BotpressChat from "@/components/BotpressChat"; 
+ 
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
@@ -21,7 +22,7 @@ export default function Home() {
       <Suspense fallback={<div className="p-4 text-center">Loading similar products...</div>}>
         <SimilarProducts />
       </Suspense>
-
+<BotpressChat />
       <Footer />
     </div>
   );
