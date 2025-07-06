@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+"use client"
+import { useEffect, useState } from "react"
+import type React from "react"
+
+import { useSearchParams, useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   ChevronDown,
   ChevronUp,
@@ -12,90 +16,191 @@ import {
   Palette,
   Maximize,
   Star,
-} from "lucide-react";
+} from "lucide-react"
 
-const filtersConfig = [
+// Define types
+type FilterType = "radio" | "checkbox"
+
+interface FilterConfig {
+  title: string
+  icon: React.ElementType
+  type: FilterType
+  options: string[]
+}
+
+type FilterValue = string | string[]
+
+interface SubCategory {
+  subCategoryName: string
+  subCategoryId: string
+}
+
+// Base config without dynamic subcategories
+const baseFiltersConfig: FilterConfig[] = [
   { title: "Sort by", icon: Filter, type: "radio", options: ["Relevant to you", "Recently added", "Trending"] },
   { title: "Order by", icon: List, type: "radio", options: ["Ascending", "Descending"] },
-  { title: "Category", icon: Tag, type: "checkbox", options: ["Latex balloons", "Foil balloons", "Number balloons", "Letter balloons", "Giant balloons"] },
+  { title: "Sub Category", icon: Tag, type: "checkbox", options: [] }, // Will be populated dynamically
   { title: "Listings", icon: Tag, type: "radio", options: ["For sale", "Rental"] },
   { title: "Price", icon: DollarSign, type: "radio", options: ["Cheapest first", "Most expensive first"] },
   { title: "Gender", icon: Users, type: "checkbox", options: ["Kids", "Women", "Men"] },
-  { title: "Occasion", icon: Calendar, type: "checkbox", options: ["Birthday", "Parties", "Events", "Holidays", "Others"] },
-  { title: "Color", icon: Palette, type: "checkbox", options: ["Black", "Red", "Gold", "Purple", "Pink", "Green", "Blue"] },
-  { title: "Size", icon: Maximize, type: "checkbox", options: ["X-Large", "Large", "Medium", "Small", "X-Small", "XX-Small"] },
+  {
+    title: "Occasion",
+    icon: Calendar,
+    type: "checkbox",
+    options: ["Birthday", "Parties", "Events", "Holidays", "Others"],
+  },
+  {
+    title: "Color",
+    icon: Palette,
+    type: "checkbox",
+    options: ["Black", "Red", "Gold", "Purple", "Pink", "Green", "Blue"],
+  },
+  {
+    title: "Size",
+    icon: Maximize,
+    type: "checkbox",
+    options: ["X-Large", "Large", "Medium", "Small", "X-Small", "XX-Small"],
+  },
   { title: "Customer Rating", icon: Star, type: "radio", options: ["5-star", "4-star", "3-star", "2-star", "1-star"] },
-];
+]
 
-export default function FiltersSidebar() {
-  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>(
-    () => Object.fromEntries(filtersConfig.map(({ title }) => [title, true]))
-  );
-  
-  type FilterValue = string | string[];
+interface FiltersSidebarProps {
+  onFiltersChange?: (filters: Record<string, FilterValue>) => void
+}
 
-const [filters, setFilters] = useState<{ [key: string]: FilterValue }>({
-  "Sort by": "Relevant to you",
-  "Listings": "For sale",
-  "Customer Rating": "4-star",
-});
+export default function FiltersSidebar({ onFiltersChange }: FiltersSidebarProps) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const [filtersConfig, setFiltersConfig] = useState<FilterConfig[]>(baseFiltersConfig)
+  const [subcategoriesData, setSubcategoriesData] = useState<SubCategory[]>([])
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(baseFiltersConfig.map(({ title }) => [title, true])),
+  )
+  const [filters, setFilters] = useState<Record<string, FilterValue>>({
+    "Sort by": "Relevant to you",
+    Listings: "For sale",
+    "Customer Rating": "4-star",
+  })
 
+  const productCategoryId = searchParams.get("PCT")
+
+  useEffect(() => {
+    if (!productCategoryId) {
+      // Reset to original config if no PCT
+      const resetConfig = baseFiltersConfig.map((filter) =>
+        filter.title === "Sub Category" ? { ...filter, options: [] } : filter,
+      )
+      setFiltersConfig(resetConfig)
+      setSubcategoriesData([])
+      return
+    }
+
+    // Fetch dynamic subcategories if PCT exists
+    const fetchSubcategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product-sub-category/${productCategoryId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+              Authorization: localStorage.getItem("accessToken") || "",
+            },
+          },
+        )
+        const result = await response.json()
+        const subcategories: SubCategory[] = result?.data || []
+
+        // Store the full subcategory data
+        setSubcategoriesData(subcategories)
+
+        const names = subcategories.map((item: SubCategory) => item.subCategoryName)
+        const updatedConfig = baseFiltersConfig.map((filter) =>
+          filter.title === "Sub Category" ? { ...filter, options: names } : filter,
+        )
+        setFiltersConfig(updatedConfig)
+      } catch (err) {
+        console.error("Error fetching subcategories:", err)
+      }
+    }
+
+    fetchSubcategories()
+  }, [productCategoryId])
+
+  // Notify parent component when filters change
+  useEffect(() => {
+    if (onFiltersChange) {
+      onFiltersChange(filters)
+    }
+  }, [filters, onFiltersChange])
 
   const toggleSection = (title: string) => {
-    setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
-  };
+    setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }))
+  }
 
-  const handleChange = (section: string, option: string, type: string) => {
+  const updateURL = (subcategoryId: string) => {
+    // Create new URLSearchParams and only set SCT parameter
+    const params = new URLSearchParams()
+    params.set("SCT", subcategoryId)
+    router.push(`?${params.toString()}`)
+  }
+
+  const handleChange = (section: string, option: string, type: FilterType) => {
+    // Special handling for subcategory selection
+    if (section === "Sub Category") {
+      const selectedSubcategory = subcategoriesData.find((sub) => sub.subCategoryName === option)
+
+      if (selectedSubcategory) {
+        updateURL(selectedSubcategory.subCategoryId)
+      }
+    }
+
     if (type === "radio") {
-      setFilters((prev) => ({ ...prev, [section]: option }));
+      setFilters((prev) => ({ ...prev, [section]: option }))
     } else {
       setFilters((prev) => {
-        const current = prev[section];
+        const current = prev[section]
         if (Array.isArray(current)) {
-          if (current.includes(option)) {
-            return { ...prev, [section]: current.filter((o) => o !== option) };
-          } else {
-            return { ...prev, [section]: [...current, option] };
+          return {
+            ...prev,
+            [section]: current.includes(option) ? current.filter((o) => o !== option) : [...current, option],
           }
         } else {
-          // If there was no current array, start with this option
-          return { ...prev, [section]: [option] };
+          return { ...prev, [section]: [option] }
         }
-      });
+      })
     }
-  };
-  
+  }
 
   const clearAll = () => {
-    setFilters({});
-  };
+    const clearedFilters = {
+      "Sort by": "Relevant to you",
+      Listings: "For sale",
+      "Customer Rating": "4-star",
+    }
+    setFilters(clearedFilters)
+    // Clear all URL parameters
+    router.push(window.location.pathname)
+  }
 
   const applyFilters = () => {
-    console.log("Applying filters: ", filters);
-  };
+    console.log("Applying filters:", filters)
+  }
 
   return (
     <motion.div
-    layout
-    className="w-64 p-4 bg-white shadow-lg rounded-md transition-all duration-300 overflow-hidden inline-block"
-  >
-  
+      layout
+      className="w-64 p-4 bg-white shadow-lg rounded-md transition-all duration-300 overflow-hidden inline-block"
+    >
       <h3 className="text-xl font-semibold mb-4">Filters</h3>
       {filtersConfig.map(({ title, icon: Icon, type, options }) => (
         <div key={title} className="mb-4">
-          <div
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(title)}
-          >
+          <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection(title)}>
             <div className="flex items-center space-x-2">
               <Icon className="w-4 h-4" />
               <h3 className="font-medium">{title}</h3>
             </div>
-            {openSections[title] ? (
-              <ChevronUp className="w-4 h-4" />
-            ) : (
-              <ChevronDown className="w-4 h-4" />
-            )}
+            {openSections[title] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </div>
           <AnimatePresence initial={false}>
             {openSections[title] && (
@@ -115,13 +220,17 @@ const [filters, setFilters] = useState<{ [key: string]: FilterValue }>({
                         value={option}
                         checked={
                           type === "radio"
-                            ? filters[title] === option
-                            : (filters[title] || []).includes(option)
+                            ? (filters[title] as string) === option
+                            : Array.isArray(filters[title])
+                              ? (filters[title] as string[]).includes(option)
+                              : false
                         }
                         onChange={() => handleChange(title, option, type)}
                         className="accent-blue-500"
                       />
-                      <label className="text-sm">{option}</label>
+                      <label className="text-sm cursor-pointer" onClick={() => handleChange(title, option, type)}>
+                        {option}
+                      </label>
                     </div>
                   ))}
                 </div>
@@ -130,21 +239,14 @@ const [filters, setFilters] = useState<{ [key: string]: FilterValue }>({
           </AnimatePresence>
         </div>
       ))}
-
       <div className="flex flex-col space-y-2 mt-6">
-        <button
-          onClick={applyFilters}
-          className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-        >
+        <button onClick={applyFilters} className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
           Apply filters
         </button>
-        <button
-          onClick={clearAll}
-          className="text-blue-600 py-2 rounded-md hover:underline"
-        >
+        <button onClick={clearAll} className="text-blue-600 py-2 rounded-md hover:underline">
           Clear all
         </button>
       </div>
-      </motion.div>
-  );
+    </motion.div>
+  )
 }

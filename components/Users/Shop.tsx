@@ -1,6 +1,6 @@
 "use client"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import FiltersDefault from "./Shop/FiltersDefault"
 import { ProductCard } from "./Shop/ProductCard"
 import { Pagination } from "./Shop/Pagination"
@@ -8,7 +8,7 @@ import { ProductGrid } from "./Shop/MobileShop/ProductGrid"
 import { SignUpModal } from "../Offer/SignUpModal"
 import { LoginModal } from "../Offer/LoginModal"
 import { SuccessModal } from "../Offer/SuccessModal"
-import { X } from "lucide-react"
+import { X } from 'lucide-react'
 import { usePathname } from "next/navigation"
 
 interface ProductApiResponse {
@@ -38,8 +38,11 @@ interface LocalStorageItem {
   imageOne?: string
 }
 
+type FilterValue = string | string[]
+
 export function Shop() {
   const [products, setProducts] = useState<Product[]>([])
+  const [originalProducts, setOriginalProducts] = useState<Product[]>([]) // Store original unsorted products
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
@@ -56,15 +59,57 @@ export function Shop() {
     return Math.max(0, priceNum - discountNum) // Ensure price doesn't go below 0
   }
 
+  // Sort products based on filters
+  const sortProducts = useCallback((productsToSort: Product[], filters: Record<string, FilterValue>) => {
+    const sortedProducts = [...productsToSort]
+
+    // Handle Order by (Ascending/Descending) - applies to product names
+    const orderBy = filters["Order by"] as string
+    if (orderBy === "Ascending") {
+      sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName))
+    } else if (orderBy === "Descending") {
+      sortedProducts.sort((a, b) => b.productName.localeCompare(a.productName))
+    }
+
+    // Handle Price sorting
+    const priceSort = filters["Price"] as string
+    if (priceSort === "Cheapest first") {
+      sortedProducts.sort((a, b) => a.finalPrice - b.finalPrice)
+    } else if (priceSort === "Most expensive first") {
+      sortedProducts.sort((a, b) => b.finalPrice - a.finalPrice)
+    }
+
+    // Handle Sort by (Recently added, Trending, etc.)
+    const sortBy = filters["Sort by"] as string
+    if (sortBy === "Recently added") {
+      // Assuming newer products have higher productId or you can add a timestamp field
+      sortedProducts.sort((a, b) => b.productId.localeCompare(a.productId))
+    } else if (sortBy === "Trending") {
+      // You can implement trending logic based on your business requirements
+      // For now, we'll sort by quantity (higher quantity = more popular)
+      sortedProducts.sort((a, b) => b.quantity - a.quantity)
+    }
+    // "Relevant to you" keeps the original order
+
+    return sortedProducts
+  }, [])
+
+  // Handle filter changes from FiltersSidebar
+  const handleFiltersChange = useCallback(
+    (filters: Record<string, FilterValue>) => {
+      const sortedProducts = sortProducts(originalProducts, filters)
+      setProducts(sortedProducts)
+    },
+    [originalProducts, sortProducts],
+  )
+
   // Helper function to save cart items to localStorage
   const saveCartToLocalStorage = (productId: string, productData?: Product) => {
     try {
       const existingCart = localStorage.getItem("localCart")
       const cartItems: LocalStorageItem[] = existingCart ? JSON.parse(existingCart) : []
-
       // Check if item already exists
       const existingItemIndex = cartItems.findIndex((item) => item.product_id === productId)
-
       const newItem: LocalStorageItem = {
         product_id: productId,
         quantity: "1",
@@ -82,7 +127,6 @@ export function Shop() {
           imageOne: productData.imageOne,
         }),
       }
-
       if (existingItemIndex > -1) {
         // Update existing item quantity
         const currentQty = Number.parseInt(cartItems[existingItemIndex].quantity) || 1
@@ -91,7 +135,6 @@ export function Shop() {
         // Add new item
         cartItems.push(newItem)
       }
-
       localStorage.setItem("localCart", JSON.stringify(cartItems))
       return true
     } catch (error) {
@@ -105,15 +148,12 @@ export function Shop() {
     try {
       const existingWishlist = localStorage.getItem("localWishlist")
       const wishlistItems: LocalStorageItem[] = existingWishlist ? JSON.parse(existingWishlist) : []
-
       // Check if item already exists
       const existingItemIndex = wishlistItems.findIndex((item) => item.product_id === productId)
-
       if (existingItemIndex > -1) {
         // Item already in wishlist
         return false
       }
-
       const newItem: LocalStorageItem = {
         product_id: productId,
         quantity: "1",
@@ -131,7 +171,6 @@ export function Shop() {
           imageOne: productData.imageOne,
         }),
       }
-
       wishlistItems.push(newItem)
       localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
       return true
@@ -142,67 +181,60 @@ export function Shop() {
   }
 
   useEffect(() => {
-  const currentPath = pathname
-  const SCT = searchParams.get("SCT")
-  const PCT = searchParams.get("PCT")
-
-  if (SCT) {
-    // subcategory has highest priority
-    setCategoryId(`SCT:${SCT}`)
-  } else if (PCT) {
-    // then category
-    setCategoryId(`PCT:${PCT}`)
-  } else {
-    // fallback to pathname or saved category
-    if (currentPath === "/rentals") {
-      setCategoryId("GCT:c7d6c7e5-aafe-439d-a714-63dd3910d3f9")
-    } else if (currentPath === "/shop/decorations") {
-      setCategoryId("GCT:1fc158a6-5dbc-43e9-b385-4cadb8434a76")
-    } else if (currentPath === "/shop/holiday") {
-      setCategoryId("GCT:6f30f52f-47f2-4196-996c-7b0daabcd495")
-    } else if (currentPath === "/shop/party-supplies") {
-      setCategoryId("GCT:a72e830e-69ba-4977-b8e9-9250a196dd50")
-    } else if (currentPath === "/shop/birthday") {
-      setCategoryId("GCT:a48bac0e-05b1-4511-a23e-99e31dc6abec")
-    } else if (currentPath === "/shop/balloon") {
-      setCategoryId("GCT:91a306bf-4df5-4940-8740-d28e0260c10d")
-    } else if (currentPath === "/shop") {
-      setCategoryId(null)
+    const currentPath = pathname
+    const SCT = searchParams.get("SCT")
+    const PCT = searchParams.get("PCT")
+    if (SCT) {
+      // subcategory has highest priority
+      setCategoryId(`SCT:${SCT}`)
+    } else if (PCT) {
+      // then category
+      setCategoryId(`PCT:${PCT}`)
     } else {
-      const savedCategoryId = localStorage.getItem("activeCategoryId")
-      setCategoryId(savedCategoryId ? `GCT:${savedCategoryId}` : null)
+      // fallback to pathname or saved category
+      if (currentPath === "/rentals") {
+        setCategoryId("GCT:c7d6c7e5-aafe-439d-a714-63dd3910d3f9")
+      } else if (currentPath === "/shop/decorations") {
+        setCategoryId("GCT:1fc158a6-5dbc-43e9-b385-4cadb8434a76")
+      } else if (currentPath === "/shop/holiday") {
+        setCategoryId("GCT:6f30f52f-47f2-4196-996c-7b0daabcd495")
+      } else if (currentPath === "/shop/party-supplies") {
+        setCategoryId("GCT:a72e830e-69ba-4977-b8e9-9250a196dd50")
+      } else if (currentPath === "/shop/birthday") {
+        setCategoryId("GCT:a48bac0e-05b1-4511-a23e-99e31dc6abec")
+      } else if (currentPath === "/shop/balloon") {
+        setCategoryId("GCT:91a306bf-4df5-4940-8740-d28e0260c10d")
+      } else if (currentPath === "/shop") {
+        setCategoryId(null)
+      } else {
+        const savedCategoryId = localStorage.getItem("activeCategoryId")
+        setCategoryId(savedCategoryId ? `GCT:${savedCategoryId}` : null)
+      }
     }
-  }
-
-  setReady(true)
-}, [pathname, searchParams])
+    setReady(true)
+  }, [pathname, searchParams])
 
   // Fetch products every time categoryId changes
   useEffect(() => {
     if (!ready) return // wait until pathname/categoryId logic is finished
-
-  const url = (() => {
-  if (!categoryId) {
-    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-  }
-
-  if (categoryId.startsWith("SCT:")) {
-    const id = categoryId.replace("SCT:", "")
-    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
-  }
-
-  if (categoryId.startsWith("PCT:")) {
-    const id = categoryId.replace("PCT:", "")
-    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
-  }
-
-  if (categoryId.startsWith("GCT:")) {
-    const id = categoryId.replace("GCT:", "")
-    return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
-  }
-
-  return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-})()
+    const url = (() => {
+      if (!categoryId) {
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+      }
+      if (categoryId.startsWith("SCT:")) {
+        const id = categoryId.replace("SCT:", "")
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
+      }
+      if (categoryId.startsWith("PCT:")) {
+        const id = categoryId.replace("PCT:", "")
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
+      }
+      if (categoryId.startsWith("GCT:")) {
+        const id = categoryId.replace("GCT:", "")
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
+      }
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+    })()
 
     const fetchProducts = async () => {
       setLoading(true)
@@ -215,16 +247,13 @@ export function Shop() {
             ...(token ? { Authorization: token } : {}),
           },
         })
-
         if (!res.ok) throw new Error(`Server error: ${res.status}`)
-
         const json = await res.json()
         const productList = Array.isArray(json.data?.product)
           ? json.data.product
           : Array.isArray(json.data)
             ? json.data
             : []
-
         const formatted = productList.map((p: ProductApiResponse) => {
           const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
           return {
@@ -233,8 +262,8 @@ export function Shop() {
             finalPrice,
           }
         })
-
-        setProducts(formatted)
+        setOriginalProducts(formatted) // Store original products
+        setProducts(formatted) // Set initial display products
       } catch (e: unknown) {
         console.error("Fetch error:", e)
         setError(e instanceof Error ? e.message : "Unknown error")
@@ -272,7 +301,6 @@ export function Shop() {
         },
         body: JSON.stringify({ product_id: productId, quantity: "1", size: "", color: "" }),
       })
-
       const data = await res.json()
       if (res.ok && data.statusCode === 200) {
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
@@ -308,7 +336,6 @@ export function Shop() {
         },
         body: JSON.stringify({ product_id: productId, quantity: "1", size: "", color: "" }),
       })
-
       const data = await res.json()
       if (res.ok && data.statusCode === 200) {
         alert("Added to wishlist")
@@ -340,7 +367,7 @@ export function Shop() {
   return (
     <main className="flex gap-6 px-8 py-6 bg-[#F8F8F8]">
       <div className="hidden md:block">
-        <FiltersDefault />
+        <FiltersDefault onFiltersChange={handleFiltersChange} />
       </div>
       <section className="flex-1">
         <div className="flex justify-center md:hidden mb-4">
@@ -348,7 +375,6 @@ export function Shop() {
             Filters
           </button>
         </div>
-
         {/* Show FiltersDefault as a modal on mobile or as a permanent component on desktop */}
         {isModalVisible && (
           <div className="max-md:flex max-md:fixed max-md:top-0 max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:bg-opacity-50 max-md:bg-black max-md:z-50 max-md:justify-center max-md:items-center max-md:overflow-y-auto">
@@ -360,11 +386,10 @@ export function Shop() {
               >
                 <X className="w-6 h-6" />
               </button>
-              <FiltersDefault />
+              <FiltersDefault onFiltersChange={handleFiltersChange} />
             </div>
           </div>
         )}
-
         <div className="hidden md:flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
           {products.map((p) => (
             <ProductCard
@@ -390,14 +415,29 @@ export function Shop() {
             />
           ))}
         </div>
-
         <div className="block md:hidden w-full">
-          <ProductGrid />
+          <ProductGrid 
+            products={products.map((p) => ({
+              id: p.productId,
+              image: p.imageOne,
+              title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
+              price: p.finalPrice,
+              originalPrice:
+                (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
+                  ? Number(p.price || 0)
+                  : undefined,
+              discountPrice: typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice,
+              finalPrice: p.finalPrice,
+              isOutOfStock: p.quantity === 0,
+              isWishlisted: false,
+              isAdded: p.isAdded,
+            }))}
+            onAddToCart={handleAddToCart}
+            onAddToWishlist={handleAddToWishlist}
+          />
         </div>
-
         <Pagination />
       </section>
-
       {modalType === "signup" && <SignUpModal onClose={handleCloseModal} onOpenLogin={() => setModalType("login")} />}
       {modalType === "login" && (
         <LoginModal
