@@ -48,7 +48,7 @@ export const ProductGrid: React.FC = () => {
   };
 
   // Helper function to save cart items to localStorage
-  const saveCartToLocalStorage = (productId: string, productData?: any) => {
+  const saveCartToLocalStorage = (productId: string, productData?: Product) => {
     try {
       const existingCart = localStorage.getItem("localCart");
       const cartItems: LocalStorageCartItem[] = existingCart ? JSON.parse(existingCart) : [];
