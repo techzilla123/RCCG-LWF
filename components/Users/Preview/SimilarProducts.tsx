@@ -14,12 +14,53 @@ type Product = {
   discountPrice?: number // Add discount price from API
 }
 
+// Mobile Product interface
+interface MobileProduct {
+  id: string
+  image: string
+  title: string
+  price: number
+  originalPrice?: number
+  discountPrice?: number
+  finalPrice: number
+  isOutOfStock?: boolean
+  isWishlisted?: boolean
+  isAdded?: boolean
+}
+
+// Interface for localStorage cart items
+interface LocalStorageCartItem {
+  product_id: string
+  quantity: string
+  size: string
+  color: string
+  productName?: string
+  price?: number
+  discountPrice?: number
+  finalPrice?: number
+  imageOne?: string
+}
+
+// Interface for localStorage wishlist items
+interface LocalStorageWishlistItem {
+  product_id: string
+  quantity: string
+  size: string
+  color: string
+  productName?: string
+  price?: number
+  discountPrice?: number
+  finalPrice?: number
+  imageOne?: string
+}
+
 const SimilarProducts: React.FC = () => {
   const desktopScrollRef = useRef<HTMLDivElement>(null)
   const mobileScrollRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
   const productId = searchParams.keys().next().value || ""
   const [products, setProducts] = useState<ProductCardProps[]>([])
+  const [mobileProducts, setMobileProducts] = useState<MobileProduct[]>([])
 
   useEffect(() => {
     const fetchSimilarProducts = async () => {
@@ -29,16 +70,16 @@ const SimilarProducts: React.FC = () => {
           "Content-Type": "application/json",
           "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
         }
-
         if (token) headers["Authorization"] = token
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`, {
           method: "GET",
           headers,
         })
-
         const json = await res.json()
+
         if (json.statusCode === 200 && Array.isArray(json.data?.similarProducts)) {
+          // Format for desktop
           const formatted: ProductCardProps[] = json.data.similarProducts.map((product: Product) => {
             // Calculate correct price (original - discount)
             const originalPrice = Number(product.price) || 0
@@ -56,7 +97,29 @@ const SimilarProducts: React.FC = () => {
               discountPrice: discountAmount,
             }
           })
+
+          // Format for mobile
+          const mobileFormatted: MobileProduct[] = json.data.similarProducts.map((product: Product) => {
+            const originalPrice = Number(product.price) || 0
+            const discountAmount = Number(product.discountPrice) || 0
+            const finalPrice = originalPrice - discountAmount
+
+            return {
+              id: product.productId,
+              image: product.imageOne,
+              title: product.productName.length > 26 ? product.productName.slice(0, 23) + "..." : product.productName,
+              price: finalPrice > 0 ? finalPrice : originalPrice,
+              originalPrice: discountAmount > 0 ? originalPrice : undefined,
+              discountPrice: discountAmount,
+              finalPrice: finalPrice > 0 ? finalPrice : originalPrice,
+              isOutOfStock: false, // You can add this field from API if available
+              isWishlisted: false,
+              isAdded: false,
+            }
+          })
+
           setProducts(formatted)
+          setMobileProducts(mobileFormatted)
         }
       } catch (error) {
         console.error("Failed to fetch similar products:", error)
@@ -77,6 +140,157 @@ const SimilarProducts: React.FC = () => {
         left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
         behavior: "smooth",
       })
+    }
+  }
+
+  // Helper function to save cart items to localStorage
+  const saveCartToLocalStorage = (productId: string, productData: MobileProduct): boolean => {
+    try {
+      const existingCart = localStorage.getItem("localCart")
+      const cartItems: LocalStorageCartItem[] = existingCart ? JSON.parse(existingCart) : []
+
+      const existingItemIndex = cartItems.findIndex((item) => item.product_id === productId)
+      const newItem: LocalStorageCartItem = {
+        product_id: productId,
+        quantity: "1",
+        size: "",
+        color: "",
+        productName: productData.title,
+        price: productData.originalPrice || productData.price,
+        discountPrice: productData.discountPrice || 0,
+        finalPrice: productData.finalPrice,
+        imageOne: productData.image,
+      }
+
+      if (existingItemIndex > -1) {
+        const currentQty = Number.parseInt(cartItems[existingItemIndex].quantity) || 1
+        cartItems[existingItemIndex].quantity = (currentQty + 1).toString()
+      } else {
+        cartItems.push(newItem)
+      }
+
+      localStorage.setItem("localCart", JSON.stringify(cartItems))
+      return true
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+      return false
+    }
+  }
+
+  // Helper function to save wishlist items to localStorage
+  const saveWishlistToLocalStorage = (productId: string, productData: MobileProduct): boolean => {
+    try {
+      const existingWishlist = localStorage.getItem("localWishlist")
+      const wishlistItems: LocalStorageWishlistItem[] = existingWishlist ? JSON.parse(existingWishlist) : []
+
+      const existingItemIndex = wishlistItems.findIndex((item) => item.product_id === productId)
+      if (existingItemIndex > -1) {
+        return false
+      }
+
+      const newItem: LocalStorageWishlistItem = {
+        product_id: productId,
+        quantity: "1",
+        size: "",
+        color: "",
+        productName: productData.title,
+        price: productData.originalPrice || productData.price,
+        discountPrice: productData.discountPrice || 0,
+        finalPrice: productData.finalPrice,
+        imageOne: productData.image,
+      }
+
+      wishlistItems.push(newItem)
+      localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
+      return true
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+      return false
+    }
+  }
+
+  // Handle add to cart for mobile products
+  const handleAddToCart = async (productId: string) => {
+    const token = localStorage.getItem("accessToken")
+    if (!token) {
+      // Save to localStorage instead of showing modal
+      const productData = mobileProducts.find((p) => p.id === productId)
+      if (productData) {
+        const saved = saveCartToLocalStorage(productId, productData)
+        if (saved) {
+          // Update UI to show item as added
+          setMobileProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, isAdded: true } : p)))
+          alert("Product saved to cart! Sign in to sync your cart.")
+        } else {
+          alert("Failed to save product to cart.")
+        }
+      }
+      return
+    }
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          Authorization: token,
+        },
+        body: JSON.stringify({ product_id: productId, quantity: "1", size: "", color: "" }),
+      })
+      const data = await res.json()
+      if (res.ok && data.statusCode === 200) {
+        setMobileProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, isAdded: true } : p)))
+        alert("Product added to cart")
+      } else {
+        console.error("Cart error:", data)
+        alert("Failed to add product to cart")
+      }
+    } catch (err) {
+      console.error("Add to cart failed:", err)
+      alert("Failed to add product to cart")
+    }
+  }
+
+  // Handle add to wishlist for mobile products
+  const handleAddToWishlist = async (productId: string) => {
+    const token = localStorage.getItem("accessToken")
+    if (!token) {
+      // Save to localStorage instead of showing modal
+      const productData = mobileProducts.find((p) => p.id === productId)
+      if (productData) {
+        const saved = saveWishlistToLocalStorage(productId, productData)
+        if (saved) {
+          setMobileProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, isWishlisted: true } : p)))
+          alert("Product saved to wishlist! Sign in to sync your wishlist.")
+        } else {
+          alert("Product is already in your wishlist!")
+        }
+      }
+      return
+    }
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-wish-list`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          Authorization: token,
+        },
+        body: JSON.stringify({ product_id: productId, quantity: "1", size: "", color: "" }),
+      })
+      const data = await res.json()
+      if (res.ok && data.statusCode === 200) {
+        setMobileProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, isWishlisted: true } : p)))
+        alert("Added to wishlist")
+      } else {
+        console.error("Wishlist error:", data)
+        alert("Failed to add to wishlist")
+      }
+    } catch (err) {
+      console.error("Wishlist failed:", err)
+      alert("Failed to add to wishlist")
     }
   }
 
@@ -113,7 +327,12 @@ const SimilarProducts: React.FC = () => {
 
       {/* Mobile ProductGrid */}
       <div className="block md:hidden mt-6 w-full">
-        <ProductGrid scrollRef={mobileScrollRef} />
+        <ProductGrid
+          scrollRef={mobileScrollRef}
+          products={mobileProducts}
+          onAddToCart={handleAddToCart}
+          onAddToWishlist={handleAddToWishlist}
+        />
       </div>
 
       {/* See More Button */}
