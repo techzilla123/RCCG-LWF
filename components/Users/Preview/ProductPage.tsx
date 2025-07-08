@@ -30,6 +30,10 @@ type Product = {
   imageOne: string
   imageTwo: string
   imageThree: string
+  imageFour: string
+  imageFive: string
+  imageSix: string
+  imageSeven: string
   review: Review[]
 }
 
@@ -154,23 +158,20 @@ export const ProductPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col order-2 xl:order-1 w-full">
-        <ProductGallery
-          mainImage={product.imageOne}
-          images={[
-            {
-              thumbnail: product.imageOne,
-              full: product.imageOne,
-            },
-            {
-              thumbnail: product.imageTwo,
-              full: product.imageTwo,
-            },
-            {
-              thumbnail: product.imageThree,
-              full: product.imageThree,
-            },
-          ]}
-        />
+       <ProductGallery
+  mainImage={product.imageOne}
+  images={[
+    product.imageOne,
+    product.imageTwo,
+    product.imageThree,
+    product.imageFour,
+    product.imageFive,
+    product.imageSix,
+    product.imageSeven,
+  ]
+    .filter((img) => img && img.trim() !== "")
+    .map((img) => ({ thumbnail: img, full: img }))}
+/>
 
         <div className="flex xl:hidden flex-col">
           <ProductInfo

@@ -14,7 +14,8 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
     images.findIndex((img) => img.full === mainImage) || 0
   );
 
-  const selectedImage = images[selectedIndex]?.full;
+  const selectedImage = images[selectedIndex]?.full || images[0]?.full;
+
 
   const handlePrev = () => {
     setSelectedIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
