@@ -1,4 +1,5 @@
 "use client"
+
 import type React from "react"
 import { useState, useEffect } from "react"
 import type { SummaryItemType } from "./types"
@@ -46,7 +47,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [calculatedShipping, setCalculatedShipping] = useState<number | null>(null)
   const [isShippingCalculated, setIsShippingCalculated] = useState(false)
   const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null)
-
   // New state for signin modal
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false)
   const [guestEmail, setGuestEmail] = useState("")
@@ -137,10 +137,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   }
 
   const calculateLogisticsPrice = (distance: number): number => {
-    if (distance <= 1) {
-      return 50 // Base price for up to 1 mile
+    if (distance <= 15) {
+      return 75 // Base price for up to 15 miles
     }
-    return Math.ceil(distance) * 50 // $50 per mile, rounded up
+    const additionalMiles = distance - 15
+    return 75 + Math.ceil(additionalMiles) * 5 // $75 base + $5 per additional mile, rounded up
   }
 
   const validateEmail = (email: string): boolean => {
@@ -215,18 +216,15 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
 
   const handleCheckout = async () => {
     setErrorMessage("") // Clear any previous errors
-
     // Check if user is signed in
     const token = localStorage.getItem("accessToken")
     const isSignedIn = !!token
-
     if (!isSignedIn && !hasProvidedGuestInfo) {
       // Show signin/email modal
       setIsSigninModalOpen(true)
       document.body.style.overflow = "hidden"
       return
     }
-
     // Continue with existing checkout logic
     await proceedWithCheckout()
   }
@@ -235,21 +233,18 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     // Get current delivery method from localStorage
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
     setDeliveryMethod(currentMethod)
-
     if (!validateRequiredFields()) {
       setErrorMessage("Please complete all required delivery information.")
       setIsModalOpen(true)
       document.body.style.overflow = "hidden"
       return
     }
-
     // If shipping is already calculated, proceed to final order
     if (isShippingCalculated) {
       console.log("Shipping already calculated, proceeding to order creation")
       await createOrder(calculatedShipping || 0, currentMethod)
       return
     }
-
     // Calculate shipping for local delivery
     if (currentMethod === "local") {
       setIsCalculatingShipping(true)
@@ -337,19 +332,16 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     try {
       const token = localStorage.getItem("accessToken")
       const isSignedIn = !!token // Convert to boolean - true if token exists, false if not
-
       const userData = {
         firstname: localStorage.getItem("firstname"),
         lastname: localStorage.getItem("lastname"),
         userId: localStorage.getItem("userId"),
         email: localStorage.getItem("email"),
       }
-
       const deliveryLocationData = localStorage.getItem("deliveryLocation")
       const deliveryDetails: LocationInfo = deliveryLocationData
         ? JSON.parse(deliveryLocationData)
         : ({} as LocationInfo)
-
       let deliveryAddressString = ""
       if (finalDeliveryMethod === "pickup") {
         deliveryAddressString = `Pickup at: 1919 Faithon P Lucas Sr. Blvd, #135, Mesquite TX 75181 on ${deliveryDetails.pickupDate} at ${deliveryDetails.pickupTime}`
@@ -364,7 +356,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
         }
       }
-
       const cleanTotal = total.replace(/[$,]/g, "")
       const totalAmount = Number.parseFloat(cleanTotal)
       const correctedOrders = orders.map((order) => {
@@ -376,7 +367,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           amount: unitPrice.toFixed(2),
         }
       })
-
       const requestBody = {
         is_signed_in: isSignedIn,
         customer_id: userData.userId,
@@ -391,31 +381,25 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         delivery_type: finalDeliveryMethod,
         orders: correctedOrders,
       }
-
       console.log("Order request body:", requestBody) // Debug log
-
       const headers = {
         "Content-Type": "application/json",
         "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
         ...(token ? { Authorization: token } : {}),
       }
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/create-order`, {
         method: "POST",
         headers,
         body: JSON.stringify(requestBody),
       })
-
       const result = await res.json()
       if (!res.ok) {
         throw new Error(result.message || "Order failed")
       }
-
       // Clear cart data
       localStorage.removeItem("cart")
       localStorage.removeItem("deliveryLocation")
       localStorage.removeItem("deliveryMethod")
-
       // Redirect to Stripe checkout URL
       if (result.data && result.data.url) {
         window.location.href = result.data.url
@@ -516,7 +500,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           )}
         </button>
       </div>
-
       {/* Signin/Email Modal */}
       {isSigninModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -533,12 +516,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
             >
               &times;
             </button>
-
             <div className="text-center mb-6">
               <h3 className="text-xl font-semibold mb-2">Continue Your Order</h3>
               <p className="text-gray-600">Please provide your information to continue</p>
             </div>
-
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -575,7 +556,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
                 </div>
               </div>
               {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
-
               <div>
                 <label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email Address
@@ -593,14 +573,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
                 />
                 {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
               </div>
-
               <button
                 onClick={handleEmailSubmit}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Continue as Guest
               </button>
-
               <div className="text-center">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
@@ -611,7 +589,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
                   </div>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={handleOpenLogin}
@@ -630,7 +607,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           </div>
         </div>
       )}
-
       {/* Existing delivery modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
