@@ -9,13 +9,13 @@ export const FooterContact = () => {
           href="tel:+10123456789"
           className="p-2 h-10 rounded-[50px] hover:text-blue-300 transition-colors"
         >
-          +1 (0) 12345678
+          +1 (469) 248-2060
         </a>
         <a
           href="mailto:contact@partyplace&rentals.com"
           className="p-2 h-10 whitespace-nowrap rounded-[50px] hover:text-blue-300 transition-colors"
         >
-          contact@partyplace&rentals.com
+          support@partyplace&rentals.com
         </a>
       </div>
       <div className="flex gap-4 mt-4">

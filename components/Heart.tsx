@@ -91,6 +91,9 @@ export function Heart() {
       }
 
       localStorage.setItem("localCart", JSON.stringify(cartItems))
+
+          window.dispatchEvent(new Event("cartUpdated"))
+          
       return true
     } catch (error) {
       console.error("Error saving to localStorage:", error)
@@ -132,6 +135,7 @@ export function Heart() {
 
       wishlistItems.push(newItem)
       localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
+          window.dispatchEvent(new Event("wishlistUpdated"))
       return true
     } catch (error) {
       console.error("Error saving to localStorage:", error)

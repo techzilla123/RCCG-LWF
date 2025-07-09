@@ -22,6 +22,7 @@ export const SignUpLink: React.FC = () => {
       >
         Sign up
       </button>
+      
 
       {modalType === "signup" && (
         <SignUpModal 

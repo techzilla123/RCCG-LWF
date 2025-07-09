@@ -224,7 +224,8 @@ export function New() {
       const data = await res.json()
       if (data.statusCode === 200) {
         alert("Product added to wishlist")
-        console.log("Wishlist response:", data)
+         window.dispatchEvent(new Event("wishlistUpdated"))
+       
       } else {
         console.error("Failed to add to wishlist:", data)
         alert("Could not add product to wishlist.")
@@ -245,6 +246,7 @@ export function New() {
         // Update UI to show item as added
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
         alert("Product saved to cart! Sign in to sync your cart.")
+         window.dispatchEvent(new Event("cartUpdated"))
       } else {
         alert("Failed to save product to cart.")
       }

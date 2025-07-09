@@ -9,16 +9,18 @@ export const CartDropdown = () => {
   const [cartTotal, setCartTotal] = useState(0)
   const [itemCount, setItemCount] = useState(0)
 
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") || ""
+useEffect(() => {
+  const fetchCart = async () => {
+    try {
+      const token = localStorage.getItem("accessToken") || ""
+
+      if (token) {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/cart-list`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token && { Authorization: token }),
+            Authorization: token,
           },
         })
 
@@ -41,13 +43,42 @@ export const CartDropdown = () => {
 
         setCartTotal(total)
         setItemCount(count)
-      } catch (error) {
-        console.error("Failed to fetch cart", error)
-      }
-    }
+      } else {
+        const localCart = localStorage.getItem("localCart")
+        const cartItems = localCart ? JSON.parse(localCart) : []
 
-    fetchCart()
-  }, [])
+        let total = 0
+        let count = 0
+
+        for (const item of cartItems) {
+          const price = parseFloat(item.price || "0")
+          const discount = parseFloat(item.discountPrice || "0")
+          const finalPrice = price - discount
+          const qty = parseInt(item.quantity || "0")
+
+          total += finalPrice * qty
+          count += qty
+        }
+
+        setCartTotal(total)
+        setItemCount(count)
+      }
+    } catch (error) {
+      console.error("Failed to fetch cart", error)
+    }
+  }
+
+  fetchCart()
+
+  // ✅ Listen to custom event and update cart
+  window.addEventListener("cartUpdated", fetchCart)
+
+  // Cleanup on unmount
+  return () => {
+    window.removeEventListener("cartUpdated", fetchCart)
+  }
+}, [])
+
 
   return (
     <div

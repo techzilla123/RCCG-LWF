@@ -78,35 +78,45 @@ export const UserActions = () => {
 
   // ✅ Fetch wishlist count & auto-update on custom event
   useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") || "";
+  const fetchWishlist = async () => {
+    try {
+      const token = localStorage.getItem("accessToken") || ""
+
+      if (token) {
+        // Logged-in user: fetch from API
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/wish-list`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token && { Authorization: token }),
+            Authorization: token,
           },
-        });
+        })
 
-        const result = await response.json();
-        const items = result?.data || [];
-        setWishlistCount(items.length);
-      } catch (error) {
-        console.error("Failed to fetch wishlist", error);
+        const result = await response.json()
+        const items = result?.data || []
+        setWishlistCount(items.length)
+      } else {
+        // Guest user: use localStorage
+        const localWishlist = localStorage.getItem("localWishlist")
+        const items = localWishlist ? JSON.parse(localWishlist) : []
+        setWishlistCount(items.length)
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch wishlist", error)
+    }
+  }
 
-    fetchWishlist(); // initial fetch
+  fetchWishlist()
 
-    const handleWishlistChange = () => fetchWishlist();
-    window.addEventListener("wishlistUpdated", handleWishlistChange);
+  const handleWishlistChange = () => fetchWishlist()
+  window.addEventListener("wishlistUpdated", handleWishlistChange)
 
-    return () => {
-      window.removeEventListener("wishlistUpdated", handleWishlistChange);
-    };
-  }, []);
+  return () => {
+    window.removeEventListener("wishlistUpdated", handleWishlistChange)
+  }
+}, [])
+
 
   const handleGoToWishlist = () => router.push("/wishlist");
   const handleGoToCart = () => router.push("/cart");

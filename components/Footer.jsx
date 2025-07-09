@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import { FooterBrand } from "./Footer/FooterBrand";
 import { FooterLinks } from "./Footer/FooterLinks";
@@ -6,6 +7,12 @@ import { FooterContact } from "./Footer/FooterContact";
 import { FooterLegals } from "./Footer/FooterLegals";
 
 function Footer() {
+  const openBotChat = () => {
+    if (typeof window !== "undefined" && window.botpressWebChat) {
+      window.botpressWebChat.sendEvent({ type: "show" });
+    }
+  };
+
   return (
     <footer className="self-stretch bg-blue" style={{ background: "#00438C" }}>
       <div className="flex flex-wrap justify-between gap-y-10 px-8 md:px-20 lg:px-32 py-10 w-full">
@@ -24,7 +31,13 @@ function Footer() {
           ]}
         />
 
-        <FooterLinks title="Info" links={["About", "FAQ", "Contact", "Help"]} />
+        <FooterLinks
+          title="Info"
+          links={["About", "FAQ", "Contact", "Chat With Us", "Help"]}
+          onClickMap={{
+            "Chat With Us": openBotChat,
+          }}
+        />
 
         <FooterContact />
       </div>

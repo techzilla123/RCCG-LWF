@@ -65,14 +65,22 @@ function Hero() {
   const [currentImage, setCurrentImage] = React.useState(0); 
   const content = headlineVariants[currentImage];
 
-  // Function to automatically change the image and headline every 3 minutes
-  React.useEffect(() => { 
-    const interval = setInterval(() => { 
-      setCurrentImage((prevIndex) => (prevIndex + 1) % bgImages.length); 
-    }, 180000); 
+  // const [fade, setFade] = React.useState(true);
 
-    return () => clearInterval(interval);
-  }, []);
+const [animate, setAnimate] = React.useState(true);
+
+React.useEffect(() => {
+  const interval = setInterval(() => {
+    setAnimate(false); // Reset animation
+    setTimeout(() => {
+      setCurrentImage((prevIndex) => (prevIndex + 1) % bgImages.length);
+      setAnimate(true); // Trigger animation
+    }, 100); // Short delay before switching
+  }, 60000); // Every 1 minute
+
+  return () => clearInterval(interval);
+}, []);
+
 
   const handleDotClick = (index: number) => {
     setCurrentImage(index); 
@@ -80,11 +88,21 @@ function Hero() {
 
   return (
     <section className="relative flex flex-col justify-center items-start px-20 pt-10 max-md:px-5 h-[calc(100vh-80px)]">
-      <img
-        src={bgImages[currentImage]}
-        alt={`Hero background ${currentImage + 1}`}
-        className="absolute inset-0 object-cover w-full h-full z-0 transition-opacity duration-500"
-      />
+ <img
+  src={bgImages[currentImage]}
+  alt={`Hero background ${currentImage + 1}`}
+  className={`absolute inset-0 object-cover w-full h-full z-0 transition-all duration-700 ease-out transform ${
+    animate ? "opacity-100 scale-100" : "opacity-0 scale-105"
+  }`}
+/>
+
+      
+  {/* LEFT SIDE FADE EFFECT */}
+<div className="absolute left-0 top-0 h-full w-[500px] z-0 pointer-events-none">
+  <div className="h-full w-full bg-gradient-to-r from-white via-white/70 to-transparent opacity-10 md:opacity-100" />
+</div>
+
+  
  <div className="absolute w-[160px] -top-2 left-1/2 transform -translate-x-1/2 z-20">
     <CheckoutOptions />
   </div>

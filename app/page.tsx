@@ -16,6 +16,7 @@ import Faq from "@/components/Faq"
 import Offers from "@/components/Offers"
 import Footer from "@/components/Footer"
 import Reviews from "@/components/Reviews"
+import BotpressChat from "@/components/BotpressChat"
 
 export default function Home() {
   const [hasOrder, setHasOrder] = useState(false)
@@ -68,13 +69,15 @@ export default function Home() {
       <Offers />
       <Footer />
 
-      {hasOrder && (
+       {hasOrder ? (
         <button
           onClick={handleOrderClick}
           className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center text-sm hover:bg-blue-700 z-50"
         >
           Order
         </button>
+      ) : (
+        <BotpressChat />
       )}
     </div>
   )

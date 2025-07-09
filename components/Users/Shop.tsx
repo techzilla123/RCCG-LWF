@@ -285,6 +285,7 @@ export function Shop() {
         // Update UI to show item as added
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
         alert("Product saved to cart! Sign in to sync your cart.")
+         window.dispatchEvent(new Event("cartUpdated"))
       } else {
         alert("Failed to save product to cart.")
       }
@@ -320,6 +321,7 @@ export function Shop() {
       const saved = saveWishlistToLocalStorage(productId, productData)
       if (saved) {
         alert("Product saved to wishlist! Sign in to sync your wishlist.")
+         window.dispatchEvent(new Event("wishlistUpdated"))
       } else {
         alert("Product is already in your wishlist!")
       }
@@ -339,6 +341,7 @@ export function Shop() {
       const data = await res.json()
       if (res.ok && data.statusCode === 200) {
         alert("Added to wishlist")
+         window.dispatchEvent(new Event("wishlistUpdated"))
       } else {
         console.error("Wishlist error:", data)
       }

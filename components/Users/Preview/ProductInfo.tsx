@@ -130,6 +130,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
       const saved = saveCartToLocalStorage()
       if (saved) {
         setPopupMessage("Product saved to cart! Sign in to sync your cart.")
+         window.dispatchEvent(new Event("cartUpdated"))
         setPopupType("success")
         setShowViewCart(true)
       } else {
@@ -171,6 +172,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
 
       // Success
       setPopupMessage("Product added to cart successfully!")
+       window.dispatchEvent(new Event("cartUpdated"))
+
       setPopupType("success")
       setShowViewCart(true)
     } catch (err) {
