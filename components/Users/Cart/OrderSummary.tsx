@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useState, useEffect } from "react"
 import type { SummaryItemType } from "./types"
@@ -23,6 +22,7 @@ interface OrderSummaryProps {
   }[]
 }
 
+// Updated LocationInfo type to include return fields
 type LocationInfo = {
   country: string
   city: string
@@ -35,9 +35,33 @@ type LocationInfo = {
   pickupDate: string
   pickupTime: string
   phoneNumber: string
+  returnDate: string
+  returnTime: string
 }
 
 type DeliveryMethod = "pickup" | "local" | "shipping"
+
+// Helper function to calculate pricing multiplier based on days
+const calculateRentalMultiplier = (
+  startDate: string,
+  startTime: string,
+  returnDate: string,
+  returnTime: string,
+): number => {
+  if (!startDate || !startTime || !returnDate || !returnTime) return 1
+
+  const startDateTime = new Date(`${startDate}T${startTime}:00`)
+  const returnDateTime = new Date(`${returnDate}T${returnTime}:00`)
+
+  const diffInHours = (returnDateTime.getTime() - startDateTime.getTime()) / (1000 * 60 * 60)
+  const diffInDays = Math.floor(diffInHours / 24)
+
+  // Base price for same day or up to 24 hours
+  if (diffInHours <= 24) return 1
+
+  // Beyond 1 day: x2, beyond 2 days: x3, etc.
+  return diffInDays + 1
+}
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, total, orders }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -47,6 +71,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [calculatedShipping, setCalculatedShipping] = useState<number | null>(null)
   const [isShippingCalculated, setIsShippingCalculated] = useState(false)
   const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null)
+  const [adjustedItems, setAdjustedItems] = useState<SummaryItemType[]>(items)
+  const [adjustedTotal, setAdjustedTotal] = useState<string>(total)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [, setRentalMultiplier] = useState(1)
+
   // New state for signin modal
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false)
   const [guestEmail, setGuestEmail] = useState("")
@@ -57,12 +86,120 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [hasProvidedGuestInfo, setHasProvidedGuestInfo] = useState(false)
 
+  // Check if any product has "Rentals" in the name
+  const hasRentalProducts = orders.some(
+    (order) =>
+      order.product_name?.toLowerCase().includes("rentals") || order.product_name?.toLowerCase().includes("rental"),
+  )
+
+  // Function to calculate adjusted pricing for rental items
+  const calculateAdjustedPricing = () => {
+    const deliveryData = localStorage.getItem("deliveryLocation")
+    if (!deliveryData || !hasRentalProducts) {
+      setAdjustedItems(items)
+      setAdjustedTotal(total)
+      return
+    }
+
+    const parsedDeliveryData: LocationInfo = JSON.parse(deliveryData)
+    const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
+
+    const startDate = currentMethod === "pickup" ? parsedDeliveryData.pickupDate : parsedDeliveryData.deliveryDate
+    const startTime = currentMethod === "pickup" ? parsedDeliveryData.pickupTime : parsedDeliveryData.deliveryTime
+
+    const multiplier = calculateRentalMultiplier(
+      startDate,
+      startTime,
+      parsedDeliveryData.returnDate,
+      parsedDeliveryData.returnTime,
+    )
+
+    setRentalMultiplier(multiplier)
+
+    if (multiplier > 1) {
+      // Multiply the price of rental items by the calculated multiplier
+      const newItems = items.map((item) => {
+        // Check if this item corresponds to a rental product
+        const isRentalItem = orders.some(
+          (order) =>
+            (order.product_name?.toLowerCase().includes("rentals") ||
+              order.product_name?.toLowerCase().includes("rental")) &&
+            item.label.toLowerCase().includes(order.product_name.toLowerCase().split(" ")[0].toLowerCase()),
+        )
+
+        if (isRentalItem && item.label.toLowerCase() !== "taxes" && item.label.toLowerCase() !== "subtotal") {
+          const currentAmount = Number.parseFloat(item.amount.replace(/[$,]/g, ""))
+          const multipliedAmount = currentAmount * multiplier
+          return {
+            ...item,
+            amount: `$${multipliedAmount.toFixed(2)}`,
+          }
+        }
+        return item
+      })
+
+      // Recalculate total
+      const subtotalItem = newItems.find((item) => item.label.toLowerCase() === "subtotal")
+      const taxesItem = newItems.find((item) => item.label.toLowerCase() === "taxes")
+
+      if (subtotalItem) {
+        const otherItems = newItems.filter(
+          (item) => item.label.toLowerCase() !== "subtotal" && item.label.toLowerCase() !== "taxes",
+        )
+        const newSubtotal = otherItems.reduce((sum, item) => {
+          return sum + Number.parseFloat(item.amount.replace(/[$,]/g, ""))
+        }, 0)
+
+        subtotalItem.amount = `$${newSubtotal.toFixed(2)}`
+
+        // Recalculate taxes if present (assuming same tax rate)
+        if (taxesItem) {
+          const originalSubtotal = Number.parseFloat(
+            items.find((item) => item.label.toLowerCase() === "subtotal")?.amount.replace(/[$,]/g, "") || "0",
+          )
+          const originalTaxes = Number.parseFloat(taxesItem.amount.replace(/[$,]/g, ""))
+          const taxRate = originalSubtotal > 0 ? originalTaxes / originalSubtotal : 0
+          const newTaxes = newSubtotal * taxRate
+          taxesItem.amount = `$${newTaxes.toFixed(2)}`
+
+          const newTotal = newSubtotal + newTaxes
+          setAdjustedTotal(`$${newTotal.toFixed(2)}`)
+        } else {
+          setAdjustedTotal(`$${newSubtotal.toFixed(2)}`)
+        }
+      }
+
+      setAdjustedItems(newItems)
+    } else {
+      setAdjustedItems(items)
+      setAdjustedTotal(total)
+    }
+  }
+
+  // Listen for rental pricing changes
+  useEffect(() => {
+    const handleRentalPricingChange = () => {
+      calculateAdjustedPricing()
+    }
+
+    window.addEventListener("rentalPricingChanged", handleRentalPricingChange)
+    window.addEventListener("deliveryMethodChanged", handleRentalPricingChange)
+
+    // Initial calculation
+    calculateAdjustedPricing()
+
+    return () => {
+      window.removeEventListener("rentalPricingChanged", handleRentalPricingChange)
+      window.removeEventListener("deliveryMethodChanged", handleRentalPricingChange)
+    }
+  }, [items, total, orders, hasRentalProducts])
+
   // Update delivery method when localStorage changes
   useEffect(() => {
     const updateDeliveryMethod = () => {
       const method = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
       setDeliveryMethod(method)
-      // Reset shipping calculation when method changes
+
       if (method === "pickup") {
         setCalculatedShipping(0)
         setIsShippingCalculated(true)
@@ -72,25 +209,32 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
       }
       setCalculatedDistance(null)
     }
+
     updateDeliveryMethod()
-    // Listen for storage changes
     window.addEventListener("storage", updateDeliveryMethod)
-    // Custom event for same-tab updates
     window.addEventListener("deliveryMethodChanged", updateDeliveryMethod)
+
     return () => {
       window.removeEventListener("storage", updateDeliveryMethod)
       window.removeEventListener("deliveryMethodChanged", updateDeliveryMethod)
     }
   }, [])
 
+  // Updated required fields map to include return fields for rentals
   const requiredFieldsMap: Record<DeliveryMethod, string[]> = {
-    pickup: ["pickupDate", "pickupTime", "phoneNumber"],
-    local: ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber"],
-    shipping: ["address", "postalCode", "phoneNumber"],
+    pickup: hasRentalProducts
+      ? ["pickupDate", "pickupTime", "phoneNumber", "returnDate", "returnTime"]
+      : ["pickupDate", "pickupTime", "phoneNumber"],
+    local: hasRentalProducts
+      ? ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber", "returnDate", "returnTime"]
+      : ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber"],
+    shipping: hasRentalProducts
+      ? ["address", "postalCode", "phoneNumber", "returnDate", "returnTime"]
+      : ["address", "postalCode", "phoneNumber"],
   }
 
-  const taxes = items.find((item) => item.label.toLowerCase() === "taxes")
-  const otherItems = items.filter(
+  const taxes = adjustedItems.find((item) => item.label.toLowerCase() === "taxes")
+  const otherItems = adjustedItems.filter(
     (item) => item.label.toLowerCase() !== "subtotal" && item.label.toLowerCase() !== "taxes",
   )
 
@@ -98,10 +242,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     const deliveryData = localStorage.getItem("deliveryLocation")
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
     console.log("Validating for method:", currentMethod)
+
     if (!deliveryData) {
       console.log("No delivery data found")
       return false
     }
+
     const parsedDeliveryData: LocationInfo = JSON.parse(deliveryData)
     const requiredFields = requiredFieldsMap[currentMethod]
     const isValid = requiredFields.every((field) => {
@@ -112,6 +258,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
       }
       return isFieldValid
     })
+
     console.log(`Validation result for ${currentMethod}:`, isValid)
     return isValid
   }
@@ -138,10 +285,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
 
   const calculateLogisticsPrice = (distance: number): number => {
     if (distance <= 15) {
-      return 75 // Base price for up to 15 miles
+      return 75
     }
     const additionalMiles = distance - 15
-    return 75 + Math.ceil(additionalMiles) * 5 // $75 base + $5 per additional mile, rounded up
+    return 75 + Math.ceil(additionalMiles) * 5
   }
 
   const validateEmail = (email: string): boolean => {
@@ -178,7 +325,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     setHasProvidedGuestInfo(true)
     setIsSigninModalOpen(false)
     document.body.style.overflow = "auto"
-    // Continue with checkout process
     proceedWithCheckout()
   }
 
@@ -215,37 +361,36 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   }
 
   const handleCheckout = async () => {
-    setErrorMessage("") // Clear any previous errors
-    // Check if user is signed in
+    setErrorMessage("")
     const token = localStorage.getItem("accessToken")
     const isSignedIn = !!token
+
     if (!isSignedIn && !hasProvidedGuestInfo) {
-      // Show signin/email modal
       setIsSigninModalOpen(true)
       document.body.style.overflow = "hidden"
       return
     }
-    // Continue with existing checkout logic
+
     await proceedWithCheckout()
   }
 
   const proceedWithCheckout = async () => {
-    // Get current delivery method from localStorage
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
     setDeliveryMethod(currentMethod)
+
     if (!validateRequiredFields()) {
       setErrorMessage("Please complete all required delivery information.")
       setIsModalOpen(true)
       document.body.style.overflow = "hidden"
       return
     }
-    // If shipping is already calculated, proceed to final order
+
     if (isShippingCalculated) {
       console.log("Shipping already calculated, proceeding to order creation")
       await createOrder(calculatedShipping || 0, currentMethod)
       return
     }
-    // Calculate shipping for local delivery
+
     if (currentMethod === "local") {
       setIsCalculatingShipping(true)
       try {
@@ -259,13 +404,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
             setIsCalculatingShipping(false)
             return
           }
+
           const distanceData = await calculateDistance(parsedDeliveryData.address)
           if (distanceData) {
             setCalculatedDistance(distanceData.distance)
             if (distanceData.distance > 50) {
-              // Show popup instead of auto-switching
               setErrorMessage(
-                `The delivery distance is ${distanceData.distance} miles, which exceeds our 50-mile local delivery limit. Please select "Shipping" as your delivery method to continue.`,
+                `The delivery distance is ${distanceData.distance} miles, which exceeds our 50-mile local delivery limit. Please select "Pickup" as your delivery method to continue.`,
               )
               setIsModalOpen(true)
               document.body.style.overflow = "hidden"
@@ -276,13 +421,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
               setCalculatedShipping(logisticsPrice)
               setIsShippingCalculated(true)
               console.log(`Distance: ${distanceData.distance} miles, Logistics Price: $${logisticsPrice}`)
-              // Show success message with shipping details
               alert(
                 `✅ Delivery Confirmed!\n\nDistance: ${distanceData.distance} miles\nDelivery Cost: $${logisticsPrice}\n\nClick "Complete Order" to finalize your purchase.`,
               )
             }
           } else {
-            // Error occurred, reopen modal for user to fix
             setErrorMessage(errorMessage || "Unable to calculate distance. Please check your address and try again.")
             setIsModalOpen(true)
             document.body.style.overflow = "hidden"
@@ -297,8 +440,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         setIsCalculatingShipping(false)
       }
     } else {
-      // For pickup and shipping, proceed directly
-      const shippingCost = currentMethod === "pickup" ? 0 : 0 // Shipping cost handled separately
+      const shippingCost = currentMethod === "pickup" ? 0 : 0
       setCalculatedShipping(shippingCost)
       setIsShippingCalculated(true)
       await createOrder(shippingCost, currentMethod)
@@ -307,18 +449,18 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
 
   const closeModal = () => {
     setIsModalOpen(false)
-    setErrorMessage("") // Clear error when closing modal
+    setErrorMessage("")
     document.body.style.overflow = "auto"
-    // Update delivery method when modal closes
+
     const currentMethod = (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup"
     setDeliveryMethod(currentMethod)
-    // Reset shipping calculation if method changed
+
     if (currentMethod !== deliveryMethod) {
       setCalculatedShipping(null)
       setIsShippingCalculated(false)
       setCalculatedDistance(null)
     }
-    // Dispatch custom event
+
     window.dispatchEvent(new Event("deliveryMethodChanged"))
   }
 
@@ -331,42 +473,89 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const createOrder = async (logisticsPrice: number, finalDeliveryMethod: DeliveryMethod) => {
     try {
       const token = localStorage.getItem("accessToken")
-      const isSignedIn = !!token // Convert to boolean - true if token exists, false if not
+      const isSignedIn = !!token
       const userData = {
         firstname: localStorage.getItem("firstname"),
         lastname: localStorage.getItem("lastname"),
         userId: localStorage.getItem("userId"),
         email: localStorage.getItem("email"),
       }
+
       const deliveryLocationData = localStorage.getItem("deliveryLocation")
       const deliveryDetails: LocationInfo = deliveryLocationData
         ? JSON.parse(deliveryLocationData)
         : ({} as LocationInfo)
+
       let deliveryAddressString = ""
+
       if (finalDeliveryMethod === "pickup") {
         deliveryAddressString = `Pickup at: 1919 Faithon P Lucas Sr. Blvd, #135, Mesquite TX 75181 on ${deliveryDetails.pickupDate} at ${deliveryDetails.pickupTime}`
+        if (deliveryDetails.phoneNumber) {
+          deliveryAddressString += ` - Phone: ${deliveryDetails.phoneNumber}`
+        }
+        if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
+          deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
+        }
       } else if (finalDeliveryMethod === "local") {
         deliveryAddressString = `Local Delivery to: ${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.postalCode} on ${deliveryDetails.deliveryDate} at ${deliveryDetails.deliveryTime}`
+        if (deliveryDetails.phoneNumber) {
+          deliveryAddressString += ` - Phone: ${deliveryDetails.phoneNumber}`
+        }
         if (deliveryDetails.specialInstructions) {
           deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
+        }
+        if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
+          deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
       } else if (finalDeliveryMethod === "shipping") {
         deliveryAddressString = `Ship to: ${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.postalCode}`
+        if (deliveryDetails.phoneNumber) {
+          deliveryAddressString += ` - Phone: ${deliveryDetails.phoneNumber}`
+        }
         if (deliveryDetails.specialInstructions) {
           deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
         }
+        if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
+          deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
+        }
       }
-      const cleanTotal = total.replace(/[$,]/g, "")
+
+      // Use adjusted total for calculations
+      const cleanTotal = adjustedTotal.replace(/[$,]/g, "")
       const totalAmount = Number.parseFloat(cleanTotal)
+
+      // Check if rental pricing was multiplied
+      const startDate = finalDeliveryMethod === "pickup" ? deliveryDetails.pickupDate : deliveryDetails.deliveryDate
+      const startTime = finalDeliveryMethod === "pickup" ? deliveryDetails.pickupTime : deliveryDetails.deliveryTime
+      const multiplier = calculateRentalMultiplier(
+        startDate,
+        startTime,
+        deliveryDetails.returnDate,
+        deliveryDetails.returnTime,
+      )
+
+      // Adjust order amounts for rental items if multiplier > 1
       const correctedOrders = orders.map((order) => {
         const quantity = Number.parseInt(order.quantity)
-        const totalAmountForItem = Number.parseFloat(order.amount)
+        let totalAmountForItem = Number.parseFloat(order.amount)
+
+        // Multiply the price if it's a rental item and multiplier > 1
+        if (
+          multiplier > 1 &&
+          hasRentalProducts &&
+          (order.product_name?.toLowerCase().includes("rentals") ||
+            order.product_name?.toLowerCase().includes("rental"))
+        ) {
+          totalAmountForItem *= multiplier
+        }
+
         const unitPrice = quantity > 1 ? totalAmountForItem / quantity : totalAmountForItem
         return {
           ...order,
           amount: unitPrice.toFixed(2),
         }
       })
+
       const requestBody = {
         is_signed_in: isSignedIn,
         customer_id: userData.userId,
@@ -380,27 +569,38 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         logistics_price: logisticsPrice,
         delivery_type: finalDeliveryMethod,
         orders: correctedOrders,
+        // Add return date and time as separate fields for rental products
+        ...(hasRentalProducts &&
+          deliveryDetails.returnDate &&
+          deliveryDetails.returnTime && {
+            return_date: deliveryDetails.returnDate,
+            return_time: deliveryDetails.returnTime,
+          }),
       }
-      console.log("Order request body:", requestBody) // Debug log
+
+      console.log("Order request body:", requestBody)
+
       const headers = {
         "Content-Type": "application/json",
         "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
         ...(token ? { Authorization: token } : {}),
       }
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/create-order`, {
         method: "POST",
         headers,
         body: JSON.stringify(requestBody),
       })
+
       const result = await res.json()
       if (!res.ok) {
         throw new Error(result.message || "Order failed")
       }
-      // Clear cart data
+
       localStorage.removeItem("cart")
       localStorage.removeItem("deliveryLocation")
       localStorage.removeItem("deliveryMethod")
-      // Redirect to Stripe checkout URL
+
       if (result.data && result.data.url) {
         window.location.href = result.data.url
       } else {
@@ -476,8 +676,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         <span className="self-stretch my-auto leading-6 text-neutral-500">TOTAL ({totalItems} items)</span>
         <span className="self-stretch my-auto font-semibold leading-5 text-black">
           {calculatedShipping !== null && deliveryMethod !== "pickup"
-            ? `$${(Number.parseFloat(total.replace(/[$,]/g, "")) + calculatedShipping).toFixed(2)}`
-            : total}
+            ? `$${(Number.parseFloat(adjustedTotal.replace(/[$,]/g, "")) + calculatedShipping).toFixed(2)}`
+            : adjustedTotal}
         </span>
       </div>
       <div className="flex gap-2 items-center mt-6 w-full">
@@ -500,6 +700,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           )}
         </button>
       </div>
+
       {/* Signin/Email Modal */}
       {isSigninModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -607,6 +808,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
           </div>
         </div>
       )}
+
       {/* Existing delivery modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -639,14 +841,15 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
                   <br />
                   {errorMessage}
                   <div className="mt-2 text-sm">
-                    💡 <strong>Tip:</strong> Select &quot;Shipping&quot; below to continue with your order.
+                    💡 <strong>Tip:</strong> Select &ldquo;Pickup&ldquo; below to continue with your order.
                   </div>
                 </div>
               ))}
-            <CartDelivery onSave={closeModal} />
+            <CartDelivery onSave={closeModal} orders={orders} />
           </div>
         </div>
       )}
+
       {/* Auth Modals */}
       {modalType === "signup" && <SignUpModal onClose={handleClose} onOpenLogin={() => setModalType("login")} />}
       {modalType === "login" && (

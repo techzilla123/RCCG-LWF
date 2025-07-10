@@ -111,14 +111,18 @@ export const ProductPage: React.FC = () => {
     }
   }, [])
 
-  const reviews =
-    product?.review?.map((r) => ({
+const reviews =
+  product?.review
+    ?.filter((r) => r.star >= 4) // Only 4-star and 5-star
+    .map((r) => ({
       avatarUrl: "https://i.pravatar.cc/150?u=" + r.customerName,
       name: r.customerName,
       rating: r.star,
       review: r.review,
       date: "N/A",
     })) || []
+
+    
 
   if (loading) {
     return (
@@ -149,7 +153,7 @@ export const ProductPage: React.FC = () => {
           originalPrice={Number.parseFloat((product.discountPrice || product.price).replace(/,/g, ""))}
           countdownTime="4d 04h 25m 40s"
           description={product.description}
-          tags={[product.categoryName, product.classification]}
+          tags={[product.categoryName, product.subCategoryName]}
           sizes={product.size}
           colors={product.color}
           shippingInfo={product.shippingInformation}
@@ -190,7 +194,8 @@ export const ProductPage: React.FC = () => {
           />
         </div>
 
-        <ProductRatings />
+        <ProductRatings reviews={product.review} />
+
 
         <section className="flex flex-col justify-center items-center mt-10 w-full">
           <h2 className="text-2xl text-black">Reviews</h2>

@@ -22,7 +22,7 @@ export const LanguageSelector = () => {
           alt="Language"
           className="w-5 h-5 rounded-full"
         />
-        <span className="text-sm text-black">EN</span>
+        <span className="text-sm text-black">US</span>
         <ChevronDown className="w-4 h-4 text-black" />
       </button>
 

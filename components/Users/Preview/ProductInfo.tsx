@@ -64,6 +64,40 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
     }
   }, [popupMessage])
 
+  const [countdown, setCountdown] = React.useState<string | null>(null)
+
+React.useEffect(() => {
+  if (!countdownTime || !/^\d{2}-\d{2}-\d{4}$/.test(countdownTime)) {
+    return
+  }
+
+  const [day, month, year] = countdownTime.split("-").map(Number)
+  const targetDate = new Date(year, month - 1, day, 23, 59, 59) // end of day
+
+  const updateCountdown = () => {
+    const now = new Date()
+    const diff = targetDate.getTime() - now.getTime()
+
+    if (diff <= 0) {
+      setCountdown("Expired")
+      return
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24)
+    const minutes = Math.floor((diff / (1000 * 60)) % 60)
+    const seconds = Math.floor((diff / 1000) % 60)
+
+    setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+  }
+
+  updateCountdown()
+  const intervalId = setInterval(updateCountdown, 1000)
+
+  return () => clearInterval(intervalId)
+}, [countdownTime])
+
+
   // Helper function to save cart items to localStorage
   const saveCartToLocalStorage = () => {
     try {
@@ -111,17 +145,17 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   }
 
   const handleAddToCart = async () => {
-    if (!selectedColor) {
-      setPopupMessage("Please select a color.")
-      setPopupType("error")
-      return
-    }
+  if (colors.length > 0 && !selectedColor) {
+  setPopupMessage("Please select a color.")
+  setPopupType("error")
+  return
+}
 
-    if (!selectedSize) {
-      setPopupMessage("Please select a size.")
-      setPopupType("error")
-      return
-    }
+if (sizes.length > 0 && !selectedSize) {
+  setPopupMessage("Please select a size.")
+  setPopupType("error")
+  return
+}
 
     const token = localStorage.getItem("accessToken")
 
@@ -221,46 +255,55 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
                 </span>
               ) : null}
             </div>
-            <p className="mt-1.5 text-sm font-medium">
-              <span className="text-neutral-500">Ends in:</span> <span className="text-rose-600">{countdownTime}</span>
-            </p>
+          {countdown && (
+  <p className="mt-1.5 text-sm font-medium">
+    <span className="text-neutral-500">Ends in:</span>{" "}
+    <span className="text-rose-600">{countdown}</span>
+  </p>
+)}
+
           </div>
         </div>
 
         <div className="p-4 mt-6 bg-stone-50 rounded-xl">
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-black">Select size</label>
-            <div className="flex justify-between mt-2">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-14 h-10 rounded-full ${
-                    selectedSize === size ? "bg-black text-white" : "border border-black bg-transparent text-black"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
+        {sizes.length > 0 && (
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-black">Select size</label>
+    <div className="flex justify-between mt-2">
+      {sizes.map((size) => (
+        <button
+          key={size}
+          onClick={() => setSelectedSize(size)}
+          className={`w-14 h-10 rounded-full ${
+            selectedSize === size ? "bg-black text-white" : "border border-black bg-transparent text-black"
+          }`}
+        >
+          {size}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
 
-          <div className="flex flex-col mt-4">
-            <label className="text-sm font-medium text-black">Choose colour</label>
-            <div className="flex gap-4 mt-2">
-              {colors.map((color, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-7 h-7 rounded-full border transition-all duration-200 ${
-                    selectedColor === color ? "border-2 border-black scale-110" : "border-gray-300"
-                  }`}
-                  style={{ backgroundColor: color }}
-                  title={color}
-                />
-              ))}
-            </div>
-          </div>
+
+       {colors.length > 0 && (
+  <div className="flex flex-col mt-4">
+    <label className="text-sm font-medium text-black">Choose colour</label>
+    <div className="flex gap-4 mt-2">
+      {colors.map((color, i) => (
+        <button
+          key={i}
+          onClick={() => setSelectedColor(color)}
+          className={`w-7 h-7 rounded-full border transition-all duration-200 ${
+            selectedColor === color ? "border-2 border-black scale-110" : "border-gray-300"
+          }`}
+          style={{ backgroundColor: color }}
+          title={color}
+        />
+      ))}
+    </div>
+  </div>
+)}
 
           <div className="flex flex-col mt-4">
             <label className="text-sm font-medium text-black">Quantity</label>
@@ -282,16 +325,19 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
             </div>
           </div>
 
-          <div className="flex gap-4 mt-4">
-            <label className="flex items-center gap-2 text-neutral-500">
-              <input type="radio" checked={!isInflated} onChange={() => setIsInflated(false)} />
-              Not inflated
-            </label>
-            <label className="flex items-center gap-2 text-neutral-500">
-              <input type="radio" checked={isInflated} onChange={() => setIsInflated(true)} />
-              Inflated
-            </label>
-          </div>
+        {title.toLowerCase().includes("balloon") && (
+  <div className="flex gap-4 mt-4">
+    <label className="flex items-center gap-2 text-neutral-500">
+      <input type="radio" checked={!isInflated} onChange={() => setIsInflated(false)} />
+      Not inflated
+    </label>
+    <label className="flex items-center gap-2 text-neutral-500">
+      <input type="radio" checked={isInflated} onChange={() => setIsInflated(true)} />
+      Inflated
+    </label>
+  </div>
+)}
+
         </div>
 
         <div className="mt-6">

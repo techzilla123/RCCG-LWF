@@ -32,7 +32,7 @@ export default function MobileSideDrawer({ onClose, isOpen }: Props) {
 
   useEffect(() => {
     // Check if token exists in localStorage
-    setIsLoggedIn(!!localStorage.getItem("token"));
+    setIsLoggedIn(!!localStorage.getItem("accessToken"));
   }, []);
 
   if (!isOpen) return null;
@@ -43,7 +43,7 @@ export default function MobileSideDrawer({ onClose, isOpen }: Props) {
   };
 
   const handleLogout = () => {
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem("accessToken")) {
       localStorage.clear();
       onClose();
       router.push("/");
@@ -137,7 +137,7 @@ export default function MobileSideDrawer({ onClose, isOpen }: Props) {
               <h4 className="text-xs text-gray-500 mb-2">PREFERENCES</h4>
               <div className="space-y-2">
                 <DrawerLink icon={<Settings size={16} />} label="Settings" onClick={() => handleNavigate("/settings")} />
-                <DrawerLink icon={<Globe size={16} />} label="English (UK)" />
+                <DrawerLink icon={<Globe size={16} />} label="English (US)" />
                 {isLoggedIn && (
                   <DrawerLink
                     icon={<LogOut size={16} />}
