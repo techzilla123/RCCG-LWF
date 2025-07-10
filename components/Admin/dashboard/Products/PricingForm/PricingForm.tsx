@@ -10,25 +10,6 @@ interface PricingFormProps {
 }
 
 export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, onNext }) => {
-  // // Load saved form data
-  // useEffect(() => {
-  //   const saved = localStorage.getItem('pricingFormData');
-  //   if (saved) {
-  //     const parsed = JSON.parse(saved);
-  //     setEnableDiscount(parsed.enableDiscount ?? true);
-  //     setEnableShipping(parsed.enableShipping ?? true);
-  //     setPrice(parsed.price ?? '');
-  //     setStock(parsed.stock ?? '');
-  //     setDiscount(parsed.discount ?? '');
-  //     setDiscountExpires(parsed.discountExpires ?? '');
-  //     setCouponCode(parsed.couponCode ?? '');
-  //     setShippedFrom(parsed.shippedFrom ?? '');
-  //     setShippingFee(parsed.shippingFee ?? '');
-  //     setWaitingTime(parsed.waitingTime ?? '');
-  //     setReturnPolicy(parsed.returnPolicy ?? '');
-  //   }
-  // }, []);
-
   // State definitions
   const [enableDiscount, setEnableDiscount] = useState(true);
   const [enableShipping, setEnableShipping] = useState(true);
@@ -41,6 +22,25 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
   const [shippingFee, setShippingFee] = useState('24.00');
   const [waitingTime, setWaitingTime] = useState('7 working days');
   const [returnPolicy, setReturnPolicy] = useState('7 days');
+
+  // Clear discount-related fields when disabling discount
+  useEffect(() => {
+    if (!enableDiscount) {
+      setDiscount('');
+      setDiscountExpires('');
+      setCouponCode('');
+    }
+  }, [enableDiscount]);
+
+  // Clear shipping-related fields when disabling shipping
+  useEffect(() => {
+    if (!enableShipping) {
+      setShippedFrom('');
+      setShippingFee('');
+      setWaitingTime('');
+      setReturnPolicy('');
+    }
+  }, [enableShipping]);
 
   // Save all fields to localStorage on any change
   useEffect(() => {
@@ -84,27 +84,27 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
 
       <form className="flex flex-col gap-4">
         <div className="flex gap-4">
-<InputField
-  label="Price"
-  required
-  prefix="$"
-  value={price}
-  defaultValue="120.00"
-  onChange={(value) => {
-    setPrice(value);
-    localStorage.setItem("price", value);
-  }}
-/>
-<InputField
-  label="Initial stock"
-  required
-  value={stock}
-  defaultValue="100"
-  onChange={(value) => {
-    setStock(value);
-    localStorage.setItem("stock", value);
-  }}
-/>
+          <InputField
+            label="Price"
+            required
+            prefix="$"
+            value={price}
+            defaultValue="120.00"
+            onChange={(value) => {
+              setPrice(value);
+              localStorage.setItem('price', value);
+            }}
+          />
+          <InputField
+            label="Initial stock"
+            required
+            value={stock}
+            defaultValue="100"
+            onChange={(value) => {
+              setStock(value);
+              localStorage.setItem('stock', value);
+            }}
+          />
         </div>
 
         <Checkbox label="Enable discount" checked={enableDiscount} onChange={setEnableDiscount} />
@@ -112,22 +112,20 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
         {enableDiscount && (
           <>
             <div className="flex gap-4">
-             <InputField
-  label="Discount"
-  value={discount}
-  defaultValue="20%"
-  onChange={setDiscount}
-  suffix={<CaretDownIcon />}
-/>
-
-             <InputField
-  label="Discount expires"
-  value={discountExpires}
-  defaultValue="24-05-2025"
-  onChange={setDiscountExpires}
-  suffix={<CalendarIcon />}
-/>
-
+              <InputField
+                label="Discount"
+                value={discount}
+                defaultValue="20%"
+                onChange={setDiscount}
+                suffix={<CaretDownIcon />}
+              />
+              <InputField
+                label="Discount expires"
+                value={discountExpires}
+                defaultValue="24-05-2025"
+                onChange={setDiscountExpires}
+                suffix={<CalendarIcon />}
+              />
             </div>
             <div className="flex gap-3 items-center">
               <input
@@ -150,35 +148,34 @@ export const PricingForm: React.FC<PricingFormProps> = ({ onCancel, onPrevious, 
           <>
             <div className="flex gap-4">
               <InputField
-  label="Shipped from"
-  value={shippedFrom}
-  defaultValue="USA"
-  onChange={setShippedFrom}
-/>
+                label="Shipped from"
+                value={shippedFrom}
+                defaultValue="USA"
+                onChange={setShippedFrom}
+              />
               <InputField
-  label="Shipping fee"
-  prefix="$"
-  value={shippingFee}
-  defaultValue="24.00"
-  onChange={setShippingFee}
-/>
+                label="Shipping fee"
+                prefix="$"
+                value={shippingFee}
+                defaultValue="24.00"
+                onChange={setShippingFee}
+              />
             </div>
             <div className="flex gap-4">
               <InputField
-  label="Waiting time"
-  value={waitingTime}
-  defaultValue="7 working days"
-  onChange={setWaitingTime}
-  suffix={<CaretDownIcon />}
-/>
-
+                label="Waiting time"
+                value={waitingTime}
+                defaultValue="7 working days"
+                onChange={setWaitingTime}
+                suffix={<CaretDownIcon />}
+              />
               <InputField
-  label="Return policy"
-  value={returnPolicy}
-  defaultValue="7 days"
-  onChange={setReturnPolicy}
-  suffix={<CaretDownIcon />}
-/>
+                label="Return policy"
+                value={returnPolicy}
+                defaultValue="7 days"
+                onChange={setReturnPolicy}
+                suffix={<CaretDownIcon />}
+              />
             </div>
           </>
         )}
