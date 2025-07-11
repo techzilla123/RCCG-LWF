@@ -72,7 +72,12 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
         <div className="flex flex-col">
           <div className="text-base font-medium text-black">
             ${product.price}{" "}
-            {product.discount && <span className="text-sm text-gray-500">({product.discount.percentage}% off)</span>}
+            {product.discount &&
+              product.discount.percentage > 0 &&
+              product.discount.percentage <= 100 &&
+              !isNaN(product.discount.percentage) && (
+                <span className="text-sm text-gray-500">({product.discount.percentage}% off)</span>
+              )}
           </div>
           <h3 className="text-sm sm:text-lg font-semibold max-w-full w-[140px] sm:w-auto">{product.name}</h3>
           <p className="text-sm text-gray-500">

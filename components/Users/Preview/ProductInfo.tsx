@@ -56,6 +56,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [selectedColor, setSelectedColor] = React.useState<string | null>(null)
   
   // Parse inflated price from description
+  const cleanedDescription = description.replace(/\(.*?inflated\s*-\s*\$?\d+(?:\.\d{2})?.*?\)/i, "").trim()
   const [inflatedPrice, setInflatedPrice] = React.useState<number | null>(null)
   const [showInflatedOptions, setShowInflatedOptions] = React.useState(false)
 
@@ -369,7 +370,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
               className="w-5 h-5"
             />
           </div>
-          {detailsOpen && <div className="mt-4 text-sm text-neutral-500">{description}</div>}
+         {detailsOpen && <div className="mt-4 text-sm text-neutral-500">{cleanedDescription}</div>}
+
           {shippingInfo && (
             <div className="mt-4 text-sm text-gray-700">
               <strong>Shipping Info:</strong> {shippingInfo}
