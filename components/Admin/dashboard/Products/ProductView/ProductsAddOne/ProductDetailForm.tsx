@@ -163,8 +163,82 @@ const ProductDetailForm: React.FC<ProductDetailFormProps> = ({ onClose, productI
             type: "image/jpeg",
             file: new File([], "image3.jpg", { type: "image/jpeg" }),
           })
+          
+        }
+         if (productData.imageFour) {
+          convertedImages.push({
+            image: productData.imageFour,
+            name: "Image 4",
+            type: "image/jpeg",
+            file: new File([], "image4.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+         if (productData.imageFive) {
+          convertedImages.push({
+            image: productData.imageFive,
+            name: "Image 5",
+            type: "image/jpeg",
+            file: new File([], "image5.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+         if (productData.imageSix) {
+          convertedImages.push({
+            image: productData.imageSix,
+            name: "Image 6",
+            type: "image/jpeg",
+            file: new File([], "image6.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+         if (productData.imageSeven) {
+          convertedImages.push({
+            image: productData.imageSeven,
+            name: "Image 7",
+            type: "image/jpeg",
+            file: new File([], "image7.jpg", { type: "image/jpeg" }),
+          })
+          
         }
 
+         if (productData.imageEight) {
+          convertedImages.push({
+            image: productData.imageEight,
+            name: "Image 8",
+            type: "image/jpeg",
+            file: new File([], "image8.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+         if (productData.imageNine) {
+          convertedImages.push({
+            image: productData.imageNine,
+            name: "Image 9",
+            type: "image/jpeg",
+            file: new File([], "image9.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+         if (productData.imageTen) {
+          convertedImages.push({
+            image: productData.imageTen,
+            name: "Image 10",
+            type: "image/jpeg",
+            file: new File([], "image10.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+         if (productData.imageEleven) {
+          convertedImages.push({
+            image: productData.imageEleven,
+            name: "Image 11",
+            type: "image/jpeg",
+            file: new File([], "image11.jpg", { type: "image/jpeg" }),
+          })
+          
+        }
+        
         // First, fetch the general categories to populate the dropdown
         const fetchedGeneralCategories = await fetchGeneralCategories()
         let foundGeneralCategoryId = ""

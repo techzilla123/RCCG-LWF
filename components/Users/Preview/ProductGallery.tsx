@@ -4,18 +4,26 @@ import * as React from "react";
 interface ProductGalleryProps {
   mainImage: string;
   images: { full: string; thumbnail: string }[];
+  selectedImageIndex?: number; // New prop to control selected image
 }
 
 export const ProductGallery: React.FC<ProductGalleryProps> = ({
   mainImage,
   images,
+  selectedImageIndex,
 }) => {
   const [selectedIndex, setSelectedIndex] = React.useState(
     images.findIndex((img) => img.full === mainImage) || 0
   );
 
-  const selectedImage = images[selectedIndex]?.full || images[0]?.full;
+  // Update selected index when selectedImageIndex prop changes
+  React.useEffect(() => {
+    if (selectedImageIndex !== undefined && selectedImageIndex >= 0 && selectedImageIndex < images.length) {
+      setSelectedIndex(selectedImageIndex);
+    }
+  }, [selectedImageIndex, images.length]);
 
+  const selectedImage = images[selectedIndex]?.full || images[0]?.full;
 
   const handlePrev = () => {
     setSelectedIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
@@ -40,10 +48,9 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
           >
             &#10094;
           </button>
-
           {selectedImage ? (
             <img
-              src={selectedImage}
+              src={selectedImage || "/placeholder.svg"}
               alt="Product preview"
               className="object-contain w-full max-h-[500px]"
             />
@@ -52,7 +59,6 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
               No Image
             </div>
           )}
-
           <button
             onClick={handleNext}
             className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-2 text-lg font-bold text-white bg-gray-400 rounded-full shadow hover:bg-gray-800 transition-all z-10"
@@ -61,17 +67,15 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
             &#10095;
           </button>
         </div>
-
         <p className="mt-2 text-base text-center text-black max-md:text-sm max-md:mt-1">
           Click to view full screen
         </p>
-
         <div className="hide-scrollbar flex overflow-x-auto gap-4 mt-2 w-full min-h-[120px] max-md:gap-2 max-md:min-h-[100px]">
           {images.map((image, index) =>
             image.thumbnail ? (
               <img
                 key={index}
-                src={image.thumbnail}
+                src={image.thumbnail || "/placeholder.svg"}
                 alt={`Product thumbnail ${index + 1}`}
                 className={`object-contain aspect-[1.67] w-[200px] min-w-[160px] max-md:w-[140px] max-md:min-w-[140px] cursor-pointer rounded-md transition-all duration-200 border-2 ${
                   selectedIndex === index

@@ -1,5 +1,4 @@
 "use client"
-
 import * as React from "react"
 import { useSearchParams } from "next/navigation"
 import { ProductGallery } from "./ProductGallery"
@@ -44,6 +43,7 @@ export const ProductPage: React.FC = () => {
   const [error, setError] = React.useState<string | null>(null)
   const [isNamePrefilled, setIsNamePrefilled] = React.useState(false)
   const [showReviewForm, setShowReviewForm] = React.useState(false)
+  const [selectedImageIndex, setSelectedImageIndex] = React.useState<number>(0) // New state for selected image
   const [reviewData, setReviewData] = React.useState({
     customer_name: "",
     star: "5",
@@ -61,15 +61,12 @@ export const ProductPage: React.FC = () => {
         "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
         ...(token ? { Authorization: token } : {}),
       }
-
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product/${productId}`
       const res = await fetch(url, {
         method: "GET",
         headers,
       })
-
       if (!res.ok) throw new Error(`Server error: ${res.status}`)
-
       const json = await res.json()
       if (json.statusCode === 200 && json.data) {
         setProduct(json.data)
@@ -111,18 +108,21 @@ export const ProductPage: React.FC = () => {
     }
   }, [])
 
-const reviews =
-  product?.review
-    ?.filter((r) => r.star >= 4) // Only 4-star and 5-star
-    .map((r) => ({
-      avatarUrl: "https://i.pravatar.cc/150?u=" + r.customerName,
-      name: r.customerName,
-      rating: r.star,
-      review: r.review,
-      date: "N/A",
-    })) || []
+  // Handle color change from ProductInfo
+  const handleColorChange = (colorIndex: number) => {
+    setSelectedImageIndex(colorIndex)
+  }
 
-    
+  const reviews =
+    product?.review
+      ?.filter((r) => r.star >= 4) // Only 4-star and 5-star
+      .map((r) => ({
+        avatarUrl: "https://i.pravatar.cc/150?u=" + r.customerName,
+        name: r.customerName,
+        rating: r.star,
+        review: r.review,
+        date: "N/A",
+      })) || []
 
   if (loading) {
     return (
@@ -157,26 +157,26 @@ const reviews =
           sizes={product.size}
           colors={product.color}
           shippingInfo={product.shippingInformation}
-          imageOne={product.imageOne} // ✅ Added imageOne prop
+          imageOne={product.imageOne}
+          onColorChange={handleColorChange} // Pass color change handler
         />
       </div>
-
       <div className="flex flex-col order-2 xl:order-1 w-full">
-       <ProductGallery
-  mainImage={product.imageOne}
-  images={[
-    product.imageOne,
-    product.imageTwo,
-    product.imageThree,
-    product.imageFour,
-    product.imageFive,
-    product.imageSix,
-    product.imageSeven,
-  ]
-    .filter((img) => img && img.trim() !== "")
-    .map((img) => ({ thumbnail: img, full: img }))}
-/>
-
+        <ProductGallery
+          mainImage={product.imageOne}
+          selectedImageIndex={selectedImageIndex} // Pass selected image index
+          images={[
+            product.imageOne,
+            product.imageTwo,
+            product.imageThree,
+            product.imageFour,
+            product.imageFive,
+            product.imageSix,
+            product.imageSeven,
+          ]
+            .filter((img) => img && img.trim() !== "")
+            .map((img) => ({ thumbnail: img, full: img }))}
+        />
         <div className="flex xl:hidden flex-col">
           <ProductInfo
             productId={product.productId}
@@ -190,13 +190,11 @@ const reviews =
             sizes={product.size}
             colors={product.color}
             shippingInfo={product.shippingInformation}
-            imageOne={product.imageOne} // ✅ Added imageOne prop
+            imageOne={product.imageOne}
+            onColorChange={handleColorChange} // Pass color change handler
           />
         </div>
-
         <ProductRatings reviews={product.review} />
-
-
         <section className="flex flex-col justify-center items-center mt-10 w-full">
           <h2 className="text-2xl text-black">Reviews</h2>
           <div className="w-full mt-6 flex flex-col gap-6">
@@ -212,7 +210,6 @@ const reviews =
               Show more
             </button>
           )}
-
           {showReviewForm ? (
             <div className="relative mt-6 w-full max-w-xl p-6 bg-white border rounded-lg shadow-md">
               {/* Close Button */}
@@ -241,7 +238,6 @@ const reviews =
                         ...reviewData,
                       }),
                     })
-
                     if (!res.ok) throw new Error("Failed to submit review")
                     alert("Review submitted!")
                     setReviewData({ customer_name: "", star: "5", review: "" })
@@ -266,7 +262,6 @@ const reviews =
                     isNamePrefilled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
                   }`}
                 />
-
                 {/* Star Rating */}
                 <div className="flex justify-center mt-3">
                   <div className="flex items-center space-x-2">
@@ -290,7 +285,6 @@ const reviews =
                     ))}
                   </div>
                 </div>
-
                 <textarea
                   placeholder="Write your review..."
                   value={reviewData.review}
@@ -298,7 +292,6 @@ const reviews =
                   required
                   className="w-full mt-4 px-4 py-2 border border-gray-300 rounded resize-none h-28 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 />
-
                 <button
                   type="submit"
                   className="w-full px-6 py-3 text-white bg-yellow-500 rounded-full hover:bg-yellow-600 transition-all"
