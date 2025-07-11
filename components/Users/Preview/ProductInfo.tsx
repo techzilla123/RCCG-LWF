@@ -131,7 +131,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         product_id: productId,
         quantity: quantity.toString(),
         size: selectedSize,
-        color: selectedColor || "",
+         color: selectedColor ? `${selectedColor}${isInflated ? " (inflated)" : ""}` : "",
         productName: title,
         price: isInflated && inflatedPrice ? inflatedPrice : price,
         discountPrice: originalPrice,
@@ -197,7 +197,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         product_id: productId,
         quantity: quantity.toString(),
         size: selectedSize,
-        color: selectedColor,
+         color: selectedColor ? `${selectedColor}${isInflated ? " (inflated)" : ""}` : "",
       })
       const res = await fetch(url, {
         method: "POST",
