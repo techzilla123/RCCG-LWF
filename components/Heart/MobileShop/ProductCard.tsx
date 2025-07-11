@@ -95,7 +95,7 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
   return (
     <article className="relative flex flex-col p-2 bg-white rounded-lg">
       <Link href={`/preview?${product.id}`} className="block w-full">
-        <div className="w-full h-[160px] overflow-hidden rounded-t">
+        <div className="w-full h-[210px] overflow-hidden rounded-t">
           <img
             src={product.image || "/placeholder.svg"}
             alt={product.title}

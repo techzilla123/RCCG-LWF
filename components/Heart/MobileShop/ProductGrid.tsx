@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, { useEffect, useState } from "react"
 import { ProductCardM } from "./ProductCard"
 import type { Product } from "./types"
@@ -82,6 +82,7 @@ export const ProductGrid: React.FC = () => {
       }
 
       localStorage.setItem("localCart", JSON.stringify(cartItems))
+      window.dispatchEvent(new Event("cartUpdated"))
       return true
     } catch (error) {
       console.error("Error saving to localStorage:", error)
@@ -119,6 +120,7 @@ export const ProductGrid: React.FC = () => {
 
       wishlistItems.push(newItem)
       localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
+      window.dispatchEvent(new Event("wishlistUpdated"))
       return true
     } catch (error) {
       console.error("Error saving to localStorage:", error)
@@ -127,7 +129,7 @@ export const ProductGrid: React.FC = () => {
   }
 
   useEffect(() => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
 
     async function fetchProducts() {
       try {
@@ -138,42 +140,84 @@ export const ProductGrid: React.FC = () => {
           ...(token ? { Authorization: token } : {}),
         }
 
-        const res = await fetch(url, {
+        // First, fetch the first page to get pagination info
+        const firstPageRes = await fetch(baseUrl, {
           method: "GET",
           headers,
         })
 
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`)
+        if (!firstPageRes.ok) {
+          throw new Error(`Server error: ${firstPageRes.status}`)
         }
 
-        const json = await res.json()
+        const firstPageJson = await firstPageRes.json()
 
-        if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          const formatted: ExtendedProduct[] = json.data.product.map((p: ProductApiResponse) => ({
-            ...p,
-            isAdded: false,
-            finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-          }))
-
-          // Shuffle and limit to 16 products (matching desktop)
-          const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
-
-          // Convert to mobile Product format
-          const mobileProducts: Product[] = shuffledAndLimited.map((p) => ({
-            id: p.productId,
-            image: p.imageOne,
-            title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
-            price: p.finalPrice,
-            isOutOfStock: p.quantity === 0,
-            isWishlisted: false,
-            isAdded: p.isAdded,
-          }))
-
-          setProducts(mobileProducts)
-        } else {
+        if (firstPageJson.statusCode !== 200 || !Array.isArray(firstPageJson.data.product)) {
           throw new Error("Unexpected response structure")
         }
+
+        const totalPages = firstPageJson.data.pagination.total_pages
+        let allProducts: ProductApiResponse[] = [...firstPageJson.data.product]
+
+        // If there are more pages, fetch from random pages
+        if (totalPages > 1) {
+          // Determine how many additional pages to fetch (fetch from 2-3 random pages)
+          const pagesToFetch = Math.min(totalPages - 1, 2)
+          const randomPages: number[] = []
+
+          // Generate random page numbers (excluding page 1 which we already fetched)
+          while (randomPages.length < pagesToFetch) {
+            const randomPage = Math.floor(Math.random() * (totalPages - 1)) + 2 // Pages 2 to totalPages
+            if (!randomPages.includes(randomPage)) {
+              randomPages.push(randomPage)
+            }
+          }
+
+          // Fetch products from random pages
+          const pagePromises = randomPages.map(async (page) => {
+            const pageRes = await fetch(`${baseUrl}?page=${page}`, {
+              method: "GET",
+              headers,
+            })
+
+            if (pageRes.ok) {
+              const pageJson = await pageRes.json()
+              if (pageJson.statusCode === 200 && Array.isArray(pageJson.data.product)) {
+                return pageJson.data.product
+              }
+            }
+            return []
+          })
+
+          const additionalPages = await Promise.all(pagePromises)
+
+          // Combine all products from different pages
+          additionalPages.forEach((pageProducts) => {
+            allProducts = [...allProducts, ...pageProducts]
+          })
+        }
+
+        // Format all products
+        const formatted: ExtendedProduct[] = allProducts.map((p: ProductApiResponse) => ({
+          ...p,
+          isAdded: false,
+          finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+        }))
+
+        // Shuffle and limit to 16 products (matching desktop)
+        const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
+
+        // Convert to mobile Product format
+        const mobileProducts: Product[] = shuffledAndLimited.map((p) => ({
+          id: p.productId,
+          image: p.imageOne,
+          title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
+          price: p.finalPrice,
+          isOutOfStock: p.quantity === 0,
+          isWishlisted: false,
+          isAdded: p.isAdded,
+        }))
+        setProducts(mobileProducts)
       } catch (e: unknown) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred"
         console.error("Fetch error:", e)
@@ -182,7 +226,6 @@ export const ProductGrid: React.FC = () => {
         setLoading(false)
       }
     }
-
     fetchProducts()
   }, [])
 
@@ -201,7 +244,6 @@ export const ProductGrid: React.FC = () => {
       }
       return
     }
-
     try {
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-wish-list`
       const headers = {
@@ -209,20 +251,17 @@ export const ProductGrid: React.FC = () => {
         "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
         Authorization: token,
       }
-
       const body = JSON.stringify({
         product_id: productId,
         quantity: "1",
         size: "",
         color: "",
       })
-
       const res = await fetch(url, {
         method: "POST",
         headers,
         body,
       })
-
       const data = await res.json()
       if (data.statusCode === 200) {
         // Update UI to show item as wishlisted
@@ -254,7 +293,6 @@ export const ProductGrid: React.FC = () => {
       }
       return
     }
-
     try {
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`
       const headers = {
@@ -262,24 +300,20 @@ export const ProductGrid: React.FC = () => {
         "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
         Authorization: token,
       }
-
       const body = JSON.stringify({
         product_id: productId,
         quantity: "1",
         size: "",
         color: "",
       })
-
       const res = await fetch(url, {
         method: "POST",
         headers,
         body,
       })
-
       if (!res.ok) {
         throw new Error(`Server error: ${res.status}`)
       }
-
       const data = await res.json()
       if (data.statusCode === 200) {
         setProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, isAdded: true } : p)))
