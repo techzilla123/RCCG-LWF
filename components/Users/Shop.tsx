@@ -38,6 +38,14 @@ interface LocalStorageItem {
   imageOne?: string
 }
 
+interface PaginationData {
+  current_page: number
+  total_pages: number
+  total_products: number
+  per_page: number
+  next_page_url?: string
+}
+
 type FilterValue = string | string[]
 
 export function Shop() {
@@ -48,6 +56,13 @@ export function Shop() {
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [ready, setReady] = useState(false)
+  const [pagination, setPagination] = useState<PaginationData>({
+    current_page: 1,
+    total_pages: 1,
+    total_products: 0,
+    per_page: 10
+  })
+  const [currentPage, setCurrentPage] = useState(1)
   const pathname = usePathname()
   const [categoryId, setCategoryId] = useState<string | null>(null)
   const searchParams = useSearchParams()
@@ -62,7 +77,6 @@ export function Shop() {
   // Sort products based on filters
   const sortProducts = useCallback((productsToSort: Product[], filters: Record<string, FilterValue>) => {
     const sortedProducts = [...productsToSort]
-
     // Handle Order by (Ascending/Descending) - applies to product names
     const orderBy = filters["Order by"] as string
     if (orderBy === "Ascending") {
@@ -89,8 +103,8 @@ export function Shop() {
       // For now, we'll sort by quantity (higher quantity = more popular)
       sortedProducts.sort((a, b) => b.quantity - a.quantity)
     }
-    // "Relevant to you" keeps the original order
 
+    // "Relevant to you" keeps the original order
     return sortedProducts
   }, [])
 
@@ -108,8 +122,10 @@ export function Shop() {
     try {
       const existingCart = localStorage.getItem("localCart")
       const cartItems: LocalStorageItem[] = existingCart ? JSON.parse(existingCart) : []
+
       // Check if item already exists
       const existingItemIndex = cartItems.findIndex((item) => item.product_id === productId)
+
       const newItem: LocalStorageItem = {
         product_id: productId,
         quantity: "1",
@@ -127,6 +143,7 @@ export function Shop() {
           imageOne: productData.imageOne,
         }),
       }
+
       if (existingItemIndex > -1) {
         // Update existing item quantity
         const currentQty = Number.parseInt(cartItems[existingItemIndex].quantity) || 1
@@ -135,6 +152,7 @@ export function Shop() {
         // Add new item
         cartItems.push(newItem)
       }
+
       localStorage.setItem("localCart", JSON.stringify(cartItems))
       return true
     } catch (error) {
@@ -148,12 +166,15 @@ export function Shop() {
     try {
       const existingWishlist = localStorage.getItem("localWishlist")
       const wishlistItems: LocalStorageItem[] = existingWishlist ? JSON.parse(existingWishlist) : []
+
       // Check if item already exists
       const existingItemIndex = wishlistItems.findIndex((item) => item.product_id === productId)
+
       if (existingItemIndex > -1) {
         // Item already in wishlist
         return false
       }
+
       const newItem: LocalStorageItem = {
         product_id: productId,
         quantity: "1",
@@ -171,6 +192,7 @@ export function Shop() {
           imageOne: productData.imageOne,
         }),
       }
+
       wishlistItems.push(newItem)
       localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
       return true
@@ -184,6 +206,7 @@ export function Shop() {
     const currentPath = pathname
     const SCT = searchParams.get("SCT")
     const PCT = searchParams.get("PCT")
+
     if (SCT) {
       // subcategory has highest priority
       setCategoryId(`SCT:${SCT}`)
@@ -211,29 +234,33 @@ export function Shop() {
         setCategoryId(savedCategoryId ? `GCT:${savedCategoryId}` : null)
       }
     }
+
     setReady(true)
   }, [pathname, searchParams])
 
-  // Fetch products every time categoryId changes
+  // Fetch products every time categoryId or currentPage changes
   useEffect(() => {
     if (!ready) return // wait until pathname/categoryId logic is finished
+
     const url = (() => {
+      let baseUrl = ""
       if (!categoryId) {
-        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-      }
-      if (categoryId.startsWith("SCT:")) {
+        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+      } else if (categoryId.startsWith("SCT:")) {
         const id = categoryId.replace("SCT:", "")
-        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
-      }
-      if (categoryId.startsWith("PCT:")) {
+        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
+      } else if (categoryId.startsWith("PCT:")) {
         const id = categoryId.replace("PCT:", "")
-        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
-      }
-      if (categoryId.startsWith("GCT:")) {
+        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
+      } else if (categoryId.startsWith("GCT:")) {
         const id = categoryId.replace("GCT:", "")
-        return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
+        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
+      } else {
+        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
       }
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+      
+      // Add page parameter
+      return `${baseUrl}?page=${currentPage}`
     })()
 
     const fetchProducts = async () => {
@@ -247,13 +274,16 @@ export function Shop() {
             ...(token ? { Authorization: token } : {}),
           },
         })
+
         if (!res.ok) throw new Error(`Server error: ${res.status}`)
+
         const json = await res.json()
         const productList = Array.isArray(json.data?.product)
           ? json.data.product
           : Array.isArray(json.data)
             ? json.data
             : []
+
         const formatted = productList.map((p: ProductApiResponse) => {
           const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
           return {
@@ -262,8 +292,14 @@ export function Shop() {
             finalPrice,
           }
         })
+
         setOriginalProducts(formatted) // Store original products
         setProducts(formatted) // Set initial display products
+
+        // Update pagination data
+        if (json.data?.pagination) {
+          setPagination(json.data.pagination)
+        }
       } catch (e: unknown) {
         console.error("Fetch error:", e)
         setError(e instanceof Error ? e.message : "Unknown error")
@@ -273,19 +309,26 @@ export function Shop() {
     }
 
     fetchProducts()
-  }, [categoryId, ready])
+  }, [categoryId, ready, currentPage])
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const handleAddToCart = async (productId: string) => {
     const token = localStorage.getItem("accessToken")
+
     if (!token) {
       // Save to localStorage instead of showing modal
       const productData = products.find((p) => p.productId === productId)
       const saved = saveCartToLocalStorage(productId, productData)
+
       if (saved) {
         // Update UI to show item as added
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
-        alert("Product saved to cart! Sign in to sync your cart.")
-         window.dispatchEvent(new Event("cartUpdated"))
+        alert("Product saved to cart! Sign in to sync your cart.") 
+        window.dispatchEvent(new Event("cartUpdated"))
       } else {
         alert("Failed to save product to cart.")
       }
@@ -302,7 +345,9 @@ export function Shop() {
         },
         body: JSON.stringify({ product_id: productId, quantity: "1", size: "", color: "" }),
       })
+
       const data = await res.json()
+
       if (res.ok && data.statusCode === 200) {
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
       } else {
@@ -315,13 +360,15 @@ export function Shop() {
 
   const handleAddToWishlist = async (productId: string) => {
     const token = localStorage.getItem("accessToken")
+
     if (!token) {
       // Save to localStorage instead of showing modal
       const productData = products.find((p) => p.productId === productId)
       const saved = saveWishlistToLocalStorage(productId, productData)
+
       if (saved) {
-        alert("Product saved to wishlist! Sign in to sync your wishlist.")
-         window.dispatchEvent(new Event("wishlistUpdated"))
+        alert("Product saved to wishlist! Sign in to sync your wishlist.") 
+        window.dispatchEvent(new Event("wishlistUpdated"))
       } else {
         alert("Product is already in your wishlist!")
       }
@@ -338,10 +385,12 @@ export function Shop() {
         },
         body: JSON.stringify({ product_id: productId, quantity: "1", size: "", color: "" }),
       })
+
       const data = await res.json()
+
       if (res.ok && data.statusCode === 200) {
-        alert("Added to wishlist")
-         window.dispatchEvent(new Event("wishlistUpdated"))
+        alert("Added to wishlist") 
+        window.dispatchEvent(new Event("wishlistUpdated"))
       } else {
         console.error("Wishlist error:", data)
       }
@@ -372,12 +421,14 @@ export function Shop() {
       <div className="hidden md:block">
         <FiltersDefault onFiltersChange={handleFiltersChange} />
       </div>
+
       <section className="flex-1">
         <div className="flex justify-center md:hidden mb-4">
           <button className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={() => setIsModalVisible(true)}>
             Filters
           </button>
         </div>
+
         {/* Show FiltersDefault as a modal on mobile or as a permanent component on desktop */}
         {isModalVisible && (
           <div className="max-md:flex max-md:fixed max-md:top-0 max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:bg-opacity-50 max-md:bg-black max-md:z-50 max-md:justify-center max-md:items-center max-md:overflow-y-auto">
@@ -393,6 +444,7 @@ export function Shop() {
             </div>
           </div>
         )}
+
         <div className="hidden md:flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
           {products.map((p) => (
             <ProductCard
@@ -418,6 +470,7 @@ export function Shop() {
             />
           ))}
         </div>
+
         <div className="block md:hidden w-full">
           <ProductGrid 
             products={products.map((p) => ({
@@ -439,8 +492,14 @@ export function Shop() {
             onAddToWishlist={handleAddToWishlist}
           />
         </div>
-        <Pagination />
+
+        <Pagination 
+          currentPage={pagination.current_page}
+          totalPages={pagination.total_pages}
+          onPageChange={handlePageChange}
+        />
       </section>
+
       {modalType === "signup" && <SignUpModal onClose={handleCloseModal} onOpenLogin={() => setModalType("login")} />}
       {modalType === "login" && (
         <LoginModal

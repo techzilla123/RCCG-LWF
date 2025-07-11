@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState } from "react"
 import { ProductHeader } from "./Heart/ProductHeader"
 import { ProductCard } from "./Heart/ProductCard"
@@ -92,8 +91,8 @@ export function Heart() {
 
       localStorage.setItem("localCart", JSON.stringify(cartItems))
 
-          window.dispatchEvent(new Event("cartUpdated"))
-          
+      window.dispatchEvent(new Event("cartUpdated"))
+
       return true
     } catch (error) {
       console.error("Error saving to localStorage:", error)
@@ -135,7 +134,9 @@ export function Heart() {
 
       wishlistItems.push(newItem)
       localStorage.setItem("localWishlist", JSON.stringify(wishlistItems))
-          window.dispatchEvent(new Event("wishlistUpdated"))
+
+      window.dispatchEvent(new Event("wishlistUpdated"))
+
       return true
     } catch (error) {
       console.error("Error saving to localStorage:", error)
@@ -144,7 +145,7 @@ export function Heart() {
   }
 
   useEffect(() => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
 
     async function fetchProducts() {
       try {
@@ -155,29 +156,73 @@ export function Heart() {
           ...(token ? { Authorization: token } : {}),
         }
 
-        const res = await fetch(url, {
+        // First, fetch the first page to get pagination info
+        const firstPageRes = await fetch(baseUrl, {
           method: "GET",
           headers,
         })
 
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`)
+        if (!firstPageRes.ok) {
+          throw new Error(`Server error: ${firstPageRes.status}`)
         }
 
-        const json = await res.json()
+        const firstPageJson = await firstPageRes.json()
 
-        if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          const formatted: Product[] = json.data.product.map((p: ProductApiResponse) => ({
-            ...p,
-            isAdded: false,
-            finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-          }))
-
-          const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
-          setProducts(shuffledAndLimited)
-        } else {
+        if (firstPageJson.statusCode !== 200 || !Array.isArray(firstPageJson.data.product)) {
           throw new Error("Unexpected response structure")
         }
+
+        const totalPages = firstPageJson.data.pagination.total_pages
+        let allProducts: ProductApiResponse[] = [...firstPageJson.data.product]
+
+        // If there are more pages, fetch from random pages
+        if (totalPages > 1) {
+          // Determine how many additional pages to fetch (fetch from 2-3 random pages)
+          const pagesToFetch = Math.min(totalPages - 1, 2)
+          const randomPages: number[] = []
+
+          // Generate random page numbers (excluding page 1 which we already fetched)
+          while (randomPages.length < pagesToFetch) {
+            const randomPage = Math.floor(Math.random() * (totalPages - 1)) + 2 // Pages 2 to totalPages
+            if (!randomPages.includes(randomPage)) {
+              randomPages.push(randomPage)
+            }
+          }
+
+          // Fetch products from random pages
+          const pagePromises = randomPages.map(async (page) => {
+            const pageRes = await fetch(`${baseUrl}?page=${page}`, {
+              method: "GET",
+              headers,
+            })
+
+            if (pageRes.ok) {
+              const pageJson = await pageRes.json()
+              if (pageJson.statusCode === 200 && Array.isArray(pageJson.data.product)) {
+                return pageJson.data.product
+              }
+            }
+            return []
+          })
+
+          const additionalPages = await Promise.all(pagePromises)
+
+          // Combine all products from different pages
+          additionalPages.forEach((pageProducts) => {
+            allProducts = [...allProducts, ...pageProducts]
+          })
+        }
+
+        // Format all products
+        const formatted: Product[] = allProducts.map((p: ProductApiResponse) => ({
+          ...p,
+          isAdded: false,
+          finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+        }))
+
+        // Shuffle and limit to 16 products
+        const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
+        setProducts(shuffledAndLimited)
       } catch (e: unknown) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred"
         console.error("Fetch error:", e)
