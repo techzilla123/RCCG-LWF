@@ -212,13 +212,13 @@ const CustomerOptionsForm: React.FC<CustomerOptionsFormProps> = ({
           setSizeStyle(isShort ? "short" : "full")
           setSizes(savedSizes)
         } else {
-          setSizes(["medium", "large"])
+          setSizes(["", ""])
         }
 
         if (savedColors && Array.isArray(savedColors) && savedColors.length > 0) {
           setColors(savedColors)
         } else {
-          setColors(["Red"])
+          setColors([""])
         }
 
         return
@@ -245,7 +245,7 @@ const CustomerOptionsForm: React.FC<CustomerOptionsFormProps> = ({
         const productData = data.data
 
         // Set sizes from product data
-        let finalSizes = ["medium", "large"] // default
+        let finalSizes = [] // default
         if (productData.size && Array.isArray(productData.size) && productData.size.length > 0) {
           const productSizes = productData.size
           // Check if the sizes are in short format
@@ -268,7 +268,7 @@ const CustomerOptionsForm: React.FC<CustomerOptionsFormProps> = ({
         }
 
         // Set colors from product data
-        let finalColors = ["Red"] // default
+        let finalColors = [] // default
         if (productData.color && Array.isArray(productData.color) && productData.color.length > 0) {
           finalColors = productData.color
         }
@@ -288,8 +288,8 @@ const CustomerOptionsForm: React.FC<CustomerOptionsFormProps> = ({
         }
         setErrorMessage(message)
         // Fallback to default values on error
-        setSizes(["medium", "large"])
-        setColors(["Red"])
+        setSizes(["", ""])
+        setColors([""])
       } finally {
         setIsLoadingProduct(false)
       }

@@ -1,11 +1,10 @@
 "use client";
-
 import { TableHeader } from './Table/TableHeader';
 import { TableCell } from './Table/TableCell';
 import { StatusTag } from './Table/StatusTag';
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from 'react-dom';
-import OrderDetails from "./ProductView/ProductsAddOne/ProductDetailForm"; // Ensure path is correct
+import OrderDetails from "./ProductView/ProductsAddOne/ProductDetailForm";
 
 type Product = {
   productId: string;
@@ -18,18 +17,40 @@ type Product = {
   status: 'Active' | 'Disabled' | 'Out of stock';
 };
 
-export const Table = () => {
+type PaginationData = {
+  current_page: number;
+  total_pages: number;
+  total_products: number;
+  per_page: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+};
+
+interface TableProps {
+  onPaginationChange?: (paginationData: PaginationData) => void;
+  currentPage?: number;
+}
+
+export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<PaginationData>({
+    current_page: 1,
+    total_pages: 1,
+    total_products: 0,
+    per_page: 10,
+    next_page_url: null,
+    prev_page_url: null,
+  });
+
   useEffect(() => {
-  console.log("Selected Product ID changed:", selectedProductId);
-}, [selectedProductId]);
+    console.log("Selected Product ID changed:", selectedProductId);
+  }, [selectedProductId]);
 
   const handleOpenModal = (productId: string) => {
     setSelectedProductId(productId);
@@ -48,7 +69,6 @@ export const Table = () => {
   };
 
   const isAllSelected = products.length > 0 && selectedRows.length === products.length;
-
   const toggleSelectAll = () => {
     if (isAllSelected) {
       setSelectedRows([]);
@@ -57,30 +77,36 @@ export const Table = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") || "";
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token && { Authorization: token }),
-          },
-        });
-
-        const result = await response.json();
-        if (result?.statusCode === 200) {
-          setProducts(result.data.product || []);
+  const fetchProducts = async (page: number = 1) => {
+    try {
+      const token = localStorage.getItem("accessToken") || "";
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product?page=${page}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token && { Authorization: token }),
+        },
+      });
+      const result = await response.json();
+      if (result?.statusCode === 200) {
+        setProducts(result.data.product || []);
+        const paginationData = result.data.pagination;
+        setPagination(paginationData);
+        
+        // Notify parent component about pagination change
+        if (onPaginationChange) {
+          onPaginationChange(paginationData);
         }
-      } catch (error) {
-        console.error("Error fetching products:", error);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -92,7 +118,6 @@ export const Table = () => {
         setOpenDropdownIndex(null);
       }
     };
-
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, [openDropdownIndex]);
@@ -102,7 +127,6 @@ export const Table = () => {
       setOpenDropdownIndex(null);
       return;
     }
-
     const rect = dropdownRefs.current[index]?.getBoundingClientRect();
     const spaceBelow = window.innerHeight - (rect?.bottom || 0);
     setDropdownDirection(spaceBelow < 100 ? "up" : "down");
@@ -123,10 +147,10 @@ export const Table = () => {
           ...(token && { Authorization: token }),
         },
       });
-
       const result = await response.json();
       if (result?.statusCode === 200) {
-        setProducts(prev => prev.filter(p => p.productId !== productId));
+        // Refresh the current page after deletion
+        fetchProducts(pagination.current_page);
         alert("Product deleted successfully");
       } else {
         alert("Failed to delete product.");
@@ -150,12 +174,9 @@ export const Table = () => {
   };
 
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
-
   const handleToggleStatus = async (product: Product, closeDropdown: () => void) => {
     const newStatus = product.status === "Active" ? "Disabled" : "Active";
-
     setLoadingProductId(product.productId);
-
     try {
       const token = localStorage.getItem("accessToken") || "";
       const response = await fetch(
@@ -169,7 +190,6 @@ export const Table = () => {
           },
         }
       );
-
       const result = await response.json();
       if (result?.statusCode === 200) {
         setProducts((prev) =>
@@ -189,25 +209,21 @@ export const Table = () => {
       closeDropdown();
     }
   };
+
   useEffect(() => {
-  if (isModalOpen) {
-    document.body.style.overflow = 'hidden'; // Disable scroll
-  } else {
-    document.body.style.overflow = 'auto';   // Re-enable scroll
-  }
-
-  // Clean up on unmount
-  return () => {
-    document.body.style.overflow = 'auto';
-  };
-}, [isModalOpen]);
-
-
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isModalOpen]);
 
   return (
     <div className="w-full overflow-x-auto mt-8">
       <div className="flex min-w-[900px]">
-
         {/* Checkbox Column */}
         <div className="flex-1 min-w-[40px] max-w-[50px]">
           <TableHeader
@@ -237,7 +253,7 @@ export const Table = () => {
           <TableHeader title="Image" />
           {products.map((item, index) => (
             <TableCell key={index} className="py-3 px-5 justify-center">
-              <img src={item.imageOne} className="object-contain rounded aspect-[1.7] w-[68px]" alt="" />
+              <img src={item.imageOne || "/placeholder.svg"} className="object-contain rounded aspect-[1.7] w-[68px]" alt="" />
             </TableCell>
           ))}
         </div>
@@ -330,7 +346,7 @@ export const Table = () => {
         </div>
 
         {/* Actions */}
-       <div className="flex-1 min-w-[100px]">
+        <div className="flex-1 min-w-[100px]">
           <TableHeader title="Actions" />
           {products.map((item, index) => (
             <TableCell key={index} className="px-4 py-3 text-right">
@@ -343,7 +359,7 @@ export const Table = () => {
                 <div
                   className="flex items-center gap-1 cursor-pointer mt-3"
                   onClick={(e) => {
-                    e.stopPropagation(); // stop click from bubbling up to document
+                    e.stopPropagation();
                     toggleDropdown(index);
                   }}
                 >
@@ -351,7 +367,6 @@ export const Table = () => {
                   <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                   <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                 </div>
-
                 {openDropdownIndex === index &&
                   dropdownRefs.current[index] &&
                   createPortal(
@@ -367,7 +382,7 @@ export const Table = () => {
                           dropdownRefs.current[index].getBoundingClientRect().left +
                           window.scrollX,
                       }}
-                      onClick={(e) => e.stopPropagation()} // Prevent dropdown close when clicking inside
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <div
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -375,28 +390,24 @@ export const Table = () => {
                       >
                         Edit
                       </div>
-
                       <div
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleView(item.productId, () => setOpenDropdownIndex(null))}
                       >
                         View
                       </div>
-
-                     
-                    <div
-  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-  onClick={() => handleToggleStatus(item, () => setOpenDropdownIndex(null))}
->
-  {loadingProductId === item.productId
-    ? item.status === "Active"
-      ? "Disabling..."
-      : "Enabling..."
-    : item.status === "Active"
-    ? "Disable"
-    : "Enable"}
-</div>
-
+                      <div
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleToggleStatus(item, () => setOpenDropdownIndex(null))}
+                      >
+                        {loadingProductId === item.productId
+                          ? item.status === "Active"
+                            ? "Disabling..."
+                            : "Enabling..."
+                          : item.status === "Active"
+                          ? "Disable"
+                          : "Enable"}
+                      </div>
                       <div
                         className="px-4 py-2 text-red-500 hover:bg-red-100 cursor-pointer"
                         onClick={() => handleDelete(item.productId, () => setOpenDropdownIndex(null))}
@@ -411,12 +422,12 @@ export const Table = () => {
           ))}
         </div>
       </div>
-        {/* Modal */}
+
+      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
           <div className="min-h-screen flex items-center justify-center p-4">
             <OrderDetails onClose={handleCloseModal} productId={selectedProductId} />
-
           </div>
         </div>
       )}
