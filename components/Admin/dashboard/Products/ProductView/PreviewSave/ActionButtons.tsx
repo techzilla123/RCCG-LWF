@@ -78,22 +78,32 @@ export const ActionButtons = ({ onCancel, uploadedFiles, productId }: ActionButt
     // Quantity
     formDataToSend.append("quantity", localStorage.getItem("stock") || "");
 
-    const shippingInfoParts: string[] = [];
-    if (pricingFormData.shippedFrom && pricingFormData.shippedFrom !== "null") {
-      shippingInfoParts.push(`Shipped from: ${pricingFormData.shippedFrom}`);
-    }
-    if (pricingFormData.waitingTime && pricingFormData.waitingTime !== "null") {
-      shippingInfoParts.push(`Order now, get by: ${pricingFormData.waitingTime}`);
-    }
-    if (pricingFormData.returnPolicy && pricingFormData.returnPolicy !== "null") {
-      shippingInfoParts.push(`Return policy: ${pricingFormData.returnPolicy}`);
-    }
-    if (pricingFormData.shippingFee && pricingFormData.shippingFee !== "null") {
-      shippingInfoParts.push(`Shipping cost: $${pricingFormData.shippingFee}`);
-    }
+   const shippingInfoParts: string[] = [];
 
-    const combinedShippingInfo = shippingInfoParts.join(", ");
-    formDataToSend.append("shipping_information", combinedShippingInfo);
+const shippedFrom = pricingFormData.shippedFrom?.trim();
+const waitingTime = pricingFormData.waitingTime?.trim();
+const returnPolicy = pricingFormData.returnPolicy?.trim();
+const shippingFee = pricingFormData.shippingFee?.trim();
+
+
+if (shippedFrom) {
+  shippingInfoParts.push(`Shipped from: ${shippedFrom}`);
+}
+if (waitingTime) {
+  shippingInfoParts.push(`Order now, get by: ${waitingTime}`);
+}
+if (returnPolicy) {
+  shippingInfoParts.push(`Return policy: ${returnPolicy}`);
+}
+if (shippingFee) {
+  shippingInfoParts.push(`Shipping cost: $${shippingFee}`);
+}
+
+const combinedShippingInfo = shippingInfoParts.join(", ");
+
+// Always append — even if it's empty (to overwrite previous data if user clears it)
+formDataToSend.append("shipping_information", combinedShippingInfo);
+
 
     // Sizes & Colors
     const sizes = JSON.parse(localStorage.getItem("selectedSizes") || "[]");

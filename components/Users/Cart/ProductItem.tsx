@@ -7,8 +7,8 @@ import type { ProductItemType } from "./types"
 
 interface ProductItemProps {
   product: ProductItemType
-  onQuantityChange: (id: string, newQuantity: number) => void
-  onRemoveFromCart: (productId: string) => void
+  onQuantityChange: (id: string, newQuantity: number) => void | Promise<void>
+  onRemoveFromCart: (productId: string, color: string, size: string) => Promise<void>
 }
 
 export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange, onRemoveFromCart }) => {
@@ -43,7 +43,8 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
   const handleRemove = async () => {
     setIsRemoving(true)
     try {
-      await onRemoveFromCart(product.id)
+      await onRemoveFromCart(product.id, product.color, product.size)
+
     } catch (error) {
       console.error("Error removing item:", error)
     } finally {

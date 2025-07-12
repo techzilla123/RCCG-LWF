@@ -15,6 +15,7 @@ interface ProductInfoProps {
   colors: string[]
   shippingInfo?: string
   imageOne: string
+  images: string[] 
   onColorChange?: (colorIndex: number) => void // New prop for color change callback
 }
 
@@ -29,6 +30,8 @@ interface LocalStorageItem {
   discountPrice?: number
   finalPrice?: number
   imageOne?: string
+  images: string
+  
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -44,6 +47,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   colors,
   shippingInfo,
   imageOne,
+  images,
   onColorChange,
 }) => {
   const [popupMessage, setPopupMessage] = React.useState<string | null>(null)
@@ -54,7 +58,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [quantity, setQuantity] = React.useState(1)
   const [detailsOpen, setDetailsOpen] = React.useState(true)
   const [selectedColor, setSelectedColor] = React.useState<string | null>(null)
-  
+  const [selectedColorIndex, setSelectedColorIndex] = React.useState<number | null>(null)
+
   // Parse inflated price from description
   const cleanedDescription = description.replace(/\(.*?inflated\s*-\s*\$?\d+(?:\.\d{2})?.*?\)/i, "").trim()
   const [inflatedPrice, setInflatedPrice] = React.useState<number | null>(null)
@@ -131,12 +136,13 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         product_id: productId,
         quantity: quantity.toString(),
         size: selectedSize,
-         color: selectedColor ? `${selectedColor}${isInflated ? " (inflated)" : ""}` : "",
+        color: selectedColor ? `${selectedColor}${isInflated ? " (inflated)" : ""}` : "",
         productName: title,
         price: isInflated && inflatedPrice ? inflatedPrice : price,
         discountPrice: originalPrice,
         finalPrice: finalPrice,
-        imageOne: imageOne || "", // Ensure imageOne is always included
+        imageOne: selectedColorIndex !== null && images[selectedColorIndex] ? images[selectedColorIndex] : imageOne || "",
+        images: ""
       }
       if (existingItemIndex > -1) {
         // Update existing item quantity
@@ -229,12 +235,14 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
     }
   }
 
-  const handleColorChange = (color: string, index: number) => {
-    setSelectedColor(color)
-    if (onColorChange) {
-      onColorChange(index)
-    }
+ const handleColorChange = (color: string, index: number) => {
+  setSelectedColor(color)
+  setSelectedColorIndex(index)
+  if (onColorChange) {
+    onColorChange(index)
   }
+}
+
 
   return (
     <>
@@ -373,7 +381,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
          {detailsOpen && <div className="mt-4 text-sm text-neutral-500">{cleanedDescription}</div>}
 
           {shippingInfo && (
-            <div className="mt-4 text-sm text-gray-700">
+            <div className="mt-4 text-sm hidden text-gray-700">
               <strong>Shipping Info:</strong> {shippingInfo}
             </div>
           )}

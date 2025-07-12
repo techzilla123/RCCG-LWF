@@ -33,6 +33,12 @@ type Product = {
   imageFive: string
   imageSix: string
   imageSeven: string
+  imageEight: string
+  imageNine: string
+imageTen: string
+imageEleven: string
+
+  
   review: Review[]
 }
 
@@ -158,6 +164,19 @@ export const ProductPage: React.FC = () => {
           colors={product.color}
           shippingInfo={product.shippingInformation}
           imageOne={product.imageOne}
+                images={[
+    product.imageOne,
+    product.imageTwo,
+    product.imageThree,
+    product.imageFour,
+    product.imageFive,
+    product.imageSix,
+    product.imageSeven,
+    product.imageEight,
+    product.imageNine,
+    product.imageTen,
+    product.imageEleven,
+  ].filter((img) => img && img.trim() !== "")}
           onColorChange={handleColorChange} // Pass color change handler
         />
       </div>
@@ -173,6 +192,10 @@ export const ProductPage: React.FC = () => {
             product.imageFive,
             product.imageSix,
             product.imageSeven,
+            product.imageEight,
+            product.imageNine,
+            product.imageTen,
+            product.imageEleven,
           ]
             .filter((img) => img && img.trim() !== "")
             .map((img) => ({ thumbnail: img, full: img }))}
@@ -191,6 +214,19 @@ export const ProductPage: React.FC = () => {
             colors={product.color}
             shippingInfo={product.shippingInformation}
             imageOne={product.imageOne}
+             images={[
+    product.imageOne,
+    product.imageTwo,
+    product.imageThree,
+    product.imageFour,
+    product.imageFive,
+    product.imageSix,
+    product.imageSeven,
+    product.imageEight,
+    product.imageNine,
+    product.imageTen,
+    product.imageEleven,
+  ].filter((img) => img && img.trim() !== "")}
             onColorChange={handleColorChange} // Pass color change handler
           />
         </div>

@@ -193,37 +193,39 @@ export const PricingForm: React.FC<PricingFormProps> = ({ productId, onCancel, o
   }, [productId])
 
   // Save all fields to localStorage on any change
-  useEffect(() => {
-    if (!loading) {
-      const data = {
-        enableDiscount,
-        enableShipping,
-        price,
-        stock,
-        discount,
-        discountExpires,
-        couponCode,
-        shippedFrom,
-        shippingFee,
-        waitingTime,
-        returnPolicy,
-      }
-      localStorage.setItem("pricingFormData", JSON.stringify(data))
+ useEffect(() => {
+  if (!loading) {
+    const data = {
+      enableDiscount,
+      enableShipping,
+      price,
+      stock,
+      discount: enableDiscount ? discount : "",
+      discountExpires: enableDiscount ? discountExpires : "",
+      couponCode: enableDiscount ? couponCode : "",
+      shippedFrom: enableShipping ? shippedFrom : "",
+      shippingFee: enableShipping ? shippingFee : "",
+      waitingTime: enableShipping ? waitingTime : "",
+      returnPolicy: enableShipping ? returnPolicy : "",
     }
-  }, [
-    loading,
-    enableDiscount,
-    enableShipping,
-    price,
-    stock,
-    discount,
-    discountExpires,
-    couponCode,
-    shippedFrom,
-    shippingFee,
-    waitingTime,
-    returnPolicy,
-  ])
+
+    localStorage.setItem("pricingFormData", JSON.stringify(data))
+  }
+}, [
+  loading,
+  enableDiscount,
+  enableShipping,
+  price,
+  stock,
+  discount,
+  discountExpires,
+  couponCode,
+  shippedFrom,
+  shippingFee,
+  waitingTime,
+  returnPolicy,
+])
+
 
   if (loading) {
     return (
@@ -288,7 +290,18 @@ export const PricingForm: React.FC<PricingFormProps> = ({ productId, onCancel, o
           />
         </div>
 
-        <Checkbox label="Enable discount" checked={enableDiscount} onChange={setEnableDiscount} />
+     <Checkbox
+  label="Enable discount"
+  checked={enableDiscount}
+  onChange={(checked) => {
+    setEnableDiscount(checked)
+    if (!checked) {
+      setDiscount("")
+      setDiscountExpires("")
+      setCouponCode("")
+    }
+  }}
+/>
 
         {enableDiscount && (
           <>
@@ -316,7 +329,19 @@ export const PricingForm: React.FC<PricingFormProps> = ({ productId, onCancel, o
           </>
         )}
 
-        <Checkbox label="Enable shipping and delivery" checked={enableShipping} onChange={setEnableShipping} />
+      <Checkbox
+  label="Enable shipping and delivery"
+  checked={enableShipping}
+  onChange={(checked) => {
+    setEnableShipping(checked)
+    if (!checked) {
+      setShippedFrom("")
+      setShippingFee("")
+      setWaitingTime("")
+      setReturnPolicy("")
+    }
+  }}
+/>
 
         {enableShipping && (
           <>
