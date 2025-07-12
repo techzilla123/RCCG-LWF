@@ -23,53 +23,68 @@ export const CartDropdown = () => {
 
   useEffect(() => {
     const fetchCart = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") || ""
-        if (token) {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/cart-list`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-              Authorization: token,
-            },
-          })
-          const result = await response.json()
-          const items = result?.data || []
-          let total = 0
-          let count = 0
-          for (const item of items) {
-            const details = item?.productDetails || {}
-            // Assuming API provides the final price directly or price - discount is always valid
-            const price = Number.parseFloat(details.price || "0")
-            const discount = Number.parseFloat(details.discountPrice || "0")
-            const finalPrice = price - discount
-            const qty = Number.parseInt(item?.quantity || "0")
-            total += finalPrice * qty
-            count += qty
-          }
-          setCartTotal(total)
-          setItemCount(count)
-        } else {
-          const localCart = localStorage.getItem("localCart")
-          const cartItems: LocalStorageItem[] = localCart ? JSON.parse(localCart) : []
-          let total = 0
-          let count = 0
-          for (const item of cartItems) {
-            // Use item.finalPrice directly as it already holds the correct calculated price
-            // (either inflated price or discounted price from ProductInfo)
-            const itemPrice = Number.parseFloat(item.finalPrice?.toString() || "0")
-            const qty = Number.parseInt(item.quantity || "0")
-            total += itemPrice * qty
-            count += qty
-          }
-          setCartTotal(total)
-          setItemCount(count)
-        }
-      } catch (error) {
-        console.error("Failed to fetch cart", error)
+  const token = localStorage.getItem("accessToken") || ""
+  console.log("Token exists?", !!token)
+
+  try {
+    if (token) {
+      console.log("Fetching from API...")
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/cart-list`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          Authorization: token,
+        },
+      })
+
+      const result = await response.json()
+      console.log("API cart data:", result)
+
+      const items = result?.data || []
+      let total = 0
+      let count = 0
+
+      for (const item of items) {
+        const details = item?.productDetails || {}
+        const price = Number.parseFloat(details.price || "0")
+        const discount = Number.parseFloat(details.discountPrice || "0")
+        const finalPrice = price - discount
+        const qty = Number.parseInt(item?.quantity || "0")
+
+        total += finalPrice * qty
+        count += qty
       }
+
+      console.log("API Cart count:", count, "Total:", total)
+      setCartTotal(total)
+      setItemCount(count)
+    } else {
+      console.log("Using localStorage fallback")
+      const localCart = localStorage.getItem("localCart")
+      const cartItems: LocalStorageItem[] = localCart ? JSON.parse(localCart) : []
+      console.log("Local cart items:", cartItems)
+
+      let total = 0
+      let count = 0
+
+      for (const item of cartItems) {
+        const itemPrice = Number.parseFloat(item.finalPrice?.toString() || "0")
+        const qty = Number.parseInt(item.quantity || "0")
+        total += itemPrice * qty
+        count += qty
+      }
+
+      console.log("Local Cart count:", count, "Total:", total)
+      setCartTotal(total)
+      setItemCount(count)
     }
+  } catch (error) {
+    console.error("Failed to fetch cart", error)
+  }
+}
+
 
     fetchCart()
     // ✅ Listen to custom event and update cart
