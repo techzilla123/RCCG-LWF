@@ -239,77 +239,83 @@ export function Shop() {
   }, [pathname, searchParams])
 
   // Fetch products every time categoryId or currentPage changes
-  useEffect(() => {
-    if (!ready) return // wait until pathname/categoryId logic is finished
+useEffect(() => {
+  if (!ready) return // wait until pathname/categoryId logic is finished
 
-    const url = (() => {
-      let baseUrl = ""
-      if (!categoryId) {
-        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-      } else if (categoryId.startsWith("SCT:")) {
-        const id = categoryId.replace("SCT:", "")
-        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
-      } else if (categoryId.startsWith("PCT:")) {
-        const id = categoryId.replace("PCT:", "")
-        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
-      } else if (categoryId.startsWith("GCT:")) {
-        const id = categoryId.replace("GCT:", "")
-        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
-      } else {
-        baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-      }
-      
-      // Add page parameter
-      return `${baseUrl}?page=${currentPage}`
-    })()
+  const searchQuery = searchParams.get("search")
 
-    const fetchProducts = async () => {
-      setLoading(true)
-      try {
-        const token = localStorage.getItem("accessToken")
-        const res = await fetch(url, {
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token ? { Authorization: token } : {}),
-          },
-        })
-
-        if (!res.ok) throw new Error(`Server error: ${res.status}`)
-
-        const json = await res.json()
-        const productList = Array.isArray(json.data?.product)
-          ? json.data.product
-          : Array.isArray(json.data)
-            ? json.data
-            : []
-
-        const formatted = productList.map((p: ProductApiResponse) => {
-          const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
-          return {
-            ...p,
-            isAdded: false,
-            finalPrice,
-          }
-        })
-
-        setOriginalProducts(formatted) // Store original products
-        setProducts(formatted) // Set initial display products
-
-        // Update pagination data
-        if (json.data?.pagination) {
-          setPagination(json.data.pagination)
-        }
-      } catch (e: unknown) {
-        console.error("Fetch error:", e)
-        setError(e instanceof Error ? e.message : "Unknown error")
-      } finally {
-        setLoading(false)
-      }
+  const url = (() => {
+    if (searchQuery) {
+      const encodedSearch = encodeURIComponent(searchQuery)
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product-by-name/${encodedSearch}`
     }
 
-    fetchProducts()
-  }, [categoryId, ready, currentPage])
+    let baseUrl = ""
+    if (!categoryId) {
+      baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+    } else if (categoryId.startsWith("SCT:")) {
+      const id = categoryId.replace("SCT:", "")
+      baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/SCT/${id}`
+    } else if (categoryId.startsWith("PCT:")) {
+      const id = categoryId.replace("PCT:", "")
+      baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/PCT/${id}`
+    } else if (categoryId.startsWith("GCT:")) {
+      const id = categoryId.replace("GCT:", "")
+      baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/filter-product-category/GCT/${id}`
+    } else {
+      baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+    }
+
+    return `${baseUrl}?page=${currentPage}`
+  })()
+
+  const fetchProducts = async () => {
+    setLoading(true)
+    try {
+      const token = localStorage.getItem("accessToken")
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+          ...(token ? { Authorization: token } : {}),
+        },
+      })
+
+      if (!res.ok) throw new Error(`Server error: ${res.status}`)
+
+      const json = await res.json()
+
+      const productList = Array.isArray(json.data?.product)
+        ? json.data.product
+        : Array.isArray(json.data)
+        ? json.data
+        : []
+
+      const formatted = productList.map((p: ProductApiResponse) => {
+        const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
+        return {
+          ...p,
+          isAdded: false,
+          finalPrice,
+        }
+      })
+
+      setOriginalProducts(formatted)
+      setProducts(formatted)
+
+      if (json.data?.pagination) {
+        setPagination(json.data.pagination)
+      }
+    } catch (e: unknown) {
+      console.error("Fetch error:", e)
+      setError(e instanceof Error ? e.message : "Unknown error")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchProducts()
+}, [categoryId, ready, currentPage, searchParams])
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
