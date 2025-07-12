@@ -287,56 +287,26 @@ export default function CartItem() {
   }, [])
 
   const handleQuantityChange = async (id: string, newQuantity: number) => {
-  const token = localStorage.getItem("accessToken")
+  // const token = localStorage.getItem("accessToken")
 
   const product = products.find((p) => p.id === id)
   if (!product) return
 
-  if (!token) {
-    updateLocalStorageQuantity(id, product.color, product.size, newQuantity)
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: newQuantity } : p)),
+  // Always update localStorage (even if user is logged in)
+  updateLocalStorageQuantity(id, product.color, product.size, newQuantity)
+
+  // Always update React state
+  setProducts((prev) =>
+    prev.map((p) =>
+      p.id === id && p.color === product.color && p.size === product.size
+        ? { ...p, quantity: newQuantity }
+        : p
     )
-    return
-  }
+  )
 
+  // ===> NO API call to update-cart-quantity anymore
+}
 
-
-    // Update server if token exists
-    try {
-      const headers = {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-        Authorization: token,
-      }
-
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/update-cart-quantity`
-      const body = JSON.stringify({
-        product_id: id,
-        quantity: newQuantity.toString(),
-      })
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers,
-        body,
-      })
-
-      const result = await response.json()
-      if (response.ok && result.statusCode === 200) {
-        // Update local state after successful server update
-        setProducts((prev) =>
-          prev.map((product) => (product.id === id ? { ...product, quantity: newQuantity } : product)),
-        )
-      } else {
-        console.error("Failed to update quantity:", result.message)
-        alert("Failed to update quantity")
-      }
-    } catch (error) {
-      console.error("Error updating quantity:", error)
-      alert("Something went wrong while updating quantity")
-    }
-  }
 
 const handleRemoveFromCart = async (productId: string, color: string, size: string) => {
 
