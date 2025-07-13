@@ -5,6 +5,7 @@ import { StatusTag } from './Table/StatusTag';
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from 'react-dom';
 import OrderDetails from "./ProductView/ProductsAddOne/ProductDetailForm";
+import OrderDetails1 from "./ProductView copy/ProductsAddOne/ProductDetailForm";
 
 type Product = {
   productId: string;
@@ -39,6 +40,7 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [modalType, setModalType] = useState<'edit' | 'view'>('edit');
   const [pagination, setPagination] = useState<PaginationData>({
     current_page: 1,
     total_pages: 1,
@@ -163,15 +165,16 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
     }
   };
 
-  const handleEdit = (productId: string, closeDropdown: () => void) => {
-    handleOpenModal(productId);
-    closeDropdown();
-  };
-
+ const handleEdit = (productId: string, closeDropdown: () => void) => {
+  setModalType('edit');
+  handleOpenModal(productId);
+  closeDropdown();
+};
   const handleView = (productId: string, closeDropdown: () => void) => {
-    handleOpenModal(productId);
-    closeDropdown();
-  };
+  setModalType('view');
+  handleOpenModal(productId);
+  closeDropdown();
+};
 
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const handleToggleStatus = async (product: Product, closeDropdown: () => void) => {
@@ -394,7 +397,7 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleView(item.productId, () => setOpenDropdownIndex(null))}
                       >
-                        View
+                        Duplicate
                       </div>
                       <div
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -424,13 +427,18 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
       </div>
 
       {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
-          <div className="min-h-screen flex items-center justify-center p-4">
-            <OrderDetails onClose={handleCloseModal} productId={selectedProductId} />
-          </div>
-        </div>
+    {isModalOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      {modalType === 'edit' ? (
+        <OrderDetails onClose={handleCloseModal} productId={selectedProductId} />
+      ) : (
+        <OrderDetails1 onClose={handleCloseModal} productId={selectedProductId} />
       )}
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
