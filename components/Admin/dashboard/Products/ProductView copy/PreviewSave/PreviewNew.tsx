@@ -91,7 +91,7 @@ export const PreviewNew = ({ onPrevious, onCancel, uploadedFiles, productId }: P
         </article>
       </div>
 
-      <ActionButtons productId={productId} onCancel={onCancel} uploadedFiles={effectiveUploadedFiles} />
+      <ActionButtons onCancel={onCancel} uploadedFiles={effectiveUploadedFiles} />
 
       <button
         className="flex absolute top-0 right-0 z-0 gap-2 justify-center items-center pt-16 pb-8 w-14 h-14 rounded-lg aspect-[1/1] bg-[rgba(0,0,0,0.00)] min-h-14"
