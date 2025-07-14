@@ -169,21 +169,31 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         }))
 
         // Convert to mobile Product format
-        const mobileProducts: Product[] = formattedProducts.map((p) => ({
-          id: p.productId,
-          image: p.imageOne,
-          title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
-          price: p.finalPrice,
-          originalPrice:
-            (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
-              ? Number(p.price || 0)
-              : undefined,
-          discountPrice: typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice,
-          finalPrice: p.finalPrice,
-          isOutOfStock: p.quantity === 0,
-          isWishlisted: false,
-          isAdded: p.isAdded,
-        }))
+     const seenNames = new Set<string>()
+const mobileProducts: Product[] = []
+
+for (const p of formattedProducts) {
+  const nameKey = p.productName.trim().toLowerCase()
+  if (seenNames.has(nameKey)) continue
+  seenNames.add(nameKey)
+
+  mobileProducts.push({
+    id: p.productId,
+    image: p.imageOne,
+    title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
+    price: p.finalPrice,
+    originalPrice:
+      (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
+        ? Number(p.price || 0)
+        : undefined,
+    discountPrice: typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice,
+    finalPrice: p.finalPrice,
+    isOutOfStock: p.quantity === 0,
+    isWishlisted: false,
+    isAdded: p.isAdded,
+  })
+}
+
 
         setProducts(mobileProducts)
       } catch (e) {

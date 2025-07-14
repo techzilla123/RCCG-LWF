@@ -291,14 +291,23 @@ useEffect(() => {
         ? json.data
         : []
 
-      const formatted = productList.map((p: ProductApiResponse) => {
-        const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
-        return {
-          ...p,
-          isAdded: false,
-          finalPrice,
-        }
-      })
+    const uniqueProductsMap = new Map<string, Product>()
+
+productList.forEach((p: ProductApiResponse) => {
+  const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
+  const key = p.productName.toLowerCase().trim() // or p.productId if you prefer uniqueness by ID
+
+  if (!uniqueProductsMap.has(key)) {
+    uniqueProductsMap.set(key, {
+      ...p,
+      isAdded: false,
+      finalPrice,
+    })
+  }
+})
+
+const formatted = Array.from(uniqueProductsMap.values())
+
 
       setOriginalProducts(formatted)
       setProducts(formatted)

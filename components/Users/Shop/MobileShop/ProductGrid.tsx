@@ -249,7 +249,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           isAdded: p.isAdded,
         }))
 
-        setProducts(mobileProducts)
+        // Filter out duplicate product names (case-insensitive)
+const uniqueProductsMap = new Map<string, Product>()
+mobileProducts.forEach((product) => {
+  const nameKey = product.title.toLowerCase()
+  if (!uniqueProductsMap.has(nameKey)) {
+    uniqueProductsMap.set(nameKey, product)
+  }
+})
+
+setProducts(Array.from(uniqueProductsMap.values()))
+
       } catch (err) {
         console.error("Failed to load products:", err)
         setError(err instanceof Error ? err.message : "Unknown error")

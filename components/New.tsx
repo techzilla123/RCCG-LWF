@@ -167,12 +167,21 @@ export function New() {
 
         const json = await res.json()
         if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          const formattedProducts: Product[] = json.data.product.map((p: ProductApiResponse) => ({
-            ...p,
-            isAdded: false,
-            finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
-          }))
-          setProducts(formattedProducts)
+          const seenNames = new Set<string>()
+const formattedProducts: Product[] = []
+
+for (const p of json.data.product) {
+  if (!seenNames.has(p.productName)) {
+    seenNames.add(p.productName)
+    formattedProducts.push({
+      ...p,
+      isAdded: false,
+      finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
+    })
+  }
+}
+setProducts(formattedProducts)
+
         } else {
           throw new Error("Unexpected response structure")
         }

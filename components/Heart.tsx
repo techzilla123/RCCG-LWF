@@ -214,11 +214,20 @@ export function Heart() {
         }
 
         // Format all products
-        const formatted: Product[] = allProducts.map((p: ProductApiResponse) => ({
-          ...p,
-          isAdded: false,
-          finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-        }))
+      const uniqueNames = new Set<string>()
+
+const formatted: Product[] = []
+for (const p of allProducts) {
+  if (!uniqueNames.has(p.productName)) {
+    uniqueNames.add(p.productName)
+    formatted.push({
+      ...p,
+      isAdded: false,
+      finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+    })
+  }
+}
+
 
         // Shuffle and limit to 16 products
         const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)

@@ -197,12 +197,21 @@ export const ProductGrid: React.FC = () => {
           })
         }
 
-        // Format all products
-        const formatted: ExtendedProduct[] = allProducts.map((p: ProductApiResponse) => ({
-          ...p,
-          isAdded: false,
-          finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-        }))
+   // Format and deduplicate products by name
+const seenNames = new Set<string>()
+const formatted: ExtendedProduct[] = []
+
+for (const p of allProducts) {
+  if (!seenNames.has(p.productName)) {
+    seenNames.add(p.productName)
+    formatted.push({
+      ...p,
+      isAdded: false,
+      finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+    })
+  }
+}
+
 
         // Shuffle and limit to 16 products (matching desktop)
         const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
