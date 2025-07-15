@@ -230,9 +230,9 @@ export function Shop() {
       } else if (currentPath === "/shop") {
         setCategoryId(null)
       } else {
-        const savedCategoryId = localStorage.getItem("activeCategoryId")
-        setCategoryId(savedCategoryId ? `GCT:${savedCategoryId}` : null)
-      }
+  setCategoryId(null)
+}
+
     }
 
     setReady(true)

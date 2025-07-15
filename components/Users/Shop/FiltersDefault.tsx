@@ -138,12 +138,19 @@ export default function FiltersSidebar({ onFiltersChange }: FiltersSidebarProps)
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }))
   }
 
-  const updateURL = (subcategoryId: string) => {
-    // Create new URLSearchParams and only set SCT parameter
-    const params = new URLSearchParams()
-    params.set("SCT", subcategoryId)
-    router.push(`?${params.toString()}`)
-  }
+ const updateURL = (subcategoryId: string) => {
+  const params = new URLSearchParams()
+  params.set("SCT", subcategoryId)
+  const newUrl = `?${params.toString()}`
+  
+  router.push(newUrl)
+
+  // Delay reload to allow push to finish
+  setTimeout(() => {
+    window.location.reload()
+  }, 600) // 100ms delay
+}
+
 
   const handleChange = (section: string, option: string, type: FilterType) => {
     // Special handling for subcategory selection
