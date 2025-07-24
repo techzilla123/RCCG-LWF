@@ -15,9 +15,23 @@ interface ProductApiResponse {
   price: number | string
   discountPrice: number | string
   quantity: number
+   imageTwo?: string
+  imageThree?: string
+  imageFour?: string
+  imageFive?: string
+  imageSix?: string
+  imageSeven?: string
+  imageEight?: string
+  imageNine?: string
+  imageTen?: string
+  imageEleven?: string
+  imageTwelve?: string
+  imageThirteen?: string
 }
 
 interface Product extends ProductApiResponse {
+  imageList: any
+  currentImageIndex: number
   isAdded: boolean
   finalPrice: number // Calculated price after discount
 }
@@ -173,13 +187,33 @@ const formattedProducts: Product[] = []
 for (const p of json.data.product) {
   if (!seenNames.has(p.productName)) {
     seenNames.add(p.productName)
+
+    const imageList = [
+      p.imageOne,
+      p.imageTwo,
+      p.imageThree,
+      p.imageFour,
+      p.imageFive,
+      p.imageSix,
+      p.imageSeven,
+      p.imageEight,
+      p.imageNine,
+      p.imageTen,
+      p.imageEleven,
+      p.imageTwelve,
+      p.imageThirteen,
+    ].filter(Boolean) // Remove undefined/null
+
     formattedProducts.push({
       ...p,
       isAdded: false,
       finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
+      imageList,
+      currentImageIndex: 0,
     })
   }
 }
+
 setProducts(formattedProducts)
 
         } else {
@@ -244,6 +278,22 @@ setProducts(formattedProducts)
       alert("Something went wrong while adding to wishlist.")
     }
   }
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        const nextIndex = (product.currentImageIndex + 1) % product.imageList.length
+        return {
+          ...product,
+          currentImageIndex: nextIndex,
+        }
+      })
+    )
+  }, 3000) // Change image every 3 seconds
+
+  return () => clearInterval(interval)
+}, [])
 
   const handleAddToCart = async (productId: string) => {
     const token = localStorage.getItem("accessToken")
@@ -368,7 +418,7 @@ setProducts(formattedProducts)
           <ProductCard
             key={p.productId}
             id={p.productId}
-            image={p.imageOne}
+           image={p.imageList[p.currentImageIndex]}
             title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
             rating={4.7}
             reviews={0}

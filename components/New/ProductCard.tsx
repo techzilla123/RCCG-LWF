@@ -14,7 +14,7 @@ const inter = Inter({
 
 interface ProductCardProps {
   id: string
-  image: string
+  image: string // This prop will now be directly the image to display
   title: string
   rating: number
   reviews: number
@@ -26,12 +26,12 @@ interface ProductCardProps {
   isAdded?: boolean
   isOutOfStock?: boolean
   onAddToCart?: () => void
-  onAddToWishlist?: (productId: string) => void
+  onAddToWishlist: () => void
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   id,
-  image,
+  image, // Now directly used for display
   title,
   rating,
   reviews,
@@ -52,29 +52,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     router.push(`/preview?${id}`)
   }
 
-  const handleFavoriteClick = (e?: React.MouseEvent) => {
-    if (e) {
-      e.stopPropagation()
-    }
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setIsFavorited((prev) => !prev)
-    if (onAddToWishlist) {
-      onAddToWishlist(id)
-    }
-  }
-
-  const handleAddToCartClick = (e?: React.MouseEvent) => {
-    if (e) {
-      e.stopPropagation()
-    }
-    if (onAddToCart) {
-      onAddToCart()
-    }
+    onAddToWishlist()
   }
 
   return (
     <article className="overflow-hidden relative flex-1 shrink bg-white rounded-2xl basis-0 max-w-[360px] min-h-[440px] min-w-[280px]">
       <img
-        src={image || "/placeholder.svg"}
+        src={image || "/placeholder.svg"} // Use the image prop directly
         alt={title}
         className="cursor-pointer object-contain z-0 w-full aspect-[1.19]"
         onClick={handleProductClick}
@@ -88,14 +75,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {title}
           </h3>
         </div>
-        <ProductActions
-          price={price}
-          originalPrice={originalPrice}
-          isAdded={isAdded}
-          isDisabled={isOutOfStock}
-          cartIcon={cartIcon}
-          onAddToCart={handleAddToCartClick}
-        />
+        <div className="flex flex-col gap-1 mb-2">
+          {originalPrice && <span className="text-gray-500 line-through text-sm font-medium">{originalPrice}</span>}
+          <ProductActions
+            price={price}
+            isAdded={isAdded}
+            isDisabled={isOutOfStock}
+            cartIcon={cartIcon}
+            onAddToCart={onAddToCart}
+          />
+        </div>
       </div>
       <div onClick={handleFavoriteClick}>
         <FavoriteButton icon={isFavorited ? "/Vector(2).svg" : favoriteIcon} />
