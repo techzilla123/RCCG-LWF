@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 interface ProductCategory {
   categoryId: string
@@ -17,6 +17,7 @@ export const ShopNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState(0)
   const [visibleStartIndex, setVisibleStartIndex] = React.useState(0)
   const [isLoading, setIsLoading] = React.useState(true)
+  
 
   const router = useRouter()
 
@@ -28,29 +29,55 @@ export const ShopNavigation: React.FC = () => {
       ...(token && { Authorization: token }),
     }
   }
+const searchParams = useSearchParams()
 
-  const fetchTabs = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product-category/91a306bf-4df5-4940-8740-d28e0260c10d`,
-        {
-          method: "GET",
-          headers: getApiHeaders(),
-        }
+React.useEffect(() => {
+  const fetchAndSet = async () => {
+    await fetchTabs() // fetchTabs already sets categories
+
+    const PCT = searchParams.get("PCT")
+    if (PCT && categories.length > 0) {
+      const foundIndex = categories.findIndex(
+        (cat) => cat.categoryId === PCT
       )
+      if (foundIndex !== -1) {
+        setActiveTab(foundIndex)
 
-      if (!response.ok) throw new Error("Failed to fetch categories")
-
-      const data = await response.json()
-      const categoryList: ProductCategory[] = data.data || []
-      setCategories(categoryList.reverse())
-    } catch (error) {
-      console.error("Error fetching tabs:", error)
-      setCategories([])
-    } finally {
-      setIsLoading(false)
+        // Adjust visible tab window if needed
+        const start = Math.max(0, foundIndex - Math.floor(MAX_VISIBLE_TABS / 2))
+        setVisibleStartIndex(start)
+      }
     }
   }
+
+  fetchAndSet()
+}, [searchParams, categories.length])
+const fetchTabs = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product-category/91a306bf-4df5-4940-8740-d28e0260c10d`,
+      {
+        method: "GET",
+        headers: getApiHeaders(),
+      }
+    )
+
+    if (!response.ok) throw new Error("Failed to fetch categories")
+
+    const data = await response.json()
+    const categoryList: ProductCategory[] = data.data || []
+    const reversedList = categoryList.reverse()
+    setCategories(reversedList)
+    return reversedList
+  } catch (error) {
+    console.error("Error fetching tabs:", error)
+    setCategories([])
+    return []
+  } finally {
+    setIsLoading(false)
+  }
+}
+
 
   React.useEffect(() => {
     fetchTabs()
