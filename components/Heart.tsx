@@ -450,7 +450,7 @@ formatted.push({
               id={p.productId}
               image={p.selectedImage}
               title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
-              rating={4.7}
+              rating={5.0}
               reviews={0}
               price={`$${Number(p.finalPrice || 0).toFixed(2)}`}
               originalPrice={

@@ -10,6 +10,9 @@ import { LoginModal } from "../Offer/LoginModal"
 import { SuccessModal } from "../Offer/SuccessModal"
 import { X } from 'lucide-react'
 import { usePathname } from "next/navigation"
+import { useRef } from "react"
+
+
 
 interface ProductApiResponse {
   productId: string
@@ -56,6 +59,7 @@ export function Shop() {
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [ready, setReady] = useState(false)
+  const lastCategoryRef = useRef<string | null>(null)
   const [pagination, setPagination] = useState<PaginationData>({
     current_page: 1,
     total_pages: 1,
@@ -203,40 +207,40 @@ export function Shop() {
   }
 
   useEffect(() => {
-    const currentPath = pathname
-    const SCT = searchParams.get("SCT")
-    const PCT = searchParams.get("PCT")
+  const SCT = searchParams.get("SCT")
+  const PCT = searchParams.get("PCT")
+  const GCT = pathname.includes("/shop") ? pathname.split("/shop/")[1] || null : null
 
-    if (SCT) {
-      // subcategory has highest priority
-      setCategoryId(`SCT:${SCT}`)
-    } else if (PCT) {
-      // then category
-      setCategoryId(`PCT:${PCT}`)
-    } else {
-      // fallback to pathname or saved category
-      if (currentPath === "/rentals") {
-        setCategoryId("GCT:c7d6c7e5-aafe-439d-a714-63dd3910d3f9")
-      } else if (currentPath === "/shop/decorations") {
-        setCategoryId("GCT:1fc158a6-5dbc-43e9-b385-4cadb8434a76")
-      } else if (currentPath === "/shop/holiday") {
-        setCategoryId("GCT:6f30f52f-47f2-4196-996c-7b0daabcd495")
-      } else if (currentPath === "/shop/party-supplies") {
-        setCategoryId("GCT:a72e830e-69ba-4977-b8e9-9250a196dd50")
-      } else if (currentPath === "/shop/birthday") {
-        setCategoryId("GCT:a48bac0e-05b1-4511-a23e-99e31dc6abec")
-      } else if (currentPath === "/shop/balloon") {
-        setCategoryId("GCT:91a306bf-4df5-4940-8740-d28e0260c10d")
-      } else if (currentPath === "/shop") {
-        setCategoryId(null)
-      } else {
-  setCategoryId(null)
-}
+  let currentCategory = null
+  if (SCT) {
+    currentCategory = `SCT:${SCT}`
+  } else if (PCT) {
+    currentCategory = `PCT:${PCT}`
+  } else if (pathname === "/rentals") {
+    currentCategory = "GCT:c7d6c7e5-aafe-439d-a714-63dd3910d3f9"
+  } else if (pathname === "/shop/decorations") {
+    currentCategory = "GCT:1fc158a6-5dbc-43e9-b385-4cadb8434a76"
+  } else if (pathname === "/shop/holiday") {
+    currentCategory = "GCT:6f30f52f-47f2-4196-996c-7b0daabcd495"
+  } else if (pathname === "/shop/party-supplies") {
+    currentCategory = "GCT:a72e830e-69ba-4977-b8e9-9250a196dd50"
+  } else if (pathname === "/shop/birthday") {
+    currentCategory = "GCT:a48bac0e-05b1-4511-a23e-99e31dc6abec"
+  } else if (pathname === "/shop/balloon") {
+    currentCategory = "GCT:91a306bf-4df5-4940-8740-d28e0260c10d"
+  }
 
-    }
+  if (lastCategoryRef.current && currentCategory && lastCategoryRef.current !== currentCategory) {
+    // If category changes, force full reload
+    window.location.reload()
+    return
+  }
 
-    setReady(true)
-  }, [pathname, searchParams])
+  lastCategoryRef.current = currentCategory
+  setCategoryId(currentCategory)
+  setReady(true)
+}, [pathname, searchParams])
+
 
   // Fetch products every time categoryId or currentPage changes
 useEffect(() => {
@@ -467,7 +471,7 @@ const formatted = Array.from(uniqueProductsMap.values())
               id={p.productId}
               image={p.imageOne}
               title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
-              rating={4.7}
+              rating={5.0}
               reviews={400}
               price={`$${Number(p.finalPrice || 0).toFixed(2)}`}
               originalPrice={
