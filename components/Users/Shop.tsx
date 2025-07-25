@@ -21,18 +21,7 @@ interface ProductApiResponse {
   price: number | string
   discountPrice: number | string
   quantity: number
-   imageTwo?: string
-    imageThree?: string
-    imageFour?: string
-    imageFive?: string
-    imageSix?: string
-    imageSeven?: string
-    imageEight?: string
-    imageNine?: string
-    imageTen?: string
-    imageEleven?: string
-    imageTwelve?: string
-    imageThirtheen?: string
+   imageList: string[]
 }
 
 interface Product extends ProductApiResponse {
