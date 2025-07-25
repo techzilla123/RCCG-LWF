@@ -24,7 +24,7 @@ export default function AboutUsPage() {
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
             <div className="flex justify-center md:justify-start">
               <Image
-                src="/images/party-place-store.png"
+                src="/0O0A7266.JPG"
                 width={600}
                 height={400}
                 alt="Party Place Storefront"
@@ -66,7 +66,7 @@ export default function AboutUsPage() {
             </div>
             <div className="flex justify-center md:justify-end order-1 md:order-2">
               <Image
-                src="/images/people-working.jpg"
+                src="/photo-collage.png.png"
                 width={500}
                 height={350}
                 alt="People working"
@@ -79,7 +79,7 @@ export default function AboutUsPage() {
           <div className="mt-16 md:mt-24 grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="flex justify-center">
               <Image
-                src="/images/mission-vision.png"
+                src="/mission-statement-1024x683.jpg"
                 width={500}
                 height={350}
                 alt="Mission Statement"
@@ -110,7 +110,7 @@ export default function AboutUsPage() {
             </div>
             <div className="flex justify-center">
               <Image
-                src="/images/mission-vision.png"
+                src="/BeFunky-collage (1).jpg"
                 width={500}
                 height={350}
                 alt="Company Vision"

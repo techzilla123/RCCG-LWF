@@ -3,16 +3,16 @@ import React from "react";
 import {
   Facebook,
   Instagram,
-  Twitter,
+  // Twitter,
   Music2, // we'll use Music2 as a TikTok placeholder icon
 } from "lucide-react";
 
 export const FooterContact = () => {
   const socialLinks = [
-    { icon: <Facebook className="w-4 h-4" />, href: "https://facebook.com" },
-    { icon: <Instagram className="w-4 h-4" />, href: "https://instagram.com" },
-    { icon: <Music2 className="w-4 h-4" />, href: "https://tiktok.com" },
-    { icon: <Twitter className="w-4 h-4" />, href: "https://x.com" }, // Twitter is now X
+    { icon: <Facebook className="w-4 h-4" />, href: "https://facebook.com/partyplaceandrentals" },
+    { icon: <Instagram className="w-4 h-4" />, href: "https://instagram.com/partyplaceandrentals" },
+    { icon: <Music2 className="w-4 h-4" />, href: "https://tiktok.com/partyplaceandrentals" },
+    // { icon: <Twitter className="w-4 h-4" />, href: "https://x.com" }, // Twitter is now X
   ];
 
   return (
@@ -26,10 +26,10 @@ export const FooterContact = () => {
           +1 (469) 248-2060
         </a>
         <a
-          href="mailto:support@partyplace&rentals.com"
+          href="mailto:support@partyplaceandrentals.com"
           className="p-2 h-10 whitespace-nowrap rounded-[50px] hover:text-blue-300 transition-colors"
         >
-          support@partyplace&rentals.com
+          support@partyplaceandrentals.com
         </a>
       </div>
 
