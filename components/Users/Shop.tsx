@@ -316,33 +316,13 @@ productList.forEach((p: ProductApiResponse) => {
   const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
   const key = p.productName.toLowerCase().trim() // or p.productId if you prefer uniqueness by ID
 
- if (!uniqueProductsMap.has(key)) {
-  const images = [
-    p.imageOne,
-    p.imageTwo,
-    p.imageThree,
-    p.imageFour,
-    p.imageFive,
-    p.imageSix,
-    p.imageSeven,
-    p.imageEight,
-    p.imageNine,
-    p.imageTen,
-    p.imageEleven,
-    p.imageTwelve,
-    p.imageThirtheen,
-  ].filter((img): img is string => typeof img === 'string')
-
-  uniqueProductsMap.set(key, {
-    ...p,
-    isAdded: false,
-    finalPrice,
-    selectedImage: images[0] || p.imageOne,
-    imageList: images,
-    currentImageIndex: 0,
-  })
-}
-
+  if (!uniqueProductsMap.has(key)) {
+    uniqueProductsMap.set(key, {
+      ...p,
+      isAdded: false,
+      finalPrice,
+    })
+  }
 })
 
 const formatted = Array.from(uniqueProductsMap.values()).map((product) => {
@@ -360,7 +340,7 @@ const formatted = Array.from(uniqueProductsMap.values()).map((product) => {
     product.imageEleven,
     product.imageTwelve,
     product.imageThirtheen,
-  ].filter((img): img is string => typeof img === 'string')
+  ].filter(Boolean) // remove undefined/null
 
   return {
     ...product,
