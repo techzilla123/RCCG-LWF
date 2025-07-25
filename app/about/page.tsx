@@ -66,7 +66,7 @@ export default function AboutUsPage() {
             </div>
             <div className="flex justify-center md:justify-end order-1 md:order-2">
               <Image
-                src="/photo-collage.png.png"
+                src="/photo-collage.png (1).png"
                 width={500}
                 height={350}
                 alt="People working"
