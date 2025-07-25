@@ -318,21 +318,20 @@ productList.forEach((p: ProductApiResponse) => {
 
  if (!uniqueProductsMap.has(key)) {
   const images = [
-  p.imageOne,
-  p.imageTwo,
-  p.imageThree,
-  p.imageFour,
-  p.imageFive,
-  p.imageSix,
-  p.imageSeven,
-  p.imageEight,
-  p.imageNine,
-  p.imageTen,
-  p.imageEleven,
-  p.imageTwelve,
-  p.imageThirtheen,
-].filter((img): img is string => typeof img === 'string') // Type guard
-
+    p.imageOne,
+    p.imageTwo,
+    p.imageThree,
+    p.imageFour,
+    p.imageFive,
+    p.imageSix,
+    p.imageSeven,
+    p.imageEight,
+    p.imageNine,
+    p.imageTen,
+    p.imageEleven,
+    p.imageTwelve,
+    p.imageThirtheen,
+  ].filter((img): img is string => typeof img === 'string')
 
   uniqueProductsMap.set(key, {
     ...p,
@@ -348,21 +347,20 @@ productList.forEach((p: ProductApiResponse) => {
 
 const formatted = Array.from(uniqueProductsMap.values()).map((product) => {
   const images = [
-  p.imageOne,
-  p.imageTwo,
-  p.imageThree,
-  p.imageFour,
-  p.imageFive,
-  p.imageSix,
-  p.imageSeven,
-  p.imageEight,
-  p.imageNine,
-  p.imageTen,
-  p.imageEleven,
-  p.imageTwelve,
-  p.imageThirtheen,
-].filter((img): img is string => typeof img === 'string') // Type guard
-
+    product.imageOne,
+    product.imageTwo,
+    product.imageThree,
+    product.imageFour,
+    product.imageFive,
+    product.imageSix,
+    product.imageSeven,
+    product.imageEight,
+    product.imageNine,
+    product.imageTen,
+    product.imageEleven,
+    product.imageTwelve,
+    product.imageThirtheen,
+  ].filter((img): img is string => typeof img === 'string')
 
   return {
     ...product,
