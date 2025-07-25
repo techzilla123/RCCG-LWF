@@ -21,11 +21,26 @@ interface ProductApiResponse {
   price: number | string
   discountPrice: number | string
   quantity: number
+   imageTwo?: string
+    imageThree?: string
+    imageFour?: string
+    imageFive?: string
+    imageSix?: string
+    imageSeven?: string
+    imageEight?: string
+    imageNine?: string
+    imageTen?: string
+    imageEleven?: string
+    imageTwelve?: string
+    imageThirtheen?: string
 }
 
 interface Product extends ProductApiResponse {
+ selectedImage: string
   isAdded: boolean
-  finalPrice: number // Calculated price after discount
+  finalPrice: number
+  imageList: string[]
+  currentImageIndex: number
 }
 
 // Interface for localStorage items
@@ -310,11 +325,46 @@ productList.forEach((p: ProductApiResponse) => {
   }
 })
 
-const formatted = Array.from(uniqueProductsMap.values())
+const formatted = Array.from(uniqueProductsMap.values()).map((product) => {
+  const images = [
+    product.imageOne,
+    product.imageTwo,
+    product.imageThree,
+    product.imageFour,
+    product.imageFive,
+    product.imageSix,
+    product.imageSeven,
+    product.imageEight,
+    product.imageNine,
+    product.imageTen,
+    product.imageEleven,
+    product.imageTwelve,
+    product.imageThirtheen,
+  ].filter(Boolean) // remove undefined/null
+
+  return {
+    ...product,
+    imageList: images,
+    currentImageIndex: 0,
+    selectedImage: images[0], // default image
+  }
+})
 
 
-      setOriginalProducts(formatted)
-      setProducts(formatted)
+
+      // Shuffle utility function
+const shuffleArray = (array: Product[]) => {
+  return array
+    .map((item) => ({ item, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ item }) => item)
+}
+
+const shuffled = shuffleArray(formatted)
+
+setOriginalProducts(shuffled)
+setProducts(shuffled)
+
 
       if (json.data?.pagination) {
         setPagination(json.data.pagination)
@@ -329,6 +379,25 @@ const formatted = Array.from(uniqueProductsMap.values())
 
   fetchProducts()
 }, [categoryId, ready, currentPage, searchParams])
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        if (!product.imageList || product.imageList.length === 0) return product
+
+        const nextIndex = (product.currentImageIndex + 1) % product.imageList.length
+        return {
+          ...product,
+          currentImageIndex: nextIndex,
+          selectedImage: product.imageList[nextIndex],
+        }
+      })
+    )
+  }, 5000)
+
+  return () => clearInterval(interval)
+}, [])
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -469,7 +538,7 @@ const formatted = Array.from(uniqueProductsMap.values())
             <ProductCard
               key={p.productId}
               id={p.productId}
-              image={p.imageOne}
+             image={p.selectedImage}
               title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
               rating={5.0}
               reviews={400}
@@ -494,7 +563,7 @@ const formatted = Array.from(uniqueProductsMap.values())
           <ProductGrid 
             products={products.map((p) => ({
               id: p.productId,
-              image: p.imageOne,
+              image: p.selectedImage,
               title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
               price: p.finalPrice,
               originalPrice:

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ProductCategory {
   categoryId: string;
@@ -20,6 +20,7 @@ export const ShopNavigation: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const getApiHeaders = () => {
     const token = localStorage.getItem("accessToken") || "";
@@ -44,18 +45,35 @@ export const ShopNavigation: React.FC = () => {
 
       const data = await response.json();
       const categoryList: ProductCategory[] = data.data || [];
-      setCategories(categoryList.reverse()); // descending
+      const reversedList = categoryList.reverse();
+      setCategories(reversedList);
+      return reversedList;
     } catch (error) {
       console.error("Error fetching categories:", error);
       setCategories([]);
+      return [];
     } finally {
       setIsLoading(false);
     }
   };
 
   React.useEffect(() => {
-    fetchTabs();
-  }, []);
+    const fetchAndInit = async () => {
+      const loaded = await fetchTabs();
+      const PCT = searchParams.get("PCT");
+
+      if (PCT && loaded.length > 0) {
+        const foundIndex = loaded.findIndex((cat) => cat.categoryId === PCT);
+        if (foundIndex !== -1) {
+          setActiveTab(foundIndex);
+          const newStart = Math.max(0, foundIndex - Math.floor(MAX_VISIBLE_TABS / 2));
+          setVisibleStartIndex(newStart);
+        }
+      }
+    };
+
+    fetchAndInit();
+  }, [searchParams]);
 
   const handleTabClick = (index: number) => {
     setActiveTab(index);

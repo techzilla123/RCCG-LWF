@@ -35,7 +35,7 @@ interface Product extends ProductApiResponse {
   isAdded: boolean
   finalPrice: number
   imageList: string[]
-  currentImageIndex: number
+  currentImageIndex: number 
 }
 
 
