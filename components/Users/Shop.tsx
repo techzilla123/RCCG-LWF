@@ -337,12 +337,13 @@ productList.forEach((p: ProductApiResponse) => {
     ...p,
     isAdded: false,
     finalPrice,
+    selectedImage: images[0] || p.imageOne,
     imageList: images,
     currentImageIndex: 0,
-    selectedImage: images[0] ?? "", // fallback in case images array is empty
   })
 }
 
+})
 
 const formatted = Array.from(uniqueProductsMap.values()).map((product) => {
   const images = [
