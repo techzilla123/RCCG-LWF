@@ -11,7 +11,7 @@ const reviewsData = [
     rating: 5,
     review:
       "I have loved all the interactions I've had thru ordering tables and chairs from this store. Due to the heavy rain, I ended up having to postpone my event, and finally cancel our reservations. Through all of the inconveniences, Elizabeth has been wonderful in helping me out. She was understanding of the situation and gladly made a refund. I highly recommend this business just because they offer an amazing customer experience!",
-    date: "May 8, 2020",
+    date: "April 25, 2025",
   },
   {
     avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjXjygGdDpexKIPQDyYtxB8-PoeQZPlawK3_bWLSawlNqvJDA6akTA=w72-h72-p-rp-mo-ba3-br100",
@@ -19,7 +19,7 @@ const reviewsData = [
     rating: 5,
     review:
       "Family owned business who cares deeply about their customers. Elizabeth is such an empathic human who is always giving. God bless",
-    date: "May 8, 2020",
+    date: "July 18, 2025",
   },
   {
     avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocI3HIjNKTJScxJyWooIhqqiq68_3Idx418SAHdDINrJTEDoig=w72-h72-p-rp-mo-br100",
@@ -27,7 +27,7 @@ const reviewsData = [
     rating: 5,
     review:
       "Elizabeth and her work is outstanding! She created a gorgeous balloon arch around a backdrop we already had and it turned out better than the inspiration pictures. Needless to say it was a bit at my sister's babyshower.",
-    date: "May 8, 2020",
+    date: "October 25, 2024",
   },
   {
     avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocJe5G87zvpaIWDSWdqrQWJ8eOXGCvYuDyaWb64J4DEV1oEWrg=w72-h72-p-rp-mo-br100",
@@ -35,7 +35,7 @@ const reviewsData = [
     rating: 5,
     review:
       "I had a great experience here. The employers were kind and respectful. I had a great time",
-    date: "May 8, 2020",
+    date: "July 20, 2025",
   },
   {
     avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjWYLV1ZMPkSRWrf_ESxnY_onMbgSATTCQsIIbJcqDj1sraFCm0=w72-h72-p-rp-mo-br100",
@@ -43,7 +43,7 @@ const reviewsData = [
     rating: 5,
     review:
       "This the best place in the DFW to get all your party needs or your kids and adult parties as well. Got Mickey Mouse for my son and loved it.",
-    date: "May 8, 2020",
+    date: "June 25, 2025",
   },
   {
     avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocLay9h63B8tP-HEchLLBEEdAi-ckRCXBReCXYwqU5WW3i0Khw=w72-h72-p-rp-mo-br100",
@@ -51,7 +51,7 @@ const reviewsData = [
     rating: 5,
     review:
       "I love this store, you can find everything and they have good prices and the person who works there is a sweetheart Elizabeth 😍😍😍😍😍😍😍😍",
-    date: "May 8, 2020",
+    date: "October 25, 2024",
   },
 ];
 
