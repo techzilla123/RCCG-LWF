@@ -5,6 +5,7 @@ import React from "react";
 import Offer from "@/components/Offer"
 import TopNavBar from "@/components/TopNavBar"
 import Footer from "@/components/Footer"
+import BotpressChat from "@/components/BotpressChat"; 
 
 export default function AboutUsPage() {
   const router = useRouter();
@@ -131,6 +132,7 @@ export default function AboutUsPage() {
         &copy; {new Date().getFullYear()} Party Place and Rentals. All rights reserved.
       </footer> */}
     </div>
+    <BotpressChat />
       <Footer />
     </>
   );

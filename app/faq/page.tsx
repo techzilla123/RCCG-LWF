@@ -5,6 +5,7 @@ import { AccordionItem } from "@/components/Faq/AccordionItem";
 import Offer from "@/components/Offer"
 import TopNavBar from "@/components/TopNavBar"
 import Footer from "@/components/Footer"
+import BotpressChat from "@/components/BotpressChat"; 
 
 interface FaqItem {
   question: string;
@@ -91,6 +92,7 @@ export default function Faq() {
         ))}
       </div>
     </section>
+    <BotpressChat />
       <Footer />
     </>
   );
