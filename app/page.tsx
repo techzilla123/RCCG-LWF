@@ -54,7 +54,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen w-screen bg-white relative overflow-x-hidden">
+   <div className="min-h-screen bg-white relative w-full max-w-full sm:max-w-none">
+
 
       <Offer />
       <TopNavBar />

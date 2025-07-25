@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link"; // If using Next.js for routing
 
 export const FooterBrand = () => {
   return (
@@ -11,7 +12,8 @@ export const FooterBrand = () => {
         />
       </div>
       <p className="mt-6 text-sm leading-6 text-white">
-        Lorem ipsum idat sentrifut mentrica eridunta manc tiens atiena mieds linet amend.
+        Your one-stop shop for everything party, from balloons and décor to rentals and themed supplies...
+        <Link href="/about" className="underline hover:text-blue-300">more</Link>
       </p>
       <p className="mt-6 text-xs leading-5 text-stone-300">
         Copyright © 2025 Party Place & Rentals. All Rights Reserved.
