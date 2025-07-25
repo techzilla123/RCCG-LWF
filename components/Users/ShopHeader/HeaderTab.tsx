@@ -17,7 +17,7 @@ export const HeaderTab: React.FC<HeaderTabProps> = ({ text, onClick, active }) =
     >
       <span
         className={`text-base font-medium ${
-          active ? "border-b-2 border-black pb-1" : ""
+          active ? "" : ""
         }`}
       >
         {text}
