@@ -224,7 +224,7 @@ export function Shop() {
   useEffect(() => {
   const SCT = searchParams.get("SCT")
   const PCT = searchParams.get("PCT")
-  const GCT = pathname.includes("/shop") ? pathname.split("/shop/")[1] || null : null
+  // const GCT = pathname.includes("/shop") ? pathname.split("/shop/")[1] || null : null
 
   let currentCategory = null
   if (SCT) {

@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import React from "react";
 import Offer from "@/components/Offer"
@@ -8,7 +7,7 @@ import Footer from "@/components/Footer"
 import BotpressChat from "@/components/BotpressChat"; 
 
 export default function AboutUsPage() {
-  const router = useRouter();
+
 
   return (
     <>
