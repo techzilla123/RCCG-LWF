@@ -10,29 +10,29 @@ interface FaqItem {
 
 const faqItems: FaqItem[] = [
   {
-    question: "Lorem Ipsum - question",
+    question: "What is Party Place and Rentals all about ?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur. Euismod venenatis pharetra dolor posuere mi id...",
+      "Party Place and Rentals is your one-stop shop for everything party, from Party supplies, Balloon Décor and design to Party equipment rentals",
   },
   {
-    question: "Lorem Ipsum - Accordion",
-    answer: "Aliquam lorem ut curabitur duis dapibus proin commodo.",
+    question: "What are the Services Party Place and Rentals Offers ?",
+    answer: "We deal in a variety of themed Party Supplies for kids & adults, Balloons & Balloon Décor. And Party Equipment Rentals",
   },
   {
-    question: "Lorem Ipsum - Accordion",
-    answer: "Aliquam lorem ut curabitur duis dapibus proin commodo.",
+    question: "How can I contact Party Place & Rentals?",
+    answer: "We are here for you, get ahold of us via the following: Call us at 469-248-2060, email us support@partyplaceandrentals.com.  DM us on Facebook, instagram @partyplaceandrentals",
   },
   {
-    question: "Lorem Ipsum - Accordion",
-    answer: "Aliquam lorem ut curabitur duis dapibus proin commodo.",
+    question: "Do you help blow balloons purchased somewhere else ?",
+    answer: "Yes, we understand we might not have your balloon choice in stock, so we can offer to blow the balloons at a price depending on the size and the quantity of the balloons",
   },
   {
-    question: "Lorem Ipsum - Accordion",
-    answer: "Aliquam lorem ut curabitur duis dapibus proin commodo.",
+    question: "Can I cancel or modify my order after it’s been placed ?",
+    answer: "We strive to process orders as quickly as possible, but if you need to cancel or modify your order, please contact us at support@partyplaceandrentals.com  or call us (469-248-2060) immediately, and we'll do our best to assist you.",
   },
   {
-    question: "Lorem Ipsum - Accordion",
-    answer: "Aliquam lorem ut curabitur duis dapibus proin commodo.",
+    question: "What is your return policy ?",
+    answer: "We have a “NO” return policy, however we want you to be thrilled with your party supplies, as such we offer exchange. If you're not satisfied, please contact us within 10 days of receiving your order, and we'll assist you with the exchange process.",
   },
 ];
 
