@@ -310,45 +310,42 @@ useEffect(() => {
         ? json.data
         : []
 
-    const uniqueProductsMap = new Map<string, Product>()
+
+
+const uniqueProductsMap = new Map<string, Product>()
 
 productList.forEach((p: ProductApiResponse) => {
-  const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
-  const key = p.productName.toLowerCase().trim() // or p.productId if you prefer uniqueness by ID
-
+  const key = p.productName.toLowerCase().trim()
   if (!uniqueProductsMap.has(key)) {
+    const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
+    const images = [
+      p.imageOne,
+      p.imageTwo,
+      p.imageThree,
+      p.imageFour,
+      p.imageFive,
+      p.imageSix,
+      p.imageSeven,
+      p.imageEight,
+      p.imageNine,
+      p.imageTen,
+      p.imageEleven,
+      p.imageTwelve,
+      p.imageThirtheen,
+    ].filter(Boolean) as string[]
+
     uniqueProductsMap.set(key, {
       ...p,
       isAdded: false,
       finalPrice,
+      imageList: images,
+      currentImageIndex: 0,
+      selectedImage: images[0] || p.imageOne,
     })
   }
 })
 
-const formatted = Array.from(uniqueProductsMap.values()).map((product) => {
-  const images = [
-    product.imageOne,
-    product.imageTwo,
-    product.imageThree,
-    product.imageFour,
-    product.imageFive,
-    product.imageSix,
-    product.imageSeven,
-    product.imageEight,
-    product.imageNine,
-    product.imageTen,
-    product.imageEleven,
-    product.imageTwelve,
-    product.imageThirtheen,
-  ].filter(Boolean) // remove undefined/null
-
-  return {
-    ...product,
-    imageList: images,
-    currentImageIndex: 0,
-    selectedImage: images[0], // default image
-  }
-})
+const formatted = Array.from(uniqueProductsMap.values())
 
 
 
