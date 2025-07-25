@@ -75,10 +75,20 @@ const Offer: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row flex-wrap gap-2 items-center justify-center">
-            <OfferText />
-            <SignUpLink />
-          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center sm:gap-x-4 gap-2 text-center">
+  <div className="flex flex-row items-center justify-center gap-x-1 flex-wrap">
+    <SignUpLink />
+    <OfferText />
+  </div>
+
+  <button
+    onClick={() => setShowModal(true)}
+    className="text-blue-600 hover:underline font-semibold focus:outline-none transition duration-300 ease-in-out"
+  >
+    Contact us
+  </button>
+</div>
+
         )}
       </section>
 

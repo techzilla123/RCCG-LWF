@@ -30,11 +30,14 @@
   }
 
   // Extend the product with additional client-side fields
-  interface Product extends ProductApiResponse {
-    selectedImage: string
-    isAdded: boolean
-    finalPrice: number // Calculated price after discount
-  }
+interface Product extends ProductApiResponse {
+  selectedImage: string
+  isAdded: boolean
+  finalPrice: number
+  imageList: string[]
+  currentImageIndex: number
+}
+
 
   // Interface for localStorage items
   interface LocalStorageItem {
@@ -249,18 +252,25 @@
   p.imageThirtheen,
 ].filter((img): img is string => Boolean(img)) // this filters out undefined and narrows type to string
 
-const randomImage = imageOptions.length > 0
-  ? imageOptions[Math.floor(Math.random() * imageOptions.length)]
-  : p.imageOne // p.imageOne is always a string
+formatted.push({
+  ...p,
+  isAdded: false,
+  finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+  selectedImage: imageOptions[0] || p.imageOne, // Start with first available image
+  imageList: imageOptions,
+  currentImageIndex: 0,
+})
 
 
 
-  formatted.push({
-    ...p,
-    isAdded: false,
-    finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-    selectedImage: randomImage,
-  })
+ formatted.push({
+  ...p,
+  isAdded: false,
+  finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+  selectedImage: imageOptions[0] || p.imageOne,
+  imageList: imageOptions,
+  currentImageIndex: 0,
+})
 
     }
   }
@@ -280,6 +290,26 @@ const randomImage = imageOptions.length > 0
 
       fetchProducts()
     }, [])
+
+    useEffect(() => {
+  const interval = setInterval(() => {
+    setProducts(prevProducts =>
+      prevProducts.map(product => {
+        if (!product.imageList || product.imageList.length <= 1) return product
+
+        const nextIndex = (product.currentImageIndex + 1) % product.imageList.length
+        return {
+          ...product,
+          selectedImage: product.imageList[nextIndex],
+          currentImageIndex: nextIndex,
+        }
+      })
+    )
+  }, 5000)
+
+  return () => clearInterval(interval)
+}, [])
+
 
     if (loading) {
       return (
@@ -414,9 +444,9 @@ const randomImage = imageOptions.length > 0
         <ProductHeader rightArrowIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/66d546e330544d515b682a58503bcbd12bbada55?placeholderIfAbsent=true" />
 
         <div className="hidden md:flex flex-wrap gap-6 items-start mt-6 w-full">
-          {products.map((p) => (
+          {products.map((p, index) => (
             <ProductCard
-              key={p.productId}
+          key={`${p.productId}-${index}`}
               id={p.productId}
               image={p.selectedImage}
               title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}

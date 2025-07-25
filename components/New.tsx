@@ -30,7 +30,7 @@ interface ProductApiResponse {
 }
 
 interface Product extends ProductApiResponse {
-  imageList: any
+  imageList: string[]
   currentImageIndex: number
   isAdded: boolean
   finalPrice: number // Calculated price after discount
