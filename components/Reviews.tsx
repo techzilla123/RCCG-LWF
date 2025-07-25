@@ -6,51 +6,51 @@ import { ReviewsNavigation } from "./Reviews/ReviewsNavigation";
 
 const reviewsData = [
   {
-    avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/3bdd215ffeeda77df976fef6a422ea702734a5a5?placeholderIfAbsent=true",
-    name: "Hannah Schmitt",
+    avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjUW1eKVsfxuE0ByeyHK4Ll0VlUVu0vbijFQe2PqwNqxpzzwoFdP=w72-h72-p-rp-mo-ba3-br100",
+    name: "Grace Chambers",
     rating: 5,
     review:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
+      "I have loved all the interactions I've had thru ordering tables and chairs from this store. Due to the heavy rain, I ended up having to postpone my event, and finally cancel our reservations. Through all of the inconveniences, Elizabeth has been wonderful in helping me out. She was understanding of the situation and gladly made a refund. I highly recommend this business just because they offer an amazing customer experience!",
     date: "May 8, 2020",
   },
   {
-    avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/3bdd215ffeeda77df976fef6a422ea702734a5a5?placeholderIfAbsent=true",
-    name: "Hannah Schmitt",
-    rating: 4,
-    review:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
-    date: "May 8, 2020",
-  },
-  {
-    avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/3bdd215ffeeda77df976fef6a422ea702734a5a5?placeholderIfAbsent=true",
-    name: "John Maxwell",
-    rating: 4,
-    review:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
-    date: "May 8, 2020",
-  },
-  {
-    avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f9fc1db9b3ce89e7743dc4fa14ca2b702b57b9cf?placeholderIfAbsent=true",
-    name: "Cynthia Morgan",
+    avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjXjygGdDpexKIPQDyYtxB8-PoeQZPlawK3_bWLSawlNqvJDA6akTA=w72-h72-p-rp-mo-ba3-br100",
+    name: "Chakra Jam ..",
     rating: 5,
     review:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
+      "Family owned business who cares deeply about their customers. Elizabeth is such an empathic human who is always giving. God bless",
     date: "May 8, 2020",
   },
   {
-    avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f9fc1db9b3ce89e7743dc4fa14ca2b702b57b9cf?placeholderIfAbsent=true",
-    name: "Hiroshima Jen",
+    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocI3HIjNKTJScxJyWooIhqqiq68_3Idx418SAHdDINrJTEDoig=w72-h72-p-rp-mo-br100",
+    name: "Trisha Zaldana",
     rating: 5,
     review:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
+      "Elizabeth and her work is outstanding! She created a gorgeous balloon arch around a backdrop we already had and it turned out better than the inspiration pictures. Needless to say it was a bit at my sister's babyshower.",
     date: "May 8, 2020",
   },
   {
-    avatarUrl: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f9fc1db9b3ce89e7743dc4fa14ca2b702b57b9cf?placeholderIfAbsent=true",
-    name: "Hiroshima Jen",
+    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocJe5G87zvpaIWDSWdqrQWJ8eOXGCvYuDyaWb64J4DEV1oEWrg=w72-h72-p-rp-mo-br100",
+    name: "Jayden Jones",
     rating: 5,
     review:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh mauris, nec turpis orci lectus maecenas. Suspendisse sed magna eget nibh in turpis",
+      "I had a great experience here. The employers were kind and respectful. I had a great time",
+    date: "May 8, 2020",
+  },
+  {
+    avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjWYLV1ZMPkSRWrf_ESxnY_onMbgSATTCQsIIbJcqDj1sraFCm0=w72-h72-p-rp-mo-br100",
+    name: "Camilo Mba",
+    rating: 5,
+    review:
+      "This the best place in the DFW to get all your party needs or your kids and adult parties as well. Got Mickey Mouse for my son and loved it.",
+    date: "May 8, 2020",
+  },
+  {
+    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocLay9h63B8tP-HEchLLBEEdAi-ckRCXBReCXYwqU5WW3i0Khw=w72-h72-p-rp-mo-br100",
+    name: "Berenice Ambro..",
+    rating: 5,
+    review:
+      "I love this store, you can find everything and they have good prices and the person who works there is a sweetheart Elizabeth 😍😍😍😍😍😍😍😍",
     date: "May 8, 2020",
   },
 ];

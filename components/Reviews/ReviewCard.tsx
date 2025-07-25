@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StarRating } from "./StarRating";
 
 interface ReviewCardProps {
@@ -21,6 +21,12 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   date,
   starUrls,
 }) => {
+  const [expanded, setExpanded] = useState(false);
+  const maxLength = 180;
+  const isLongReview = review.length > maxLength;
+
+  const toggleExpanded = () => setExpanded((prev) => !prev);
+
   return (
     <article className="flex items-start gap-4 p-6 bg-white rounded-2xl w-[400px] min-w-[400px] shadow-md">
       <img
@@ -29,11 +35,25 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
         className="w-16 h-16 rounded-full object-cover"
       />
       <div className="flex flex-col">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <h2 className="text-lg font-semibold">{name}</h2>
           <StarRating rating={rating} starUrls={starUrls} />
         </div>
-        <p className="mt-2 text-sm text-gray-800">{review}</p>
+
+        <p className="mt-2 text-sm text-gray-800">
+          {expanded || !isLongReview
+            ? review
+            : `${review.slice(0, maxLength)}...`}
+          {isLongReview && (
+            <button
+              onClick={toggleExpanded}
+              className="text-blue-600 font-medium ml-1 hover:underline"
+            >
+              {expanded ? "Show less" : "Read more"}
+            </button>
+          )}
+        </p>
+
         <time className="mt-2 text-xs text-gray-500">{date}</time>
       </div>
     </article>
