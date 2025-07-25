@@ -70,6 +70,14 @@ interface FiltersSidebarProps {
 
 export default function FiltersSidebar({ onFiltersChange }: FiltersSidebarProps) {
   const searchParams = useSearchParams()
+ const getPrevPCT = () => {
+  if (typeof window !== "undefined") {
+    return sessionStorage.getItem("prevPCT")
+  }
+  return null
+}
+
+  const selectedSubcategoryId = searchParams.get("SCT")
   const router = useRouter()
   const [filtersConfig, setFiltersConfig] = useState<FilterConfig[]>(baseFiltersConfig)
   const [subcategoriesData, setSubcategoriesData] = useState<SubCategory[]>([])
@@ -83,6 +91,23 @@ export default function FiltersSidebar({ onFiltersChange }: FiltersSidebarProps)
   })
 
   const productCategoryId = searchParams.get("PCT")
+// const goBackToSubcategories = () => {
+//   const params = new URLSearchParams(searchParams.toString())
+
+//   const savedPCT = searchParams.get("__PCT")
+//   if (savedPCT) {
+//     params.set("PCT", savedPCT)
+//   }
+
+//   params.delete("SCT")      // Remove subcategory
+//   params.delete("__PCT")    // Clean up
+//   const newUrl = `?${params.toString()}`
+//   router.push(newUrl)
+
+//   setTimeout(() => {
+//     window.location.reload()
+//   }, 600)
+// }
 
   useEffect(() => {
     if (!productCategoryId) {
@@ -138,18 +163,42 @@ export default function FiltersSidebar({ onFiltersChange }: FiltersSidebarProps)
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }))
   }
 
- const updateURL = (subcategoryId: string) => {
+  const updateURL = (subcategoryId: string) => {
+  const currentPCT = searchParams.get("PCT")
+  if (currentPCT && typeof window !== "undefined") {
+    sessionStorage.setItem("prevPCT", currentPCT)
+  }
+
   const params = new URLSearchParams()
   params.set("SCT", subcategoryId)
+
   const newUrl = `?${params.toString()}`
-  
   router.push(newUrl)
 
-  // Delay reload to allow push to finish
   setTimeout(() => {
     window.location.reload()
-  }, 600) // 100ms delay
+  }, 600)
 }
+
+
+
+ const goBackToSubcategories = () => {
+  const prevPCT = getPrevPCT()
+  const params = new URLSearchParams()
+
+  if (prevPCT) {
+    params.set("PCT", prevPCT)
+    sessionStorage.removeItem("prevPCT")
+  }
+
+  const newUrl = `?${params.toString()}`
+  router.push(newUrl)
+
+  setTimeout(() => {
+    window.location.reload()
+  }, 600)
+}
+
 
 
   const handleChange = (section: string, option: string, type: FilterType) => {
@@ -200,6 +249,15 @@ export default function FiltersSidebar({ onFiltersChange }: FiltersSidebarProps)
       className="w-64 p-4 bg-white shadow-lg rounded-md transition-all duration-300 overflow-hidden inline-block"
     >
       <h3 className="text-xl font-semibold mb-4">Filters</h3>
+      {selectedSubcategoryId && (
+  <button
+    onClick={goBackToSubcategories}
+    className="mb-4 text-sm text-blue-600 hover:underline flex items-center"
+  >
+    ← Back to all subcategories
+  </button>
+)}
+
       {filtersConfig.map(({ title, icon: Icon, type, options }) => (
         <div key={title} className="mb-4">
           <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection(title)}>
