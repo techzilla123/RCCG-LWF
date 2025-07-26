@@ -17,6 +17,7 @@ interface FilterBarProps {
 
 
 export const FilterBar = ({ onCategorySelect, onSearch }: FilterBarProps) => {
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
 const [showStatusDropdown, setShowStatusDropdown] = useState(false);
