@@ -108,6 +108,7 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId,
       },
     });
 
+    
     const result = await response.json();
     if (result?.statusCode === 200) {
       setProducts(result.data.product || []);
