@@ -99,7 +99,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                 onClick={handleAddCustomItem}
                 className="w-full mt-2 bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
               >
-                Add &quot;{inputValue.trim()}&quot;
+                 Add &quot;{inputValue.trim()}&quot;
 
               </button>
             )}

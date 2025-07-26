@@ -19,6 +19,11 @@ type PaginationData = {
 export const CustomerManagement = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const handleCategorySelect = (categoryId: string | null) => {
+  setSelectedCategoryId(categoryId);
+  setCurrentPage(1); // Reset to first page when filter changes
+};
+
   const [paginationData, setPaginationData] = useState<PaginationData>({
     current_page: 1,
     total_pages: 1,

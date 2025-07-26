@@ -80,39 +80,45 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId 
     }
   };
 
+  
   const fetchProducts = async (page: number = 1) => {
-    try {
-      const token = localStorage.getItem("accessToken") || "";
-      const categoryPart = selectedCategoryId
-        ? `filter-product/GCT/${selectedCategoryId}`
-        : `list-product?page=${page}`;
+  try {
+    const token = localStorage.getItem("accessToken") || "";
 
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/${categoryPart}`;
+    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-          ...(token && { Authorization: token }),
-        },
-      });
+    // Build the endpoint dynamically
+    const url = selectedCategoryId
+      ? `${baseURL}admin/products/filter-product/GCT/${selectedCategoryId}?page=${page}`
+      : `${baseURL}admin/products/list-product?page=${page}`;
 
-      const result = await response.json();
-      if (result?.statusCode === 200) {
-        setProducts(result.data.product || []);
-        const paginationData = result.data.pagination;
-        setPagination(paginationData);
-        if (onPaginationChange) onPaginationChange(paginationData);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        ...(token && { Authorization: token }),
+      },
+    });
+
+    const result = await response.json();
+    if (result?.statusCode === 200) {
+      setProducts(result.data.product || []);
+      const paginationData = result.data.pagination;
+      setPagination(paginationData);
+      if (onPaginationChange) onPaginationChange(paginationData);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+};
 
-  useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage, selectedCategoryId]);
+useEffect(() => {
+  fetchProducts(currentPage);
+}, [currentPage, selectedCategoryId]);
+
+
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
