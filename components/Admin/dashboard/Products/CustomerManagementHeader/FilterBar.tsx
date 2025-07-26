@@ -9,12 +9,14 @@ interface Category {
 }
 
 interface FilterBarProps {
-  onCategorySelect: (categoryId: string | null) => void; // null for "All"
+  onCategorySelect: (categoryId: string | null) => void;
+  onSearch: (search: string) => void;
 }
 
 
 
-export const FilterBar = ({ onCategorySelect }: FilterBarProps) => {
+
+export const FilterBar = ({ onCategorySelect, onSearch }: FilterBarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
 const [showStatusDropdown, setShowStatusDropdown] = useState(false);
@@ -101,13 +103,18 @@ useEffect(() => {
       <div className="flex gap-2 items-center flex-wrap">
         <div className="flex items-center px-4 py-0 w-60 h-10 bg-white border border-solid border-neutral-300 rounded-[50px]">
   {/* <SearchIcon /> */}
-  <input
-    type="text"
-    value={inputValue}
-    onChange={(e) => setInputValue(e.target.value)}
-    placeholder="Search"
-    className="ml-2 outline-none bg-transparent text-sm text-neutral-700 w-full placeholder:text-neutral-500"
-  />
+ <input
+  type="text"
+  value={inputValue}
+  onChange={(e) => {
+    const val = e.target.value;
+    setInputValue(val);
+    onSearch(val); // ← Pass up to parent
+  }}
+  placeholder="Search"
+  className="ml-2 outline-none bg-transparent text-sm text-neutral-700 w-full placeholder:text-neutral-500"
+/>
+
 </div>
 
 

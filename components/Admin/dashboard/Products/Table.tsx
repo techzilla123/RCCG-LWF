@@ -31,9 +31,10 @@ interface TableProps {
   onPaginationChange?: (paginationData: PaginationData) => void;
   currentPage?: number;
    selectedCategoryId?: string | null;
+    searchTerm?: string; 
 }
 
-export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId }: TableProps) => {
+export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId, searchTerm }: TableProps) => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -84,14 +85,19 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId 
   const fetchProducts = async (page: number = 1) => {
   try {
     const token = localStorage.getItem("accessToken") || "";
-
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
     const apiKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
 
-    // Build the endpoint dynamically
-    const url = selectedCategoryId
-      ? `${baseURL}admin/products/filter-product/GCT/${selectedCategoryId}?page=${page}`
-      : `${baseURL}admin/products/list-product?page=${page}`;
+    let url = "";
+
+    if (searchTerm?.trim()) {
+      const encodedSearch = encodeURIComponent(searchTerm);
+      url = `${baseURL}customer/fetch-product-by-name/${encodedSearch}`;
+    } else if (selectedCategoryId) {
+      url = `${baseURL}admin/products/filter-product/GCT/${selectedCategoryId}?page=${page}`;
+    } else {
+      url = `${baseURL}admin/products/list-product?page=${page}`;
+    }
 
     const response = await fetch(url, {
       method: "GET",
@@ -105,7 +111,14 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId 
     const result = await response.json();
     if (result?.statusCode === 200) {
       setProducts(result.data.product || []);
-      const paginationData = result.data.pagination;
+      const paginationData = result.data.pagination || {
+        current_page: 1,
+        total_pages: 1,
+        total_products: 0,
+        per_page: 10,
+        next_page_url: null,
+        prev_page_url: null,
+      };
       setPagination(paginationData);
       if (onPaginationChange) onPaginationChange(paginationData);
     }
@@ -114,9 +127,11 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId 
   }
 };
 
+
 useEffect(() => {
   fetchProducts(currentPage);
-}, [currentPage, selectedCategoryId]);
+}, [currentPage, selectedCategoryId, searchTerm]);
+
 
 
 

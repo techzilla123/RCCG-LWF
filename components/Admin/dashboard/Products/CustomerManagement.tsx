@@ -17,6 +17,7 @@ type PaginationData = {
 }
 
 export const CustomerManagement = () => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const handleCategorySelect = (categoryId: string | null) => {
@@ -44,9 +45,9 @@ export const CustomerManagement = () => {
   return (
     <main className="flex flex-col p-6 mx-auto max-w-none w-full mt-4 bg-white max-md:max-w-full max-sm:max-w-screen-sm">
       <CustomerManagementHeader />
-       <FilterBar onCategorySelect={setSelectedCategoryId} />
+       <FilterBar onCategorySelect={setSelectedCategoryId}  onSearch={setSearchTerm} />
       <StatisticsGrid />
-      <Table onPaginationChange={handlePaginationChange} currentPage={currentPage}  selectedCategoryId={selectedCategoryId} />
+      <Table onPaginationChange={handlePaginationChange} currentPage={currentPage}  selectedCategoryId={selectedCategoryId} searchTerm={searchTerm}  />
       <Pagination
         currentPage={paginationData.current_page}
         totalPages={paginationData.total_pages}
