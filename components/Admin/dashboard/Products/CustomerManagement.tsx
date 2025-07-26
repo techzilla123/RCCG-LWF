@@ -45,7 +45,11 @@ export const CustomerManagement = () => {
   return (
     <main className="flex flex-col p-6 mx-auto max-w-none w-full mt-4 bg-white max-md:max-w-full max-sm:max-w-screen-sm">
       <CustomerManagementHeader />
-       <FilterBar onCategorySelect={setSelectedCategoryId}  onSearch={setSearchTerm} />
+      <FilterBar
+  onCategorySelect={handleCategorySelect}
+  onSearch={setSearchTerm}
+/>
+
       <StatisticsGrid />
       <Table onPaginationChange={handlePaginationChange} currentPage={currentPage}  selectedCategoryId={selectedCategoryId} searchTerm={searchTerm}  />
       <Pagination
