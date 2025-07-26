@@ -1,17 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { SearchIcon, SortIcon, StatusIcon, CartIcon, CaretDownIcon } from "./Icons";
+import { SortIcon, StatusIcon, CartIcon, CaretDownIcon } from "./Icons";
 import OrderDetails from "../ProductsAddOne/ProductDetailForm"; // Import modal component (adjust path if needed)
 
 interface Category {
-  categoryId: string;
-  categoryName: string;
-  noOfProducts: number;
+  generalCategoryId: string;
+  name: string;
 }
+
 
 
 export const FilterBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 const [showStatusDropdown, setShowStatusDropdown] = useState(false);
 const [selectedStatus, setSelectedStatus] = useState("All");
 const [showCatDropdown, setShowCatDropdown] = useState(false);
@@ -28,7 +29,7 @@ const fetchCategories = async () => {
     const token = localStorage.getItem("accessToken") || "";
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-category`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product-general-category`,
       {
         method: "GET",
         headers: {
@@ -89,9 +90,16 @@ useEffect(() => {
       {/* Left side: Filters */}
       <div className="flex gap-2 items-center flex-wrap">
         <div className="flex items-center px-4 py-0 w-60 h-10 bg-white border border-solid border-neutral-300 rounded-[50px]">
-          <SearchIcon />
-          <span className="ml-2 text-neutral-500">Search</span>
-        </div>
+  {/* <SearchIcon /> */}
+  <input
+    type="text"
+    value={inputValue}
+    onChange={(e) => setInputValue(e.target.value)}
+    placeholder="Search"
+    className="ml-2 outline-none bg-transparent text-sm text-neutral-700 w-full placeholder:text-neutral-500"
+  />
+</div>
+
 
         <button className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white">
           <SortIcon />
@@ -137,18 +145,20 @@ useEffect(() => {
         </li>
 
         {/* Render categories */}
-        {categories.map((cat) => (
-          <li
-            key={cat.categoryId}
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-            onClick={() => {
-              setSelectedCat(cat.categoryName);
-              setShowCatDropdown(false);
-            }}
-          >
-            {cat.categoryName}
-          </li>
-        ))}
+     {categories.map((cat, index) => (
+  <li
+    key={`${cat.generalCategoryId}-${index}`}
+    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+    onClick={() => {
+      setSelectedCat(cat.name);
+      setShowCatDropdown(false);
+    }}
+  >
+    {cat.name}
+  </li>
+))}
+
+
       </ul>
     )}
   </div>
