@@ -8,9 +8,13 @@ interface Category {
   name: string;
 }
 
+interface FilterBarProps {
+  onCategorySelect: (categoryId: string | null) => void; // null for "All"
+}
 
 
-export const FilterBar = () => {
+
+export const FilterBar = ({ onCategorySelect }: FilterBarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
 const [showStatusDropdown, setShowStatusDropdown] = useState(false);
@@ -64,6 +68,12 @@ const fetchCategories = async () => {
 useEffect(() => {
   fetchCategories();
 }, []);
+
+ const handleCategorySelect = (cat: Category | null) => {
+    setSelectedCat(cat ? cat.name : "All");
+    setShowCatDropdown(false);
+    onCategorySelect(cat ? cat.generalCategoryId : null);
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -134,29 +144,23 @@ useEffect(() => {
     {!isLoading && !errorMessage && (
       <ul>
         {/* Optional "All" item */}
-        <li
-          className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-          onClick={() => {
-            setSelectedCat("All");
-            setShowCatDropdown(false);
-          }}
-        >
-          All
-        </li>
+          <li
+    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+    onClick={() => handleCategorySelect(null)} // "All"
+  >
+    All
+  </li>
 
         {/* Render categories */}
-     {categories.map((cat, index) => (
-  <li
-    key={`${cat.generalCategoryId}-${index}`}
-    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-    onClick={() => {
-      setSelectedCat(cat.name);
-      setShowCatDropdown(false);
-    }}
-  >
-    {cat.name}
-  </li>
-))}
+      {categories.map((cat, index) => (
+    <li
+      key={`${cat.generalCategoryId}-${index}`}
+      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+      onClick={() => handleCategorySelect(cat)}
+    >
+      {cat.name}
+    </li>
+  ))}
 
 
       </ul>

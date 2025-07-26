@@ -30,9 +30,10 @@ type PaginationData = {
 interface TableProps {
   onPaginationChange?: (paginationData: PaginationData) => void;
   currentPage?: number;
+   selectedCategoryId?: string | null;
 }
 
-export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
+export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId }: TableProps) => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -82,7 +83,13 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
   const fetchProducts = async (page: number = 1) => {
     try {
       const token = localStorage.getItem("accessToken") || "";
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/list-product?page=${page}`, {
+      const categoryPart = selectedCategoryId
+        ? `filter-product/GCT/${selectedCategoryId}`
+        : `list-product?page=${page}`;
+
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/${categoryPart}`;
+
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -90,16 +97,13 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
           ...(token && { Authorization: token }),
         },
       });
+
       const result = await response.json();
       if (result?.statusCode === 200) {
         setProducts(result.data.product || []);
         const paginationData = result.data.pagination;
         setPagination(paginationData);
-        
-        // Notify parent component about pagination change
-        if (onPaginationChange) {
-          onPaginationChange(paginationData);
-        }
+        if (onPaginationChange) onPaginationChange(paginationData);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -108,7 +112,7 @@ export const Table = ({ onPaginationChange, currentPage = 1 }: TableProps) => {
 
   useEffect(() => {
     fetchProducts(currentPage);
-  }, [currentPage]);
+  }, [currentPage, selectedCategoryId]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
