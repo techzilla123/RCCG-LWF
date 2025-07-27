@@ -79,10 +79,12 @@ const handleFavoriteClick = (e: React.MouseEvent) => {
             starIcon={starIcon}
           />
           <h3
-            className={`${inter.variable} font-[var(--font-inter)] font-semibold text-xl tracking-normal leading-[26px] text-black mt-2 mb-2`}
-          >
-            {title}
-          </h3>
+  title={title} // ✅ shows full name on hover
+  className={`${inter.variable} font-[var(--font-inter)] font-semibold text-xl tracking-normal leading-[26px] text-black mt-2 mb-2`}
+>
+  {title.length > 26 ? `${title.slice(0, 23)}...` : title}
+</h3>
+
         </div>
        <div className="flex flex-col gap-1 mb-2">
           {originalPrice && <span className="text-gray-500 line-through text-sm font-medium">{originalPrice}</span>}

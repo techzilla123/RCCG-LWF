@@ -252,17 +252,6 @@ interface Product extends ProductApiResponse {
   p.imageThirtheen,
 ].filter((img): img is string => Boolean(img)) // this filters out undefined and narrows type to string
 
-formatted.push({
-  ...p,
-  isAdded: false,
-  finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-  selectedImage: imageOptions[0] || p.imageOne, // Start with first available image
-  imageList: imageOptions,
-  currentImageIndex: 0,
-})
-
-
-
  formatted.push({
   ...p,
   isAdded: false,
@@ -449,7 +438,7 @@ formatted.push({
           key={`${p.productId}-${index}`}
               id={p.productId}
               image={p.selectedImage}
-              title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
+              title={p.productName.length > 44 ? p.productName.slice(0, 40) + "..." : p.productName}
               rating={5.0}
               reviews={0}
               price={`$${Number(p.finalPrice || 0).toFixed(2)}`}
