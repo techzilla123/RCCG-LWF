@@ -8,6 +8,24 @@ import { OrdersChart } from "./OrdersChart";
 import { TopProducts } from "./TopProducts";
 import { RecentOrders } from "./RecentOrders";
 
+type Contact = {
+  id: number;
+  email: string;
+  phone: string;
+  name: string;
+  address: string;
+  message: string;
+  createdAt: string;
+};
+
+type Newsletter = {
+  id: number;
+  email: string;
+  createdAt: string;
+};
+
+
+
 export const DashboardContent = () => {
   const [statistics, setStatistics] = useState([
     {
@@ -62,7 +80,8 @@ export const DashboardContent = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modalType, setModalType] = useState<"contact" | "newsletter" | null>(null);
-  const [modalData, setModalData] = useState<any[]>([]);
+ const [modalData, setModalData] = useState<(Contact | Newsletter)[]>([]);
+
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -203,28 +222,29 @@ export const DashboardContent = () => {
               </button>
             </div>
             {modalType === "contact" ? (
-              <ul className="space-y-4">
-                {modalData.map((item: any) => (
-                  <li key={item.id} className="p-4 bg-gray-50 rounded-xl shadow-sm">
-                    <p><strong>Name:</strong> {item.name}</p>
-                    <p><strong>Email:</strong> {item.email}</p>
-                    <p><strong>Phone:</strong> {item.phone}</p>
-                    <p><strong>Address:</strong> {item.address}</p>
-                    <p><strong>Message:</strong> {item.message}</p>
-                    <p className="text-sm text-gray-500"><strong>Date:</strong> {item.createdAt}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <ul className="space-y-4">
-                {modalData.map((item: any) => (
-                  <li key={item.id} className="p-4 bg-gray-50 rounded-xl shadow-sm flex justify-between">
-                    <span>{item.email}</span>
-                    <span className="text-sm text-gray-500">{item.createdAt}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+  <ul className="space-y-4">
+    {(modalData as Contact[]).map((item) => (
+      <li key={item.id} className="p-4 bg-gray-50 rounded-xl shadow-sm">
+        <p><strong>Name:</strong> {item.name}</p>
+        <p><strong>Email:</strong> {item.email}</p>
+        <p><strong>Phone:</strong> {item.phone}</p>
+        <p><strong>Address:</strong> {item.address}</p>
+        <p><strong>Message:</strong> {item.message}</p>
+        <p className="text-sm text-gray-500"><strong>Date:</strong> {item.createdAt}</p>
+      </li>
+    ))}
+  </ul>
+) : (
+  <ul className="space-y-4">
+    {(modalData as Newsletter[]).map((item) => (
+      <li key={item.id} className="p-4 bg-gray-50 rounded-xl shadow-sm flex justify-between">
+        <span>{item.email}</span>
+        <span className="text-sm text-gray-500">{item.createdAt}</span>
+      </li>
+    ))}
+  </ul>
+)}
+
           </div>
         </div>
       )}
