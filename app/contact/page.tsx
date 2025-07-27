@@ -63,7 +63,7 @@ export default function ContactSupport() {
           <div className="p-10 md:p-12">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Contact Support</h1>
             <p className="text-gray-500 mb-6">
-              Got a question about your account or billing? Send us a message and we'll reply promptly.
+              Got a question about your account or billing? Send us a message and we&apos;ll reply promptly.
             </p>
 
             {isSubmitted ? (
@@ -74,7 +74,7 @@ export default function ContactSupport() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-1">Message Sent!</h3>
-                <p className="text-gray-500">We'll get back to you shortly.</p>
+                <p className="text-gray-500">We&apos;ll get back to you shortly.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">

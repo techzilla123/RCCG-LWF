@@ -43,7 +43,7 @@ export default function AboutUsPage() {
                 Party Place is a Party retail store stocking a wide range of Party supplies such as balloons, specialty napkins, Gifts, Decorations, Costumes, themed party supplies, party equipment rentals... and lots more.
               </p>
               <p className="text-gray-700 leading-relaxed">
-                Offering more than just party supplies, we provide Balloon Decorations, Party & Event Rentals with same-day doorstep delivery. Our friendly and amiable staff is always happy to help you find exactly what you need. Most importantly, you’ll discover exotic items at unbeatable prices — covering a wide variety of locations in the US.
+                Offering more than just party supplies, we provide Balloon Decorations, Party & Event Rentals with same-day doorstep delivery. Our friendly and amiable staff is always happy to help you find exactly what you need. Most importantly, you&apos;ll discover exotic items at unbeatable prices — covering a wide variety of locations in the US.
               </p>
               <p className="text-gray-700 leading-relaxed">
                 Visit us today and you will be happy you did.
@@ -106,7 +106,7 @@ export default function AboutUsPage() {
           {/* Company Vision */}
           <div className="mt-16 md:mt-24 grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">Company’s Vision</h2>
+              <h2 className="text-3xl font-bold text-gray-900">Company&apos;s Vision</h2>
               <p className="mt-4 text-gray-700 leading-relaxed">
                 Our vision at Party Place & Rentals is to become the premier destination for all things celebration, setting the standard for creativity, innovation, and exceptional customer experiences in the party supply industry.
               </p>
