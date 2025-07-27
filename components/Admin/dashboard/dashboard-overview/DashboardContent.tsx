@@ -16,7 +16,11 @@ export const DashboardContent = () => {
         "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/e04b8b6a7f9829c4388bd4acc12c0063434c3306?placeholderIfAbsent=true",
       title: "Customers",
       value: "Loading...",
-       growth: { value: "17.54%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
+      growth: {
+        value: "17.54%",
+        trend:
+          "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true",
+      },
     },
     {
       id: "revenue",
@@ -48,9 +52,17 @@ export const DashboardContent = () => {
         "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/d0df740ccdafbfc12cb23e7d96b623820d92b068?placeholderIfAbsent=true",
       title: "Orders",
       value: "Loading...",
-        growth: { value: "17.54%", trend: "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true" },
+      growth: {
+        value: "17.54%",
+        trend:
+          "https://cdn.builder.io/api/v1/image/assets/1662cc7878a14807a495bf21efd1ec7c/f842f35b5a0800c849fcc79d2bb38ba019a8f696?placeholderIfAbsent=true",
+      },
     },
   ]);
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modalType, setModalType] = useState<"contact" | "newsletter" | null>(null);
+  const [modalData, setModalData] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -99,13 +111,58 @@ export const DashboardContent = () => {
     fetchStats();
   }, []);
 
+  const handleModal = async (type: "contact" | "newsletter") => {
+    setModalType(type);
+    const token = localStorage.getItem("accessToken");
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const headers = {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      Authorization: token || "",
+    };
+
+    try {
+      const res = await fetch(`${baseUrl}admin/${type === "contact" ? "contact-us-list" : "news-letter-list"}`, { headers });
+      const json = await res.json();
+      setModalData(json.data || []);
+    } catch (err) {
+      console.error(`Failed to fetch ${type} data:`, err);
+    }
+  };
+
   return (
-    <section className="pr-8 pb-8 pl-6 mt-6 min-h-screen w-full bg-white max-md:px-5 max-md:max-w-full">
-      <header className="pb-6 w-full border-b border-[#EAEAEA]">
-        <div className="flex flex-col justify-center pt-6 w-full bg-white">
-          <h3 className="text-3xl font-semibold leading-10 text-black">
-            Dashboard
-          </h3>
+    <section className="relative pr-8 pb-8 pl-6 mt-4 pt-4 min-h-screen w-full bg-white max-md:px-5 max-md:max-w-full">
+      <header className="pb-6 w-full border-b border-[#EAEAEA] flex justify-between items-center">
+        <h3 className="text-3xl font-semibold leading-10 text-black">Dashboard</h3>
+        <div className="relative">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="px-4 py-2 bg-black text-white font-medium rounded-lg shadow hover:bg-gray-800 transition-all duration-200"
+          >
+            News & Updates
+          </button>
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg animate-fadeIn">
+              <button
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={() => {
+                  handleModal("contact");
+                  setDropdownOpen(false);
+                }}
+              >
+                Contact Us
+              </button>
+              <button
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={() => {
+                  handleModal("newsletter");
+                  setDropdownOpen(false);
+                }}
+              >
+                Newsletter
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -128,15 +185,70 @@ export const DashboardContent = () => {
         </aside>
       </div>
 
-      <style>
-        {`
-          @media (min-width: 1600px) {
-            .custom-max-width-1600 {
-              max-width: 100% !important;
-            }
+      {modalType && (
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn"
+          onClick={() => setModalType(null)}
+        >
+          <div
+            className="bg-white p-6 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">
+                {modalType === "contact" ? "Contact Us Submissions" : "Newsletter Subscribers"}
+              </h2>
+              <button onClick={() => setModalType(null)} className="text-xl font-bold">
+                ×
+              </button>
+            </div>
+            {modalType === "contact" ? (
+              <ul className="space-y-4">
+                {modalData.map((item: any) => (
+                  <li key={item.id} className="p-4 bg-gray-50 rounded-xl shadow-sm">
+                    <p><strong>Name:</strong> {item.name}</p>
+                    <p><strong>Email:</strong> {item.email}</p>
+                    <p><strong>Phone:</strong> {item.phone}</p>
+                    <p><strong>Address:</strong> {item.address}</p>
+                    <p><strong>Message:</strong> {item.message}</p>
+                    <p className="text-sm text-gray-500"><strong>Date:</strong> {item.createdAt}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul className="space-y-4">
+                {modalData.map((item: any) => (
+                  <li key={item.id} className="p-4 bg-gray-50 rounded-xl shadow-sm flex justify-between">
+                    <span>{item.email}</span>
+                    <span className="text-sm text-gray-500">{item.createdAt}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
           }
-        `}
-      </style>
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @media (min-width: 1600px) {
+          .custom-max-width-1600 {
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

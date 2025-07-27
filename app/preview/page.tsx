@@ -1,5 +1,5 @@
 'use client'; // if needed — but likely this file is a server component, so better to keep this part clean
-
+import { usePathname } from 'next/navigation';
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
 import ProductPage from "@/components/Users/Preview/ProductPage";
@@ -9,6 +9,10 @@ import { Suspense } from "react";
 import BotpressChat from "@/components/BotpressChat"; 
  
 export default function Home() {
+   const pathname = usePathname();
+
+  const shouldShowBotpress = pathname === '/preview'; 
+
   return (
     <div className="min-h-screen bg-white">
       <Offer />
@@ -22,7 +26,7 @@ export default function Home() {
       <Suspense fallback={<div className="p-4 text-center">Loading similar products...</div>}>
         <SimilarProducts />
       </Suspense>
-<BotpressChat />
+{shouldShowBotpress && <BotpressChat />}
       <Footer />
     </div>
   );

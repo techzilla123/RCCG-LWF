@@ -259,16 +259,22 @@ export function Shop() {
 
 
   // Fetch products every time categoryId or currentPage changes
+
+  
 useEffect(() => {
   if (!ready) return // wait until pathname/categoryId logic is finished
 
+  
   const searchQuery = searchParams.get("search")
 
   const url = (() => {
-    if (searchQuery) {
-      const encodedSearch = encodeURIComponent(searchQuery)
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product-by-name/${encodedSearch}`
-    }
+    
+if (searchQuery) {
+  const encodedSearch = encodeURIComponent(searchQuery);
+  return `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-product-by-name/${encodedSearch}?page=${currentPage}`;
+}
+
+
 
     let baseUrl = ""
     if (!categoryId) {

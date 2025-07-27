@@ -1,3 +1,4 @@
+"use client"
 // import Hero from "@/components/Hero";
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
@@ -13,6 +14,11 @@ import Footer from "@/components/Footer"
 
 
 export default function Home() {
+
+   const pathname = usePathname();
+
+  const shouldShowBotpress = pathname === '/rentals'; 
+
   return (
     <div className="min-h-scren bg-white">
       <Offer />
@@ -24,7 +30,7 @@ export default function Home() {
         <Shop />
       </Suspense>
       
-    <BotpressChat />
+      {shouldShowBotpress && <BotpressChat />}
 
       <Footer/>
 

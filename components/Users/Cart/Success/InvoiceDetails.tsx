@@ -19,7 +19,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
 
 export const InvoiceDetails: React.FC = () => {
   return (
-    <section className="p-6 mt-6 w-full rounded-lg bg-stone-50 max-md:px-5 max-md:max-w-full">
+    <section className="p-6 hidden mt-6 w-full rounded-lg bg-stone-50 max-md:px-5 max-md:max-w-full">
       <InvoiceItem label="Items" value="3" />
       <InvoiceItem label="Total Amount" value="$605.00" />
 

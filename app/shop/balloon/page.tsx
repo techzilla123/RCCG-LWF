@@ -1,4 +1,6 @@
+"use client"
 // import Hero from "@/components/Hero";
+import { usePathname } from 'next/navigation';
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
 import Header from "@/components/Users/Shop/Balloon/Header"
@@ -13,6 +15,12 @@ import Footer from "@/components/Footer"
 
 
 export default function Home() {
+
+   const pathname = usePathname();
+
+  const shouldShowBotpress = pathname === '/shop/balloon'; 
+
+
   return (
     <div className="min-h-scren bg-white">
       <Offer />
@@ -24,8 +32,7 @@ export default function Home() {
       <Suspense fallback={<div>Loading...</div>}>
       <Shop/>
       </Suspense>
-    <BotpressChat />
-
+     {shouldShowBotpress && <BotpressChat />}
       <Footer/>
 
 
