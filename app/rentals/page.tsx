@@ -1,5 +1,6 @@
 "use client"
 // import Hero from "@/components/Hero";
+import { usePathname } from 'next/navigation';
 import Offer from "@/components/Offer";
 import TopNavBar from "@/components/TopNavBar";
 import Header from "@/components/Users/Rentals/Header"
