@@ -104,7 +104,10 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onRemoveFrom
 
       <div className="mt-2 flex-1">
         <h3 className="text-xs font-semibold truncate">{product.title}</h3>
-        <p className="mt-1 font-bold">${product.price.toLocaleString()}</p>
+       <p className="mt-1 font-bold">
+  ${typeof product.price === "number" ? product.price.toLocaleString() : "0.00"}
+</p>
+
       </div>
 
       <div className="absolute top-2 right-2 flex flex-col gap-1">

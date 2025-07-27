@@ -89,7 +89,7 @@ const SimilarProducts: React.FC = () => {
             return {
               id: product.productId,
               image: product.imageOne,
-              rating: 4.7,
+              rating: 5.0,
               reviews: 400,
               title: product.productName.length > 26 ? product.productName.slice(0, 23) + "..." : product.productName,
               price: `$${(finalPrice > 0 ? finalPrice : originalPrice).toFixed(2)}`,

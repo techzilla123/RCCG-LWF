@@ -341,33 +341,43 @@ export function Wishlist() {
             {/* Desktop View */}
             <div className="hidden md:flex flex-wrap gap-6 items-start w-full max-md:max-w-full">
               {wishlistItems.map((item, index) => {
-                const product = item.productDetails
-                const discountedPrice = calculateDiscountedPrice(product.price, product.discountPrice)
-                return (
-                  <ProductCard
-                    key={product.productId || index}
-                    productId={product.productId}
-                    image={product.imageOne}
-                    title={product.productName}
-                    rating={4.7}
-                    reviews={400}
-                    price={`$${discountedPrice}`}
-                    originalPrice={`$${product.price}`}
-                    starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
-                    cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
-                    favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"
-                    isInWishlist={true}
-                    onRemoveFromWishlist={handleRemoveFromWishlist}
-                    onAddToCart={handleAddToCart}
-                  />
-                )
-              })}
+  const product = item.productDetails
+
+  if (!product || !product.price || !product.discountPrice) {
+    console.warn(`Invalid product data at index ${index}:`, product)
+    return null // or render a fallback UI
+  }
+
+  const discountedPrice = calculateDiscountedPrice(product.price, product.discountPrice)
+
+  return (
+    <ProductCard
+      key={product.productId || index}
+      productId={product.productId}
+      image={product.imageOne}
+      title={product.productName}
+      rating={4.7}
+      reviews={400}
+      price={`$${discountedPrice}`}
+      originalPrice={`$${product.price}`}
+      starIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/544c31ba36ee8fc60d58b0ba303f6b5e03fb1994?placeholderIfAbsent=true"
+      cartIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/8cb390dce5451e2e781d761e03e8beb8ba033458?placeholderIfAbsent=true"
+      favoriteIcon="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/659be93a7c406efa8073a635c7fb839f349ddff8?placeholderIfAbsent=true"
+      isInWishlist={true}
+      onRemoveFromWishlist={handleRemoveFromWishlist}
+      onAddToCart={handleAddToCart}
+    />
+  )
+})}
+
             </div>
             {/* Mobile View */}
             <div className="block md:hidden w-full">
               <ProductGrid />
             </div>
-            <Pagination />
+          <div className="hidden">
+  <Pagination />
+</div>
           </>
         )}
       </section>
