@@ -58,6 +58,7 @@ export const FooterLinks: React.FC<FooterLinksProps> = ({ title, links, onClickM
       case "Contact": return "/contact";
       case "Help": return "/help";
       case "Return Policy": return "/return-policy";
+      case "Blog": return "/blog";
       default: return "#";
     }
   };
