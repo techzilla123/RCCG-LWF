@@ -21,8 +21,8 @@ export default function TermsOfService() {
           <div className="bg-white rounded-lg p-8 shadow-sm">
             <div className="prose prose-gray max-w-none">
               <p className="text-base leading-7 mb-6">
-                Welcome to Party Place & Rentals ("we", "us", "our"). By accessing and making a purchase on our online
-                store, you ("you", "your") agree to the following Terms and Conditions. Please read them carefully
+                Welcome to Party Place & Rentals (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). By accessing and making a purchase on our online
+                store, you (&quot;you&quot;, &quot;your&quot;) agree to the following Terms and Conditions. Please read them carefully
                 before proceeding with any transactions.
               </p>
 

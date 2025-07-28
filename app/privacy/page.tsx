@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
               </p>
               
               <p className="text-base leading-7 mb-6">
-                Sharing of personal information for targeted advertising based on your interaction on different websites may be considered "sales", "sharing", or "targeted advertising" under certain U.S. state privacy laws. Depending on where you live, you may have the right to opt out of these activities.
+                Sharing of personal information for targeted advertising based on your interaction on different websites may be considered &quot;sales&quot;, &quot;sharing&quot;, or &quot;targeted advertising&quot; under certain U.S. state privacy laws. Depending on where you live, you may have the right to opt out of these activities.
               </p>
               
               <p className="text-base leading-7 mb-6">
@@ -33,7 +33,7 @@ export default function PrivacyPolicy() {
               </p>
               
               <p className="text-base leading-7">
-                If you visit our website with the opt-out preference, depending on where you are, we will treat this as a request to opt-out of activity that may be considered a "sale" or "sharing" of personal information or other uses that may be considered targeted advertising for the device and browser you used to visit our website.
+                If you visit our website with the opt-out preference, depending on where you are, we will treat this as a request to opt-out of activity that may be considered a &quot;sale&quot; or &quot;sharing&quot; of personal information or other uses that may be considered targeted advertising for the device and browser you used to visit our website.
               </p>
             </div>
           </div>
