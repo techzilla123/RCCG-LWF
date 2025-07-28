@@ -33,7 +33,7 @@ function Footer() {
 
         <FooterLinks
           title="Info"
-          links={["About", "FAQ", "Contact", "Chat With Us", "Help"]}
+          links={["About", "FAQ", "Contact", "Chat With Us", "Help", "Return Policy"]}
           onClickMap={{
             "Chat With Us": openBotChat,
           }}
