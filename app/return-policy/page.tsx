@@ -78,12 +78,12 @@ export default function ReturnPolicy() {
       </div>
 
       <div
-        ref={tableRef}
-        className="grid grid-cols-2 border border-gray-300 text-sm text-black"
-      >
+  ref={tableRef}
+  className="grid grid-cols-1 md:grid-cols-2 border border-gray-300 text-sm text-black"
+>
         {/* Left Column */}
         <div className="border-r border-gray-300 p-4">
-          <p className="font-medium">Party Place & Rentals Returns Team</p>
+          <p className="font-bold">Party Place & Rentals Returns Team</p>
           <p className="mt-2">Order # <span className="inline-block w-32 border-b border-black align-middle"></span></p>
           <p className="mt-2">1919 Faithon P. Lucas Sr. Blvd, #135</p>
           <p>Mesquite TX 75181</p>
@@ -91,7 +91,7 @@ export default function ReturnPolicy() {
 
         {/* Right Column */}
         <div className="p-4">
-          <p className="font-medium">Return Reason Codes</p>
+          <p className="font-bold">Return Reason Codes</p>
           <p className="mt-2">Defective <span className="inline-block w-40 border-b border-black align-middle"></span></p>
           <p className="mt-1">Damaged <span className="inline-block w-40 border-b border-black align-middle"></span></p>
           <p className="mt-1">Other <span className="inline-block w-40 border-b border-black align-middle"></span></p>
