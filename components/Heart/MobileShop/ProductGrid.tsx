@@ -1,7 +1,7 @@
-'use client'
+"use client"
 import React, { useEffect, useState } from "react"
 import { ProductCardM } from "./ProductCard"
-import type { Product } from "./types"
+import type { Product, LocalStorageItem } from "./types"
 
 // Define the product structure returned by the API (matching desktop)
 interface ProductApiResponse {
@@ -11,25 +11,27 @@ interface ProductApiResponse {
   price: number | string
   discountPrice: number | string
   quantity: number
+  imageTwo?: string
+  imageThree?: string
+  imageFour?: string
+  imageFive?: string
+  imageSix?: string
+  imageSeven?: string
+  imageEight?: string
+  imageNine?: string
+  imageTen?: string
+  imageEleven?: string
+  imageTwelve?: string
+  imageThirtheen?: string
 }
 
 // Extend the product with additional client-side fields (matching desktop)
 interface ExtendedProduct extends ProductApiResponse {
   isAdded: boolean
   finalPrice: number // Calculated price after discount
-}
-
-// Interface for localStorage items (matching desktop)
-interface LocalStorageItem {
-  product_id: string
-  quantity: string
-  size: string
-  color: string
-  productName?: string
-  price?: number
-  discountPrice?: number
-  finalPrice?: number
-  imageOne?: string
+  selectedImage: string // The currently displayed image
+  imageList: string[] // All available images for the product
+  currentImageIndex: number // Index of the currently displayed image
 }
 
 export const ProductGrid: React.FC = () => {
@@ -80,7 +82,6 @@ export const ProductGrid: React.FC = () => {
         // Add new item
         cartItems.push(newItem)
       }
-
       localStorage.setItem("localCart", JSON.stringify(cartItems))
       window.dispatchEvent(new Event("cartUpdated"))
       return true
@@ -98,7 +99,6 @@ export const ProductGrid: React.FC = () => {
 
       // Check if item already exists
       const existingItemIndex = wishlistItems.findIndex((item) => item.product_id === productId)
-
       if (existingItemIndex > -1) {
         // Item already in wishlist
         return false
@@ -130,7 +130,6 @@ export const ProductGrid: React.FC = () => {
 
   useEffect(() => {
     const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-
     async function fetchProducts() {
       try {
         const token = localStorage.getItem("accessToken")
@@ -145,17 +144,13 @@ export const ProductGrid: React.FC = () => {
           method: "GET",
           headers,
         })
-
         if (!firstPageRes.ok) {
           throw new Error(`Server error: ${firstPageRes.status}`)
         }
-
         const firstPageJson = await firstPageRes.json()
-
         if (firstPageJson.statusCode !== 200 || !Array.isArray(firstPageJson.data.product)) {
           throw new Error("Unexpected response structure")
         }
-
         const totalPages = firstPageJson.data.pagination.total_pages
         let allProducts: ProductApiResponse[] = [...firstPageJson.data.product]
 
@@ -164,7 +159,6 @@ export const ProductGrid: React.FC = () => {
           // Determine how many additional pages to fetch (fetch from 2-3 random pages)
           const pagesToFetch = Math.min(totalPages - 1, 2)
           const randomPages: number[] = []
-
           // Generate random page numbers (excluding page 1 which we already fetched)
           while (randomPages.length < pagesToFetch) {
             const randomPage = Math.floor(Math.random() * (totalPages - 1)) + 2 // Pages 2 to totalPages
@@ -179,7 +173,6 @@ export const ProductGrid: React.FC = () => {
               method: "GET",
               headers,
             })
-
             if (pageRes.ok) {
               const pageJson = await pageRes.json()
               if (pageJson.statusCode === 200 && Array.isArray(pageJson.data.product)) {
@@ -188,30 +181,45 @@ export const ProductGrid: React.FC = () => {
             }
             return []
           })
-
           const additionalPages = await Promise.all(pagePromises)
-
           // Combine all products from different pages
           additionalPages.forEach((pageProducts) => {
             allProducts = [...allProducts, ...pageProducts]
           })
         }
 
-   // Format and deduplicate products by name
-const seenNames = new Set<string>()
-const formatted: ExtendedProduct[] = []
+        // Format and deduplicate products by name
+        const seenNames = new Set<string>()
+        const formatted: ExtendedProduct[] = []
+        for (const p of allProducts) {
+          if (!seenNames.has(p.productName)) {
+            seenNames.add(p.productName)
+            const imageOptions = [
+              p.imageOne,
+              p.imageTwo,
+              p.imageThree,
+              p.imageFour,
+              p.imageFive,
+              p.imageSix,
+              p.imageSeven,
+              p.imageEight,
+              p.imageNine,
+              p.imageTen,
+              p.imageEleven,
+              p.imageTwelve,
+              p.imageThirtheen,
+            ].filter((img): img is string => Boolean(img)) // this filters out undefined and narrows type to string
 
-for (const p of allProducts) {
-  if (!seenNames.has(p.productName)) {
-    seenNames.add(p.productName)
-    formatted.push({
-      ...p,
-      isAdded: false,
-      finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-    })
-  }
-}
-
+            formatted.push({
+              ...p,
+              isAdded: false,
+              finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+              selectedImage: imageOptions[0] || p.imageOne, // Set initial selected image
+              imageList: imageOptions, // Store all images
+              currentImageIndex: 0, // Set initial index
+            })
+          }
+        }
 
         // Shuffle and limit to 16 products (matching desktop)
         const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
@@ -219,12 +227,15 @@ for (const p of allProducts) {
         // Convert to mobile Product format
         const mobileProducts: Product[] = shuffledAndLimited.map((p) => ({
           id: p.productId,
-          image: p.imageOne,
+          image: p.imageOne, // This is the original image, not the rotating one
           title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
           price: p.finalPrice,
           isOutOfStock: p.quantity === 0,
           isWishlisted: false,
           isAdded: p.isAdded,
+          selectedImage: p.selectedImage, // Pass the selected image
+          imageList: p.imageList, // Pass the list of images
+          currentImageIndex: p.currentImageIndex, // Pass the current index
         }))
         setProducts(mobileProducts)
       } catch (e: unknown) {
@@ -236,6 +247,24 @@ for (const p of allProducts) {
       }
     }
     fetchProducts()
+  }, [])
+
+  // Effect for image rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProducts((prevProducts) =>
+        prevProducts.map((product) => {
+          if (!product.imageList || product.imageList.length <= 1) return product
+          const nextIndex = (product.currentImageIndex + 1) % product.imageList.length
+          return {
+            ...product,
+            selectedImage: product.imageList[nextIndex],
+            currentImageIndex: nextIndex,
+          }
+        }),
+      )
+    }, 5000) // Rotate every 5 seconds
+    return () => clearInterval(interval)
   }, [])
 
   const handleAddToWishlist = async (productId: string) => {

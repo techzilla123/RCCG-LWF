@@ -1,7 +1,5 @@
 "use client"
-
 import type React from "react"
-
 import { useState } from "react"
 import type { Product } from "./types"
 import { HeartIcon } from "./HeartIcon"
@@ -24,7 +22,6 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
 
   const handleWishlist = async () => {
     if (wishlistLoading) return
-
     setWishlistLoading(true)
     try {
       if (onAddToWishlist) {
@@ -44,7 +41,6 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
 
   const handleAddToCart = async () => {
     if (product.isOutOfStock || loading) return
-
     setLoading(true)
     try {
       if (onAddToCart) {
@@ -60,7 +56,6 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
           setIsInCart(true)
           return
         }
-
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`, {
           method: "POST",
           headers: {
@@ -75,7 +70,6 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
             color: "",
           }),
         })
-
         const json = await res.json()
         if (res.ok && json.statusCode === 200) {
           setIsInCart(true)
@@ -97,18 +91,16 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
       <Link href={`/preview?${product.id}`} className="block w-full">
         <div className="w-full h-[180px] overflow-hidden rounded-t">
           <img
-            src={product.image || "/placeholder.svg"}
+            src={product.selectedImage || "/placeholder.svg"} // Use selectedImage here
             alt={product.title}
             className="w-full h-full object-cover cursor-pointer"
           />
         </div>
       </Link>
-
       <div className="mt-2 flex-1">
         <h3 className="text-xs font-semibold truncate">{product.title}</h3>
         <p className="mt-1 font-bold">${Number(product.price || 0).toFixed(2)}</p>
       </div>
-
       <div className="absolute top-2 right-2 flex flex-col gap-1">
         <IconButton onClick={handleWishlist} ariaLabel="Add to wishlist" disabled={wishlistLoading}>
           {wishlistLoading ? (
@@ -117,7 +109,6 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
             <HeartIcon filled={isWishlisted} />
           )}
         </IconButton>
-
         {!product.isOutOfStock && (
           <IconButton onClick={handleAddToCart} ariaLabel="Add to cart" disabled={loading}>
             {loading ? (
@@ -128,7 +119,6 @@ export const ProductCardM: React.FC<ProductCardProps> = ({ product, onAddToCart,
           </IconButton>
         )}
       </div>
-
       {product.isOutOfStock && <OutOfStockBadge />}
     </article>
   )
