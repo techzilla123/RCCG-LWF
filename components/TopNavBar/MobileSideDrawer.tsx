@@ -13,6 +13,7 @@ import {
   Store,
   Brush,
   CircleDot,
+  NotebookPen,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -127,6 +128,7 @@ export default function MobileSideDrawer({ onClose, isOpen }: Props) {
                 <DrawerLink icon={<Tags size={16} />} label="On sales" onClick={() => handleNavigate("/shop")} />
                 <DrawerLink icon={<Store size={16} />} label="Rentals" onClick={() => handleNavigate("/rentals")} />
                 <DrawerLink icon={<Brush size={16} />} label="Balloons Decor" onClick={() => handleNavigate("/shop/decoration")} />
+                <DrawerLink icon={<NotebookPen size={16} />} label="Blog" onClick={() => handleNavigate("/blog")} />
               </div>
             </div>
 
