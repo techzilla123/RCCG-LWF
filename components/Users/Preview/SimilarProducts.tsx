@@ -55,12 +55,17 @@ interface LocalStorageWishlistItem {
 }
 
 const SimilarProducts: React.FC = () => {
+
   const desktopScrollRef = useRef<HTMLDivElement>(null)
   const mobileScrollRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
   const productId = searchParams.keys().next().value || ""
   const [products, setProducts] = useState<ProductCardProps[]>([])
   const [mobileProducts, setMobileProducts] = useState<MobileProduct[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+const openModal = () => setIsModalOpen(true)
+const closeModal = () => setIsModalOpen(false)
+
 
   useEffect(() => {
     const fetchSimilarProducts = async () => {
@@ -336,16 +341,43 @@ const SimilarProducts: React.FC = () => {
       </div>
 
       {/* See More Button */}
-      <div className="flex justify-center mt-10">
-        <button className="flex items-center gap-2 px-6 py-3 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all">
-          <span className="text-base font-medium text-black">See more</span>
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f395c476b09a1375b483c48e4e81c09fc7afa605?placeholderIfAbsent=true"
-            alt="See more"
-            className="w-5 h-5 object-contain"
-          />
-        </button>
+    <div className="flex justify-center mt-10">
+  <button
+    onClick={openModal}
+    className="flex items-center gap-2 px-6 py-3 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all"
+  >
+    <span className="text-base font-medium text-black">See more</span>
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/f395c476b09a1375b483c48e4e81c09fc7afa605?placeholderIfAbsent=true"
+      alt="See more"
+      className="w-5 h-5 object-contain"
+    />
+  </button>
+</div>
+{isModalOpen && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="relative w-[95vw] max-w-6xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 shadow-xl">
+      {/* Close button */}
+      <button
+        className="absolute top-4 right-4 text-gray-600 hover:text-black text-2xl"
+        onClick={closeModal}
+        aria-label="Close"
+      >
+        &times;
+      </button>
+
+      <h3 className="text-xl font-semibold mb-6">All Similar Products</h3>
+
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {products.map((product) => (
+          <ProductCard key={product.id} {...product} />
+        ))}
       </div>
+    </div>
+  </div>
+)}
+
+
     </section>
   )
 }

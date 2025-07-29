@@ -95,9 +95,12 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({ productId, productData 
           "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
           Authorization: token,
         },
-        body: JSON.stringify({
-          product_id: productId,
-        }),
+       body: JSON.stringify({
+  product_id: productId,
+  quantity: 1,        // ✅ Send quantity
+  size: "",           // Optional: If size not needed, leave blank
+  color: "",          // Optional: If color not needed, leave blank
+}),
       });
 
       const data = await res.json();
