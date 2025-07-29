@@ -163,10 +163,10 @@ useEffect(() => {
         </div>
 
         {/* User Dropdown */}
-      {token ? (
- <div className="relative" ref={dropdownWrapperRef}>
+     {token ? (
+  <div className="relative" ref={dropdownWrapperRef}>
     <button
-      onClick={() => setShowDropdown(prev => !prev)}
+      onClick={() => setShowDropdown((prev) => !prev)}
       className="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-gray-100 transition"
     >
       <div className="w-7 h-7 rounded-full bg-gray-300 overflow-hidden flex items-center justify-center text-xs font-semibold text-white">
@@ -184,40 +184,37 @@ useEffect(() => {
     </button>
 
     {showDropdown && (
-      <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-lg z-10 p-2" ref={dropdownRef}>
-      <button
-  className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
-  onClick={() => router.push("/settings")}
->
-  <User className="w-4 h-4 text-gray-500" />
-  Profile
-</button>
-<button
-  className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
-  onClick={() => router.push("/blog")}
->
-  <Newspaper className="w-4 h-4 text-gray-500" />
-  Blog
-</button>
-
-<button
-  className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
-  onClick={handleGoToSettings}
->
-  <Settings className="w-4 h-4 text-gray-500" />
-  Settings
-</button>
-<button
-  className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded"
-  onClick={handleLogout}
->
-  <LogOut className="w-4 h-4 text-red-500" />
-  Logout
-</button>
-
+      <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-lg z-[9999] p-2">
+        <button
+          className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
+          onClick={() => router.push("/settings")}
+        >
+          <User className="w-4 h-4 text-gray-500" />
+          Profile
+        </button>
+        <button
+          className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
+          onClick={() => router.push("/blog")}
+        >
+          <Newspaper className="w-4 h-4 text-gray-500" />
+          Blog
+        </button>
+        <button
+          className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
+          onClick={handleGoToSettings}
+        >
+          <Settings className="w-4 h-4 text-gray-500" />
+          Settings
+        </button>
+        <button
+          className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4 text-red-500" />
+          Logout
+        </button>
       </div>
     )}
-    
   </div>
 ) : (
   <button
