@@ -83,26 +83,28 @@ const storeHours: HoursSection[] = [
     id: "physical-store",
     title: "Party Place and Rentals Store",
     hours: [
+      { day: "Monday", time: "11 AM – 6 PM" },
       { day: "Tuesday", time: "11 AM – 7 PM" },
       { day: "Wednesday", time: "11 AM – 7 PM" },
       { day: "Thursday", time: "11 AM – 7 PM" },
       { day: "Friday", time: "10 AM – 7 PM" },
       { day: "Saturday", time: "10 AM – 7 PM" },
       { day: "Sunday", time: "1:30 PM – 5:30 PM" },
-      { day: "Monday", time: "11 AM – 6 PM" },
+      
     ],
   },
   {
     id: "online-service",
     title: "Online Service Hours",
     hours: [
+      { day: "Monday", time: "Open 24 Hours" },
       { day: "Tuesday", time: "Open 24 Hours" },
       { day: "Wednesday", time: "Open 24 Hours" },
       { day: "Thursday", time: "Open 24 Hours" },
       { day: "Friday", time: "Open 24 Hours" },
       { day: "Saturday", time: "Open 24 Hours" },
       { day: "Sunday", time: "Open 24 Hours" },
-      { day: "Monday", time: "Open 24 Hours" },
+      
     ],
   },
 ]
