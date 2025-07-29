@@ -241,16 +241,12 @@ export function Wishlist() {
         Authorization: token,
       }
 
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/remove-from-wish-list`
-      const body = JSON.stringify({
-        product_id: productId,
-      })
+     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/remove-from-wish-list/${productId}`;
 
-      const res = await fetch(url, {
-        method: "DELETE", // or POST depending on your API
-        headers,
-        body,
-      })
+const res = await fetch(url, {
+  method: "GET",
+  headers,
+});
 
       const result = await res.json()
       if (res.ok && result.statusCode === 200) {
