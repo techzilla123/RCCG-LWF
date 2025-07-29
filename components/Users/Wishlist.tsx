@@ -363,7 +363,7 @@ const showDiscount = discountedPrice !== null && discountedPrice !== product.pri
       productId={product.productId}
       image={product.imageOne}
       title={product.productName}
-      rating={4.7}
+      rating={5.0}
       reviews={400}
        price={`$${showDiscount ? discountedPrice : product.price}`}
   originalPrice={showDiscount ? `$${product.price}` : undefined}
