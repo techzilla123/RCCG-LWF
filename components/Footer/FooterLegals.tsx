@@ -18,6 +18,13 @@ export const FooterLegals = () => {
         >
           Terms of Service
         </a>
+         <div className="w-2 h-2 bg-blue-300 rounded-full self-center hidden md:inline-flex" style={{marginTop: "-6px"}} />
+        <a
+          href="/store-hours"
+          className="pt-2 pb-4 hover:text-blue-300 transition-colors"
+        >
+          Store Hours
+        </a>
       </nav>
       <div className="w-full md:w-auto">
         <FooterNewsletter />
