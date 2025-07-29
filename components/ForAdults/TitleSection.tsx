@@ -1,7 +1,16 @@
-import type * as React from "react"
-import { ActionButton } from "./ActionButton"
+"use client";
+
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { ActionButton } from "./ActionButton";
 
 export const TitleSection: React.FC = () => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/shop");
+  };
+
   return (
     <section className="flex flex-col flex-1 shrink basis-0 min-h-60 min-w-[200px] gap-2 p-4 md:p-0">
       <p className="text-base tracking-normal leading-6 text-neutral-500">Editor&apos;s Picks</p>
@@ -9,7 +18,8 @@ export const TitleSection: React.FC = () => {
       <ActionButton
         label="Find more"
         iconSrc="https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/66d546e330544d515b682a58503bcbd12bbada55?placeholderIfAbsent=true"
+        onClick={handleClick} 
       />
     </section>
-  )
-}
+  );
+};
