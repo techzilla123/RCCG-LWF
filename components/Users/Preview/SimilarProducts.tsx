@@ -66,6 +66,14 @@ const SimilarProducts: React.FC = () => {
 const openModal = () => setIsModalOpen(true)
 const closeModal = () => setIsModalOpen(false)
 
+useEffect(() => {
+  if (isModalOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+}, [isModalOpen]);
+
 
   useEffect(() => {
     const fetchSimilarProducts = async () => {
@@ -368,11 +376,12 @@ const closeModal = () => setIsModalOpen(false)
 
       <h3 className="text-xl font-semibold mb-6">All Similar Products</h3>
 
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
-        ))}
-      </div>
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 w-full">
+  {products.map((product) => (
+    <ProductCard key={product.id} {...product} />
+  ))}
+</div>
+
     </div>
   </div>
 )}
