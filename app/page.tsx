@@ -54,7 +54,7 @@ export default function Home() {
   }
 
   return (
-   <div className="min-h-screen bg-white relative w-full max-w-full sm:max-w-none">
+   <div className="min-h-screen bg-white relative w-full max-w-full sm:max-w-none overflow-hidden">
 
 
       <Offer />

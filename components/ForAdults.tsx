@@ -1,8 +1,11 @@
 "use client"
 
-import * as React from "react"
+import type React from "react"
+import { useState, useEffect } from "react"
 import { TitleSection } from "./ForAdults/TitleSection"
 import { ProductCard } from "./ForAdults/ProductCard"
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface Occasion {
   id: string
@@ -321,7 +324,6 @@ function getCurrentSeason(): string {
   const now = new Date()
   const month = now.getMonth()
   const day = now.getDate()
-
   if ((month === 2 && day >= 20) || month === 3 || month === 4 || (month === 5 && day < 21)) {
     return "spring"
   } else if ((month === 5 && day >= 21) || month === 6 || month === 7 || (month === 8 && day < 23)) {
@@ -370,11 +372,10 @@ function getActiveOccasions(): Array<{ id: string; title: string; imageSrc: stri
     })
   }
 
-  // If we need more occasions to reach 6, add from other permanent occasions
+  // If we need more occasions to reach 8, add from other permanent occasions
   if (activeOccasions.length < 8) {
     const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24))
     const remainingSlots = 8 - activeOccasions.length
-
     for (let i = 0; i < remainingSlots && i < otherPermanentOccasions.length; i++) {
       const index = (dayOfYear + i) % otherPermanentOccasions.length
       activeOccasions.push(otherPermanentOccasions[index])
@@ -387,11 +388,10 @@ function getActiveOccasions(): Array<{ id: string; title: string; imageSrc: stri
     activeOccasions.push(...nextOccasions)
   }
 
-  // Remove duplicates and limit to 6
+  // Remove duplicates and limit to 8
   const uniqueOccasions = activeOccasions.filter(
     (occasion, index, self) => index === self.findIndex((o) => o.id === occasion.id),
   )
-
   return uniqueOccasions.slice(0, 8)
 }
 
@@ -408,7 +408,6 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
   occasions.forEach((occasion) => {
     const currentYearDate = occasion.getDate(currentYear)
     const nextYearDate = occasion.getDate(nextYear)
-
     if (currentYearDate > now) {
       upcomingOccasions.push({
         occasion,
@@ -435,11 +434,11 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
 }
 
 const ForAdults: React.FC = () => {
-  const [activeOccasions, setActiveOccasions] = React.useState<Array<{ id: string; title: string; imageSrc: string }>>(
-    [],
-  )
+  const [activeOccasions, setActiveOccasions] = useState<Array<{ id: string; title: string; imageSrc: string }>>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [visibleItemsCount, setVisibleItemsCount] = useState(4) // Default to desktop view
 
-  React.useEffect(() => {
+  useEffect(() => {
     setActiveOccasions(getActiveOccasions())
     // Update every hour to catch any changes
     const interval = setInterval(
@@ -448,19 +447,116 @@ const ForAdults: React.FC = () => {
       },
       60 * 60 * 1000,
     ) // 1 hour
-
     return () => clearInterval(interval)
   }, [])
 
+  // Determine visible items count based on screen width
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        // Tailwind's 'md' breakpoint
+        setVisibleItemsCount(2)
+      } else {
+        setVisibleItemsCount(4)
+      }
+    }
+
+    // Set initial value
+    handleResize()
+
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  // Automatic rotation every 10 seconds
+  useEffect(() => {
+    if (activeOccasions.length === 0) return
+
+    const rotationInterval = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const nextStartIndex = prev + visibleItemsCount
+        if (nextStartIndex >= activeOccasions.length) {
+          return 0 // Wrap around to the first page
+        } else {
+          return nextStartIndex
+        }
+      })
+    }, 10000) // 10 seconds
+
+    return () => clearInterval(rotationInterval)
+  }, [activeOccasions.length, visibleItemsCount]) // Re-run if activeOccasions changes length or visibleItemsCount changes
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => {
+      const nextStartIndex = prev + visibleItemsCount
+      if (nextStartIndex >= activeOccasions.length) {
+        return 0 // Wrap around to the first page
+      } else {
+        return nextStartIndex
+      }
+    })
+  }
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => {
+      const prevStartIndex = prev - visibleItemsCount
+      if (prevStartIndex < 0) {
+        // Calculate the last possible starting index that aligns with visibleItemsCount
+        const lastPossibleIndex = Math.floor((activeOccasions.length - 1) / visibleItemsCount) * visibleItemsCount
+        return lastPossibleIndex
+      } else {
+        return prevStartIndex
+      }
+    })
+  }
+
+  // Create the array of occasions to display based on currentIndex and visibleItemsCount
+  const displayedOccasions = []
+  if (activeOccasions.length > 0) {
+    for (let i = 0; i < visibleItemsCount; i++) {
+      displayedOccasions.push(activeOccasions[(currentIndex + i) % activeOccasions.length])
+    }
+  }
+
+  // Calculate max-width for the carousel container based on visible items and gap
+  const carouselMaxWidth = visibleItemsCount === 2 ? `calc(2 * 200px + 1 * 24px)` : `calc(4 * 200px + 3 * 24px)` // 200px is ProductCard's min-w, 24px is gap-6
+
   return (
     <section className="flex flex-col gap-6 px-6 py-10 bg-sky-50 md:px-20">
-      <div className="flex flex-col md:flex-row flex-wrap gap-6 items-start xxl:flex-nowrap">
-        {/* Left Title + Cards */}
-        <div className="flex flex-wrap gap-4 flex-1 min-w-[280px]">
+      <div className="flex flex-col md:flex-row gap-6 items-start xxl:flex-nowrap w-full">
+        {/* Left Title Section */}
+        <div className="flex flex-col gap-4 flex-shrink-0">
           <TitleSection />
-          {activeOccasions.map((occasion) => (
-            <ProductCard key={occasion.id} imageSrc={occasion.imageSrc} title={occasion.title} />
-          ))}
+        </div>
+
+        {/* Right Carousel Section */}
+        <div className="relative flex-1 flex items-center justify-center min-h-[250px]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute left-0 z-10 bg-white rounded-full shadow-md -translate-x-1/2"
+            onClick={handlePrev}
+            aria-label="Previous occasions"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          <div
+            className="flex gap-6 overflow-hidden w-full justify-center"
+            style={{ maxWidth: carouselMaxWidth }} // Apply dynamic max-width
+          >
+            {displayedOccasions.map((occasion) => (
+              <ProductCard key={occasion.id} imageSrc={occasion.imageSrc} title={occasion.title} />
+            ))}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 z-10 bg-white rounded-full shadow-md translate-x-1/2"
+            onClick={handleNext}
+            aria-label="Next occasions"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </Button>
         </div>
       </div>
     </section>
