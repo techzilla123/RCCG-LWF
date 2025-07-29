@@ -23,7 +23,7 @@ export const UserActions = () => {
   const [wishlistCount, setWishlistCount] = useState(0);
   // const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
