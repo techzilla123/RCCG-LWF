@@ -64,6 +64,21 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const cleanedDescription = description.replace(/\(.*?inflated\s*-\s*\$?\d+(?:\.\d{2})?.*?\)/i, "").trim()
   const [inflatedPrice, setInflatedPrice] = React.useState<number | null>(null)
   const [showInflatedOptions, setShowInflatedOptions] = React.useState(false)
+const formatDescription = (text: string) => {
+  let formatted = text
+
+  // Bold with **text**
+  formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-black-400">$1</strong>')
+
+  // Bullet line with * text * → Add dot manually and wrap in div
+  formatted = formatted.replace(/\*\s(.+?)\s\*/g, '<div class="pl-0">• $1</div>')
+
+  // Convert <br> to paragraph breaks
+  const paragraphs = formatted.split(/<br\s*\/?>/i).map((chunk) => `<p>${chunk.trim()}</p>`)
+
+  return paragraphs.join("")
+}
+
 
   React.useEffect(() => {
     // Check if description contains inflated pricing pattern
@@ -378,7 +393,14 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
               className="w-5 h-5"
             />
           </div>
-         {detailsOpen && <div className="mt-4 text-sm text-neutral-500">{cleanedDescription}</div>}
+      {detailsOpen && (
+  <div
+    className="mt-4 text-sm text-neutral-800 leading-6 [&_p]:mb-2"
+    dangerouslySetInnerHTML={{ __html: formatDescription(cleanedDescription) }}
+  />
+)}
+
+
 
           {shippingInfo && (
             <div className="mt-4 text-sm hidden text-gray-700">
