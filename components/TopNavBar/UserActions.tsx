@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Heart, ChevronDown } from "lucide-react";
 import { Newspaper } from "lucide-react";
+import { Package } from "lucide-react";
 import { LogOut, Settings, User } from "lucide-react";
 import { NotificationBadge } from "./NotificationBadge";
 import { CartDropdown } from "./CartDropdown";
@@ -199,6 +200,13 @@ useEffect(() => {
           <Newspaper className="w-4 h-4 text-gray-500" />
           Blog
         </button>
+         <button
+      className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
+      onClick={() => router.push("/cart/success/order")}
+    >
+     <Package className="w-4 h-4 text-gray-500" />
+      Order
+    </button>
         <button
           className="w-full flex items-center gap-2 text-left px-4 py-2 text-sm hover:bg-gray-100 rounded"
           onClick={handleGoToSettings}
