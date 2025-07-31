@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import { ReactQueryClientProvider } from "@/providers";
 import "./globals.css";
+import ClientLayout from "./ClientLayout";
 
 // Fonts
 const coiny = localFont({
@@ -55,7 +56,7 @@ export default function RootLayout({
       <body className={`${coiny.variable} ${inter.variable} antialiased`}>
         <ReactQueryClientProvider>
          
-          {children}
+            <ClientLayout>{children}</ClientLayout>
         </ReactQueryClientProvider>
       </body>
     </html>
