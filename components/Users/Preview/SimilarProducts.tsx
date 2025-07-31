@@ -333,19 +333,20 @@ useEffect(() => {
         ref={desktopScrollRef}
         className="hidden md:flex gap-6 overflow-x-auto mt-8 pb-4 hide-scrollbar scroll-smooth"
       >
-        {products.map((product) => (
+       {products.slice(0, 10).map((product) => (
           <ProductCard key={product.id} {...product} />
         ))}
       </div>
 
       {/* Mobile ProductGrid */}
       <div className="block md:hidden mt-6 w-full">
-        <ProductGrid
-          scrollRef={mobileScrollRef}
-          products={mobileProducts}
-          onAddToCart={handleAddToCart}
-          onAddToWishlist={handleAddToWishlist}
-        />
+      <ProductGrid
+  scrollRef={mobileScrollRef}
+  products={mobileProducts.slice(0, 10)}
+  onAddToCart={handleAddToCart}
+  onAddToWishlist={handleAddToWishlist}
+/>
+
       </div>
 
       {/* See More Button */}
@@ -376,11 +377,12 @@ useEffect(() => {
 
       <h3 className="text-xl font-semibold mb-6">All Similar Products</h3>
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 w-full">
+     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 w-full">
   {products.map((product) => (
     <ProductCard key={product.id} {...product} />
   ))}
 </div>
+
 
     </div>
   </div>
