@@ -92,7 +92,7 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId,
 
     if (searchTerm?.trim()) {
       const encodedSearch = encodeURIComponent(searchTerm);
-      url = `${baseURL}customer/fetch-product-by-name/${encodedSearch}`;
+      url = `${baseURL}customer/fetch-product-by-name/${encodedSearch}?page=${page}`;
     } else if (selectedCategoryId) {
       url = `${baseURL}admin/products/filter-product/GCT/${selectedCategoryId}?page=${page}`;
     } else {
