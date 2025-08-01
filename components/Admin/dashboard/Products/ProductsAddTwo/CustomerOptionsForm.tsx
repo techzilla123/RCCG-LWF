@@ -149,12 +149,14 @@ const CustomerOptionsForm: React.FC<CustomerOptionsFormProps> = ({
         />
 
         <MultiSelect
-          label="Choose available colors"
-          selectedItems={colors}
-          allOptions={allColors}
-          onAddItem={handleAddColor}
-          onRemoveItem={handleRemoveColor}
-        />
+  label="Choose available colors"
+  selectedItems={colors}
+  allOptions={allColors}
+  onAddItem={handleAddColor}
+  onRemoveItem={handleRemoveColor}
+  isColorDropdown
+/>
+
       </section>
 
       <footer className="flex gap-4 justify-end">

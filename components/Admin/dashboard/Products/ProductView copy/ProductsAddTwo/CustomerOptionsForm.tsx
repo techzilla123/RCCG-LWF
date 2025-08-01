@@ -382,13 +382,14 @@ const CustomerOptionsForm: React.FC<CustomerOptionsFormProps> = ({
 
         {/* Color Selection */}
         <div className="flex flex-col gap-4">
-          <MultiSelect
-            label="Available Colors"
-            selectedItems={colors}
-            allOptions={allColors}
-            onAddItem={handleAddColor}
-            onRemoveItem={handleRemoveColor}
-          />
+         <MultiSelect
+  label="Choose available colors"
+  selectedItems={colors}
+  allOptions={allColors}
+  onAddItem={handleAddColor}
+  onRemoveItem={handleRemoveColor}
+  isColorDropdown
+/>
         </div>
       </section>
 

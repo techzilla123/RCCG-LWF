@@ -10,7 +10,9 @@ interface MultiSelectProps {
   allOptions: string[];
   onAddItem: (item: string) => void;
   onRemoveItem: (item: string) => void;
+  isColorDropdown?: boolean;
 }
+
 
 export const MultiSelect: React.FC<MultiSelectProps> = ({
   label,
@@ -18,6 +20,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   allOptions,
   onAddItem,
   onRemoveItem,
+  isColorDropdown,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -63,48 +66,54 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           <CaretDownIcon />
         </button>
 
-        {isOpen && (
-          <div className="absolute z-10 top-full mt-2 w-full bg-white border rounded shadow-md p-2">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Search or type to add..."
-              className="w-full border px-2 py-1 mb-2 text-sm rounded"
-            />
+       {isOpen && (
+  <div className="absolute z-10 top-full mt-2 w-full bg-white border rounded shadow-md p-2">
+    <input
+      type="text"
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
+      onKeyDown={handleKeyDown}
+      placeholder="Search or type to add..."
+      className="w-full border px-2 py-1 mb-2 text-sm rounded"
+    />
 
-            {availableOptions.length > 0 ? (
-              <div className="max-h-48 overflow-y-auto">
-                {availableOptions.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => {
-                      onAddItem(option);
-                      setInputValue('');
-                      setIsOpen(false);
-                    }}
-                    className="block w-full text-left px-2 py-1 hover:bg-neutral-100 text-sm text-black"
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="text-sm text-neutral-500 px-2">No matches found</div>
+    {availableOptions.length > 0 ? (
+      <div className="max-h-48 overflow-y-auto">
+        {availableOptions.map((option) => (
+          <button
+            key={option}
+            onClick={() => {
+              onAddItem(option);
+              setInputValue('');
+              setIsOpen(false);
+            }}
+            className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-neutral-100 text-sm text-black"
+          >
+            {isColorDropdown && (
+              <span
+                className="w-4 h-4 rounded-full border border-gray-300"
+                style={{ backgroundColor: option }}
+              />
             )}
+            {option}
+          </button>
+        ))}
+      </div>
+    ) : (
+      <div className="text-sm text-neutral-500 px-2">No matches found</div>
+    )}
 
-            {inputValue.trim() && !allOptions.includes(inputValue.trim()) && (
-              <button
-                onClick={handleAddCustomItem}
-                className="w-full mt-2 bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-              >
-                  Add &quot;{inputValue.trim()}&quot;
+    {inputValue.trim() && !allOptions.includes(inputValue.trim()) && (
+      <button
+        onClick={handleAddCustomItem}
+        className="w-full mt-2 bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+      >
+        Add &quot;{inputValue.trim()}&quot;
+      </button>
+    )}
+  </div>
+)}
 
-              </button>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
