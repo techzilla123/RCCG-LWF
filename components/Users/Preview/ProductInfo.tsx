@@ -50,6 +50,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   images,
   onColorChange,
 }) => {
+  const [sizePrices, setSizePrices] = React.useState<Record<string, number>>({})
   const [popupMessage, setPopupMessage] = React.useState<string | null>(null)
   const [popupType, setPopupType] = React.useState<"success" | "error" | null>(null)
   const [showViewCart, setShowViewCart] = React.useState(false)
@@ -61,7 +62,11 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [selectedColorIndex, setSelectedColorIndex] = React.useState<number | null>(null)
 
   // Parse inflated price from description
-  const cleanedDescription = description.replace(/\(.*?inflated\s*-\s*\$?\d+(?:\.\d{2})?.*?\)/i, "").trim()
+ const cleanedDescription = description
+  .replace(/\(.*?inflated\s*-\s*\$?\d+(?:\.\d{2})?.*?\)/i, "")
+  .replace(/\(size\d+-\d+(?:,\s*size\d+-\d+)*\)/gi, "")
+  .trim()
+
   const [inflatedPrice, setInflatedPrice] = React.useState<number | null>(null)
   const [showInflatedOptions, setShowInflatedOptions] = React.useState(false)
 const formatDescription = (text: string) => {
@@ -79,6 +84,11 @@ const formatDescription = (text: string) => {
   return paragraphs.join("")
 }
 
+React.useEffect(() => {
+  if (sizes.length > 0 && !selectedSize) {
+    setSelectedSize(sizes[0])
+  }
+}, [sizes, selectedSize])
 
   React.useEffect(() => {
     // Check if description contains inflated pricing pattern
@@ -92,6 +102,24 @@ const formatDescription = (text: string) => {
       setShowInflatedOptions(false)
     }
   }, [description])
+
+  React.useEffect(() => {
+  const sizePriceMap: Record<string, number> = {}
+
+  // Match patterns like size1-200,size2-300,...
+  const sizePattern = /(\w+)-(\d+(?:\.\d{1,2})?)/g
+  let match
+  while ((match = sizePattern.exec(description)) !== null) {
+    const size = match[1]
+    const price = parseFloat(match[2])
+    if (!isNaN(price)) {
+      sizePriceMap[size] = price
+    }
+  }
+
+  setSizePrices(sizePriceMap)
+}, [description])
+
 
   React.useEffect(() => {
     if (popupMessage) {
@@ -130,12 +158,20 @@ const formatDescription = (text: string) => {
   }, [countdownTime])
 
   // Calculate current display price based on inflated state
-  const getCurrentPrice = () => {
-    if (isInflated && inflatedPrice) {
-      return inflatedPrice
-    }
-    return price - originalPrice
+ const getCurrentPrice = () => {
+  if (isInflated && inflatedPrice) {
+    return inflatedPrice
   }
+
+ if (selectedSize && sizePrices[selectedSize]) {
+    return sizePrices[selectedSize]
+  }
+
+  // Show discounted price (original - savings)
+  return price - originalPrice
+}
+
+
 
   // Helper function to save cart items to localStorage
   const saveCartToLocalStorage = () => {
@@ -304,15 +340,18 @@ const formatDescription = (text: string) => {
               <label className="text-sm font-medium text-black">Select size</label>
               <div className="flex justify-between mt-2">
                 {sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-14 h-10 rounded-full ${
-                      selectedSize === size ? "bg-black text-white" : "border border-black bg-transparent text-black"
-                    }`}
-                  >
-                    {size}
-                  </button>
+                 <button
+  key={size}
+  onClick={() => {
+    setSelectedSize(size)
+  }}
+  className={`w-14 h-10 rounded-full ${
+    selectedSize === size ? "bg-black text-white" : "border border-black bg-transparent text-black"
+  }`}
+>
+  {size}
+</button>
+
                 ))}
               </div>
             </div>

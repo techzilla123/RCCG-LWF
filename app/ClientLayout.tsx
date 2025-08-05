@@ -1,7 +1,6 @@
-// ✅ app/ClientLayout.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 function SessionExpiredModal({ onConfirm }: { onConfirm: () => void }) {
@@ -27,15 +26,24 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
   const [showSessionModal, setShowSessionModal] = useState(false);
+  const lastShownTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     const originalFetch = window.fetch;
 
     window.fetch = async (...args) => {
       const res = await originalFetch(...args);
+
       if (res.status === 401) {
-        setShowSessionModal(true);
+        const currentToken = localStorage.getItem("accessToken");
+
+        // Only show modal if there's a new token that hasn't already triggered the modal
+        if (currentToken && currentToken !== lastShownTokenRef.current) {
+          lastShownTokenRef.current = currentToken;
+          setShowSessionModal(true);
+        }
       }
+
       return res;
     };
 
@@ -46,6 +54,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   const handleSessionExpire = () => {
     localStorage.removeItem("accessToken");
+    lastShownTokenRef.current = null;
 
     if (pathname.startsWith("/admin-")) {
       router.push("/auth-login");
