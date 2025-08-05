@@ -148,7 +148,7 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
     const categoryPromises = fetchedGeneralCategories.map(async (generalCat) => {
       const productCategories = await fetchProductCategories(generalCat.generalCategoryId)
 
-      const subCategoryPromises = productCategories.map(async (productCat) => {
+      const subCategoryPromises = productCategories.map(async (productCat: ProductCategory) => {
         const subCategories = await fetchSubCategories(productCat.categoryId)
 
         return {
