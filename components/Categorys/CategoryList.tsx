@@ -248,10 +248,10 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
 
       // STEP 3: Update only the categories with subs (keeping rest as-is)
       setCategories((prev) => {
-        const replaced = updatedCategories.map((updatedCat) => {
-          const index = prev.findIndex((cat) => cat.title === updatedCat.title)
-          return index !== -1 ? updatedCat : null
-        })
+        // const replaced = updatedCategories.map((updatedCat) => {
+        //   const index = prev.findIndex((cat) => cat.title === updatedCat.title)
+        //   return index !== -1 ? updatedCat : null
+        // })
 
         // Merge updated categories back
         const merged = prev.map((cat) => {
