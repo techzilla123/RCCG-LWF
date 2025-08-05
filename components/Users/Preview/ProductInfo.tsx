@@ -163,8 +163,16 @@ React.useEffect(() => {
     return inflatedPrice
   }
 
- if (selectedSize && sizePrices[selectedSize]) {
-    return sizePrices[selectedSize]
+  if (selectedSize) {
+    const index = sizes.findIndex((s) => s === selectedSize)
+
+    // If user selects any size after the first
+    if (index > 0) {
+      const sizeKey = `size${index}` // 👈 subtract 1 to shift
+      if (sizePrices[sizeKey]) {
+        return sizePrices[sizeKey]
+      }
+    }
   }
 
   // Show discounted price (original - savings)
