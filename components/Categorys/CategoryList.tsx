@@ -136,39 +136,52 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
 
   // New: Effect to fetch all general categories and build the consolidated map
   React.useEffect(() => {
-    const initializeData = async () => {
-      setIsLoading(true) // Start loading for the entire process
+   const initializeData = async () => {
+  setIsLoading(true)
 
-      try {
-        // 1. Fetch general categories
-        const fetchedGeneralCategories: GeneralCategory[] = await fetchGeneralCategories()
-        setGeneralCategories(fetchedGeneralCategories)
+  try {
+    const fetchedGeneralCategories: GeneralCategory[] = await fetchGeneralCategories()
+    setGeneralCategories(fetchedGeneralCategories)
 
-        // 2. Build the consolidated map of all product categories and their subcategories
-        const consolidatedMap = new Map<string, { categoryId: string; subCategories: SubCategory[] }>()
-        for (const generalCat of fetchedGeneralCategories) {
-          const productCategories: ProductCategory[] = await fetchProductCategories(generalCat.generalCategoryId)
-          for (const productCat of productCategories) {
-            const subCategories: SubCategory[] = await fetchSubCategories(productCat.categoryId)
+    const consolidatedMap = new Map<string, { categoryId: string; subCategories: SubCategory[] }>()
 
-            if (consolidatedMap.has(productCat.categoryName)) {
-              const existing = consolidatedMap.get(productCat.categoryName)
-              // Prioritize the one with subcategories
-              if (subCategories.length > 0 && (existing?.subCategories.length === 0 || !existing)) {
-                consolidatedMap.set(productCat.categoryName, { categoryId: productCat.categoryId, subCategories })
-              }
-            } else {
-              consolidatedMap.set(productCat.categoryName, { categoryId: productCat.categoryId, subCategories })
-            }
-          }
+    const categoryPromises = fetchedGeneralCategories.map(async (generalCat) => {
+      const productCategories = await fetchProductCategories(generalCat.generalCategoryId)
+
+      const subCategoryPromises = productCategories.map(async (productCat) => {
+        const subCategories = await fetchSubCategories(productCat.categoryId)
+
+        return {
+          categoryName: productCat.categoryName,
+          categoryId: productCat.categoryId,
+          subCategories,
         }
-        allProductCategorySubCategoryMap.current = consolidatedMap
-        setIsInitialDataLoaded(true) // Mark initial data as loaded
-      } catch (error) {
-        console.error("Error initializing data:", error)
+      })
+
+      const productCategoryResults = await Promise.all(subCategoryPromises)
+      return productCategoryResults
+    })
+
+    const allResults = await Promise.all(categoryPromises)
+
+    // Flatten and store
+    allResults.flat().forEach(({ categoryName, categoryId, subCategories }) => {
+      if (
+        consolidatedMap.has(categoryName) &&
+        consolidatedMap.get(categoryName)?.subCategories.length
+      ) {
+        return // skip if already populated with subs
       }
-      // Do NOT set isLoading(false) here, it will be set by the next effect
-    }
+      consolidatedMap.set(categoryName, { categoryId, subCategories })
+    })
+
+    allProductCategorySubCategoryMap.current = consolidatedMap
+    setIsInitialDataLoaded(true)
+  } catch (error) {
+    console.error("Error initializing data:", error)
+  }
+}
+
 
     initializeData()
   }, []) // Runs only once on mount
