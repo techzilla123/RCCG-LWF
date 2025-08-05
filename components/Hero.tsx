@@ -138,11 +138,10 @@ function Hero() {
           current.headline.alignment === "right" ? "ml-auto text-right" : "text-left"
         }`}
       >
-        <HeroHeadline
-          alignment={current.headline.alignment}
-          textParts={current.headline.textParts}
-        />
-
+       <HeroHeadline
+  alignment={current.headline.alignment as "left" | "right"}
+  textParts={current.headline.textParts}
+/>
         <p
           className={`${inter.variable} font-[var(--font-inter)] font-semibold text-[clamp(14px,4vw,18px)] leading-[clamp(20px,4vw,24px)] text-black mt-6 whitespace-pre-line antialiased`}
         >
