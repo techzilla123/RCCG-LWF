@@ -17,7 +17,7 @@ const mediaPairs = [
   {
     image:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/721d5187d521e16fa4f3a607a55355c5db29fc21?placeholderIfAbsent=true",
-    video: "/herovid/12796347_3840_2160_60fps.mp4",
+    video: "/herovid/8384584-uhd_3840_2160_24fps.mp4",
     headline: {
         alignment: "left", 
     textParts: [ 
