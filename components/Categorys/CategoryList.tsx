@@ -187,78 +187,90 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
   }, []) // Runs only once on mount
 
   // Modified: Effect to load categories for the selected category using the consolidated map
-  React.useEffect(() => {
-    const loadCategoriesForSelected = async () => {
-      if (!selectedCategory || !isInitialDataLoaded) {
-        // If initial data is not yet loaded, or no category selected, don't proceed
-        return
-      }
+ React.useEffect(() => {
+  const loadCategoriesForSelected = async () => {
+    if (!selectedCategory || !isInitialDataLoaded) return
 
-      setIsLoading(true) // Start loading for the displayable categories
-      const apiCategoryName = reverseMapCategoryName(selectedCategory)
-      const generalCategory = generalCategories.find((cat) => cat.name === apiCategoryName)
+    setIsLoading(true)
+    const apiCategoryName = reverseMapCategoryName(selectedCategory)
+    const generalCategory = generalCategories.find((cat) => cat.name === apiCategoryName)
 
-      if (!generalCategory) {
-        setCategories([]) // Clear categories if no matching general category
-        setIsLoading(false)
-        return
-      }
-
-      try {
-        // Fetch product categories for the currently selected general category
-        const productCategoriesForSelectedGeneral: ProductCategory[] = await fetchProductCategories(
-          generalCategory.generalCategoryId,
-        )
-        const categoriesWithSubs: CategoryData[] = []
-        const categoriesWithoutSubs: CategoryData[] = []
-
-        for (const productCategory of productCategoriesForSelectedGeneral) {
-          // Use the consolidated map to get the definitive subcategories for this product category name
-          const consolidated = allProductCategorySubCategoryMap.current.get(productCategory.categoryName)
-
-          if (consolidated && consolidated.subCategories.length > 0) {
-            categoriesWithSubs.push({
-              parent: selectedCategory,
-              title: productCategory.categoryName,
-              categoryId: consolidated.categoryId, // Use the ID from the consolidated data
-              items: consolidated.subCategories
-                .map((sub) => ({
-                  name: sub.subCategoryName,
-                  id: sub.subCategoryId,
-                  isSub: true,
-                }))
-                .reverse(),
-            })
-          } else {
-            // If no consolidated data with subs, or consolidated data has no subs,
-            // use the current product category as an item itself.
-            categoriesWithoutSubs.push({
-              parent: selectedCategory,
-              title: productCategory.categoryName,
-              categoryId: productCategory.categoryId,
-              items: [
-                {
-                  name: productCategory.categoryName,
-                  id: productCategory.categoryId,
-                  isSub: false,
-                },
-              ],
-            })
-          }
-        }
-
-        const sortedCategories = [...categoriesWithSubs.reverse(), ...categoriesWithoutSubs.reverse()]
-        setCategories(sortedCategories)
-      } catch (error) {
-        console.error("Error loading categories for selected:", error)
-        setCategories([])
-      } finally {
-        setIsLoading(false)
-      }
+    if (!generalCategory) {
+      setCategories([])
+      setIsLoading(false)
+      return
     }
 
-    loadCategoriesForSelected()
-  }, [selectedCategory, isInitialDataLoaded, generalCategories]) // Dependencies: selectedCategory, and when the initial map is ready, and generalCategories for the find operation.
+    try {
+      const productCategories: ProductCategory[] = await fetchProductCategories(generalCategory.generalCategoryId)
+
+      // STEP 1: Show product categories immediately (without subcategories)
+      const initialCategories: CategoryData[] = productCategories.map((cat) => ({
+        parent: selectedCategory,
+        title: cat.categoryName,
+        categoryId: cat.categoryId,
+        items: [
+          {
+            name: cat.categoryName,
+            id: cat.categoryId,
+            isSub: false,
+          },
+        ],
+      }))
+
+      setCategories(initialCategories) // Show immediately
+      setIsLoading(false) // Stop loading so UI renders
+
+      // STEP 2: Load subcategories in background
+      const updatedCategoriesPromises = productCategories.map(async (productCategory) => {
+        const consolidated = allProductCategorySubCategoryMap.current.get(productCategory.categoryName)
+
+        if (consolidated && consolidated.subCategories.length > 0) {
+          return {
+            parent: selectedCategory,
+            title: productCategory.categoryName,
+            categoryId: consolidated.categoryId,
+            items: consolidated.subCategories
+              .map((sub) => ({
+                name: sub.subCategoryName,
+                id: sub.subCategoryId,
+                isSub: true,
+              }))
+              .reverse(),
+          } as CategoryData
+        }
+
+        // Return original if no subs found
+        return null
+      })
+
+      const updatedCategories = (await Promise.all(updatedCategoriesPromises)).filter(Boolean) as CategoryData[]
+
+      // STEP 3: Update only the categories with subs (keeping rest as-is)
+      setCategories((prev) => {
+        const replaced = updatedCategories.map((updatedCat) => {
+          const index = prev.findIndex((cat) => cat.title === updatedCat.title)
+          return index !== -1 ? updatedCat : null
+        })
+
+        // Merge updated categories back
+        const merged = prev.map((cat) => {
+          const updated = updatedCategories.find((uc) => uc.title === cat.title)
+          return updated || cat
+        })
+
+        return merged
+      })
+    } catch (error) {
+      console.error("Error loading categories for selected:", error)
+      setCategories([])
+      setIsLoading(false)
+    }
+  }
+
+  loadCategoriesForSelected()
+}, [selectedCategory, isInitialDataLoaded, generalCategories])
+
 
   if (isLoading) {
     return (
