@@ -160,7 +160,7 @@
       const [viewMode, setViewMode] = useState<'gallery' | 'image-preview' | 'full-details'>('gallery') // New state for view mode
       const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
       // New states for order options and chat modal
-      const [showOrderOptions, setShowOrderOptions] = useState(false)
+      // const [showOrderOptions, setShowOrderOptions] = useState(false)
       const [isChatModalOpen, setIsChatModalOpen] = useState(false)
       const [chatMessage, setChatMessage] = useState('')
       const fetchCategories = useCallback(async () => {
@@ -270,13 +270,13 @@
         setSelectedProduct(null)
         setViewMode('gallery')
         setCurrentImageIndex(0)
-        setShowOrderOptions(false) // Reset order options when closing product view
+        // setShowOrderOptions(false) // Reset order options when closing product view
       }
       // New functions for order and chat
       const handleOpenChat = (productName: string) => {
         setChatMessage(`I need ${productName}`);
         setIsChatModalOpen(true);
-        setShowOrderOptions(false); // Close order options when chat opens
+        // setShowOrderOptions(false); // Close order options when chat opens
       };
       const handleSendWhatsAppMessage = () => {
         if (!chatMessage.trim()) return;
