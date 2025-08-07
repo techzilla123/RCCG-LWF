@@ -7,7 +7,7 @@ export function AboutContent() {
         <p className="text-base tracking-normal leading-6 text-neutral-500">
           About us
         </p>
-        <h2 className="mt-1 text-4xl text-black">Who are we?</h2>
+        <h2 className="mt-1 text-4xl text-black">Who we are ...</h2>
       </header>
       <p className="mt-4 text-sm tracking-normal leading-6 text-black max-md:max-w-full">
   <strong>Your Ultimate Party Destination — Delivered Fast, Celebrated Big!</strong><br />

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useCallback, useMemo, useRef } from "react" // Import useRef
+import { useState, useEffect } from "react"
 import { TitleSection } from "./ForAdults/TitleSection"
 import { ProductCard } from "./ForAdults/ProductCard"
 import { Button } from "@/components/ui/button"
@@ -324,7 +324,6 @@ function getCurrentSeason(): string {
   const now = new Date()
   const month = now.getMonth()
   const day = now.getDate()
-
   if ((month === 2 && day >= 20) || month === 3 || month === 4 || (month === 5 && day < 21)) {
     return "spring"
   } else if ((month === 5 && day >= 21) || month === 6 || month === 7 || (month === 8 && day < 23)) {
@@ -409,7 +408,6 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
   occasions.forEach((occasion) => {
     const currentYearDate = occasion.getDate(currentYear)
     const nextYearDate = occasion.getDate(nextYear)
-
     if (currentYearDate > now) {
       upcomingOccasions.push({
         occasion,
@@ -437,24 +435,18 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
 
 const ForAdults: React.FC = () => {
   const [activeOccasions, setActiveOccasions] = useState<Array<{ id: string; title: string; imageSrc: string }>>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleItemsCount, setVisibleItemsCount] = useState(4) // Default to desktop view
 
-  // State for carousel logic
-  const initialOffset = visibleItemsCount // Number of duplicated items at the beginning
-  const [currentIndex, setCurrentIndex] = useState(initialOffset)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null) // Use useRef for interval ID
-  const [isPausedByUser, setIsPausedByUser] = useState(false) // New state for hover pause
-
-  // Initial data load and hourly refresh
   useEffect(() => {
     setActiveOccasions(getActiveOccasions())
+    // Update every hour to catch any changes
     const interval = setInterval(
       () => {
         setActiveOccasions(getActiveOccasions())
       },
-      60 * 60 * 1000, // 1 hour
-    )
+      60 * 60 * 1000,
+    ) // 1 hour
     return () => clearInterval(interval)
   }, [])
 
@@ -468,104 +460,63 @@ const ForAdults: React.FC = () => {
         setVisibleItemsCount(4)
       }
     }
+
     // Set initial value
     handleResize()
+
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Create a memoized array of carousel items with duplicates for infinite looping
-  const carouselItems = useMemo(() => {
-    if (activeOccasions.length === 0) return []
-    // Duplicate items from the end and beginning for smooth infinite loop
-    const lastItems = activeOccasions.slice(-visibleItemsCount)
-    const firstItems = activeOccasions.slice(0, visibleItemsCount)
-    return [...lastItems, ...activeOccasions, ...firstItems]
-  }, [activeOccasions, visibleItemsCount])
-
-  const itemWidthWithGap = 200 + 24 // ProductCard min-w (200px) + gap-6 (24px)
-
-  // Effect to handle the instant jump after a smooth transition for looping
+  // Automatic rotation every 10 seconds
   useEffect(() => {
-    if (!isTransitioning) return // Only run if a transition was initiated
+    if (activeOccasions.length === 0) return
 
-    const transitionDuration = 500 // ms, matches CSS transition duration
+    const rotationInterval = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const nextStartIndex = prev + visibleItemsCount
+        if (nextStartIndex >= activeOccasions.length) {
+          return 0 // Wrap around to the first page
+        } else {
+          return nextStartIndex
+        }
+      })
+    }, 10000) // 10 seconds
 
-    const timer = setTimeout(() => {
-      let newIndex = currentIndex
-      let shouldJump = false
-
-      if (currentIndex >= activeOccasions.length + initialOffset) {
-        // If we've transitioned past the real end into the duplicated first items
-        newIndex = initialOffset // Jump back to the real first items
-        shouldJump = true
-      } else if (currentIndex < initialOffset) {
-        // If we've transitioned before the real start into the duplicated last items
-        newIndex = activeOccasions.length + initialOffset - visibleItemsCount // Jump back to the real last items
-        shouldJump = true
-      }
-
-      if (shouldJump) {
-        // Temporarily disable transition for the instant jump
-        setIsTransitioning(false)
-        setCurrentIndex(newIndex)
-      } else {
-        // If no jump is needed, the transition is simply complete
-        setIsTransitioning(false)
-      }
-    }, transitionDuration)
-
-    return () => clearTimeout(timer)
-  }, [currentIndex, activeOccasions.length, initialOffset, visibleItemsCount, isTransitioning])
+    return () => clearInterval(rotationInterval)
+  }, [activeOccasions.length, visibleItemsCount]) // Re-run if activeOccasions changes length or visibleItemsCount changes
 
   const handleNext = () => {
-    // Prevent multiple clicks during an active transition to avoid erratic behavior
-    if (isTransitioning && currentIndex < activeOccasions.length + initialOffset) return
-
-    setIsTransitioning(true)
-    setCurrentIndex((prev) => prev + visibleItemsCount)
+    setCurrentIndex((prev) => {
+      const nextStartIndex = prev + visibleItemsCount
+      if (nextStartIndex >= activeOccasions.length) {
+        return 0 // Wrap around to the first page
+      } else {
+        return nextStartIndex
+      }
+    })
   }
 
   const handlePrev = () => {
-    // Prevent multiple clicks during an active transition
-    if (isTransitioning && currentIndex > 0) return
-
-    setIsTransitioning(true)
-    setCurrentIndex((prev) => prev - visibleItemsCount)
+    setCurrentIndex((prev) => {
+      const prevStartIndex = prev - visibleItemsCount
+      if (prevStartIndex < 0) {
+        // Calculate the last possible starting index that aligns with visibleItemsCount
+        const lastPossibleIndex = Math.floor((activeOccasions.length - 1) / visibleItemsCount) * visibleItemsCount
+        return lastPossibleIndex
+      } else {
+        return prevStartIndex
+      }
+    })
   }
 
-  // Effect for automatic rotation (marquee-like)
-  useEffect(() => {
-    // Clear any existing interval
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+  // Create the array of occasions to display based on currentIndex and visibleItemsCount
+  const displayedOccasions = []
+  if (activeOccasions.length > 0) {
+    for (let i = 0; i < visibleItemsCount; i++) {
+      displayedOccasions.push(activeOccasions[(currentIndex + i) % activeOccasions.length])
     }
-
-    // Only start rotation if there are occasions and not paused by user
-    if (activeOccasions.length > 0 && !isPausedByUser) {
-      intervalRef.current = setInterval(() => {
-        setIsTransitioning(true) // Enable transition for auto-play
-        setCurrentIndex((prev) => prev + visibleItemsCount)
-      }, 5000) // Rotate every 5 seconds for a slower "marquee" feel
-    }
-
-    // Cleanup function to clear interval on unmount or dependency change
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
-    }
-  }, [activeOccasions.length, visibleItemsCount, isPausedByUser]) // Dependencies for this useEffect
-
-  // Handlers for mouse events to pause/resume marquee
-  const handleMouseEnter = useCallback(() => {
-    setIsPausedByUser(true)
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setIsPausedByUser(false)
-  }, [])
+  }
 
   // Calculate max-width for the carousel container based on visible items and gap
   const carouselMaxWidth = visibleItemsCount === 2 ? `calc(2 * 200px + 1 * 24px)` : `calc(4 * 200px + 3 * 24px)` // 200px is ProductCard's min-w, 24px is gap-6
@@ -577,6 +528,7 @@ const ForAdults: React.FC = () => {
         <div className="flex flex-col gap-4 flex-shrink-0">
           <TitleSection />
         </div>
+
         {/* Right Carousel Section */}
         <div className="relative flex-1 flex items-center justify-center min-h-[250px]">
           <Button
@@ -589,19 +541,12 @@ const ForAdults: React.FC = () => {
             <ChevronLeft className="h-6 w-6" />
           </Button>
           <div
-            className="overflow-hidden w-full"
-            style={{ maxWidth: carouselMaxWidth }}
-            onMouseEnter={handleMouseEnter} // Pause on hover
-            onMouseLeave={handleMouseLeave} // Resume on leave
+            className="flex gap-6 overflow-hidden w-full justify-center"
+            style={{ maxWidth: carouselMaxWidth }} // Apply dynamic max-width
           >
-            <div
-              className={`flex gap-6 ${isTransitioning ? "transition-transform duration-500 ease-in-out" : ""}`}
-              style={{ transform: `translateX(-${currentIndex * itemWidthWithGap}px)` }}
-            >
-              {carouselItems.map((occasion, index) => (
-                <ProductCard key={`${occasion.id}-${index}`} imageSrc={occasion.imageSrc} title={occasion.title} />
-              ))}
-            </div>
+            {displayedOccasions.map((occasion) => (
+              <ProductCard key={occasion.id} imageSrc={occasion.imageSrc} title={occasion.title} />
+            ))}
           </div>
           <Button
             variant="ghost"

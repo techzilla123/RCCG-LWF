@@ -70,19 +70,31 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [inflatedPrice, setInflatedPrice] = React.useState<number | null>(null)
   const [showInflatedOptions, setShowInflatedOptions] = React.useState(false)
 const formatDescription = (text: string) => {
-  let formatted = text
+  let formatted = text;
 
   // Bold with **text**
-  formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-black-400">$1</strong>')
+  formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-black-400">$1</strong>');
 
-  // Bullet line with * text * → Add dot manually and wrap in div
-  formatted = formatted.replace(/\*\s(.+?)\s\*/g, '<div class="pl-0">• $1</div>')
+  // Bullet line with * text *
+  formatted = formatted.replace(/\*\s(.+?)\s\*/g, '<div class="pl-0">• $1</div>');
 
-  // Convert <br> to paragraph breaks
-  const paragraphs = formatted.split(/<br\s*\/?>/i).map((chunk) => `<p>${chunk.trim()}</p>`)
+  // Normalize <br> (including self-closing variations)
+  formatted = formatted.replace(/<br\s*\/?>/gi, '<br>');
 
-  return paragraphs.join("")
-}
+  // Handle multiple <br>:
+  formatted = formatted.replace(/(<br>)+/g, (match) => {
+    const count = (match.match(/<br>/g) || []).length;
+    return Array(count).fill('<br>').join('');
+  });
+
+  // Split into lines and wrap each non-empty line in <p>
+  const lines = formatted.split(/<br>/).map((line) => line.trim());
+
+  return lines
+    .map((line) => (line ? `<p>${line}</p>` : '<br>')) // Non-empty = <p>, empty = <br>
+    .join('');
+};
+
 
 React.useEffect(() => {
   if (sizes.length > 0 && !selectedSize) {
