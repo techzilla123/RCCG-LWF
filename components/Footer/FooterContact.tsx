@@ -31,6 +31,10 @@ export const FooterContact = () => {
         >
           support@partyplaceandrentals.com
         </a>
+          <p className="p-2 h-10  text-sm text-white leading-snug">
+        1919 Faithon P Lucas Sr. Blvd,
+        #135, Mesquite, TX 75181
+      </p>
       </div>
 
       <div className="flex gap-4 mt-4">
@@ -47,10 +51,7 @@ export const FooterContact = () => {
           </a>
         ))}
       </div>
-       <p className="mt-4 text-sm text-white-300 leading-snug">
-        1919 Faithon P Lucas Sr. Blvd,
-        #135, Mesquite, TX 75181
-      </p>
+     
     </section>
   );
 };
