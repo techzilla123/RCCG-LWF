@@ -17,7 +17,7 @@ const mediaPairs = [
   {
     image:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/721d5187d521e16fa4f3a607a55355c5db29fc21?placeholderIfAbsent=true",
-    video: "/herovid/8384584-uhd_3840_2160_24fps.mp4",
+    video: "/herovid/8100959-hd_1920_1080_25fps.mp4",
     headline: {
         alignment: "left", 
     textParts: [ 
@@ -33,8 +33,8 @@ const mediaPairs = [
   },
   {
     image:
-      "https://media.npr.org/assets/img/2022/11/04/gettyimages-1183414292-1-_slide-30784f99ac10f059c242d37e91d05ead475854f4.jpg",
-    video: "/herovid/7156929-uhd_3840_2160_25fps.mp4",
+      "/herovid/pexels-asadphoto-169198.jpg",
+    video: "/herovid/7583293-hd_1920_1080_25fps.mp4",
     headline: {
       alignment: "left",
         textParts: [ 
@@ -51,7 +51,7 @@ const mediaPairs = [
   {
     image:
       "https://images.contentstack.io/v3/assets/bltcedd8dbd5891265b/bltce80954b8a793ce1/66707e9a8a3929cbd9124f15/surprise-party-hero.jpg?auto=webp&q=70&width=3840",
-    video: "/herovid/7119576-hd_1920_1080_25fps.mp4",
+    video: "/herovid/7119635-hd_1920_1080_25fps.mp4",
     headline: {
       alignment: "left",
      textParts: [ 
