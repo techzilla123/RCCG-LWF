@@ -124,12 +124,13 @@ export default function MobileSideDrawer({ onClose, isOpen }: Props) {
             {/* QUICK LINKS */}
             <div>
               <h4 className="text-xs text-gray-500 mb-2">QUICK LINKS</h4>
-              <div className="space-y-2">
-                <DrawerLink icon={<Tags size={16} />} label="On sales" onClick={() => handleNavigate("/shop")} />
-                <DrawerLink icon={<Store size={16} />} label="Rentals" onClick={() => handleNavigate("/rentals")} />
-                <DrawerLink icon={<Brush size={16} />} label="Balloons Decor" onClick={() => handleNavigate("/balloon-gallery")} />
-                <DrawerLink icon={<NotebookPen size={16} />} label="Blog" onClick={() => handleNavigate("/blog")} />
-              </div>
+            <div className="space-y-2">
+  <DrawerLink icon={<Store size={16} />} label="Shop" onClick={() => handleNavigate("/shop")} />
+  <DrawerLink icon={<Store size={16} />} label="Rentals" onClick={() => handleNavigate("/rentals")} />
+  <DrawerLink icon={<Brush size={16} />} label="Balloon Art Gallery" onClick={() => handleNavigate("/balloon-gallery")} />
+  <DrawerLink icon={<Tags size={16} />} label="On Sales" onClick={() => handleNavigate("/sales")} />
+  <DrawerLink icon={<NotebookPen size={16} />} label="Blog" onClick={() => handleNavigate("/blog")} />
+</div>
             </div>
 
             <Divider />

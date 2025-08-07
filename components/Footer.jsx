@@ -7,10 +7,11 @@ import { FooterContact } from "./Footer/FooterContact";
 import { FooterLegals } from "./Footer/FooterLegals";
 
 function Footer() {
-  const openBotChat = () => {
-    if (typeof window !== "undefined" && window.botpressWebChat) {
-      window.botpressWebChat.sendEvent({ type: "show" });
-    }
+  const openWhatsAppChat = () => {
+    const phoneNumber = '14692487157'; // Your US WhatsApp number
+    const defaultMessage = "Hello! I’d like to inquire about your services."; // Optional default message
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -33,9 +34,9 @@ function Footer() {
 
         <FooterLinks
           title="Info"
-          links={["About", "FAQ", "Contact", "Chat With Us", "Help", "Return Policy","Blog"]}
+          links={["About", "FAQ", "Contact", "Chat With Us", "Help", "Return Policy", "Blog"]}
           onClickMap={{
-            "Chat With Us": openBotChat,
+            "Chat With Us": openWhatsAppChat, // ✅ updated here
           }}
         />
 
