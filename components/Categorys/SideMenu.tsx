@@ -117,12 +117,13 @@ menuItems.sort((a, b) => {
       <div className="flex-1 w-full">
         {menuItems.map(({ label, icon }) => (
           <MenuButton
-            key={label}
-            icon={icon}
-            label={label}
-            isActive={selectedCategory === label}
-            onClick={() => onSelect(label)}
-          />
+  key={label}
+  icon={icon}
+  label={label === "Decoration" ? "Balloon Decor" : label}
+  isActive={selectedCategory === label}
+  onClick={() => onSelect(label)}
+/>
+
         ))}
       </div>
       <div className="pt-2 w-full border-t border-solid border-t-[#D5D5D5]">

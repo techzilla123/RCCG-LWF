@@ -214,7 +214,14 @@ for (const p of json.data.product) {
   }
 }
 
+// Shuffle the products
+for (let i = formattedProducts.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [formattedProducts[i], formattedProducts[j]] = [formattedProducts[j], formattedProducts[i]];
+}
+
 setProducts(formattedProducts)
+
 
         } else {
           throw new Error("Unexpected response structure")
