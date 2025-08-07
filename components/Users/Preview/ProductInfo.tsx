@@ -327,9 +327,14 @@ React.useEffect(() => {
       )}
       <aside className="flex-1 shrink bg-white rounded-lg basis-0 min-w-60 p-4 max-md:max-w-full">
         <div className="flex flex-col w-full leading-6 max-md:max-w-full">
-        <span className={`px-2 py-0.5 text-xs w-[100px] rounded ${stock === 0 ? "bg-red-100 text-red-500" : "bg-[#E1F7E6] text-black"}`}>
-  {stock === 0 ? "Not in stock" : `${stock} In-stock`}
+        <span
+  className={`px-2 py-0.5 text-xs w-[100px] rounded ${
+    !stock ? "bg-red-100 text-red-500" : "bg-[#E1F7E6] text-black"
+  }`}
+>
+  {!stock ? "Not in stock" : `${stock} In-stock`}
 </span>
+
 
           <h1 className="mt-3 text-2xl font-semibold text-black">{title}</h1>
           <div className="flex flex-wrap gap-2 mt-3">
