@@ -47,6 +47,10 @@ export const FooterContact = () => {
           </a>
         ))}
       </div>
+       <p className="mt-4 text-sm text-white-300 leading-snug">
+        1919 Faithon P Lucas Sr. Blvd,
+        #135, Mesquite, TX 75181
+      </p>
     </section>
   );
 };

@@ -38,8 +38,9 @@ export const NavigationLinks = () => {
 
   const links = [
     { label: "On sales", path: "/shop" },
-    { label: "Balloon Decors", path: "/balloon-gallery" },
     { label: "Rentals", path: "/rentals" },
+    { label: "Balloon Decors", path: "/balloon-gallery" },
+    
   ];
 
   return (
