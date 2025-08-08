@@ -1,9 +1,8 @@
 "use client"
-
 import { CustomerManagementHeader } from "./CustomerManagementHeader/CustomerManagementHeader"
 import { FilterBar } from "./CustomerManagementHeader/FilterBar"
 import StatisticsGrid from "./CustomerManagementHeader/StatisticsGrid"
-import Table from "./Table"
+import {Table} from "./Table"
 import { Pagination } from "./CustomerManagementHeader/Pagination"
 import { useState } from "react"
 
@@ -19,11 +18,25 @@ type PaginationData = {
 export const CustomerManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1)
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const handleCategorySelect = (categoryId: string | null) => {
-  setSelectedCategoryId(categoryId);
-  setCurrentPage(1); // Reset to first page when filter changes
-};
+  const [selectedFilterCategoryId, setSelectedFilterCategoryId] = useState<string | null>(null); // Renamed for clarity
+
+  // New state for sort/category filter
+  const [sortFilterType, setSortFilterType] = useState<'GCT' | 'PCT' | 'SCT' | null>(null);
+  const [sortFilterId, setSortFilterId] = useState<string | null>(null);
+
+  const handleFilterByCategory = (categoryId: string | null) => {
+    setSelectedFilterCategoryId(categoryId);
+    setSortFilterType(null); // Clear sort filter when main category filter changes
+    setSortFilterId(null);
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+
+  const handleSortFilter = (type: 'GCT' | 'PCT' | 'SCT' | null, id: string | null, name: string) => {
+    setSortFilterType(type);
+    setSortFilterId(id);
+    setSelectedFilterCategoryId(null); // Clear main category filter when sort filter changes
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
 
   const [paginationData, setPaginationData] = useState<PaginationData>({
     current_page: 1,
@@ -46,12 +59,19 @@ export const CustomerManagement = () => {
     <main className="flex flex-col p-6 mx-auto max-w-none w-full mt-4 bg-white max-md:max-w-full max-sm:max-w-screen-sm">
       <CustomerManagementHeader />
       <FilterBar
-  onCategorySelect={handleCategorySelect}
-  onSearch={setSearchTerm}
-/>
-
+        onFilterByCategory={handleFilterByCategory}
+        onSearch={setSearchTerm}
+        onSortFilter={handleSortFilter} // Pass new sort filter handler
+      />
       <StatisticsGrid />
-      <Table onPaginationChange={handlePaginationChange} currentPage={currentPage}  selectedCategoryId={selectedCategoryId} searchTerm={searchTerm}  />
+      <Table
+        onPaginationChange={handlePaginationChange}
+        currentPage={currentPage}
+        selectedFilterCategoryId={selectedFilterCategoryId}
+        searchTerm={searchTerm}
+        sortFilterType={sortFilterType} // Pass new sort filter type
+        sortFilterId={sortFilterId} // Pass new sort filter ID
+      />
       <Pagination
         currentPage={paginationData.current_page}
         totalPages={paginationData.total_pages}

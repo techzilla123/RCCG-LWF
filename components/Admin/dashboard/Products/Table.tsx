@@ -30,11 +30,20 @@ type PaginationData = {
 interface TableProps {
   onPaginationChange?: (paginationData: PaginationData) => void;
   currentPage?: number;
-   selectedCategoryId?: string | null;
-    searchTerm?: string; 
+  selectedFilterCategoryId?: string | null; // Renamed for clarity, original category filter
+  searchTerm?: string;
+  sortFilterType?: 'GCT' | 'PCT' | 'SCT' | null; // New sort/category filter type
+  sortFilterId?: string | null; // New sort/category filter ID
 }
 
-export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId, searchTerm }: TableProps) => {
+export const Table = ({
+  onPaginationChange,
+  currentPage = 1,
+  selectedFilterCategoryId,
+  searchTerm,
+  sortFilterType,
+  sortFilterId,
+}: TableProps) => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -73,6 +82,7 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId,
   };
 
   const isAllSelected = products.length > 0 && selectedRows.length === products.length;
+
   const toggleSelectAll = () => {
     if (isAllSelected) {
       setSelectedRows([]);
@@ -81,61 +91,94 @@ export const Table = ({ onPaginationChange, currentPage = 1, selectedCategoryId,
     }
   };
 
-  
   const fetchProducts = async (page: number = 1) => {
-  try {
-    const token = localStorage.getItem("accessToken") || "";
-    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-    const apiKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
+    try {
+      const token = localStorage.getItem("accessToken") || "";
+      const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const apiKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
+      let url = "";
 
-    let url = "";
+      if (searchTerm?.trim()) {
+        const encodedSearch = encodeURIComponent(searchTerm);
+        url = `${baseURL}customer/fetch-product-by-name/${encodedSearch}?page=${page}`;
+      } else if (sortFilterType && sortFilterId) {
+        // New sort/category filter takes precedence over the old category filter
+        url = `${baseURL}customer/filter-product-category/${sortFilterType}/${sortFilterId}?page=${page}`;
+      } else if (selectedFilterCategoryId) {
+        // Original general category filter
+        url = `${baseURL}admin/products/filter-product/GCT/${selectedFilterCategoryId}?page=${page}`;
+      } else {
+        // Default list all products
+        url = `${baseURL}admin/products/list-product?page=${page}`;
+      }
 
-    if (searchTerm?.trim()) {
-      const encodedSearch = encodeURIComponent(searchTerm);
-      url = `${baseURL}customer/fetch-product-by-name/${encodedSearch}?page=${page}`;
-    } else if (selectedCategoryId) {
-      url = `${baseURL}admin/products/filter-product/GCT/${selectedCategoryId}?page=${page}`;
-    } else {
-      url = `${baseURL}admin/products/list-product?page=${page}`;
-    }
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          ...(token && { Authorization: token }),
+        },
+      });
+      const result = await response.json();
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        ...(token && { Authorization: token }),
-      },
-    });
-
-
-    const result = await response.json();
-    
-    if (result?.statusCode === 200) {
-      setProducts(result.data.product || []);
-      const paginationData = result.data.pagination || {
+      if (result?.statusCode === 200) {
+        setProducts(result.data.product || []);
+        const paginationData = result.data.pagination || {
+          current_page: 1,
+          total_pages: 1,
+          total_products: 0,
+          per_page: 10,
+          next_page_url: null,
+          prev_page_url: null,
+        };
+        setPagination(paginationData);
+        if (onPaginationChange) onPaginationChange(paginationData);
+      } else {
+        setProducts([]); // Clear products on error or no data
+        setPagination({
+          current_page: 1,
+          total_pages: 1,
+          total_products: 0,
+          per_page: 10,
+          next_page_url: null,
+          prev_page_url: null,
+        });
+        if (onPaginationChange) onPaginationChange({
+          current_page: 1,
+          total_pages: 1,
+          total_products: 0,
+          per_page: 10,
+          next_page_url: null,
+          prev_page_url: null,
+        });
+        console.error("Failed to fetch products:", result?.message || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+      setPagination({
         current_page: 1,
         total_pages: 1,
         total_products: 0,
         per_page: 10,
         next_page_url: null,
         prev_page_url: null,
-      };
-      setPagination(paginationData);
-      if (onPaginationChange) onPaginationChange(paginationData);
+      });
+      if (onPaginationChange) onPaginationChange({
+        current_page: 1,
+        total_pages: 1,
+        total_products: 0,
+        per_page: 10,
+        next_page_url: null,
+        prev_page_url: null,
+      });
     }
-  } catch (error) {
-    console.error("Error fetching products:", error);
-  }
-};
+  };
 
-
-useEffect(() => {
-  fetchProducts(currentPage);
-}, [currentPage, selectedCategoryId, searchTerm]);
-
-
-
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage, selectedFilterCategoryId, searchTerm, sortFilterType, sortFilterId]); // Add new dependencies
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -165,7 +208,6 @@ useEffect(() => {
   const handleDelete = async (productId: string, closeDropdown: () => void) => {
     const confirmed = window.confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;
-
     try {
       const token = localStorage.getItem("accessToken") || "";
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}admin/products/delete-product/${productId}`, {
@@ -192,18 +234,20 @@ useEffect(() => {
     }
   };
 
- const handleEdit = (productId: string, closeDropdown: () => void) => {
-  setModalType('edit');
-  handleOpenModal(productId);
-  closeDropdown();
-};
+  const handleEdit = (productId: string, closeDropdown: () => void) => {
+    setModalType('edit');
+    handleOpenModal(productId);
+    closeDropdown();
+  };
+
   const handleView = (productId: string, closeDropdown: () => void) => {
-  setModalType('view');
-  handleOpenModal(productId);
-  closeDropdown();
-};
+    setModalType('view');
+    handleOpenModal(productId);
+    closeDropdown();
+  };
 
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
+
   const handleToggleStatus = async (product: Product, closeDropdown: () => void) => {
     const newStatus = product.status === "Active" ? "Disabled" : "Active";
     setLoadingProductId(product.productId);
@@ -277,17 +321,15 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Image Column */}
         <div className="flex-1 min-w-[100px] max-w-[120px]">
           <TableHeader title="Image" />
           {products.map((item, index) => (
             <TableCell key={index} className="py-3 px-5 justify-center">
-              <img src={item.imageOne || "/placeholder.svg"} className="object-contain rounded aspect-[1.7] w-[68px]" alt="" />
+              <img src={item.imageOne || "/placeholder.svg?height=68&width=116&query=product image"} className="object-contain rounded aspect-[1.7] w-[68px]" alt={`Product ${item.productName}`} />
             </TableCell>
           ))}
         </div>
-
         {/* Product Name */}
         <div className="flex-1 min-w-[200px]">
           <TableHeader title="Product" />
@@ -299,7 +341,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Category */}
         <div className="flex-1 min-w-[180px]">
           <TableHeader title="Category" />
@@ -311,7 +352,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Date */}
         <div className="flex-1 min-w-[150px] max-w-[200px]">
           <TableHeader title="Date added" />
@@ -321,7 +361,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Price */}
         <div className="flex-1 min-w-[100px] max-w-[120px]">
           <TableHeader title="Price" />
@@ -331,7 +370,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Orders */}
         <div className="flex-1 min-w-[100px] max-w-[120px]">
           <TableHeader title="Orders" />
@@ -341,7 +379,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Sales */}
         <div className="flex-1 min-w-[130px] max-w-[160px]">
           <TableHeader title="Sales" />
@@ -351,7 +388,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Stock */}
         <div className="flex-1 min-w-[120px] max-w-[140px]">
           <TableHeader title="Stock" />
@@ -364,7 +400,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Status */}
         <div className="flex-1 min-w-[140px] max-w-[160px]">
           <TableHeader title="Status" />
@@ -374,7 +409,6 @@ useEffect(() => {
             </TableCell>
           ))}
         </div>
-
         {/* Actions */}
         <div className="flex-1 min-w-[100px]">
           <TableHeader title="Actions" />
@@ -452,22 +486,18 @@ useEffect(() => {
           ))}
         </div>
       </div>
-
       {/* Modal */}
-    {isModalOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
-    <div className="min-h-screen flex items-center justify-center p-4">
-      {modalType === 'edit' ? (
-        <OrderDetails onClose={handleCloseModal} productId={selectedProductId} />
-      ) : (
-        <OrderDetails1 onClose={handleCloseModal} productId={selectedProductId} />
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+          <div className="min-h-screen flex items-center justify-center p-4">
+            {modalType === 'edit' ? (
+              <OrderDetails onClose={handleCloseModal} productId={selectedProductId} />
+            ) : (
+              <OrderDetails1 onClose={handleCloseModal} productId={selectedProductId} />
+            )}
+          </div>
+        </div>
       )}
-    </div>
-  </div>
-)}
-
     </div>
   );
 };
-
-export default Table;
