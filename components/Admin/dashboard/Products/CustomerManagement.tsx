@@ -31,12 +31,12 @@ export const CustomerManagement = () => {
     setCurrentPage(1); // Reset to first page when filter changes
   };
 
-  const handleSortFilter = (type: 'GCT' | 'PCT' | 'SCT' | null, id: string | null, name: string) => {
-    setSortFilterType(type);
-    setSortFilterId(id);
-    setSelectedFilterCategoryId(null); // Clear main category filter when sort filter changes
-    setCurrentPage(1); // Reset to first page when filter changes
-  };
+  const handleSortFilter = (type: 'GCT' | 'PCT' | 'SCT' | null, id: string | null, _name: string) => {
+  setSortFilterType(type);
+  setSortFilterId(id);
+  setSelectedFilterCategoryId(null);
+  setCurrentPage(1);
+};
 
   const [paginationData, setPaginationData] = useState<PaginationData>({
     current_page: 1,
