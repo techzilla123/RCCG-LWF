@@ -2,10 +2,10 @@ import * as React from "react";
 
 export function AboutImage() {
   const [showVideo, setShowVideo] = React.useState(false);
-  const videoRef = React.useRef(null);
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
 
   React.useEffect(() => {
-    let timer;
+    let timer: ReturnType<typeof setTimeout>; // ✅ Explicitly typed
 
     if (!showVideo) {
       // Show image for 10 seconds before playing video
