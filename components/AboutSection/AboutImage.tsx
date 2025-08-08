@@ -5,18 +5,20 @@ export function AboutImage() {
   const videoRef = React.useRef(null);
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowVideo(true);
-      if (videoRef.current) {
-        videoRef.current.play();
-      }
-    }, 10000); // switch to video after 10 seconds
+    let timer;
+
+    if (!showVideo) {
+      // Show image for 10 seconds before playing video
+      timer = setTimeout(() => {
+        setShowVideo(true);
+      }, 10000);
+    }
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [showVideo]);
 
   const handleVideoEnd = () => {
-    setShowVideo(false); // switch back to image
+    setShowVideo(false); // Switch back to image after video ends
   };
 
   return (
