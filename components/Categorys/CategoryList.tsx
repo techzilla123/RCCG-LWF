@@ -45,22 +45,30 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
   // New: State to track if the initial data (consolidated map) is loaded
   const [isInitialDataLoaded, setIsInitialDataLoaded] = React.useState(false)
 
-  const handleItemClick = (item: { name: string; id: string; isSub: boolean }) => {
-    const category = selectedCategory.toLowerCase()
-    let basePath = ""
-    if (category === "rentals") basePath = "/rentals"
-    else if (category === "balloons") basePath = "/shop/balloon"
-    else if (category === "party supplies") basePath = "/shop/party-supplies"
-    else if (category === "decoration") basePath = "/shop/decorations"
-    else if (category === "birthdays") basePath = "/shop/birthday"
-    else if (category === "holidays & occasions") basePath = "/shop/holiday"
-    else {
-      console.log("No matching route for:", category)
-      return
-    }
-    const queryParam = item.isSub ? `?SCT=${item.id}` : `?PCT=${item.id}`
-    router.push(`${basePath}${queryParam}`)
+ const handleItemClick = (item: { name: string; id: string; isSub: boolean }) => {
+  const category = selectedCategory.toLowerCase()
+
+  // Special case: Balloon Art Gallery → go directly to /balloon-gallery
+  if (item.name === "Balloon Arts Gallery" && !item.isSub) {
+    router.push("/balloon-gallery")
+    return
   }
+
+  let basePath = ""
+  if (category === "rentals") basePath = "/rentals"
+  else if (category === "balloons") basePath = "/shop/balloon"
+  else if (category === "party supplies") basePath = "/shop/party-supplies"
+  else if (category === "decoration") basePath = "/shop/decorations"
+  else if (category === "birthdays") basePath = "/shop/birthday"
+  else if (category === "holidays & occasions") basePath = "/shop/holiday"
+  else {
+    console.log("No matching route for:", category)
+    return
+  }
+
+  const queryParam = item.isSub ? `?SCT=${item.id}` : `?PCT=${item.id}`
+  router.push(`${basePath}${queryParam}`)
+}
 
   const getApiHeaders = () => {
     const token = localStorage.getItem("accessToken") || ""
@@ -200,42 +208,58 @@ export const CategoryList: React.FC<CategoryListProps> = ({ selectedCategory }) 
         const categoriesWithoutSubs: CategoryData[] = []
 
         for (const productCategory of productCategoriesForSelectedGeneral) {
-          // Use the consolidated map to get the definitive subcategories for this product category name
-          const consolidated = allProductCategorySubCategoryMap.current.get(productCategory.categoryName)
+  // Special case: Balloon Art Gallery → no subcategories
+  if (productCategory.categoryName === "Balloon Arts Gallery") {
+    categoriesWithoutSubs.push({
+      parent: selectedCategory,
+      title: productCategory.categoryName,
+      categoryId: productCategory.categoryId,
+      items: [
+        {
+          name: productCategory.categoryName,
+          id: productCategory.categoryId,
+          isSub: false,
+        },
+      ],
+    })
+    continue
+  }
 
-          if (consolidated && consolidated.subCategories.length > 0) {
-            categoriesWithSubs.push({
-              parent: selectedCategory,
-              title: productCategory.categoryName,
-              categoryId: consolidated.categoryId, // Use the ID from the consolidated data
-              items: consolidated.subCategories
-                .map((sub) => ({
-                  name: sub.subCategoryName,
-                  id: sub.subCategoryId,
-                  isSub: true,
-                }))
-                .reverse(),
-            })
-          } else {
-            // If no consolidated data with subs, or consolidated data has no subs,
-            // use the current product category as an item itself.
-            categoriesWithoutSubs.push({
-              parent: selectedCategory,
-              title: productCategory.categoryName,
-              categoryId: productCategory.categoryId,
-              items: [
-                {
-                  name: productCategory.categoryName,
-                  id: productCategory.categoryId,
-                  isSub: false,
-                },
-              ],
-            })
-          }
-        }
+  const consolidated = allProductCategorySubCategoryMap.current.get(productCategory.categoryName)
 
-        const sortedCategories = [...categoriesWithSubs.reverse(), ...categoriesWithoutSubs.reverse()]
-        setCategories(sortedCategories)
+  if (consolidated && consolidated.subCategories.length > 0) {
+    categoriesWithSubs.push({
+      parent: selectedCategory,
+      title: productCategory.categoryName,
+      categoryId: consolidated.categoryId,
+      items: consolidated.subCategories
+        .map((sub) => ({
+          name: sub.subCategoryName,
+          id: sub.subCategoryId,
+          isSub: true,
+        }))
+        .reverse(),
+    })
+  } else {
+    categoriesWithoutSubs.push({
+      parent: selectedCategory,
+      title: productCategory.categoryName,
+      categoryId: productCategory.categoryId,
+      items: [
+        {
+          name: productCategory.categoryName,
+          id: productCategory.categoryId,
+          isSub: false,
+        },
+      ],
+    })
+  }
+}
+
+// ✅ Now the loop is properly closed before we sort
+const sortedCategories = [...categoriesWithSubs.reverse(), ...categoriesWithoutSubs.reverse()]
+setCategories(sortedCategories)
+
       } catch (error) {
         console.error("Error loading categories for selected:", error)
         setCategories([])

@@ -75,13 +75,19 @@ export const ShopNavigation: React.FC = () => {
     fetchAndInit();
   }, [searchParams]);
 
-  const handleTabClick = (index: number) => {
-    setActiveTab(index);
-    const selected = categories[index];
-    if (selected?.categoryId) {
-      router.push(`?PCT=${selected.categoryId}`);
-    }
-  };
+ const handleTabClick = (index: number) => {
+  setActiveTab(index);
+  const selected = categories[index];
+
+  if (!selected) return;
+
+  if (selected.categoryName === "Balloon Arts Gallery") {
+    router.push("/balloon-gallery");
+  } else if (selected.categoryId) {
+    router.push(`?PCT=${selected.categoryId}`);
+  }
+};
+
 
   const handleNextTabWindow = () => {
     if (visibleStartIndex + MAX_VISIBLE_TABS < categories.length) {
@@ -96,16 +102,29 @@ export const ShopNavigation: React.FC = () => {
   };
 
   const handleNextMobile = () => {
-    const newIndex = (activeTab + 1) % categories.length;
-    setActiveTab(newIndex);
-    router.push(`?PCT=${categories[newIndex].categoryId}`);
-  };
+  const newIndex = (activeTab + 1) % categories.length;
+  setActiveTab(newIndex);
+  const selected = categories[newIndex];
 
-  const handlePreviousMobile = () => {
-    const newIndex = (activeTab - 1 + categories.length) % categories.length;
-    setActiveTab(newIndex);
-    router.push(`?PCT=${categories[newIndex].categoryId}`);
-  };
+  if (selected?.categoryName === "Balloon Arts Gallery") {
+    router.push("/balloon-gallery");
+  } else {
+    router.push(`?PCT=${selected.categoryId}`);
+  }
+};
+
+const handlePreviousMobile = () => {
+  const newIndex = (activeTab - 1 + categories.length) % categories.length;
+  setActiveTab(newIndex);
+  const selected = categories[newIndex];
+
+  if (selected?.categoryName === "Balloon Arts Gallery") {
+    router.push("/balloon-gallery");
+  } else {
+    router.push(`?PCT=${selected.categoryId}`);
+  }
+};
+
 
   if (isLoading) {
     return (
