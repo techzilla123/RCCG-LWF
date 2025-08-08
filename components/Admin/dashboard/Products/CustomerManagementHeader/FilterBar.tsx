@@ -358,7 +358,7 @@ export const FilterBar = ({ onFilterByCategory, onSearch, onSortFilter }: Filter
         </div>
 
         {/* Existing Category Filter Dropdown */}
-        <div className="relative inline-block">
+        <div className="relative hidden inline-block">
           <button
             className="flex items-center px-2 h-10 rounded-lg border border-solid border-neutral-300 bg-white"
             onClick={() => setShowCatDropdown(!showCatDropdown)}
