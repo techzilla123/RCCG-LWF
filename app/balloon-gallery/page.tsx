@@ -102,12 +102,7 @@
       )
     }
     // Define interfaces for API responses
-    interface Category {
-      categoryId: string
-      categoryName: string
-      generalCategoryName: string
-      noOfProducts: number
-    }
+ 
 
     interface SubCategory {
   subCategoryId: string
@@ -156,7 +151,7 @@
       return images
     }
     export default function GalleryPage() {
-      const [categories, setCategories] = useState<Category[]>([])
+      const [categories, setCategories] = useState<SubCategory[]>([])
       const [products, setProducts] = useState<Product[]>([])
       const [selectedCategory, setSelectedCategory] = useState<string>("all") // Default to "all" for initial product fetch
       const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
