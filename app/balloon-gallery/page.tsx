@@ -136,7 +136,7 @@
     // Constants for API calls
     const DECORATION_CATEGORY_ID = "2be750c3-0df7-4506-ace9-5e9d78315187"
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL 
-    const API_KEY = process.env.NEXT_PUBLIC_SECRET_KEY 
+    const API_KEY = process.env.NEXT_PUBLIC_SECRET_KEY as string;
     // Helper function to get all product images from a product object
     const getProductImages = (product: Product): string[] => {
       const images = [
