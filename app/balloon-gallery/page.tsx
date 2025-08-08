@@ -108,6 +108,12 @@
       generalCategoryName: string
       noOfProducts: number
     }
+
+    interface SubCategory {
+  subCategoryId: string
+  subCategoryName: string
+}
+
     interface Product {
       productId: string
       categoryName: string
@@ -133,9 +139,9 @@
       imageSeven: string
     }
     // Constants for API calls
-    const GENERAL_CATEGORY_ID = "1fc158a6-5dbc-43e9-b385-4cadb8434a76"
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.partyplaceandrentals.com/"
-    const API_KEY = process.env.NEXT_PUBLIC_SECRET_KEY || "your-secret-key" // Replace with your actual key
+    const DECORATION_CATEGORY_ID = "2be750c3-0df7-4506-ace9-5e9d78315187"
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL 
+    const API_KEY = process.env.NEXT_PUBLIC_SECRET_KEY 
     // Helper function to get all product images from a product object
     const getProductImages = (product: Product): string[] => {
       const images = [
@@ -163,88 +169,80 @@
       // const [showOrderOptions, setShowOrderOptions] = useState(false)
       const [isChatModalOpen, setIsChatModalOpen] = useState(false)
       const [chatMessage, setChatMessage] = useState('')
-      const fetchCategories = useCallback(async () => {
-        setLoading(true)
-        setError(null)
-        try {
-          const token = localStorage.getItem("accessToken")
-          const url = `${API_BASE_URL}customer/list-product-category/${GENERAL_CATEGORY_ID}`
-          const headers: HeadersInit = {
-            "Content-Type": "application/json",
-            "x-api-key": API_KEY,
-          }
-          if (token) {
-            headers.Authorization = token
-          }
-          const response = await fetch(url, { headers })
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
-          }
-          const result = await response.json()
-          if (result.statusCode === 200 && result.data) {
-            setCategories([{ categoryId: "all", categoryName: "All", generalCategoryName: "", noOfProducts: 0 }, ...result.data])
-          } else {
-            setError(result.message || "Failed to fetch categories")
-          }
-        } catch (e: unknown) {
-          if (e instanceof Error) {
-            setError(`Error fetching categories: ${e.message}`)
-          } else {
-            setError("An unknown error occurred while fetching categories.")
-          }
-        } finally {
-          setLoading(false)
-        }
-      }, [])
-      const fetchProducts = useCallback(async (categoryId: string) => {
-        setLoading(true)
-        setError(null)
-        try {
-          const token = localStorage.getItem("accessToken")
-          let url: string
-          if (categoryId === "all") {
-            url = `${API_BASE_URL}customer/filter-product-category/GCT/${GENERAL_CATEGORY_ID}`
-          } else {
-            url = `${API_BASE_URL}customer/filter-product-category/PCT/${categoryId}`
-          }
-          const headers: HeadersInit = {
-            "Content-Type": "application/json",
-            "x-api-key": API_KEY,
-          }
-          if (token) {
-            headers.Authorization = token
-          }
-          const response = await fetch(url, { headers })
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
-          }
-          const result = await response.json()
-          if (result.statusCode === 200 && result.data?.product) {
-            setProducts(result.data.product) // ✅ Extract the array properly
-          } else {
-            setProducts([]) // fallback
-            setError(result.message || "Failed to fetch products")
-          }
-        } catch (e: unknown) {
-          if (e instanceof Error) {
-            setError(`Error fetching products: ${e.message}`)
-          } else {
-            setError("An unknown error occurred while fetching products.")
-          }
-        } finally {
-          setLoading(false)
-        }
-      }, [])
-      // Fetch categories on initial load
-      useEffect(() => {
-        fetchCategories()
-      }, [fetchCategories])
-      // Fetch products when selectedCategory changes
-      useEffect(() => {
-        if (selectedCategory) {
-          fetchProducts(selectedCategory)
-        }
-      }, [selectedCategory, fetchProducts])
+      const fetchSubCategories = useCallback(async () => {
+  setLoading(true)
+  setError(null)
+  try {
+    const token = localStorage.getItem("accessToken")
+    const url = `${API_BASE_URL}customer/list-product-sub-category/${DECORATION_CATEGORY_ID}`
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      "x-api-key": API_KEY,
+    }
+    if (token) headers.Authorization = token
+
+    const response = await fetch(url, { headers })
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+    const result = await response.json()
+    if (result.statusCode === 200 && result.data) {
+      // Add "All" option
+      setCategories([{ subCategoryId: "all", subCategoryName: "All" }, ...result.data])
+    } else {
+      setError(result.message || "Failed to fetch subcategories")
+    }
+  } catch (e: unknown) {
+    setError(e instanceof Error ? e.message : "Unknown error fetching subcategories.")
+  } finally {
+    setLoading(false)
+  }
+}, [])
+     const fetchProducts = useCallback(async (subcategoryId: string) => {
+  setLoading(true)
+  setError(null)
+  try {
+    const token = localStorage.getItem("accessToken")
+    let url: string
+    if (subcategoryId === "all") {
+      // All products in the Decoration category
+      url = `${API_BASE_URL}customer/filter-product-category/PCT/${DECORATION_CATEGORY_ID}`
+    } else {
+      // Products for specific subcategory
+      url = `${API_BASE_URL}customer/filter-product-category/SCT/${subcategoryId}`
+    }
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      "x-api-key": API_KEY,
+    }
+    if (token) headers.Authorization = token
+
+    const response = await fetch(url, { headers })
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+    const result = await response.json()
+    if (result.statusCode === 200 && result.data?.product) {
+      setProducts(result.data.product)
+    } else {
+      setProducts([])
+      setError(result.message || "No products found.")
+    }
+  } catch (e: unknown) {
+    setError(e instanceof Error ? e.message : "Unknown error fetching products.")
+  } finally {
+    setLoading(false)
+  }
+}, [])
+
+   useEffect(() => {
+  fetchSubCategories()
+}, [fetchSubCategories])
+
+useEffect(() => {
+  if (selectedCategory) {
+    fetchProducts(selectedCategory)
+  }
+}, [selectedCategory, fetchProducts])
+
       const handleImageClick = (product: Product) => {
         setSelectedProduct(product)
         setCurrentImageIndex(0) // Start with the first image
@@ -533,21 +531,21 @@
           </section>
           <section className="py-16 bg-stone-50">
             <div className="container mx-auto px-4">
-              {/* Category Filter */}
               <div className="flex flex-wrap justify-center gap-4 mb-12">
-                {loading && <p>Loading categories...</p>}
-                {error && <p className="text-red-500">{error}</p>}
-                {!loading && !error && categories.map((category) => (
-                  <Button
-                    key={category.categoryId}
-                    variant={selectedCategory === category.categoryId ? "default" : "outline"}
-                    onClick={() => setSelectedCategory(category.categoryId)}
-                    className={`rounded-full ${selectedCategory === category.categoryId ? "bg-purple-600 text-white hover:bg-purple-700" : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"}`}
-                  >
-                    {category.categoryName}
-                  </Button>
-                ))}
-              </div>
+  {loading && <p>Loading subcategories...</p>}
+  {error && <p className="text-red-500">{error}</p>}
+  {!loading && !error && categories.map((subcategory) => (
+    <Button
+      key={subcategory.subCategoryId}
+      variant={selectedCategory === subcategory.subCategoryId ? "default" : "outline"}
+      onClick={() => setSelectedCategory(subcategory.subCategoryId)}
+      className={`rounded-full ${selectedCategory === subcategory.subCategoryId ? "bg-purple-600 text-white hover:bg-purple-700" : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"}`}
+    >
+      {subcategory.subCategoryName}
+    </Button>
+  ))}
+</div>
+
               {/* Gallery Grid */}
               {loading && <p className="text-center">Loading products...</p>}
               {error && !loading && <p className="text-red-500 text-center">{error}</p>}
