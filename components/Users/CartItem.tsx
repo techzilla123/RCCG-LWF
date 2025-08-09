@@ -46,44 +46,37 @@ export default function CartItem() {
     return Math.max(0, price - discountPrice)
   }
 
-  // Function to update/replace items with same product_id in localStorage
- const updateLocalStorageWithLatestItems = (items: LocalStorageCartItem[]) => {
-  try {
-    const latestItems: { [key: string]: LocalStorageCartItem } = {}
+  // Function to update/replace items with same product_id + color + size combination in localStorage
+  const updateLocalStorageWithLatestItems = (items: LocalStorageCartItem[]) => {
+    try {
+      const latestItems: { [key: string]: LocalStorageCartItem } = {}
+      items.forEach((item) => {
+        // Create a unique key that includes product_id, color, and size
+        // This ensures each variant is treated as a separate item
+        const key = `${item.product_id}_${item.color || "no-color"}_${item.size || "no-size"}`
 
-    items.forEach((item) => {
-      // Include color and size in key to distinguish variants
-      const key = `${item.product_id}_${item.color}_${item.size}`
-      latestItems[key] = { ...item } // Now overwriting only exact matches (same product, color, size)
-    })
+        // If we already have this exact variant, keep the latest one (or combine quantities if needed)
+        if (latestItems[key]) {
+          // Combine quantities for the same variant
+          const existingQty = Number.parseInt(latestItems[key].quantity || "1")
+          const newQty = Number.parseInt(item.quantity || "1")
+          latestItems[key] = {
+            ...item,
+            quantity: (existingQty + newQty).toString(),
+          }
+        } else {
+          latestItems[key] = { ...item }
+        }
+      })
 
-    const finalItems = Object.values(latestItems)
-    localStorage.setItem("localCart", JSON.stringify(finalItems))
-    return finalItems
-  } catch (error) {
-    console.error("Error updating localStorage with latest items:", error)
-    return items
+      const finalItems = Object.values(latestItems)
+      localStorage.setItem("localCart", JSON.stringify(finalItems))
+      return finalItems
+    } catch (error) {
+      console.error("Error updating localStorage with latest items:", error)
+      return items
+    }
   }
-}
-
-
-  // // Function to add/update item in localStorage (replaces existing item with same product_id)
-  // const addToLocalCart = (newItem: LocalStorageCartItem): void => {
-  //   try {
-  //     const localCart = localStorage.getItem("localCart")
-  //     const cartItems: LocalStorageCartItem[] = localCart ? JSON.parse(localCart) : []
-
-  //     // Remove any existing item with the same product_id
-  //     const filteredItems = cartItems.filter((item) => item.product_id !== newItem.product_id)
-
-  //     // Add the new item
-  //     filteredItems.push(newItem)
-
-  //     localStorage.setItem("localCart", JSON.stringify(filteredItems))
-  //   } catch (error) {
-  //     console.error("Error adding to local cart:", error)
-  //   }
-  // }
 
   // Function to sync localStorage cart to server
   const syncLocalCartToServer = async (token: string) => {
@@ -101,7 +94,7 @@ export default function CartItem() {
         return
       }
 
-      // Update localStorage to keep only latest items per product_id
+      // Update localStorage to keep only latest items per product_id + color + size combination
       const latestItems = updateLocalStorageWithLatestItems(localItems)
 
       const headers = {
@@ -110,12 +103,39 @@ export default function CartItem() {
         Authorization: token,
       }
 
-      // Sync each item to server
+      // First, get the current cart from server to avoid conflicts
+      const currentCartUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/cart-list`
+      const currentCartResponse = await fetch(currentCartUrl, {
+        method: "GET",
+        headers,
+      })
+
+      let existingCartItems: ApiCartItem[] = []
+      if (currentCartResponse.ok) {
+        const currentCartResult = await currentCartResponse.json()
+        if (currentCartResult.statusCode === 200) {
+          existingCartItems = currentCartResult.data || []
+        }
+      }
+
+      // Sync each item to server, but be smart about variants
       const syncPromises = latestItems.map(async (item) => {
+        // Check if this exact variant (product_id + color + size) already exists in server cart
+        const existingVariant = existingCartItems.find(
+          (existing) =>
+            existing.productId === item.product_id && existing.color === item.color && existing.size === item.size,
+        )
+
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/add-to-cart`
+
+        // If variant exists, we might want to update quantity, otherwise add new
+        const finalQuantity = existingVariant
+          ? (existingVariant.quantity + Number.parseInt(item.quantity || "1")).toString()
+          : item.quantity || "1"
+
         const body = JSON.stringify({
           product_id: item.product_id,
-          quantity: item.quantity || "1",
+          quantity: finalQuantity,
           size: item.size || "",
           color: item.color || "",
         })
@@ -125,10 +145,16 @@ export default function CartItem() {
           headers,
           body,
         })
+
+        if (!res.ok) {
+          console.error(`Failed to sync item ${item.product_id} (${item.color}, ${item.size})`)
+        }
+
         return res.json()
       })
 
       await Promise.all(syncPromises)
+
       // Clear localStorage after successful sync
       localStorage.removeItem("localCart")
       console.log("Cart synced successfully")
@@ -140,40 +166,38 @@ export default function CartItem() {
   }
 
   // Function to update localStorage cart item quantity
- const updateLocalStorageQuantity = (productId: string, color: string, size: string, newQuantity: number) => {
-  try {
-    const localCart = localStorage.getItem("localCart")
-    if (localCart) {
-      const localItems: LocalStorageCartItem[] = JSON.parse(localCart)
-      const updatedItems = localItems.map((item) =>
-        item.product_id === productId && item.color === color && item.size === size
-          ? { ...item, quantity: newQuantity.toString() }
-          : item
-      )
-      localStorage.setItem("localCart", JSON.stringify(updatedItems))
+  const updateLocalStorageQuantity = (productId: string, color: string, size: string, newQuantity: number) => {
+    try {
+      const localCart = localStorage.getItem("localCart")
+      if (localCart) {
+        const localItems: LocalStorageCartItem[] = JSON.parse(localCart)
+        const updatedItems = localItems.map((item) =>
+          item.product_id === productId && item.color === color && item.size === size
+            ? { ...item, quantity: newQuantity.toString() }
+            : item,
+        )
+        localStorage.setItem("localCart", JSON.stringify(updatedItems))
+      }
+    } catch (error) {
+      console.error("Error updating localStorage quantity:", error)
     }
-  } catch (error) {
-    console.error("Error updating localStorage quantity:", error)
   }
-}
-
 
   // Function to remove item from localStorage
   const removeFromLocalStorage = (productId: string, color: string, size: string) => {
-  try {
-    const localCart = localStorage.getItem("localCart")
-    if (localCart) {
-      const localItems: LocalStorageCartItem[] = JSON.parse(localCart)
-      const updatedItems = localItems.filter(
-        (item) => !(item.product_id === productId && item.color === color && item.size === size)
-      )
-      localStorage.setItem("localCart", JSON.stringify(updatedItems))
+    try {
+      const localCart = localStorage.getItem("localCart")
+      if (localCart) {
+        const localItems: LocalStorageCartItem[] = JSON.parse(localCart)
+        const updatedItems = localItems.filter(
+          (item) => !(item.product_id === productId && item.color === color && item.size === size),
+        )
+        localStorage.setItem("localCart", JSON.stringify(updatedItems))
+      }
+    } catch (error) {
+      console.error("Error removing from localStorage:", error)
     }
-  } catch (error) {
-    console.error("Error removing from localStorage:", error)
   }
-}
-
 
   const fetchCartItems = async () => {
     try {
@@ -213,6 +237,7 @@ export default function CartItem() {
               rawDiscountPrice: discountPrice,
             }
           })
+
           setProducts(formattedItems)
         } else {
           setProducts([])
@@ -237,39 +262,41 @@ export default function CartItem() {
       })
 
       const result = await res.json()
+
       if (res.ok && result.statusCode === 200) {
-        const transformed: ProductItemType[] = result.data.map((item: ApiCartItem) => {
-  const details = item.productDetails
+        const transformed: ProductItemType[] = result.data
+          .map((item: ApiCartItem) => {
+            const details = item.productDetails
+            if (!details) {
+              console.warn("Missing product details for cart item:", item)
+              return null // or skip entirely depending on your design
+            }
 
-  if (!details) {
-    console.warn("Missing product details for cart item:", item)
-    return null // or skip entirely depending on your design
-  }
+            const price = Number(details.price) || 0
+            const discountPrice = Number(details.discountPrice) || 0
+            const hasDiscount = discountPrice > 0
 
-  const price = Number(details.price) || 0
-  const discountPrice = Number(details.discountPrice) || 0
-  const hasDiscount = discountPrice > 0
-
-  return {
-    id: item.productId,
-    name: details.productName,
-    image: details.imageOne,
-    quantity: item.quantity,
-    color: item.color || "",
-    size: item.size || "",
-    price: price - discountPrice,
-    discount: hasDiscount
-      ? {
-          percentage: Math.round((discountPrice / price) * 100),
-          originalPrice: price,
-        }
-      : undefined,
-    categoryName: details.categoryName,
-    subCategoryName: details.subCategoryName,
-    rawPrice: price,
-    rawDiscountPrice: discountPrice,
-  }
-}).filter(Boolean) 
+            return {
+              id: item.productId,
+              name: details.productName,
+              image: details.imageOne,
+              quantity: item.quantity,
+              color: item.color || "",
+              size: item.size || "",
+              price: price - discountPrice,
+              discount: hasDiscount
+                ? {
+                    percentage: Math.round((discountPrice / price) * 100),
+                    originalPrice: price,
+                  }
+                : undefined,
+              categoryName: details.categoryName,
+              subCategoryName: details.subCategoryName,
+              rawPrice: price,
+              rawDiscountPrice: discountPrice,
+            }
+          })
+          .filter(Boolean)
 
         setProducts(transformed)
       } else {
@@ -286,41 +313,28 @@ export default function CartItem() {
     fetchCartItems()
   }, [])
 
-  const handleQuantityChange = async (id: string, newQuantity: number) => {
-  // const token = localStorage.getItem("accessToken")
+  const handleQuantityChange = async (id: string, color: string, size: string, newQuantity: number) => {
+    // Always update localStorage (even if user is logged in)
+    updateLocalStorageQuantity(id, color, size, newQuantity)
 
-  const product = products.find((p) => p.id === id)
-  if (!product) return
-
-  // Always update localStorage (even if user is logged in)
-  updateLocalStorageQuantity(id, product.color, product.size, newQuantity)
-
-  // Always update React state
-  setProducts((prev) =>
-    prev.map((p) =>
-      p.id === id && p.color === product.color && p.size === product.size
-        ? { ...p, quantity: newQuantity }
-        : p
+    // Always update React state
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id && p.color === color && p.size === size ? { ...p, quantity: newQuantity } : p)),
     )
-  )
 
-  // ===> NO API call to update-cart-quantity anymore
-}
+    // ===> NO API call to update-cart-quantity anymore
+  }
 
-
-const handleRemoveFromCart = async (productId: string, color: string, size: string) => {
-
+  const handleRemoveFromCart = async (productId: string, color: string, size: string) => {
     const token = localStorage.getItem("accessToken")
 
-   if (!token) {
-  removeFromLocalStorage(productId, color, size)
-  setProducts((prev) =>
-    prev.filter((product) =>
-      !(product.id === productId && product.color === color && product.size === size)
-    )
-  )
-  return
-}
+    if (!token) {
+      removeFromLocalStorage(productId, color, size)
+      setProducts((prev) =>
+        prev.filter((product) => !(product.id === productId && product.color === color && product.size === size)),
+      )
+      return
+    }
 
     // Remove from server if token exists
     try {
@@ -337,6 +351,7 @@ const handleRemoveFromCart = async (productId: string, color: string, size: stri
       })
 
       const result = await response.json()
+
       if (!response.ok || result.statusCode !== 200) {
         throw new Error(result.message || "Failed to remove from cart")
       }
@@ -350,7 +365,6 @@ const handleRemoveFromCart = async (productId: string, color: string, size: stri
   }
 
   const totalItems = products.reduce((sum, product) => sum + product.quantity, 0)
-
   const itemTotal = products.reduce((sum, product) => sum + product.price * product.quantity, 0)
 
   const summaryItems = [
@@ -381,7 +395,7 @@ const handleRemoveFromCart = async (productId: string, color: string, size: stri
         ) : products.length > 0 ? (
           products.map((product) => (
             <ProductItem
-             key={`${product.id}-${product.color}-${product.size}`} 
+              key={`${product.id}-${product.color}-${product.size}`}
               product={product}
               onQuantityChange={handleQuantityChange}
               onRemoveFromCart={handleRemoveFromCart}

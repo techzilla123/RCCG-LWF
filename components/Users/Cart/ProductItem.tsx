@@ -7,7 +7,7 @@ import type { ProductItemType } from "./types"
 
 interface ProductItemProps {
   product: ProductItemType
-  onQuantityChange: (id: string, newQuantity: number) => void | Promise<void>
+  onQuantityChange: (id: string, color: string, size: string, newQuantity: number) => void | Promise<void>
   onRemoveFromCart: (productId: string, color: string, size: string) => Promise<void>
 }
 
@@ -19,7 +19,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
   const handleIncrement = async () => {
     setIsUpdatingQuantity(true)
     try {
-      await onQuantityChange(product.id, product.quantity + 1)
+      await onQuantityChange(product.id, product.color, product.size, product.quantity + 1)
     } catch (error) {
       console.error("Error updating quantity:", error)
     } finally {
@@ -31,7 +31,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
     if (product.quantity > 1) {
       setIsUpdatingQuantity(true)
       try {
-        await onQuantityChange(product.id, product.quantity - 1)
+        await onQuantityChange(product.id, product.color, product.size, product.quantity - 1)
       } catch (error) {
         console.error("Error updating quantity:", error)
       } finally {
@@ -44,7 +44,6 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
     setIsRemoving(true)
     try {
       await onRemoveFromCart(product.id, product.color, product.size)
-
     } catch (error) {
       console.error("Error removing item:", error)
     } finally {
@@ -86,6 +85,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
           </p>
         </div>
       </div>
+
       {/* Quantity + Total Container */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:ml-auto gap-2 sm:gap-5 w-full sm:w-auto items-end mt-4 sm:mt-0">
         {/* Quantity Column */}
@@ -99,6 +99,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityCha
             />
           </div>
         </div>
+
         {/* Total Column */}
         <div className="flex items-end justify-end gap-5">
           <div className="w-[100px] text-end text-base font-medium text-black">
