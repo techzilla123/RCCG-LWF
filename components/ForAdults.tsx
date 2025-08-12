@@ -7,12 +7,14 @@ import { ProductCard } from "./ForAdults/ProductCard"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+
 interface Occasion {
   id: string
   title: string
   imageSrc: string
   getDate: (year: number) => Date
   showDaysBefore: number
+  link?: string // Optional link for the occasion 
 }
 
 const occasions: Occasion[] = [
@@ -20,6 +22,7 @@ const occasions: Occasion[] = [
     id: "newyear",
     title: "New Year",
     imageSrc: "https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=400&h=300&fit=crop",
+     link: "/shop/holiday?SCT=cbcdf4b8-eb7c-4da6-bec4-b42d7d18075f",
     getDate: (year) => new Date(year, 0, 1), // January 1
     showDaysBefore: 30,
   },
@@ -27,6 +30,7 @@ const occasions: Occasion[] = [
     id: "mlk",
     title: "MLK Day",
     imageSrc: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
+     link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
     getDate: (year) => {
       // Third Monday in January
       const january = new Date(year, 0, 1)
@@ -41,6 +45,7 @@ const occasions: Occasion[] = [
     title: "Valentine's Day",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/0592b126763a61d7fdb2a326c676d6767149c37c?placeholderIfAbsent=true",
+       link: "/shop/holiday?SCT=439c8360-c803-4ba3-9f74-de2ac8f5f8b6",
     getDate: (year) => new Date(year, 1, 14), // February 14
     showDaysBefore: 45,
   },
@@ -61,6 +66,7 @@ const occasions: Occasion[] = [
     id: "stpatricks",
     title: "St. Patrick's Day",
     imageSrc: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop",
+    link: "/shop/holiday?SCT=4aaf5e31-cc27-4c94-a030-b9d27c33e090",
     getDate: (year) => new Date(year, 2, 17), // March 17
     showDaysBefore: 30,
   },
@@ -68,6 +74,7 @@ const occasions: Occasion[] = [
     id: "easter",
     title: "Easter",
     imageSrc: "https://images.unsplash.com/photo-1554072675-66db59dba46f?w=400&h=300&fit=crop",
+      link: "/shop/balloon?SCT=d6c4e5b9-0b1a-428b-b626-a815e31b8e23",
     getDate: (year) => {
       // Easter calculation (Western Christianity)
       const a = year % 19
@@ -107,6 +114,7 @@ const occasions: Occasion[] = [
     title: "Mother's Day",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/3005fdd58172243a6976a17460f1a3032583c9fc?placeholderIfAbsent=true",
+       link: "/shop/balloon?SCT=054d59a8-f1c7-4670-993f-349d615f1ee7",
     getDate: (year) => {
       // Second Sunday in May
       const may = new Date(year, 4, 1)
@@ -133,6 +141,7 @@ const occasions: Occasion[] = [
     id: "graduation",
     title: "Graduation",
     imageSrc: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=300&fit=crop",
+     link: "/shop/holiday?SCT=68c66ee3-83f7-4723-b2f9-a612405be184",
     getDate: (year) => new Date(year, 4, 20), // Late May
     showDaysBefore: 45,
   },
@@ -141,6 +150,7 @@ const occasions: Occasion[] = [
     title: "Father's Day",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/11a4e9741ebb66c7a4ef460a3a31daac9ceb7585?placeholderIfAbsent=true",
+       link: "/shop/balloon?SCT=054d59a8-f1c7-4670-993f-349d615f1ee7",
     getDate: (year) => {
       // Third Sunday in June
       const june = new Date(year, 5, 1)
@@ -154,6 +164,7 @@ const occasions: Occasion[] = [
     id: "independence",
     title: "Independence Day",
     imageSrc: "https://images.unsplash.com/photo-1530841344095-b2893194affe?w=400&h=300&fit=crop",
+    link: "/shop/holiday?SCT=63a27a17-960f-4ae6-bdd0-8c6f33127d02",
     getDate: (year) => new Date(year, 6, 4), // July 4
     showDaysBefore: 30,
   },
@@ -161,6 +172,7 @@ const occasions: Occasion[] = [
     id: "back-to-school",
     title: "Back to School",
     imageSrc: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
     getDate: (year) => new Date(year, 7, 15), // Mid August
     showDaysBefore: 30,
   },
@@ -168,6 +180,7 @@ const occasions: Occasion[] = [
     id: "labor",
     title: "Labor Day",
     imageSrc: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
     getDate: (year) => {
       // First Monday in September
       const september = new Date(year, 8, 1)
@@ -181,6 +194,7 @@ const occasions: Occasion[] = [
     id: "columbus",
     title: "Columbus Day",
     imageSrc: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
     getDate: (year) => {
       // Second Monday in October
       const october = new Date(year, 9, 1)
@@ -194,6 +208,7 @@ const occasions: Occasion[] = [
     id: "halloween",
     title: "Halloween",
     imageSrc: "https://images.unsplash.com/photo-1509557965043-6b9f3d1d4b8b?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
     getDate: (year) => new Date(year, 9, 31), // October 31
     showDaysBefore: 45,
   },
@@ -201,6 +216,7 @@ const occasions: Occasion[] = [
     id: "veterans",
     title: "Veterans Day",
     imageSrc: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
     getDate: (year) => new Date(year, 10, 11), // November 11
     showDaysBefore: 20,
   },
@@ -208,6 +224,7 @@ const occasions: Occasion[] = [
     id: "thanksgiving",
     title: "Thanksgiving",
     imageSrc: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=400&h=300&fit=crop",
+     link: "/shop/holiday?SCT=f72038ed-a8bc-4339-b320-14656b9bdf97",
     getDate: (year) => {
       // Fourth Thursday in November
       const november = new Date(year, 10, 1)
@@ -235,6 +252,7 @@ const occasions: Occasion[] = [
     id: "christmas",
     title: "Christmas",
     imageSrc: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=400&h=300&fit=crop",
+    link: "/shop/holiday?SCT=59dad4dd-e002-4a94-aec6-1c028b222a31",
     getDate: (year) => new Date(year, 11, 25), // December 25
     showDaysBefore: 60,
   },
@@ -252,19 +270,21 @@ const alwaysShowOccasions = [
   {
     id: "anniversaries",
     title: "Anniversaries",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/81c6d95d2bcbd39bc5304011b824540992ebb6e7?placeholderIfAbsent=true",
+    imageSrc: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/81c6d95d2bcbd39bc5304011b824540992ebb6e7?placeholderIfAbsent=true",
+      link: "/shop/balloon?SCT=ccda31d6-c9bb-4c7c-8174-cafb421a7b97",
   },
   {
     id: "weddings",
     title: "Weddings",
     imageSrc: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=e02f2185-00c1-461c-af2c-eb9c5c2f1d1c",
   },
   {
     id: "retirement",
     title: "Retirement",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/37dc43cc3efd1617c6d0e0f9f42cf3da226f9073?placeholderIfAbsent=true",
+      link: "/shop/party-supplies?SCT=7544ad0a-d2ba-4286-8304-1d548865c183",
   },
 ]
 
@@ -279,6 +299,7 @@ const otherPermanentOccasions = [
     id: "baby-shower",
     title: "Baby Shower",
     imageSrc: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop",
+    link: "/shop/balloon?SCT=3379f8d3-96b9-4dc6-8d7c-66f82d3b10a6",
   },
   // {
   //   id: "housewarming",
@@ -335,11 +356,11 @@ function getCurrentSeason(): string {
   }
 }
 
-function getActiveOccasions(): Array<{ id: string; title: string; imageSrc: string }> {
+function getActiveOccasions(): Array<{ id: string; title: string; imageSrc: string; link?: string }> {
   const now = new Date()
   const currentYear = now.getFullYear()
   const nextYear = currentYear + 1
-  const activeOccasions: Array<{ id: string; title: string; imageSrc: string }> = []
+  const activeOccasions: Array<{ id: string; title: string; imageSrc: string; link?: string }> = []
 
   // Always add the three required occasions first
   activeOccasions.push(...alwaysShowOccasions)
@@ -353,11 +374,12 @@ function getActiveOccasions(): Array<{ id: string; title: string; imageSrc: stri
 
     // Check if we should show this occasion
     if ((now >= showFromCurrent && now <= currentYearDate) || (now >= showFromNext && now <= nextYearDate)) {
-      activeOccasions.push({
-        id: occasion.id,
-        title: occasion.title,
-        imageSrc: occasion.imageSrc,
-      })
+     activeOccasions.push({
+  id: occasion.id,
+  title: occasion.title,
+  imageSrc: occasion.imageSrc,
+  link: occasion.link,
+})
     }
   })
 
@@ -430,11 +452,12 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
     id: item.occasion.id,
     title: item.occasion.title,
     imageSrc: item.occasion.imageSrc,
+    link: item.occasion.link,
   }))
 }
 
 const ForAdults: React.FC = () => {
-  const [activeOccasions, setActiveOccasions] = useState<Array<{ id: string; title: string; imageSrc: string }>>([])
+  const [activeOccasions, setActiveOccasions] = useState<Array<{ id: string; title: string; imageSrc: string; link?: string }>>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleItemsCount, setVisibleItemsCount] = useState(4) // Default to desktop view
 
@@ -545,7 +568,8 @@ const ForAdults: React.FC = () => {
             style={{ maxWidth: carouselMaxWidth }} // Apply dynamic max-width
           >
             {displayedOccasions.map((occasion) => (
-              <ProductCard key={occasion.id} imageSrc={occasion.imageSrc} title={occasion.title} />
+             <ProductCard key={occasion.id} imageSrc={occasion.imageSrc} title={occasion.title} link={occasion.link} />
+
             ))}
           </div>
           <Button
