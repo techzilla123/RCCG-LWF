@@ -19,11 +19,19 @@ export interface ProductItemType {
 }
 
   
- export interface SummaryItemType {
-  value(value: string | number): unknown;
+ export interface SummaryItemType<T = number | string> {
+  value?: (value: T) => T;
   label: string;
   amount: string;
   bold?: boolean;
 }
-
+export interface CartSummaryType {
+  items: SummaryItemType[];
+  totalItems: number;
+  totalPrice: string;
+  totalDiscount?: string;
+  totalTax?: string;
+  totalShipping?: string;
+  grandTotal: string;
+}
   
