@@ -19,10 +19,11 @@ export interface ProductItemType {
 }
 
   
-  export interface SummaryItemType {
-    value(value: any): unknown;
-    label: string;
-    amount: string;
-    bold?: boolean;
-  }
+ export interface SummaryItemType {
+  value(value: string | number): unknown;
+  label: string;
+  amount: string;
+  bold?: boolean;
+}
+
   
