@@ -172,11 +172,85 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
   const addressInputRef = useRef<HTMLInputElement>(null)
   const [isGoogleMapsReady, setIsGoogleMapsReady] = useState(false)
   const [showShippingRecommendation, setShowShippingRecommendation] = useState(false)
+  const [shippingCost, setShippingCost] = useState<number | null>(null)
+  const [isCalculatingShipping, setIsCalculatingShipping] = useState(false)
 
   const savedLocation = typeof window !== "undefined" ? localStorage.getItem("deliveryLocation") : null
   const [location, setLocation] = useState<LocationInfo>(
     savedLocation ? JSON.parse(savedLocation) : defaultLocations[savedMethod],
   )
+
+  const fetchShippingCost = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setShippingCost(null)
+      localStorage.removeItem("calculatedShippingCost")
+      window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: null } }))
+      return
+    }
+
+    setIsCalculatingShipping(true)
+    try {
+     // Calculate weight: 0.5g × quantity of all products
+const totalQuantity = orders.reduce((sum, order) => {
+  const qty = Number(order.quantity) || 0
+  return sum + qty
+}, 0)
+
+const weight = (totalQuantity * 0.5).toString()
+
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/get-shipping-cost`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        },
+        body: JSON.stringify({
+          weight,
+          zip_code: zipCode,
+        }),
+      })
+
+      const data = await response.json()
+      if (response.ok && data.data && data.data.length > 0) {
+        // Take the first returned option's price
+        const calculatedCost = data.data[0].price
+        setShippingCost(calculatedCost)
+        localStorage.setItem("calculatedShippingCost", calculatedCost.toString())
+
+        // Notify OrderSummary component about the shipping cost
+        window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: calculatedCost } }))
+
+        console.log(`Shipping cost calculated: $${calculatedCost} for ${weight}g to ${zipCode}`)
+      } else {
+        console.error("Failed to get shipping cost", data)
+        setShippingCost(null)
+        localStorage.removeItem("calculatedShippingCost")
+        window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: null } }))
+      }
+    } catch (err) {
+      console.error("Error fetching shipping cost:", err)
+      setShippingCost(null)
+      localStorage.removeItem("calculatedShippingCost")
+      window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: null } }))
+    } finally {
+      setIsCalculatingShipping(false)
+    }
+  }
+
+  useEffect(() => {
+    if (deliveryMethod === "shipping" && location.postalCode && location.postalCode.length >= 5) {
+      const timeoutId = setTimeout(() => {
+        fetchShippingCost(location.postalCode)
+      }, 500) // Debounce API calls
+
+      return () => clearTimeout(timeoutId)
+    } else if (deliveryMethod === "shipping") {
+      setShippingCost(null)
+      localStorage.removeItem("calculatedShippingCost")
+      window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: null } }))
+    }
+  }, [deliveryMethod, location.postalCode, orders.length])
 
   // Check if return is over 24 hours for pricing notification
   const [rentalMultiplier, setRentalMultiplier] = useState(1)
@@ -297,6 +371,12 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
 
     if (deliveryMethod === "shipping") {
       setShowShippingRecommendation(false)
+    }
+
+    if (deliveryMethod !== "shipping") {
+      setShippingCost(null)
+      localStorage.removeItem("calculatedShippingCost")
+      window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: null } }))
     }
 
     window.dispatchEvent(new Event("deliveryMethodChanged"))
@@ -450,6 +530,32 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
               <strong>Shipping Recommended:</strong>
               <br />
               Your delivery address exceeds our 50-mile local delivery limit. Please select {"Shipping"} to continue.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deliveryMethod === "shipping" && !hasRentalProducts && (
+        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-800 rounded">
+          <div className="flex items-center">
+            <span className="text-lg mr-2">📦</span>
+            <div>
+              <strong>Shipping Cost Calculation:</strong>
+              <br />
+              {orders.length > 0 && (
+                <>
+                  Weight: {(orders.length * 0.5).toFixed(1)}g ({orders.length} items × 0.5g each)
+                  <br />
+                </>
+              )}
+              {isCalculatingShipping && "Calculating shipping cost..."}
+              {!isCalculatingShipping && shippingCost !== null && `Shipping cost: $${shippingCost.toFixed(2)}`}
+              {!isCalculatingShipping &&
+                shippingCost === null &&
+                location.postalCode &&
+                location.postalCode.length >= 5 &&
+                "Unable to calculate shipping cost"}
+              {!location.postalCode && "Enter zip code below to calculate shipping cost"}
             </div>
           </div>
         </div>
@@ -723,9 +829,20 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
               value={location.postalCode}
               onChange={(e) => handleLocationChange("postalCode", e.target.value)}
               className="p-2 border rounded-lg w-full"
-              placeholder="Enter Zip code"
+              placeholder="Enter Zip code (required for shipping cost calculation)"
               required
             />
+            {location.postalCode && location.postalCode.length >= 5 && (
+              <div className="mt-2 text-sm">
+                {isCalculatingShipping && <span className="text-blue-600">🔄 Calculating shipping cost...</span>}
+                {!isCalculatingShipping && shippingCost !== null && (
+                  <span className="text-green-600">✅ Shipping cost: ${shippingCost.toFixed(2)}</span>
+                )}
+                {!isCalculatingShipping && shippingCost === null && location.postalCode.length >= 5 && (
+                  <span className="text-red-600">❌ Unable to calculate shipping cost</span>
+                )}
+              </div>
+            )}
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Phone Number *</label>

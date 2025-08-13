@@ -85,7 +85,24 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [emailError, setEmailError] = useState("")
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [hasProvidedGuestInfo, setHasProvidedGuestInfo] = useState(false)
+ const [apiShippingCost, setApiShippingCost] = useState<number | null>(null)
+ useEffect(() => {
+  const handleShippingCostCalculated = (event: CustomEvent) => {
+    setApiShippingCost(event.detail.cost)
+  }
 
+  window.addEventListener("shippingCostCalculated", handleShippingCostCalculated as EventListener)
+  
+  // Load existing shipping cost from localStorage
+  const savedShippingCost = localStorage.getItem("calculatedShippingCost")
+  if (savedShippingCost) {
+    setApiShippingCost(parseFloat(savedShippingCost))
+  }
+
+  return () => {
+    window.removeEventListener("shippingCostCalculated", handleShippingCostCalculated as EventListener)
+  }
+}, [])
   // Check if any product has "Rentals" in the name
   const hasRentalProducts = orders.some(
     (order) =>
@@ -440,11 +457,16 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         setIsCalculatingShipping(false)
       }
     } else {
-      const shippingCost = currentMethod === "pickup" ? 0 : 0
-      setCalculatedShipping(shippingCost)
-      setIsShippingCalculated(true)
-      await createOrder(shippingCost, currentMethod)
-    }
+  let shippingCost = 0
+
+  if (currentMethod === "shipping") {
+    shippingCost = apiShippingCost ?? 0 // use API-provided shipping cost
+  }
+
+  setCalculatedShipping(shippingCost)
+  setIsShippingCalculated(true)
+  await createOrder(shippingCost, currentMethod)
+}
   }
 
   const closeModal = () => {
@@ -616,14 +638,30 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   }
 
   const getShippingDisplay = () => {
-    if (deliveryMethod === "pickup") {
-      return "$0.00"
-    }
-    if (calculatedShipping !== null) {
-      return `$${calculatedShipping.toFixed(2)}`
-    }
-    return "Calculated at checkout"
+  if (deliveryMethod === "pickup") {
+    return "$0.00"
   }
+  if (deliveryMethod === "shipping" && apiShippingCost !== null) {
+    return `$${apiShippingCost.toFixed(2)}`
+  }
+  if (deliveryMethod === "local" && calculatedShipping !== null) {
+    return `$${calculatedShipping.toFixed(2)}`
+  }
+  return "Calculated at checkout"
+}
+const getFinalTotal = () => {
+  const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, ""))
+  let shippingToAdd = 0
+  
+  if (deliveryMethod === "local" && calculatedShipping !== null) {
+    shippingToAdd = calculatedShipping
+  } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
+    shippingToAdd = apiShippingCost
+  }
+  
+  return `$${(baseTotal + shippingToAdd).toFixed(2)}`
+}
+
 
   const getButtonText = () => {
     if (isCalculatingShipping) {
@@ -675,10 +713,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
       <div className="flex gap-10 justify-between items-center pt-6 mt-6 w-full text-base tracking-normal border-t border-solid border-t-[color:var(--colour-stroke-default,#D5D5D5)]">
         <span className="self-stretch my-auto leading-6 text-neutral-500">TOTAL ({totalItems} items)</span>
         <span className="self-stretch my-auto font-semibold leading-5 text-black">
-          {calculatedShipping !== null && deliveryMethod !== "pickup"
-            ? `$${(Number.parseFloat(adjustedTotal.replace(/[$,]/g, "")) + calculatedShipping).toFixed(2)}`
-            : adjustedTotal}
-        </span>
+  {getFinalTotal()}
+</span>
+
       </div>
       <div className="flex gap-2 items-center mt-6 w-full">
         <button

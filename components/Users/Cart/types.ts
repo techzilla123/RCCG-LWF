@@ -20,6 +20,7 @@ export interface ProductItemType {
 
   
   export interface SummaryItemType {
+    value(value: any): unknown;
     label: string;
     amount: string;
     bold?: boolean;
