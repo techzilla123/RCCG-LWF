@@ -22,7 +22,7 @@ const occasions: Occasion[] = [
     id: "newyear",
     title: "New Year",
     imageSrc: "https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=400&h=300&fit=crop",
-     link: "/shop/holiday?SCT=cbcdf4b8-eb7c-4da6-bec4-b42d7d18075f",
+     link: "/shop/party-supplies?SCT=cbcdf4b8-eb7c-4da6-bec4-b42d7d18075f",
     getDate: (year) => new Date(year, 0, 1), // January 1
     showDaysBefore: 30,
   },
@@ -45,7 +45,7 @@ const occasions: Occasion[] = [
     title: "Valentine's Day",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/0592b126763a61d7fdb2a326c676d6767149c37c?placeholderIfAbsent=true",
-       link: "/shop/holiday?SCT=439c8360-c803-4ba3-9f74-de2ac8f5f8b6",
+       link: "/shop/party-supplies?SCT=76a57769-707c-46a4-970f-3ad73fb43b1e",
     getDate: (year) => new Date(year, 1, 14), // February 14
     showDaysBefore: 45,
   },
@@ -66,7 +66,7 @@ const occasions: Occasion[] = [
     id: "stpatricks",
     title: "St. Patrick's Day",
     imageSrc: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop",
-    link: "/shop/holiday?SCT=4aaf5e31-cc27-4c94-a030-b9d27c33e090",
+    link: "/shop/party-supplies?SCT=4aaf5e31-cc27-4c94-a030-b9d27c33e090",
     getDate: (year) => new Date(year, 2, 17), // March 17
     showDaysBefore: 30,
   },
@@ -74,7 +74,7 @@ const occasions: Occasion[] = [
     id: "easter",
     title: "Easter",
     imageSrc: "https://images.unsplash.com/photo-1554072675-66db59dba46f?w=400&h=300&fit=crop",
-      link: "/shop/balloon?SCT=d6c4e5b9-0b1a-428b-b626-a815e31b8e23",
+      link: "/shop/party-supplies?SCT=a9985180-a331-4826-93d3-af1142577fa2",
     getDate: (year) => {
       // Easter calculation (Western Christianity)
       const a = year % 19
@@ -114,7 +114,7 @@ const occasions: Occasion[] = [
     title: "Mother's Day",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/3005fdd58172243a6976a17460f1a3032583c9fc?placeholderIfAbsent=true",
-       link: "/shop/balloon?SCT=054d59a8-f1c7-4670-993f-349d615f1ee7",
+       link: "/shop/party-supplies?SCT=cb17e1bc-6682-4f43-b59a-0f0e2df7ff6d",
     getDate: (year) => {
       // Second Sunday in May
       const may = new Date(year, 4, 1)
@@ -141,7 +141,7 @@ const occasions: Occasion[] = [
     id: "graduation",
     title: "Graduation",
     imageSrc: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=300&fit=crop",
-     link: "/shop/holiday?SCT=68c66ee3-83f7-4723-b2f9-a612405be184",
+     link: "/shop/party-supplies?SCT=93caeb56-e278-4810-9b0e-cead08c487b6",
     getDate: (year) => new Date(year, 4, 20), // Late May
     showDaysBefore: 45,
   },
@@ -150,7 +150,7 @@ const occasions: Occasion[] = [
     title: "Father's Day",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/11a4e9741ebb66c7a4ef460a3a31daac9ceb7585?placeholderIfAbsent=true",
-       link: "/shop/balloon?SCT=054d59a8-f1c7-4670-993f-349d615f1ee7",
+       link: "/shop/party-supplies?SCT=cb17e1bc-6682-4f43-b59a-0f0e2df7ff6d",
     getDate: (year) => {
       // Third Sunday in June
       const june = new Date(year, 5, 1)
@@ -164,7 +164,7 @@ const occasions: Occasion[] = [
     id: "independence",
     title: "Independence Day",
     imageSrc: "https://images.unsplash.com/photo-1530841344095-b2893194affe?w=400&h=300&fit=crop",
-    link: "/shop/holiday?SCT=63a27a17-960f-4ae6-bdd0-8c6f33127d02",
+    link: "/shop/party-supplies?SCT=63a27a17-960f-4ae6-bdd0-8c6f33127d02",
     getDate: (year) => new Date(year, 6, 4), // July 4
     showDaysBefore: 30,
   },
@@ -252,7 +252,7 @@ const occasions: Occasion[] = [
     id: "christmas",
     title: "Christmas",
     imageSrc: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=400&h=300&fit=crop",
-    link: "/shop/holiday?SCT=59dad4dd-e002-4a94-aec6-1c028b222a31",
+    link: "/shop/party-supplies?SCT=59dad4dd-e002-4a94-aec6-1c028b222a31",
     getDate: (year) => new Date(year, 11, 25), // December 25
     showDaysBefore: 60,
   },
@@ -260,6 +260,7 @@ const occasions: Occasion[] = [
     id: "new-years-eve",
     title: "New Year's Eve",
     imageSrc: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop",
+    link: "/shop/party-supplies?SCT=cbcdf4b8-eb7c-4da6-bec4-b42d7d18075f",
     getDate: (year) => new Date(year, 11, 31), // December 31
     showDaysBefore: 30,
   },
@@ -271,7 +272,7 @@ const alwaysShowOccasions = [
     id: "anniversaries",
     title: "Anniversaries",
     imageSrc: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/81c6d95d2bcbd39bc5304011b824540992ebb6e7?placeholderIfAbsent=true",
-      link: "/shop/balloon?SCT=ccda31d6-c9bb-4c7c-8174-cafb421a7b97",
+      link: "/shop/party-supplies?SCT=390778f1-bc48-408f-8534-56d695fcc3db",
   },
   {
     id: "weddings",
@@ -299,7 +300,7 @@ const otherPermanentOccasions = [
     id: "baby-shower",
     title: "Baby Shower",
     imageSrc: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop",
-    link: "/shop/balloon?SCT=3379f8d3-96b9-4dc6-8d7c-66f82d3b10a6",
+    link: "/shop/party-supplies?SCT=fa8ba596-3b50-41c3-b521-6579563d6b2b",
   },
   // {
   //   id: "housewarming",
