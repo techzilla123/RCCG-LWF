@@ -207,11 +207,12 @@ React.useEffect(() => {
         product_id: productId,
         quantity: quantity.toString(),
         size: selectedSize,
-        color: selectedColor
-    ? `${selectedColor}${isInflated ? " (inflated)" : " (not inflated)"}`
-    : isInflated
-      ? "(Inflated)"
-      : "(Not inflated)",
+       color: selectedColor
+  ? selectedColor + (showInflatedOptions ? (isInflated ? " (inflated)" : " (not inflated)") : "")
+  : showInflatedOptions
+    ? (isInflated ? "(Inflated)" : "(Not inflated)")
+    : "",
+
         productName: title,
         price: isInflated && inflatedPrice ? inflatedPrice : price,
         discountPrice: originalPrice,
@@ -278,11 +279,12 @@ React.useEffect(() => {
         product_id: productId,
         quantity: quantity.toString(),
         size: selectedSize,
-         color: selectedColor
-    ? `${selectedColor}${isInflated ? " (inflated)" : " (not inflated)"}`
-    : isInflated
-      ? "(Inflated)"
-      : "(Not inflated)",
+        color: selectedColor
+  ? selectedColor + (showInflatedOptions ? (isInflated ? " (inflated)" : " (not inflated)") : "")
+  : showInflatedOptions
+    ? (isInflated ? "(Inflated)" : "(Not inflated)")
+    : "",
+
       })
       const res = await fetch(url, {
         method: "POST",
