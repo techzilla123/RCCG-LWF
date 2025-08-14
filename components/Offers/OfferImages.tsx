@@ -15,6 +15,8 @@ const OfferImages: React.FC<OfferImagesProps> = ({
 }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0)
   const [tokenExists, setTokenExists] = React.useState(false)
+  const [modalOpen, setModalOpen] = React.useState(false)
+
 
   React.useEffect(() => {
     const token = localStorage.getItem("accessToken")
@@ -71,12 +73,17 @@ const OfferImages: React.FC<OfferImagesProps> = ({
     ? slides.filter((slide) => slide.id !== 1)
     : slides
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % filteredSlides.length)
-    }, 4000)
-    return () => clearInterval(timer)
-  }, [filteredSlides.length])
+React.useEffect(() => {
+  let timer: NodeJS.Timeout;
+
+  if (!modalOpen) {
+    timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % filteredSlides.length);
+    }, 4000);
+  }
+
+  return () => clearInterval(timer);
+}, [filteredSlides.length, modalOpen]);
 
   const goToPrevious = () => {
     setCurrentSlide(
@@ -134,9 +141,11 @@ const OfferImages: React.FC<OfferImagesProps> = ({
 
   {/* Button wrapped in div for responsive sizing */}
   <div className="w-[140px] md:w-auto">
-    <ActionButton onClick={() => console.log("Sign up clicked")}>
-      Sign up now
-    </ActionButton>
+  <ActionButton 
+  onClick={() => setModalOpen(true)} 
+  onCloseModal={() => setModalOpen(false)} >
+  Sign up now
+</ActionButton>
   </div>
 </div>
 
