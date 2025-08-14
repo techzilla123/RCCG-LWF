@@ -24,15 +24,14 @@ const ActionButton: React.FC<ActionButtonProps> = ({ children, onClick }) => {
   return (
     <>
       <button
-        onClick={() => {
-          onClick?.();
-          setModalType("signup"); // Show sign up modal when the button is clicked
-        }}
-        
-        className="w-[180px] z-10 h-[64px] px-8 py-4 bg-black text-white rounded-[50px] text-xl tracking-normal leading-8 hover:bg-gray-900 transition-colors duration-200"
-      >
-        {children}
-      </button>
+  onClick={() => {
+    onClick?.();
+    setModalType("signup");
+  }}
+  className="mt-[-18px] md:mt-0 w-[120px] h-[40px] px-4 py-2 text-sm md:w-[180px] md:h-[64px] md:px-8 md:py-4 md:text-xl z-10 bg-black text-white rounded-[50px] tracking-normal leading-8 hover:bg-gray-900 transition-colors duration-200"
+>
+  {children}
+</button>
 
       {/* Show modals based on modalType */}
       {modalType === "signup" && (
