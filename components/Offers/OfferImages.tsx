@@ -60,11 +60,11 @@ const OfferImages: React.FC<OfferImagesProps> = ({
     {
       id: 5,
       type: "image-bg",
-      title: "Wedding Celebrations",
-      subtitle: "Dream Weddings Come True",
+      title: "Delivery Options",
+      subtitle: "Store Pickup, Local Delivery, and Shipping",
       imageUrl:
-        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop&crop=center",
-      link: "/shop/party-supplies?SCT=1f9cc4df-ff7a-483a-ba0c-80e7aae7873e",
+        "/herovid/sdsds.jpg",
+      link: "/shop",
     },
   ]
 
