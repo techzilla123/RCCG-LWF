@@ -86,6 +86,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [hasProvidedGuestInfo, setHasProvidedGuestInfo] = useState(false)
  const [apiShippingCost, setApiShippingCost] = useState<number | null>(null)
+ 
  useEffect(() => {
   const handleShippingCostCalculated = (event: CustomEvent) => {
     setApiShippingCost(event.detail.cost)
@@ -515,6 +516,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         if (deliveryDetails.phoneNumber) {
           deliveryAddressString += ` - Phone: ${deliveryDetails.phoneNumber}`
         }
+         if (deliveryDetails.specialInstructions) {
+    deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
+  }
         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
           deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
@@ -663,8 +667,9 @@ const getFinalTotal = () => {
 
   const taxableAmount = baseTotal + shippingToAdd
   const taxes = taxableAmount * TAX_RATE
-  const finalTotal = taxableAmount + taxes
+  const finalTotal = taxableAmount + taxes - 5
 
+  // ✅ Removed any extra +5 that was there before
   return `$${finalTotal.toFixed(2)}`
 }
 

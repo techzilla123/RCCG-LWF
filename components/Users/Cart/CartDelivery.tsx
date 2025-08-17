@@ -593,13 +593,15 @@ const weight = (totalQuantity * 0.5).toString()
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Pickup Date *</label>
-            <input
-              type="date"
-              value={location.pickupDate}
-              onChange={(e) => handleLocationChange("pickupDate", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              required
-            />
+           <input
+  type="date"
+  min={new Date().toISOString().split("T")[0]} // disables past dates
+  value={location.pickupDate}
+  onChange={(e) => handleLocationChange("pickupDate", e.target.value)}
+  className="p-2 border rounded-lg w-full"
+  required
+/>
+
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Pickup Time *</label>
@@ -635,6 +637,17 @@ const weight = (totalQuantity * 0.5).toString()
             />
           </div>
 
+           {/* 🔹 Special Instructions (added for Pickup) */}
+    <div className="mt-4">
+      <label className="block text-sm font-medium">Special Instructions</label>
+      <textarea
+        value={location.specialInstructions}
+        onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
+        className="p-2 border rounded-lg w-full"
+        placeholder="Any special instructions?"
+      />
+    </div>
+
           {/* Return fields for rental products */}
           {hasRentalProducts && (
             <>
@@ -645,6 +658,7 @@ const weight = (totalQuantity * 0.5).toString()
                 <label className="block text-sm font-medium">Return Date *</label>
                 <input
                   type="date"
+                  min={new Date().toISOString().split("T")[0]} // disables past dates
                   value={location.returnDate}
                   onChange={(e) => handleLocationChange("returnDate", e.target.value)}
                   className="p-2 border rounded-lg w-full"
@@ -686,6 +700,7 @@ const weight = (totalQuantity * 0.5).toString()
             <label className="block text-sm font-medium">Delivery Date *</label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]} // disables past dates
               value={location.deliveryDate}
               onChange={(e) => handleLocationChange("deliveryDate", e.target.value)}
               className="p-2 border rounded-lg w-full"
@@ -769,6 +784,7 @@ const weight = (totalQuantity * 0.5).toString()
                 <label className="block text-sm font-medium">Return Date *</label>
                 <input
                   type="date"
+                  min={new Date().toISOString().split("T")[0]} // disables past dates
                   value={location.returnDate}
                   onChange={(e) => handleLocationChange("returnDate", e.target.value)}
                   className="p-2 border rounded-lg w-full"
