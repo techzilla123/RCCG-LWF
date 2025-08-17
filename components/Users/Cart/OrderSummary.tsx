@@ -649,8 +649,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   }
   return "Calculated at checkout"
 }
+ const TAX_RATE = 0.0825
+
 const getFinalTotal = () => {
-  const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, ""))
+  const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
   let shippingToAdd = 0
   
   if (deliveryMethod === "local" && calculatedShipping !== null) {
@@ -658,8 +660,12 @@ const getFinalTotal = () => {
   } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
     shippingToAdd = apiShippingCost
   }
-  
-  return `$${(baseTotal + shippingToAdd).toFixed(2)}`
+
+  const taxableAmount = baseTotal + shippingToAdd
+  const taxes = taxableAmount * TAX_RATE
+  const finalTotal = taxableAmount + taxes
+
+  return `$${finalTotal.toFixed(2)}`
 }
 
 
@@ -689,9 +695,22 @@ const getFinalTotal = () => {
         ))}
         {taxes && (
           <div className="flex gap-10 justify-between items-center mt-2 w-full">
-            <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes</span>
-            <span className="text-base font-semibold tracking-normal leading-5 text-black">{taxes.amount}</span>
-          </div>
+  <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes (8.25%)</span>
+  <span className="text-base font-semibold tracking-normal leading-5 text-black">
+    {(() => {
+      const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
+      let shippingToAdd = 0
+      if (deliveryMethod === "local" && calculatedShipping !== null) {
+        shippingToAdd = calculatedShipping
+      } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
+        shippingToAdd = apiShippingCost
+      }
+      const taxableAmount = baseTotal + shippingToAdd
+      return `$${(taxableAmount * TAX_RATE).toFixed(2)}`
+    })()}
+  </span>
+</div>
+
         )}
         <div className="flex gap-10 justify-between items-center mt-4 w-full">
           <div className="flex flex-col">
