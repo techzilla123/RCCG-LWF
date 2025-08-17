@@ -543,10 +543,10 @@ const weight = (totalQuantity * 0.5).toString()
               <strong>Shipping Cost Calculation:</strong>
               <br />
               {orders.length > 0 && (
-                <>
+                <div className="hidden">
                   Weight: {(orders.length * 0.5).toFixed(1)}g ({orders.length} items × 0.5g each)
                   <br />
-                </>
+                </div>
               )}
               {isCalculatingShipping && "Calculating shipping cost..."}
               {!isCalculatingShipping && shippingCost !== null && `Shipping cost: $${shippingCost.toFixed(2)}`}

@@ -53,7 +53,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [sizePrices, setSizePrices] = React.useState<Record<string, number>>({})
   const [popupMessage, setPopupMessage] = React.useState<string | null>(null)
   const [popupType, setPopupType] = React.useState<"success" | "error" | null>(null)
-  const [showViewCart, setShowViewCart] = React.useState(false)
+  // const [showViewCart, setShowViewCart] = React.useState(false)
   const [selectedSize, setSelectedSize] = React.useState("")
   const [isInflated, setIsInflated] = React.useState(false)
   const [quantity, setQuantity] = React.useState(1)
@@ -260,7 +260,7 @@ React.useEffect(() => {
         setPopupMessage("Product saved to cart! Sign in to sync your cart.")
         window.dispatchEvent(new Event("cartUpdated"))
         setPopupType("success")
-        setShowViewCart(true)
+        // setShowViewCart(true)
       } else {
         setPopupMessage("Failed to save product to cart.")
         setPopupType("error")
@@ -302,7 +302,7 @@ React.useEffect(() => {
       setPopupMessage("Product added to cart successfully!")
       window.dispatchEvent(new Event("cartUpdated"))
       setPopupType("success")
-      setShowViewCart(true)
+      // setShowViewCart(true)
     } catch (err) {
       setPopupMessage("Something went wrong. Please try again.")
       setPopupType("error")
@@ -456,19 +456,11 @@ React.useEffect(() => {
           )}
         </div>
         <div className="mt-6">
-          {showViewCart ? (
-            <a href="/cart">
-              <Button variant="primary" fullWidth>
-                View Cart
-              </Button>
-            </a>
-          ) : (
-           <Button variant="primary" fullWidth onClick={handleAddToCart} disabled={stock === 0}>
-  {stock === 0 ? "Not Available" : "Add to cart"}
-</Button>
+  <Button variant="primary" fullWidth onClick={handleAddToCart} disabled={stock === 0}>
+    {stock === 0 ? "Not Available" : "Add to cart"}
+  </Button>
+</div>
 
-          )}
-        </div>
         <section className="pt-6 mt-6 border-t">
           <div
             className="flex justify-between items-center cursor-pointer"
