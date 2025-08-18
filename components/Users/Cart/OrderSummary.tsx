@@ -590,7 +590,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         firstname: isSignedIn ? userData.firstname : guestFirstName,
         lastname: isSignedIn ? userData.lastname : guestLastName,
         phone_number: deliveryDetails.phoneNumber,
-        total_amount: totalAmount,
+        total_amount: totalAmount + (hasRentalProducts ? 50 : 0), // add deposit
+  refundable_deposit: hasRentalProducts ? 50 : 0,
         delivery_address: deliveryAddressString,
         logistics_price: logisticsPrice,
         delivery_type: finalDeliveryMethod,
@@ -665,13 +666,16 @@ const getFinalTotal = () => {
     shippingToAdd = apiShippingCost
   }
 
-  const taxableAmount = baseTotal + shippingToAdd
+  // ✅ Add refundable deposit if rentals exist
+  const depositToAdd = hasRentalProducts ? 50 : 0
+
+  const taxableAmount = baseTotal + shippingToAdd + depositToAdd
   const taxes = taxableAmount * TAX_RATE
   const finalTotal = taxableAmount + taxes
 
-  // ✅ Removed any extra +5 that was there before
   return `$${finalTotal.toFixed(2)}`
 }
+
 
 
   const getButtonText = () => {
@@ -698,6 +702,22 @@ const getFinalTotal = () => {
             </span>
           </div>
         ))}
+        {/* Refundable Deposit (for rentals) */}
+{hasRentalProducts && (
+  <div
+    className="flex gap-10 justify-between items-center mt-3 cursor-pointer"
+    onClick={() => alert("💰 Deposit will be refunded when items are returned.")}
+    title="Deposit will be refunded when items are returned."
+  >
+    <span className="self-stretch my-auto leading-6 text-neutral-500">
+      Refundable Deposit
+    </span>
+    <span className="self-stretch my-auto font-semibold leading-5 text-black">
+      $50.00
+    </span>
+  </div>
+)}
+
         {taxes && (
           <div className="flex gap-10 justify-between items-center mt-2 w-full">
   <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes (8.25%)</span>
