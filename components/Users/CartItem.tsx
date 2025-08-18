@@ -371,7 +371,7 @@ export default function CartItem() {
     { label: "Item(s) total", amount: `$${itemTotal.toFixed(2)}`, bold: true },
     { label: "Coupon discount", amount: "-$0.00", bold: true },
     { label: "Sub total", amount: `$${itemTotal.toFixed(2)}`, bold: true },
-    { label: "Taxes", amount: "$5.00", bold: true },
+    { label: "Taxes", amount: "$0", bold: true },
   ]
 
   const orderDetails = products.map((product) => ({
@@ -409,7 +409,7 @@ export default function CartItem() {
       <OrderSummary
         items={summaryItems}
         totalItems={totalItems}
-        total={`$${(itemTotal + 5).toFixed(2)}`}
+        total={`$${(itemTotal).toFixed(2)}`}
         orders={orderDetails}
       />
     </main>

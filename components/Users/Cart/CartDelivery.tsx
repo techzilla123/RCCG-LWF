@@ -607,6 +607,7 @@ const weight = (totalQuantity * 0.5).toString()
             <label className="block text-sm font-medium">Pickup Time *</label>
             <input
               type="time"
+               min={new Date().toISOString().slice(11, 16)} // disables past times (for today)
               value={location.pickupTime}
               onChange={(e) => handleLocationChange("pickupTime", e.target.value)}
               className="p-2 border rounded-lg w-full"

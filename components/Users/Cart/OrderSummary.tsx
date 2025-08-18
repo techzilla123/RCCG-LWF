@@ -667,7 +667,7 @@ const getFinalTotal = () => {
 
   const taxableAmount = baseTotal + shippingToAdd
   const taxes = taxableAmount * TAX_RATE
-  const finalTotal = taxableAmount + taxes - 5
+  const finalTotal = taxableAmount + taxes
 
   // ✅ Removed any extra +5 that was there before
   return `$${finalTotal.toFixed(2)}`
