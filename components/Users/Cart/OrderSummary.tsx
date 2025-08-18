@@ -720,7 +720,7 @@ const getFinalTotal = () => {
 
         {taxes && (
           <div className="flex gap-10 justify-between items-center mt-2 w-full">
-  <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes (8.25%)</span>
+  <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes</span>
   <span className="text-base font-semibold tracking-normal leading-5 text-black">
     {(() => {
       const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
