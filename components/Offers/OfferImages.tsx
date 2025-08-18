@@ -63,7 +63,7 @@ const OfferImages: React.FC<OfferImagesProps> = ({
       title: "Delivery Options",
       subtitle: "Store Pickup, Local Delivery, and Shipping",
       imageUrl:
-        "/herovid/sdsds.jpg",
+        "/herovid/sa.jpg",
       link: "/shop",
     },
   ]
