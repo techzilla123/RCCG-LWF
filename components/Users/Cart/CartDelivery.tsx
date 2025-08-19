@@ -148,7 +148,9 @@ const getTimeRangeValues = (
 
   const to24Hour = (timeStr: string): string => {
     const [time, modifier] = timeStr.split(" ")
-    let [hours, minutes] = time.split(":").map(Number)
+  let [hours] = time.split(":").map(Number)        // hours = 12
+const [, minutes] = time.split(":").map(Number)  // minutes = 45
+
 
     if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12
     if (modifier.toLowerCase() === "am" && hours === 12) hours = 0
@@ -177,7 +179,7 @@ const generateTimeSlots = (
   // const [] = range.max.split(":").map(Number)
 
   const slots: string[] = []
-  let current = new Date(date + "T" + range.min)
+  const current = new Date(date + "T" + range.min)
   const end = new Date(date + "T" + range.max)
 
   while (current <= end) {
