@@ -148,7 +148,9 @@ const getTimeRangeValues = (
 
   const to24Hour = (timeStr: string): string => {
     const [time, modifier] = timeStr.split(" ")
-    let [hours, minutes] = time.split(":").map(Number)
+    let [hours] = time.split(":").map(Number)
+const [minutes] = time.split(":").map(Number)
+
 
     if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12
     if (modifier.toLowerCase() === "am" && hours === 12) hours = 0
