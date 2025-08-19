@@ -91,7 +91,7 @@ const isTimeWithinAllowedHours = (
 
   const selectedDate = new Date(date)
   const dayOfWeek = selectedDate.getDay() // 0 = Sunday
-  const [hours, minutes] = time.split(":").map(Number)
+const [hours, minutes] = time.split(":").map(Number)
   const timeInMinutes = hours * 60 + minutes
 
   if (type === "delivery") {
@@ -148,9 +148,7 @@ const getTimeRangeValues = (
 
   const to24Hour = (timeStr: string): string => {
     const [time, modifier] = timeStr.split(" ")
-    let [hours] = time.split(":").map(Number)
-const [minutes] = time.split(":").map(Number)
-
+    let [hours, minutes] = time.split(":").map(Number)
 
     if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12
     if (modifier.toLowerCase() === "am" && hours === 12) hours = 0
@@ -164,18 +162,22 @@ const [minutes] = time.split(":").map(Number)
   }
 }
 
+// Generate array of time options in 30-min increments (can adjust to 15 or 60)
 const generateTimeSlots = (
   date: string,
   type: "delivery" | "pickup" | "return",
-  interval: number = 30 // better default: 30 min slots
+  interval: number = 1
 ): string[] => {
   if (!date) return []
 
   const range = getTimeRangeValues(date, type)
   if (!range) return []
 
+  // const [] = range.min.split(":").map(Number)
+  // const [] = range.max.split(":").map(Number)
+
   const slots: string[] = []
-  const current = new Date(date + "T" + range.min)
+  let current = new Date(date + "T" + range.min)
   const end = new Date(date + "T" + range.max)
 
   while (current <= end) {
