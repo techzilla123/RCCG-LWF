@@ -31,6 +31,7 @@ type LocationInfo = {
   address: string
   postalCode: string
   specialInstructions: string
+  specialInstructionsr: string
   pickupLocation: string
   pickupDate: string
   pickupTime: string
@@ -519,9 +520,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
          if (deliveryDetails.specialInstructions) {
     deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
   }
+   
         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
           deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
+        if (hasRentalProducts && deliveryDetails.specialInstructionsr) {
+  deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
+}
       } else if (finalDeliveryMethod === "local") {
         deliveryAddressString = `Local Delivery to: ${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.postalCode} on ${deliveryDetails.deliveryDate} at ${deliveryDetails.deliveryTime}`
         if (deliveryDetails.phoneNumber) {
@@ -533,6 +538,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
           deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
+         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.specialInstructionsr) {
+  deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
+}
       } else if (finalDeliveryMethod === "shipping") {
         deliveryAddressString = `Ship to: ${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.postalCode}`
         if (deliveryDetails.phoneNumber) {
