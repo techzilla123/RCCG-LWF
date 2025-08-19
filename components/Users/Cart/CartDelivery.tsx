@@ -78,31 +78,33 @@ const defaultLocations: Record<DeliveryMethod, LocationInfo> = {
 }
 
 // Helper function to validate if a time is within allowed hours
-const isTimeWithinAllowedHours = (time: string, date: string, type: "delivery" | "pickup" | "return"): boolean => {
+const isTimeWithinAllowedHours = (
+  time: string,
+  date: string,
+  type: "delivery" | "pickup" | "return"
+): boolean => {
   if (!time || !date) return false
 
   const selectedDate = new Date(date)
-  const dayOfWeek = selectedDate.getDay() // 0 = Sunday, 1 = Monday, etc.
+  const dayOfWeek = selectedDate.getDay() // 0 = Sunday
   const [hours, minutes] = time.split(":").map(Number)
   const timeInMinutes = hours * 60 + minutes
 
   if (type === "delivery") {
-    // Local delivery: 9am-10pm (weekdays), 2pm-10pm (Sunday)
     if (dayOfWeek === 0) {
-      // Sunday: 2pm to 10pm
-      return timeInMinutes >= 14 * 60 && timeInMinutes <= 22 * 60
+      // Sunday: 2pm - 7pm
+      return timeInMinutes >= 14 * 60 && timeInMinutes <= 19 * 60
     } else {
-      // Weekdays: 9am to 10pm
-      return timeInMinutes >= 9 * 60 && timeInMinutes <= 22 * 60
+      // Mon-Sat: 10am - 9pm
+      return timeInMinutes >= 10 * 60 && timeInMinutes <= 21 * 60
     }
   } else if (type === "pickup" || type === "return") {
-    // Pickup/Return: 10am-7pm (weekdays), 2pm-6pm (Sunday)
     if (dayOfWeek === 0) {
-      // Sunday: 2pm to 6pm
-      return timeInMinutes >= 14 * 60 && timeInMinutes <= 18 * 60
+      // Sunday: 2pm - 7pm
+      return timeInMinutes >= 14 * 60 && timeInMinutes <= 19 * 60
     } else {
-      // Weekdays: 10am to 7pm
-      return timeInMinutes >= 10 * 60 && timeInMinutes <= 19 * 60
+      // Mon-Sat: 11am - 7pm
+      return timeInMinutes >= 11 * 60 && timeInMinutes <= 19 * 60
     }
   }
 
@@ -110,20 +112,80 @@ const isTimeWithinAllowedHours = (time: string, date: string, type: "delivery" |
 }
 
 // Helper function to get time range text for display
-const getTimeRangeText = (date: string, type: "delivery" | "pickup" | "return"): string => {
+const getTimeRangeText = (
+  date: string,
+  type: "delivery" | "pickup" | "return"
+): string => {
   if (!date) return ""
 
   const selectedDate = new Date(date)
   const dayOfWeek = selectedDate.getDay()
 
   if (type === "delivery") {
-    return dayOfWeek === 0 ? "2:00 PM - 10:00 PM" : "9:00 AM - 10:00 PM"
+    return dayOfWeek === 0 ? "2:00 PM - 7:00 PM" : "10:00 AM - 9:00 PM"
   } else if (type === "pickup" || type === "return") {
-    return dayOfWeek === 0 ? "2:00 PM - 6:00 PM" : "10:00 AM - 7:00 PM"
+    return dayOfWeek === 0 ? "2:00 PM - 7:00 PM" : "11:00 AM - 7:00 PM"
   }
 
   return ""
 }
+
+// Convert "2:00 PM - 7:00 PM" → { min: "14:00", max: "19:00" }
+const getTimeRangeValues = (
+  date: string,
+  type: "delivery" | "pickup" | "return"
+): { min: string; max: string } | null => {
+  if (!date) return null
+
+  const textRange = getTimeRangeText(date, type)
+  if (!textRange) return null
+
+  const [start, end] = textRange.split(" - ")
+
+  const to24Hour = (timeStr: string): string => {
+    const [time, modifier] = timeStr.split(" ")
+    let [hours, minutes] = time.split(":").map(Number)
+
+    if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12
+    if (modifier.toLowerCase() === "am" && hours === 12) hours = 0
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`
+  }
+
+  return {
+    min: to24Hour(start),
+    max: to24Hour(end),
+  }
+}
+
+// Generate array of time options in 30-min increments (can adjust to 15 or 60)
+const generateTimeSlots = (
+  date: string,
+  type: "delivery" | "pickup" | "return",
+  interval: number = 1
+): string[] => {
+  if (!date) return []
+
+  const range = getTimeRangeValues(date, type)
+  if (!range) return []
+
+  const [] = range.min.split(":").map(Number)
+  const [] = range.max.split(":").map(Number)
+
+  const slots: string[] = []
+  let current = new Date(date + "T" + range.min)
+  const end = new Date(date + "T" + range.max)
+
+  while (current <= end) {
+    const hh = current.getHours().toString().padStart(2, "0")
+    const mm = current.getMinutes().toString().padStart(2, "0")
+    slots.push(`${hh}:${mm}`)
+    current.setMinutes(current.getMinutes() + interval)
+  }
+
+  return slots
+}
+
 
 // Helper function to calculate pricing multiplier based on days
 const calculateRentalMultiplier = (
@@ -605,14 +667,20 @@ const weight = (totalQuantity * 0.5).toString()
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Pickup Time *</label>
-            <input
-              type="time"
-               min={new Date().toISOString().slice(11, 16)} // disables past times (for today)
-              value={location.pickupTime}
-              onChange={(e) => handleLocationChange("pickupTime", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              required
-            />
+          <select
+  value={location.pickupTime}
+  onChange={(e) => handleLocationChange("pickupTime", e.target.value)}
+  className="p-2 border rounded-lg w-full"
+  required
+>
+  <option value="">Select a time</option>
+  {generateTimeSlots(location.pickupDate, "pickup").map((slot) => (
+    <option key={slot} value={slot}>
+      {slot}
+    </option>
+  ))}
+</select>
+
             {location.pickupDate && (
               <p className="text-xs text-gray-500 mt-1">
                 Available hours: {getTimeRangeText(location.pickupDate, "pickup")}
@@ -668,13 +736,21 @@ const weight = (totalQuantity * 0.5).toString()
               </div>
               <div className="mt-4">
                 <label className="block text-sm font-medium">Return Time *</label>
-                <input
-                  type="time"
-                  value={location.returnTime}
-                  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
-                  className="p-2 border rounded-lg w-full"
-                  required
-                />
+              <select
+  value={location.returnTime}
+  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
+  className="p-2 border rounded-lg w-full"
+  required
+>
+  <option value="">Select a time</option>
+  {generateTimeSlots(location.returnDate, "return").map((slot) => (
+    <option key={slot} value={slot}>
+      {slot}
+    </option>
+  ))}
+</select>
+
+
                 {location.returnDate && (
                   <p className="text-xs text-gray-500 mt-1">
                     Available hours: {getTimeRangeText(location.returnDate, "return")}
@@ -710,13 +786,21 @@ const weight = (totalQuantity * 0.5).toString()
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Delivery Time *</label>
-            <input
-              type="time"
-              value={location.deliveryTime}
-              onChange={(e) => handleLocationChange("deliveryTime", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              required
-            />
+         <select
+  value={location.deliveryTime}
+  onChange={(e) => handleLocationChange("deliveryTime", e.target.value)}
+  className="p-2 border rounded-lg w-full"
+  required
+>
+  <option value="">Select a time</option>
+  {generateTimeSlots(location.deliveryDate, "delivery").map((slot) => (
+    <option key={slot} value={slot}>
+      {slot}
+    </option>
+  ))}
+</select>
+
+
             {location.deliveryDate && (
               <p className="text-xs text-gray-500 mt-1">
                 Available hours: {getTimeRangeText(location.deliveryDate, "delivery")}
@@ -794,13 +878,20 @@ const weight = (totalQuantity * 0.5).toString()
               </div>
               <div className="mt-4">
                 <label className="block text-sm font-medium">Return Time *</label>
-                <input
-                  type="time"
-                  value={location.returnTime}
-                  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
-                  className="p-2 border rounded-lg w-full"
-                  required
-                />
+               <select
+  value={location.returnTime}
+  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
+  className="p-2 border rounded-lg w-full"
+  required
+>
+  <option value="">Select a return time</option>
+  {generateTimeSlots(location.returnDate, "delivery").map((slot) => (
+    <option key={slot} value={slot}>
+      {slot}
+    </option>
+  ))}
+</select>
+
                 {location.returnDate && (
                   <p className="text-xs text-gray-500 mt-1">
                     Available hours: {getTimeRangeText(location.returnDate, "return")}
