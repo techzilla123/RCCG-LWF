@@ -763,6 +763,16 @@ const weight = (totalQuantity * 0.5).toString()
                       Please select a time within allowed hours: {getTimeRangeText(location.returnDate, "return")}
                     </p>
                   )}
+
+                    <div className="mt-4">
+            <label className="block text-sm font-medium">Special Instructions</label>
+            <textarea
+              value={location.specialInstructions}
+              onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Any special instructions?"
+            />
+          </div>
               </div>
             </>
           )}
@@ -904,6 +914,16 @@ const weight = (totalQuantity * 0.5).toString()
                       Please select a time within allowed hours: {getTimeRangeText(location.returnDate, "return")}
                     </p>
                   )}
+
+                    <div className="mt-4">
+            <label className="block text-sm font-medium">Special Instructions</label>
+            <textarea
+              value={location.specialInstructions}
+              onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Any special instructions?"
+            />
+          </div>
               </div>
             </>
           )}
