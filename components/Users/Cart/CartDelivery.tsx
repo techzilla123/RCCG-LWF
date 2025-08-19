@@ -162,22 +162,18 @@ const getTimeRangeValues = (
   }
 }
 
-// Generate array of time options in 30-min increments (can adjust to 15 or 60)
 const generateTimeSlots = (
   date: string,
   type: "delivery" | "pickup" | "return",
-  interval: number = 1
+  interval: number = 30 // better default: 30 min slots
 ): string[] => {
   if (!date) return []
 
   const range = getTimeRangeValues(date, type)
   if (!range) return []
 
-  const [] = range.min.split(":").map(Number)
-  const [] = range.max.split(":").map(Number)
-
   const slots: string[] = []
-  let current = new Date(date + "T" + range.min)
+  const current = new Date(date + "T" + range.min)
   const end = new Date(date + "T" + range.max)
 
   while (current <= end) {
