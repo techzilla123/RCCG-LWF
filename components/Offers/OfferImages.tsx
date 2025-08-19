@@ -151,11 +151,14 @@ React.useEffect(() => {
 
             ) : (
               <div className="relative w-full h-full group">
-                <img
-                  src={slide.imageUrl}
-                  alt={slide.title}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+               <img
+  src={slide.imageUrl}
+  alt={slide.title}
+  className={`absolute inset-0 w-full h-full ${
+    slide.id === 5 ? "object-fill" : "object-cover"
+  }`}
+/>
+
                 <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">
                   <h3 className="text-2xl md:text-4xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300">
