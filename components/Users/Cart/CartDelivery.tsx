@@ -18,6 +18,7 @@ type LocationInfo = {
   address: string
   postalCode: string
   specialInstructions: string
+  specialInstructionsr: string
   pickupLocation: string
   pickupDate: string
   pickupTime: string
@@ -38,6 +39,7 @@ const defaultLocations: Record<DeliveryMethod, LocationInfo> = {
     address: "",
     postalCode: "",
     specialInstructions: "",
+    specialInstructionsr: "",
     pickupLocation: "",
     pickupDate: "",
     pickupTime: "",
@@ -53,6 +55,7 @@ const defaultLocations: Record<DeliveryMethod, LocationInfo> = {
     address: "",
     postalCode: "",
     specialInstructions: "",
+    specialInstructionsr: "",
     pickupLocation: "",
     pickupDate: "",
     pickupTime: "",
@@ -68,6 +71,7 @@ const defaultLocations: Record<DeliveryMethod, LocationInfo> = {
     address: "",
     postalCode: "",
     specialInstructions: "",
+    specialInstructionsr: "",
     pickupLocation: "",
     pickupDate: "",
     pickupTime: "",
@@ -767,8 +771,8 @@ const weight = (totalQuantity * 0.5).toString()
                     <div className="mt-4">
             <label className="block text-sm font-medium">Special Instructions</label>
             <textarea
-              value={location.specialInstructions}
-              onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
+              value={location.specialInstructionsr}
+              onChange={(e) => handleLocationChange("specialInstructionsr", e.target.value)}
               className="p-2 border rounded-lg w-full"
               placeholder="Any special instructions?"
             />
@@ -918,8 +922,8 @@ const weight = (totalQuantity * 0.5).toString()
                     <div className="mt-4">
             <label className="block text-sm font-medium">Special Instructions</label>
             <textarea
-              value={location.specialInstructions}
-              onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
+              value={location.specialInstructionsr}
+              onChange={(e) => handleLocationChange("specialInstructionsr", e.target.value)}
               className="p-2 border rounded-lg w-full"
               placeholder="Any special instructions?"
             />
