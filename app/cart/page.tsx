@@ -31,7 +31,7 @@ const COOLDOWN_HOURS = 24
 export default function Home() {
   const [hasOrder, setHasOrder] = useState(false)
   const [showOptions, setShowOptions] = useState(false) // start hidden
-  const [index, setIndex] = useState(0)
+  // const [index, setIndex] = useState(0)
   const router = useRouter()
 
   useEffect(() => {
@@ -80,20 +80,20 @@ export default function Home() {
     }
   }, [])
 
-  // rotate checkout options
-  useEffect(() => {
-    if (!showOptions) return
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % options.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [showOptions])
+  // // rotate checkout options
+  // useEffect(() => {
+  //   if (!showOptions) return
+  //   const interval = setInterval(() => {
+  //     setIndex((prev) => (prev + 1) % options.length)
+  //   }, 3000)
+  //   return () => clearInterval(interval)
+  // }, [showOptions])
 
   const handleOrderClick = () => {
     router.push("/cart/success/order")
   }
 
-  const current = options[index]
+  // const current = options[index]
 
   return (
     <div className="min-h-screen bg-white relative">
@@ -103,55 +103,58 @@ export default function Home() {
       <CartItem />
       <Footer />
 
-      {/* 🔥 Modal overlay + animated card */}
-      <AnimatePresence>
-        {showOptions && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="relative bg-white rounded-xl shadow-lg p-4 w-[280px] text-center"
-            >
-              {/* Close button */}
-              <button
-                onClick={() => setShowOptions(false)}
-                className="absolute top-2 right-3 text-lg text-gray-400 hover:text-red-500"
-              >
-                ×
-              </button>
+    {/* 🔥 Modal overlay + animated card */}
+<AnimatePresence>
+  {showOptions && (
+    <motion.div
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.8, opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        className="relative bg-white rounded-xl shadow-lg p-6 w-[320px] text-center"
+      >
+        {/* Close button */}
+        <button
+          onClick={() => setShowOptions(false)}
+          className="absolute top-2 right-3 text-lg text-gray-400 hover:text-red-500"
+        >
+          ×
+        </button>
 
-              {/* Option content */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={current.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <img
-                    src={current.image}
-                    alt={current.label}
-                    className="w-14 h-14 object-contain"
-                  />
-                  <h2 className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 text-sm">
-                    {current.label}
-                  </h2>
-                  <p className="text-gray-600 text-xs">available at checkout</p>
-                </motion.div>
-              </AnimatePresence>
+        {/* Render ALL options */}
+        <div className="flex flex-col gap-4">
+          {options.map((opt) => (
+            <motion.div
+              key={opt.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center gap-2"
+            >
+              <img
+                src={opt.image}
+                alt={opt.label}
+                className="w-14 h-14 object-contain"
+              />
+              <h2 className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 text-sm">
+                {opt.label}
+              </h2>
+              <p className="text-gray-600 text-xs">available at checkout</p>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
 
       {/* Floating Order Button */}
       {hasOrder && (

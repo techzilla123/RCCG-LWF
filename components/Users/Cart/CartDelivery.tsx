@@ -89,8 +89,18 @@ const isTimeWithinAllowedHours = (
 ): boolean => {
   if (!time || !date) return false
 
-  const selectedDate = new Date(date)
-  const dayOfWeek = selectedDate.getDay() // 0 = Sunday
+  // const selectedDate = new Date(date)
+
+  const getDayOfWeek = (dateStr: string): number => {
+  if (!dateStr) return -1
+  const [year, month, day] = dateStr.split("-").map(Number)
+  // new Date(year, monthIndex, day) is LOCAL without timezone shifting
+  const localDate = new Date(year, month - 1, day)
+  return localDate.getDay()
+}
+
+ const dayOfWeek = getDayOfWeek(date)
+
 const [hours, minutes] = time.split(":").map(Number)
   const timeInMinutes = hours * 60 + minutes
 
@@ -122,8 +132,17 @@ const getTimeRangeText = (
 ): string => {
   if (!date) return ""
 
-  const selectedDate = new Date(date)
-  const dayOfWeek = selectedDate.getDay()
+  // const selectedDate = new Date(date)
+const getDayOfWeek = (dateStr: string): number => {
+  if (!dateStr) return -1
+  const [year, month, day] = dateStr.split("-").map(Number)
+  // new Date(year, monthIndex, day) is LOCAL without timezone shifting
+  const localDate = new Date(year, month - 1, day)
+  return localDate.getDay()
+}
+  
+  const dayOfWeek = getDayOfWeek(date)
+
 
   if (type === "delivery") {
     return dayOfWeek === 0 ? "2:00 PM - 7:00 PM" : "10:00 AM - 9:00 PM"
@@ -164,7 +183,7 @@ const [, minutes] = time.split(":").map(Number)  // minutes = 45
   }
 }
 
-// Generate array of time options in 30-min increments (can adjust to 15 or 60)
+// Generate array of time options in 15-min increments (filters past times)
 const generateTimeSlots = (
   date: string,
   type: "delivery" | "pickup" | "return",
@@ -175,22 +194,29 @@ const generateTimeSlots = (
   const range = getTimeRangeValues(date, type)
   if (!range) return []
 
-  // const [] = range.min.split(":").map(Number)
-  // const [] = range.max.split(":").map(Number)
-
   const slots: string[] = []
   const current = new Date(date + "T" + range.min)
   const end = new Date(date + "T" + range.max)
 
+  const now = new Date()
+  const todayStr = now.toISOString().split("T")[0] // e.g. "2025-08-20"
+
   while (current <= end) {
     const hh = current.getHours().toString().padStart(2, "0")
     const mm = current.getMinutes().toString().padStart(2, "0")
-    slots.push(`${hh}:${mm}`)
+    const slot = `${hh}:${mm}`
+
+    // ✅ Only push if slot is not in the past
+    if (date > todayStr || current.getTime() >= now.getTime()) {
+      slots.push(slot)
+    }
+
     current.setMinutes(current.getMinutes() + interval)
   }
 
   return slots
 }
+
 
 
 // Helper function to calculate pricing multiplier based on days
