@@ -178,9 +178,9 @@ const occasions: Occasion[] = [
   },
   {
     id: "labor",
-    title: "Labor Day",
-    imageSrc: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400&h=300&fit=crop",
-    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
+    title: "Everyday Party",
+    imageSrc: "https://th.bing.com/th/id/R.06076268bc5216ed9f4fbbd23820f919?rik=nk6iEaUPjAQWQw&pid=ImgRaw&r=0",
+    link: "/shop/party-supplies?PCT=b1da3e8d-1ce6-4987-ae73-ed11a3cc9cc4",
     getDate: (year) => {
       // First Monday in September
       const september = new Date(year, 8, 1)
@@ -190,36 +190,36 @@ const occasions: Occasion[] = [
     },
     showDaysBefore: 20,
   },
-  {
-    id: "columbus",
-    title: "Columbus Day",
-    imageSrc: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
-    getDate: (year) => {
-      // Second Monday in October
-      const october = new Date(year, 9, 1)
-      const firstMonday = new Date(october)
-      firstMonday.setDate(1 + ((8 - october.getDay()) % 7))
-      return new Date(firstMonday.getTime() + 7 * 24 * 60 * 60 * 1000)
-    },
-    showDaysBefore: 20,
-  },
-  {
-    id: "halloween",
-    title: "Halloween",
-    imageSrc: "https://images.unsplash.com/photo-1509557965043-6b9f3d1d4b8b?w=400&h=300&fit=crop",
-    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
-    getDate: (year) => new Date(year, 9, 31), // October 31
-    showDaysBefore: 45,
-  },
-  {
-    id: "veterans",
-    title: "Veterans Day",
-    imageSrc: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=400&h=300&fit=crop",
-    link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
-    getDate: (year) => new Date(year, 10, 11), // November 11
-    showDaysBefore: 20,
-  },
+  // {
+  //   id: "columbus",
+  //   title: "Columbus Day",
+  //   imageSrc: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+  //   link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
+  //   getDate: (year) => {
+  //     // Second Monday in October
+  //     const october = new Date(year, 9, 1)
+  //     const firstMonday = new Date(october)
+  //     firstMonday.setDate(1 + ((8 - october.getDay()) % 7))
+  //     return new Date(firstMonday.getTime() + 7 * 24 * 60 * 60 * 1000)
+  //   },
+  //   showDaysBefore: 20,
+  // },
+  // {
+  //   id: "halloween",
+  //   title: "Halloween",
+  //   imageSrc: "https://images.unsplash.com/photo-1509557965043-6b9f3d1d4b8b?w=400&h=300&fit=crop",
+  //   link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
+  //   getDate: (year) => new Date(year, 9, 31), // October 31
+  //   showDaysBefore: 45,
+  // },
+  // {
+  //   id: "veterans",
+  //   title: "Veterans Day",
+  //   imageSrc: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=400&h=300&fit=crop",
+  //   link: "/shop/party-supplies?SCT=239f1266-8a64-4458-98fa-99ff232a8a4e",
+  //   getDate: (year) => new Date(year, 10, 11), // November 11
+  //   showDaysBefore: 20,
+  // },
   {
     id: "thanksgiving",
     title: "Thanksgiving",
@@ -234,20 +234,20 @@ const occasions: Occasion[] = [
     },
     showDaysBefore: 30,
   },
-  {
-    id: "black-friday",
-    title: "Black Friday",
-    imageSrc: "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=400&h=300&fit=crop",
-    getDate: (year) => {
-      // Day after Thanksgiving
-      const november = new Date(year, 10, 1)
-      const firstThursday = new Date(november)
-      firstThursday.setDate(1 + ((4 - november.getDay() + 7) % 7))
-      const thanksgiving = new Date(firstThursday.getTime() + 21 * 24 * 60 * 60 * 1000)
-      return new Date(thanksgiving.getTime() + 24 * 60 * 60 * 1000)
-    },
-    showDaysBefore: 20,
-  },
+  // {
+  //   id: "black-friday",
+  //   title: "Black Friday",
+  //   imageSrc: "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=400&h=300&fit=crop",
+  //   getDate: (year) => {
+  //     // Day after Thanksgiving
+  //     const november = new Date(year, 10, 1)
+  //     const firstThursday = new Date(november)
+  //     firstThursday.setDate(1 + ((4 - november.getDay() + 7) % 7))
+  //     const thanksgiving = new Date(firstThursday.getTime() + 21 * 24 * 60 * 60 * 1000)
+  //     return new Date(thanksgiving.getTime() + 24 * 60 * 60 * 1000)
+  //   },
+  //   showDaysBefore: 20,
+  // },
   {
     id: "christmas",
     title: "Christmas",
@@ -322,24 +322,25 @@ const seasonalOccasions = [
     imageSrc: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=300&fit=crop",
     season: "spring", // March 20 - June 20
   },
-  {
-    id: "summer-occasions",
-    title: "Everyday Party",
-    imageSrc: "https://th.bing.com/th/id/R.06076268bc5216ed9f4fbbd23820f919?rik=nk6iEaUPjAQWQw&pid=ImgRaw&r=0",
-    season: "summer", // June 21 - September 22
-  },
-  {
-    id: "fall-occasions",
-    title: "Fall Gatherings",
-    imageSrc: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    season: "fall", // September 23 - December 20
-  },
-  {
-    id: "winter-occasions",
-    title: "Winter Celebrations",
-    imageSrc: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop",
-    season: "winter", // December 21 - March 19
-  },
+  // {
+  //   id: "summer-occasions",
+  //   title: "Everyday Party",
+  //   imageSrc: "https://th.bing.com/th/id/R.06076268bc5216ed9f4fbbd23820f919?rik=nk6iEaUPjAQWQw&pid=ImgRaw&r=0",
+  //   season: "summer", // June 21 - September 22
+  //   link: "/shop/party-supplies?PCT=b1da3e8d-1ce6-4987-ae73-ed11a3cc9cc4",
+  // },
+  // {
+  //   id: "fall-occasions",
+  //   title: "Fall Gatherings",
+  //   imageSrc: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
+  //   season: "fall", // September 23 - December 20
+  // },
+  // {
+  //   id: "winter-occasions",
+  //   title: "Winter Celebrations",
+  //   imageSrc: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop",
+  //   season: "winter", // December 21 - March 19
+  // },
 ]
 
 function getCurrentSeason(): string {
