@@ -660,7 +660,7 @@ else {
             Shipping cost: <strong>${shippingCost.toFixed(2)}</strong>
             <p className="text-sm text-gray-700 mt-2">
               Item ships within <strong>24hrs</strong> with the expected delivery <br/> of 
-              <strong> 2–5 Business days</strong>.
+              <strong> 3–7 Business days</strong>.
             </p>
             {/* Show estimated delivery date */}
             {/*
