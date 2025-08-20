@@ -324,8 +324,8 @@ const seasonalOccasions = [
   },
   {
     id: "summer-occasions",
-    title: "Summer Parties",
-    imageSrc: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop",
+    title: "Everyday Party",
+    imageSrc: "https://th.bing.com/th/id/R.06076268bc5216ed9f4fbbd23820f919?rik=nk6iEaUPjAQWQw&pid=ImgRaw&r=0",
     season: "summer", // June 21 - September 22
   },
   {
