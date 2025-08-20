@@ -261,7 +261,7 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
 )
 
 const hasDecorProducts = orders.some(
-  (order) => order.product_name?.toLowerCase().includes("decor"),
+  (order) => order.product_name?.toLowerCase().includes("PPR#"),
 )
 
   const savedMethod =
