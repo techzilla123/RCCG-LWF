@@ -302,13 +302,25 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
     }
   }
 
-  const calculateLogisticsPrice = (distance: number): number => {
+  // Modified Logistics Price Calculation
+const calculateLogisticsPrice = (distance: number, hasRental: boolean): number => {
+  if (hasRental) {
+    // Rental rule
     if (distance <= 15) {
       return 75
     }
     const additionalMiles = distance - 15
     return 75 + Math.ceil(additionalMiles) * 5
+  } else {
+    // Non-rental rule (half of rental pricing)
+    if (distance <= 15) {
+      return 37.5
+    }
+    const additionalMiles = distance - 15
+    return 37.5 + Math.ceil(additionalMiles) * 2.5
   }
+}
+
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -436,9 +448,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
               setIsCalculatingShipping(false)
               return
             } else {
-              const logisticsPrice = calculateLogisticsPrice(distanceData.distance)
-              setCalculatedShipping(logisticsPrice)
-              setIsShippingCalculated(true)
+              const logisticsPrice = calculateLogisticsPrice(distanceData.distance, hasRentalProducts)
+setCalculatedShipping(logisticsPrice)
+setIsShippingCalculated(true)
               console.log(`Distance: ${distanceData.distance} miles, Logistics Price: $${logisticsPrice}`)
               alert(
                 `✅ Delivery Confirmed!\n\nDistance: ${distanceData.distance} miles\nDelivery Cost: $${logisticsPrice}\n\nClick "Complete Order" to finalize your purchase.`,

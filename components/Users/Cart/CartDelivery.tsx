@@ -229,9 +229,14 @@ interface DeliveryOptionsProps {
 const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
   // Check if any product has "Rentals" in the name
   const hasRentalProducts = orders.some(
-    (order) =>
-      order.product_name?.toLowerCase().includes("rentals") || order.product_name?.toLowerCase().includes("rental"),
-  )
+  (order) =>
+    order.product_name?.toLowerCase().includes("rentals") ||
+    order.product_name?.toLowerCase().includes("rental"),
+)
+
+const hasDecorProducts = orders.some(
+  (order) => order.product_name?.toLowerCase().includes("decor"),
+)
 
   const savedMethod =
     typeof window !== "undefined" ? (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup" : "pickup"
@@ -548,7 +553,7 @@ const weight = (totalQuantity * 0.5).toString()
       icon: "/Branded_Van__1_-removebg-preview.png",
     },
     // Only show shipping if no rental products
-    ...(!hasRentalProducts
+    ...(!hasRentalProducts && !hasDecorProducts
       ? [
           {
             method: "shipping",
