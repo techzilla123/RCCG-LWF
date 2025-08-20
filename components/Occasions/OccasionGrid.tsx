@@ -31,7 +31,7 @@ export const OccasionGrid: React.FC = () => {
     {
       src: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/4c57560f7462881443144956f86dde141ab6191e?placeholderIfAbsent=true",
       alt: "Occasion 5",
-      path: "/shop/balloon",
+      path: "/shop/party-supplies?SCT=93caeb56-e278-4810-9b0e-cead08c487b6",
     },
   ];
 
