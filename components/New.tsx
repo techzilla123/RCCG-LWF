@@ -428,7 +428,7 @@ setProducts(formattedProducts)
            image={p.imageList[p.currentImageIndex]}
             title={p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName}
             rating={5.0}
-            reviews={0}
+            reviews={p.quantity}
             price={`$${Number(p.finalPrice || 0).toFixed(2)}`}
             originalPrice={
               (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0

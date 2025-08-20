@@ -151,13 +151,16 @@ React.useEffect(() => {
 
             ) : (
               <div className="relative w-full h-full group">
-               <img
+             <img
   src={slide.imageUrl}
+  srcSet={slide.id === 5 ? "/herovid/samob.jpg 600w, " + slide.imageUrl + " 1024w" : undefined}
+  sizes="(max-width: 640px) 100vw, 1024px"
   alt={slide.title}
   className={`absolute inset-0 w-full h-full ${
     slide.id === 5 ? "object-fill" : "object-cover"
   }`}
 />
+
 
                 <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">

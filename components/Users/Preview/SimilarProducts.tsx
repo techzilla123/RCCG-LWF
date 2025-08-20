@@ -12,6 +12,7 @@ type Product = {
   productName: string
   price: number
   discountPrice?: number // Add discount price from API
+  quantity: number
 }
 
 // Mobile Product interface
@@ -103,7 +104,7 @@ useEffect(() => {
               id: product.productId,
               image: product.imageOne,
               rating: 5.0,
-              reviews: 400,
+              reviews: product.quantity, 
               title: product.productName.length > 26 ? product.productName.slice(0, 23) + "..." : product.productName,
               price: `$${(finalPrice > 0 ? finalPrice : originalPrice).toFixed(2)}`,
               originalPrice: discountAmount > 0 ? `$${originalPrice.toFixed(2)}` : undefined,
