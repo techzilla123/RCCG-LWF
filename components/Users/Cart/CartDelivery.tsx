@@ -273,7 +273,7 @@ const hasDecorProducts = orders.some(
   const [showShippingRecommendation, setShowShippingRecommendation] = useState(false)
   const [shippingCost, setShippingCost] = useState<number | null>(null)
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false)
-
+const [estimatedDelivery, setEstimatedDelivery] = useState<string | null>(null)
   const savedLocation = typeof window !== "undefined" ? localStorage.getItem("deliveryLocation") : null
   const [location, setLocation] = useState<LocationInfo>(
     savedLocation ? JSON.parse(savedLocation) : defaultLocations[savedMethod],
@@ -312,16 +312,23 @@ const weight = (totalQuantity * 0.5).toString()
 
       const data = await response.json()
       if (response.ok && data.data && data.data.length > 0) {
-        // Take the first returned option's price
-        const calculatedCost = data.data[0].price
-        setShippingCost(calculatedCost)
-        localStorage.setItem("calculatedShippingCost", calculatedCost.toString())
+  const calculatedCost = data.data[0].price
+  const deliveryDate = data.data[0].estimatedDelivery
 
-        // Notify OrderSummary component about the shipping cost
-        window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: calculatedCost } }))
+  setShippingCost(calculatedCost)
+  setEstimatedDelivery(deliveryDate) // ✅ Save delivery date
+  localStorage.setItem("calculatedShippingCost", calculatedCost.toString())
 
-        console.log(`Shipping cost calculated: $${calculatedCost} for ${weight}g to ${zipCode}`)
-      } else {
+  // Notify OrderSummary component about the shipping cost
+  window.dispatchEvent(
+    new CustomEvent("shippingCostCalculated", { detail: { cost: calculatedCost } })
+  )
+
+  console.log(
+    `Shipping cost calculated: $${calculatedCost} for ${weight}g to ${zipCode}, ETA: ${deliveryDate}`
+  )
+}
+else {
         console.error("Failed to get shipping cost", data)
         setShippingCost(null)
         localStorage.removeItem("calculatedShippingCost")
@@ -634,31 +641,50 @@ const weight = (totalQuantity * 0.5).toString()
         </div>
       )}
 
-      {deliveryMethod === "shipping" && !hasRentalProducts && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-800 rounded">
-          <div className="flex items-center">
-            <span className="text-lg mr-2">📦</span>
-            <div>
-              <strong>Shipping Cost Calculation:</strong>
-              <br />
-              {orders.length > 0 && (
-                <div className="hidden">
-                  Weight: {(orders.length * 0.5).toFixed(1)}g ({orders.length} items × 0.5g each)
-                  <br />
-                </div>
-              )}
-              {isCalculatingShipping && "Calculating shipping cost..."}
-              {!isCalculatingShipping && shippingCost !== null && `Shipping cost: $${shippingCost.toFixed(2)}`}
-              {!isCalculatingShipping &&
-                shippingCost === null &&
-                location.postalCode &&
-                location.postalCode.length >= 5 &&
-                "Unable to calculate shipping cost"}
-              {!location.postalCode && "Enter zip code below to calculate shipping cost"}
-            </div>
+    {deliveryMethod === "shipping" && !hasRentalProducts && (
+  <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-800 rounded">
+    <div className="flex items-center">
+      <span className="text-lg mr-2">📦</span>
+      <div>
+        <strong>Shipping Cost Calculation:</strong>
+        <br />
+        {orders.length > 0 && (
+          <div className="hidden">
+            Weight: {(orders.length * 0.5).toFixed(1)}g ({orders.length} items × 0.5g each)
+            <br />
           </div>
-        </div>
-      )}
+        )}
+        {isCalculatingShipping && "Calculating shipping cost..."}
+        {!isCalculatingShipping && shippingCost !== null && (
+          <>
+            Shipping cost: <strong>${shippingCost.toFixed(2)}</strong>
+            <p className="text-sm text-gray-700 mt-2">
+              Item ships within <strong>24hrs</strong> with the expected delivery <br/> of 
+              <strong> 2–5 Business days</strong>.
+            </p>
+            {/* Show estimated delivery date */}
+            {/*
+              Suppose you save API response like:
+              setEstimatedDelivery(data.data[0].estimatedDelivery)
+            */}
+            {estimatedDelivery && (
+              <p className="text-sm text-gray-600 mt-1">
+                📅 Estimated Delivery Date:{" "}
+                <strong>{new Date(estimatedDelivery).toDateString()}</strong>
+              </p>
+            )}
+          </>
+        )}
+        {!isCalculatingShipping &&
+          shippingCost === null &&
+          location.postalCode &&
+          location.postalCode.length >= 5 &&
+          "Unable to calculate shipping cost"}
+        {!location.postalCode && "Enter zip code below to calculate shipping cost"}
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Delivery Method Options */}
       <div className="flex justify-between gap-4">
