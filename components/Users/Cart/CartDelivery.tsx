@@ -887,6 +887,17 @@ else {
                 </p>
               )}
           </div>
+
+            {/* ℹ️ Info under the times */}
+    <div className="mt-5 bg-purple-100 border border-purple-400 text-purple-800 rounded">
+      <div className="flex items-center">
+        <span className="text-lg mr-2">🚚</span>
+        <div>
+          Our <strong>earliest delivery time</strong> is{" "}
+          <strong>2hrs after checkout</strong>.
+        </div>
+      </div>
+    </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Delivery Address *</label>
             <input
