@@ -168,7 +168,7 @@ const [, minutes] = time.split(":").map(Number)  // minutes = 45
 const generateTimeSlots = (
   date: string,
   type: "delivery" | "pickup" | "return",
-  interval: number = 1
+  interval: number = 15
 ): string[] => {
   if (!date) return []
 
