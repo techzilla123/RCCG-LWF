@@ -115,6 +115,7 @@ export default function MobileSideDrawer({ onClose, isOpen }: Props) {
                 <DrawerLink icon={<Gift size={16} />} label="Birthday shop" onClick={() => handleNavigate("/shop/birthday")} />
                 <DrawerLink icon={<PartyPopper size={16} />} label="Holidays & Occasions" onClick={() => handleNavigate("/shop/holiday")} />
                 <DrawerLink icon={<Tags size={16} />} label="Party Supplies" onClick={() => handleNavigate("/shop/party-supplies")} />
+                <DrawerLink icon={<Store size={16} />} label="Rentals" onClick={() => handleNavigate("/rentals")} />
                 <DrawerLink icon={<Brush size={16} />} label="Decorations" onClick={() => handleNavigate("/shop/decorations")} />
               </div>
             </div>

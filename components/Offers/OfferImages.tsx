@@ -151,31 +151,47 @@ React.useEffect(() => {
 
             ) : (
               <div className="relative w-full h-full group">
-            <img
-  src={
-    slide.id === 5 && typeof window !== "undefined" && window.innerWidth <= 507
-      ? "/herovid/samob.jpg"
-      : slide.imageUrl
-  }
-  alt={slide.title}
-  className={`absolute inset-0 w-full h-full ${
-    slide.id === 5 ? "object-fill" : "object-cover"
-  }`}
-/>
+  <img
+    src={
+      slide.id === 5 && typeof window !== "undefined" && window.innerWidth <= 507
+        ? "/herovid/samob.jpg"
+        : slide.imageUrl
+    }
+    alt={slide.title}
+    className={`absolute inset-0 w-full h-full ${
+      slide.id === 5 ? "object-fill" : "object-cover"
+    }`}
+  />
 
+  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
 
+  {/* Hide content for slide 5 on mobile */}
+  {!(slide.id === 5) && (
+    <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">
+      <h3 className="text-2xl md:text-4xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300">
+        {slide.title}
+      </h3>
+      <p className="text-lg md:text-xl">{slide.subtitle}</p>
+      <div className="mt-4 px-6 py-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+        Shop Now →
+      </div>
+    </div>
+  )}
 
-                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
-                <div className="absolute inset-0 flex flex-col justify-center items-start p-8 text-white">
-                  <h3 className="text-2xl md:text-4xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300">
-                    {slide.title}
-                  </h3>
-                  <p className="text-lg md:text-xl">{slide.subtitle}</p>
-                  <div className="mt-4 px-6 py-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-colors duration-300">
-                    Shop Now →
-                  </div>
-                </div>
-              </div>
+  {/* 👇 Optionally, if you only want to hide on *mobile* but still show on desktop for slide 5 */}
+  {slide.id === 5 && (
+    <div className="absolute inset-0 hidden md:flex flex-col justify-center items-start p-8 text-white">
+      <h3 className="text-2xl md:text-4xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300">
+        {slide.title}
+      </h3>
+      <p className="text-lg md:text-xl">{slide.subtitle}</p>
+      <div className="mt-4 px-6 py-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-colors duration-300">
+        Shop Now →
+      </div>
+    </div>
+  )}
+</div>
+
             )}
           </div>
         ))}

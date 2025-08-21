@@ -56,6 +56,8 @@ export function New() {
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const desktopScrollRef = useRef<HTMLDivElement | null>(null)
   const mobileScrollRef = useRef<HTMLDivElement | null>(null)
+ const [firstWishlistSave, setFirstWishlistSave] = useState(false)
+  const [firstCartSave, setFirstCartSave] = useState(false)
 
   // Helper function to calculate final price
   const calculateFinalPrice = (price: number | string, discountPrice: number | string): number => {
@@ -243,8 +245,13 @@ setProducts(formattedProducts)
       // Save to localStorage instead of showing modal
       const productData = products.find((p) => p.productId === productId)
       const saved = saveWishlistToLocalStorage(productId, productData)
-      if (saved) {
-        alert("Product saved to wishlist! Sign in to sync your wishlist.")
+       if (saved) {
+        if (!firstWishlistSave) {
+          alert("Product saved to wishlist! Sign in to sync your wishlist.")
+          setFirstWishlistSave(true)
+        } else {
+          alert("Product saved to wishlist successfully!")
+        }
       } else {
         alert("Product is already in your wishlist!")
       }
@@ -311,12 +318,18 @@ setProducts(formattedProducts)
       if (saved) {
         // Update UI to show item as added
         setProducts((prev) => prev.map((p) => (p.productId === productId ? { ...p, isAdded: true } : p)))
-        alert("Product saved to cart! Sign in to sync your cart.")
-         window.dispatchEvent(new Event("cartUpdated"))
-      } else {
-        alert("Failed to save product to cart.")
-      }
-      return
+       if (!firstCartSave) {
+    alert("Product saved to cart! Sign in to sync your cart.")
+    setFirstCartSave(true)
+  } else {
+    alert("Product added to cart successfully!")
+  }
+
+  window.dispatchEvent(new Event("cartUpdated"))
+} else {
+  alert("Failed to save product to cart.")
+}
+return
     }
 
     try {

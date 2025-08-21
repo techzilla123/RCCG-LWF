@@ -271,31 +271,32 @@ const alwaysShowOccasions = [
   {
     id: "anniversaries",
     title: "Anniversaries",
-    imageSrc: "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/81c6d95d2bcbd39bc5304011b824540992ebb6e7?placeholderIfAbsent=true",
+    imageSrc: "/herovid/anni.jpg",
       link: "/shop/party-supplies?SCT=390778f1-bc48-408f-8534-56d695fcc3db",
   },
   {
     id: "weddings",
     title: "Weddings",
-    imageSrc: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop",
+    imageSrc: "/herovid/wed.jpg",
     link: "/shop/party-supplies?SCT=e02f2185-00c1-461c-af2c-eb9c5c2f1d1c",
   },
   {
     id: "retirement",
     title: "Retirement",
     imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/8508077b32c64a2d81a17cc6a85ba436/37dc43cc3efd1617c6d0e0f9f42cf3da226f9073?placeholderIfAbsent=true",
+      "/herovid/ret.jpg",
       link: "/shop/party-supplies?SCT=7544ad0a-d2ba-4286-8304-1d548865c183",
   },
 ]
 
 // Other year-round occasions that can rotate
 const otherPermanentOccasions = [
-  // {
-  //   id: "birthdays",
-  //   title: "Birthdays",
-  //   imageSrc: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-  // },
+  {
+    id: "birthdays",
+    title: "Birthdays",
+    imageSrc: "https://tse3.mm.bing.net/th/id/OIP.R9AwQHJXH9LK9kFkZHzwbgHaEw?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
+    link: "/shop/birthday",
+  },
   {
     id: "baby-shower",
     title: "Baby Shower",
