@@ -577,7 +577,7 @@ else {
   const availableDeliveryMethods = [
     {
       method: "pickup",
-      label: "Pickup",
+      label: "Store Pickup",
       icon: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
     },
     {
@@ -710,7 +710,7 @@ else {
       {/* Pickup Details */}
       {deliveryMethod === "pickup" && (
         <div className="mt-6">
-          <h3 className="text-base font-semibold text-black">Pickup Location</h3>
+          <h3 className="text-base font-semibold text-black">Store Pickup Location</h3>
           <div className="mt-2">
             <p className="text-sm text-black">
               <strong>Address:</strong> 1919 Faithon P Lucas Sr. Blvd, #135, Mesquite TX 75181

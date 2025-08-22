@@ -760,7 +760,7 @@ const getFinalTotal = () => {
         <div className="flex gap-10 justify-between items-center mt-4 w-full">
           <div className="flex flex-col">
             <span className="text-base tracking-normal leading-6 whitespace-nowrap text-neutral-500">
-              {deliveryMethod === "pickup" ? "Pickup" : deliveryMethod === "local" ? "Local Delivery" : "Shipping"}
+              {deliveryMethod === "pickup" ? "Store Pickup" : deliveryMethod === "local" ? "Local Delivery" : "Shipping"}
             </span>
             {calculatedDistance && (
               <span className="text-xs text-gray-400">

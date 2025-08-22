@@ -267,8 +267,22 @@ interface Product extends ProductApiResponse {
 
 
           // Shuffle and limit to 16 products
-          const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
-          setProducts(shuffledAndLimited)
+const shuffled = shuffleArray(formatted)
+
+// Separate the always-included products
+const alwaysIncludeNames = [
+  "11-inch Fuchsia Pink Latex Balloon w/ (Helium & Hi-Float) - 1 ct",
+  "11-inch Fashion White Latex Balloon w/ (Helium & Hi-Float) - 1 ct",
+]
+
+const alwaysInclude = formatted.filter(p => alwaysIncludeNames.includes(p.productName))
+const others = shuffled.filter(p => !alwaysIncludeNames.includes(p.productName))
+
+// Make sure they always appear first, then fill the rest up to 16
+const finalList = [...alwaysInclude, ...others.slice(0, 16 - alwaysInclude.length)]
+
+setProducts(finalList)
+
         } catch (e: unknown) {
           const errorMessage = e instanceof Error ? e.message : "An unknown error occurred"
           console.error("Fetch error:", e)
