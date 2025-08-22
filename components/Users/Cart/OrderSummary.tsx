@@ -828,7 +828,7 @@ const getFinalTotal = () => {
         <div className="space-y-6 text-center">
           <p className="text-gray-600">
   Continuing as a <b>guest</b>, we’ll send your order tracking ID directly to your email.  
-  For updates along the way, you can always reach out to us with your by tracking ID message or call.  
+  For updates along the way, you can always reach out to us with your tracking ID by message or call.  
   <br /><br />
   If you <b>sign in</b>, you’ll be able to view your order progress anytime and manage everything from your account.
 </p>
