@@ -20,7 +20,7 @@ export const FooterContact = () => {
       <h2 className="text-base font-semibold text-blue-300">Contact</h2>
       <div className="flex flex-col mt-4 text-white">
         <a
-          href="tel:+10123456789"
+          href="tel:+14692482060"
           className="p-2 h-10 rounded-[50px] hover:text-blue-300 transition-colors"
         >
           +1 (469) 248-2060
