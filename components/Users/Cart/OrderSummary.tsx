@@ -76,7 +76,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [adjustedTotal, setAdjustedTotal] = useState<string>(total)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [, setRentalMultiplier] = useState(1)
-
+const [showGuestForm, setShowGuestForm] = useState(false)
   // New state for signin modal
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false)
   const [guestEmail, setGuestEmail] = useState("")
@@ -802,114 +802,137 @@ const getFinalTotal = () => {
         </button>
       </div>
 
-      {/* Signin/Email Modal */}
-      {isSigninModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={closeSigninModal}
-              className="absolute top-4 right-4 text-black text-2xl font-bold"
-              style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                zIndex: 1000,
-              }}
-            >
-              &times;
-            </button>
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold mb-2">Continue Your Order</h3>
-              <p className="text-gray-600">Please provide your information to continue</p>
+     {/* Signin/Email Modal */}
+{isSigninModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
+      <button
+        onClick={closeSigninModal}
+        className="absolute top-4 right-4 text-black text-2xl font-bold"
+        style={{
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 1000,
+        }}
+      >
+        &times;
+      </button>
+
+      <div className="text-center mb-6">
+        <h3 className="text-xl font-semibold mb-2">Continue Your Order</h3>
+      </div>
+
+      {/* Guest disclaimer vs form */}
+      {!showGuestForm ? (
+        <div className="space-y-6 text-center">
+          <p className="text-gray-600">
+  Continuing as a <b>guest</b>, we’ll send your order tracking ID directly to your email.  
+  For updates along the way, you can always reach out to us with your by tracking ID message or call.  
+  <br /><br />
+  If you <b>sign in</b>, you’ll be able to view your order progress anytime and manage everything from your account.
+</p>
+
+          <button
+            onClick={() => setShowGuestForm(true)}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+          >
+            Continue as Guest
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="guest-firstname" className="block text-sm font-medium text-gray-700 mb-2">
+                First Name
+              </label>
+              <input
+                id="guest-firstname"
+                type="text"
+                value={guestFirstName}
+                onChange={(e) => {
+                  setGuestFirstName(e.target.value)
+                  setNameError("")
+                }}
+                placeholder="First name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
             </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="guest-firstname" className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
-                  </label>
-                  <input
-                    id="guest-firstname"
-                    type="text"
-                    value={guestFirstName}
-                    onChange={(e) => {
-                      setGuestFirstName(e.target.value)
-                      setNameError("")
-                    }}
-                    placeholder="First name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="guest-lastname" className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name
-                  </label>
-                  <input
-                    id="guest-lastname"
-                    type="text"
-                    value={guestLastName}
-                    onChange={(e) => {
-                      setGuestLastName(e.target.value)
-                      setNameError("")
-                    }}
-                    placeholder="Last name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-              {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
-              <div>
-                <label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <input
-                  id="guest-email"
-                  type="email"
-                  value={guestEmail}
-                  onChange={(e) => {
-                    setGuestEmail(e.target.value)
-                    setEmailError("")
-                  }}
-                  placeholder="Enter your email address"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
-              </div>
-              <button
-                onClick={handleEmailSubmit}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Continue as Guest
-              </button>
-              <div className="text-center">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">or</span>
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={handleOpenLogin}
-                  className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-[#10b988] focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={handleOpenSignUp}
-                  className="w-full bg-[#10b981] text-white py-2 px-4 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                >
-                  Sign Up
-                </button>
-              </div>
+            <div>
+              <label htmlFor="guest-lastname" className="block text-sm font-medium text-gray-700 mb-2">
+                Last Name
+              </label>
+              <input
+                id="guest-lastname"
+                type="text"
+                value={guestLastName}
+                onChange={(e) => {
+                  setGuestLastName(e.target.value)
+                  setNameError("")
+                }}
+                placeholder="Last name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
             </div>
           </div>
+          {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
+          <div>
+            <label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-2">
+              Email Address
+            </label>
+            <input
+              id="guest-email"
+              type="email"
+              value={guestEmail}
+              onChange={(e) => {
+                setGuestEmail(e.target.value)
+                setEmailError("")
+              }}
+              placeholder="Enter your email address"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+          </div>
+          <button
+            onClick={handleEmailSubmit}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+          >
+            Submit as Guest
+          </button>
         </div>
       )}
 
+      {/* Divider */}
+      <div className="text-center mt-6">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">or</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Sign in / Sign up */}
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        <button
+          onClick={handleOpenLogin}
+          className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-[#10b988]"
+        >
+          Sign In
+        </button>
+        <button
+          onClick={handleOpenSignUp}
+          className="w-full bg-[#10b981] text-white py-2 px-4 rounded-md hover:bg-blue-500"
+        >
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       {/* Existing delivery modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
