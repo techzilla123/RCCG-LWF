@@ -7,10 +7,10 @@ interface ProductSuggestion {
   productId: string
   productName: string
 }
-interface Suggestion {
-  productId: string;
-  productName: string;
-}
+// interface Suggestion {
+//   productId: string;
+//   productName: string;
+// }
 
 export const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("")
