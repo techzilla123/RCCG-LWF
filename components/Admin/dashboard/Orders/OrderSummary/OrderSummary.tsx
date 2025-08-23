@@ -13,6 +13,7 @@ interface Order {
   orderId: string;
   delivery_type: string;
   deliveryAddress: string;
+  paymentStatus: string; // ✅ Added paymentStatus
 }
 
 const parseDeliveryAddress = (fullAddress: string) => {
@@ -33,7 +34,6 @@ const parseDeliveryAddress = (fullAddress: string) => {
     instructions: instructionsMatch ? instructionsMatch[1].trim() : null,
   };
 };
-
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
   const [order, setOrder] = useState<Order | null>(null);
@@ -121,14 +121,28 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
         </span>
       </div>
 
+      {/* ✅ Payment Status */}
+      <div className="flex justify-between w-full">
+        <span className="text-base text-neutral-500">Payment Status:</span>
+        <span
+          className={`text-base font-medium ${
+            order.paymentStatus.toLowerCase() === "paid"
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {order.paymentStatus}
+        </span>
+      </div>
+
       {/* Parsed Delivery Info */}
-     {(details.address || details.time) && (
-  <p className="text-base text-black">
-    <span className="text-neutral-500">Delivery Address: </span>
-    {details.address}
-    {details.time && ` on ${details.time}`}
-  </p>
-)}
+      {(details.address || details.time) && (
+        <p className="text-base text-black">
+          <span className="text-neutral-500">Delivery Address: </span>
+          {details.address}
+          {details.time && ` on ${details.time}`}
+        </p>
+      )}
 
       {details.phone && (
         <div>
