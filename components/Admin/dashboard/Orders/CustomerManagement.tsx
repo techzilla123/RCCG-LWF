@@ -27,7 +27,12 @@ export const CustomerManagement = () => {
     prev_page_url: null,
   });
 
-  const fetchOrders = async (page = 1) => {
+  // filters
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All");
+  const [status, setStatus] = useState("All");
+
+  const fetchOrders = async (page = 1, value: string | null = null) => {
     const token = localStorage.getItem("accessToken");
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const headers = {
@@ -36,8 +41,21 @@ export const CustomerManagement = () => {
       Authorization: token || "",
     };
 
+    // pick the value to send (priority: search > status > category)
+    let filterValue = value;
+    if (!filterValue) {
+      if (search) filterValue = search;
+      else if (status !== "All") filterValue = status;
+      else if (category !== "All") filterValue = category;
+    }
+
+    const url =
+      filterValue && filterValue !== "All"
+        ? `${baseUrl}admin/order-list?page=${page}&value=${encodeURIComponent(filterValue)}`
+        : `${baseUrl}admin/order-list?page=${page}`;
+
     try {
-      const res = await fetch(`${baseUrl}admin/order-list?page=${page}`, { headers });
+      const res = await fetch(url, { headers });
       const json = await res.json();
       if (json.statusCode === 200 && Array.isArray(json.data.orders)) {
         setOrders(json.data.orders);
@@ -50,16 +68,27 @@ export const CustomerManagement = () => {
     }
   };
 
+  // Refetch whenever filters change
   useEffect(() => {
-    fetchOrders(); // fetch page 1 by default
-  }, []);
+    fetchOrders();
+  }, [search, category, status]);
 
   return (
-    <main className="flex flex-col p-6 mx-auto max-w-none w-full mt-4 bg-white max-md:max-w-full max-sm:max-w-screen-sm">
+    <main className="flex flex-col p-6 mx-auto w-full mt-4 bg-white">
       <CustomerManagementHeader />
-      <FilterBar />
+
+      <FilterBar
+        search={search}
+        category={category}
+        status={status}
+        onSearch={setSearch}
+        onCategoryChange={setCategory}
+        onStatusChange={setStatus}
+      />
+
       <StatisticsDashboard />
       <Table orders={orders} />
+
       <Pagination
         currentPage={pagination.current_page}
         totalPages={pagination.total_pages}
