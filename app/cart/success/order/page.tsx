@@ -39,6 +39,8 @@ interface IndividualOrderDetail {
   orderType: string
   amount: string
   deliveryDate: string | null
+  productName: string
+  productImage: string
 }
 
 export default function ProfessionalOrderManagement() {
@@ -210,25 +212,43 @@ export default function ProfessionalOrderManagement() {
   }
 
   const fetchIndividualOrderDetails = async (id: number, orderId: string) => {
-    setIsIndividualLoading(true)
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-order/${id}/${orderId}`, {
+  setIsIndividualLoading(true)
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/fetch-order/${id}/${orderId}`,
+      {
         method: "GET",
         headers: getApiHeaders(),
-      })
+      },
+    )
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch individual order details")
-      }
+    if (!response.ok) throw new Error("Failed to fetch individual order details")
 
-      const data = await response.json()
-      setSelectedIndividualOrder(data.data)
-    } catch (error) {
-      console.error("Error fetching individual order details:", error)
-    } finally {
-      setIsIndividualLoading(false)
-    }
+    const data = await response.json()
+    const order = data.data
+
+    setSelectedIndividualOrder({
+      id: order.id,
+      orderId: order.orderId,
+      quantity: order.quantity,
+      size: order.size,
+      color: order.color,
+      status: order.status,
+      deliveryAddress: order.deliveryAddress,
+      orderType: order.orderType,
+      amount: order.amount,
+      deliveryDate: order.deliveryDate,
+      productName: order.productDetails?.productName || "Unknown Product",
+      productImage: order.productDetails?.imageOne || "",
+    })
+  } catch (error) {
+    console.error("Error fetching individual order details:", error)
+  } finally {
+    setIsIndividualLoading(false)
   }
+}
+
+
 
   const printReceipt = () => {
     if (!selectedOrder) return
@@ -728,6 +748,12 @@ export default function ProfessionalOrderManagement() {
                 ) : (
                   <div className="space-y-4">
                     <div className="bg-gray-50 rounded-lg p-4">
+                        <img
+        src={selectedIndividualOrder.productImage}
+        alt={selectedIndividualOrder.productName}
+        className="w-30 h-30 object-cover rounded-lg border"
+      />
+      <h4 className="font-semibold text-gray-900">{selectedIndividualOrder.productName}</h4>
                       <div className="space-y-2">
                         <p>
                           <span className="font-medium">Item ID:</span> #{selectedIndividualOrder.id}
