@@ -22,7 +22,7 @@ export const FilterBar = ({
   const [showCategory, setShowCategory] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
 
-  const categories = ["All", "Electronics", "Clothing", "Books", "Toys"];
+  const categories = ["All", "Paid", "Pending", "Cancelled", "Failed"];
   const statuses = [
     "All",
     "Approved",
@@ -31,6 +31,8 @@ export const FilterBar = ({
     "Shipped",
     "Delivered",
     "Cancel",
+    "Pickedup",
+    "Returned",
   ];
 
   return (
@@ -51,10 +53,10 @@ export const FilterBar = ({
       <div className="relative">
         <button
           onClick={() => setShowCategory((prev) => !prev)}
-          className="flex hidden items-center px-2 h-10 rounded-lg border border-neutral-300 bg-white"
+          className="flex items-center px-2 h-10 rounded-lg border border-neutral-300 bg-white"
         >
           <CartIcon />
-          <span className="mx-2 text-neutral-700">Category: {category}</span>
+          <span className="mx-2 text-neutral-700">Payment Type: {category}</span>
           <CaretDownIcon />
         </button>
         {showCategory && (

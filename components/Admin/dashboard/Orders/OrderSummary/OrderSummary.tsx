@@ -25,6 +25,13 @@ const parseDeliveryAddress = (fullAddress: string) => {
   );
 
   const phoneMatch = fullAddress.match(/Phone:\s*([^-]*)/i);
+
+  // ✅ Match return date/time
+  const returnMatch = fullAddress.match(/Return:\s*([\d]{4}-[\d]{2}-[\d]{2}\s+at\s+\d{2}:\d{2})/i);
+
+  // ✅ Match return instructions if present
+  const returnInstructionsMatch = fullAddress.match(/Return Instructions:\s*(.*)$/i);
+
   const instructionsMatch = fullAddress.match(/Instructions:\s*(.*)$/i);
 
   return {
@@ -32,6 +39,8 @@ const parseDeliveryAddress = (fullAddress: string) => {
     time: addressTimeMatch ? addressTimeMatch[2].trim() : null,
     phone: phoneMatch ? phoneMatch[1].trim() : null,
     instructions: instructionsMatch ? instructionsMatch[1].trim() : null,
+    returnDate: returnMatch ? returnMatch[1].trim() : null,
+    returnInstructions: returnInstructionsMatch ? returnInstructionsMatch[1].trim() : null,
   };
 };
 
@@ -150,12 +159,30 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
           <div className="text-base text-black">{details.phone}</div>
         </div>
       )}
+
       {details.instructions && (
         <div>
           <span className="text-base text-neutral-500">Instructions:</span>
           <div className="text-base text-black">{details.instructions}</div>
         </div>
+      )} 
+      
+      {/* ✅ Return Date */}
+      {details.returnDate && (
+        <div>
+          <span className="text-base text-neutral-500">Return Date:</span>
+          <div className="text-base text-black">{details.returnDate}</div>
+        </div>
       )}
+
+      {/* ✅ Return Instructions */}
+      {details.returnInstructions && (
+        <div>
+          <span className="text-base text-neutral-500">Return Instructions:</span>
+          <div className="text-base text-black">{details.returnInstructions}</div>
+        </div>
+      )}
+
     </section>
   );
 };

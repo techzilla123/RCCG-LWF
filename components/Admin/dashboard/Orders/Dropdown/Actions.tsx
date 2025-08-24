@@ -123,6 +123,9 @@ const handleSubmitStatusChange = async () => {
                 <option value="SHIPPED">SHIPPED</option>
                 <option value="DELIVERED">DELIVERED</option>
                 <option value="CANCELLED">CANCELLED</option>
+                <option value="PICKEDUP">PICKEDUP</option>
+                <option value="RETURNED">RETURNED</option>
+
               </select>
 
               <label className="block mb-2 text-sm font-medium">Description</label>
