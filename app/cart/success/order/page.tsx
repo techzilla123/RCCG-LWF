@@ -28,6 +28,12 @@ interface GroupedOrder {
   items: OrderItem[]
 }
 
+interface TrackingDetail {
+  status: string
+  description: string
+  date: string
+}
+
 interface IndividualOrderDetail {
   id: number
   orderId: string
@@ -41,7 +47,9 @@ interface IndividualOrderDetail {
   deliveryDate: string | null
   productName: string
   productImage: string
+  trackingDetails: TrackingDetail[]   // <-- added
 }
+
 
 export default function ProfessionalOrderManagement() {
   const [groupedOrders, setGroupedOrders] = useState<GroupedOrder[]>([])
@@ -211,7 +219,7 @@ export default function ProfessionalOrderManagement() {
     }
   }
 
-  const fetchIndividualOrderDetails = async (id: number, orderId: string) => {
+ const fetchIndividualOrderDetails = async (id: number, orderId: string) => {
   setIsIndividualLoading(true)
   try {
     const response = await fetch(
@@ -240,6 +248,7 @@ export default function ProfessionalOrderManagement() {
       deliveryDate: order.deliveryDate,
       productName: order.productDetails?.productName || "Unknown Product",
       productImage: order.productDetails?.imageOne || "",
+      trackingDetails: order.trackingDetails || []   // <-- capture array
     })
   } catch (error) {
     console.error("Error fetching individual order details:", error)
@@ -779,13 +788,19 @@ export default function ProfessionalOrderManagement() {
                               : "Unknown"}
                           </span>
                         </p>
+
+                        
                         <p>
                           <span className="font-medium">Order Type:</span> {selectedIndividualOrder.orderType || "N/A"}
                         </p>
-                        <p>
-                          <span className="font-medium">Delivery Address:</span>{" "}
-                          {selectedIndividualOrder.deliveryAddress || "N/A"}
-                        </p>
+                       {/* Delivery Address (only show if it exists) */}
+{selectedIndividualOrder.deliveryAddress && (
+  <div className="mt-3">
+    <h5 className="font-semibold text-gray-900 mb-1">Delivery Address</h5>
+    <p className="text-gray-700 text-sm">{selectedIndividualOrder.deliveryAddress}</p>
+  </div>
+)}
+
                         {selectedIndividualOrder.size && (
                           <p>
                             <span className="font-medium">Size:</span> {selectedIndividualOrder.size}
@@ -798,11 +813,39 @@ export default function ProfessionalOrderManagement() {
                         )}
                         {selectedIndividualOrder.deliveryDate && (
                           <p>
-                            <span className="font-medium">Delivery Date:</span>{" "}
-                            {formatDate(selectedIndividualOrder.deliveryDate)}
-                          </p>
+  <span className="font-medium">
+    {selectedIndividualOrder.deliveryAddress ? "Delivery Date:" : "Pickup Date:"}
+  </span>{" "}
+  {selectedIndividualOrder.deliveryDate
+    ? formatDate(selectedIndividualOrder.deliveryDate)
+    : "N/A"}
+</p>
+
                         )}
                       </div>
+                      {selectedIndividualOrder?.trackingDetails?.length > 0 && (
+  <div className="mt-4">
+    <h4 className="font-semibold text-gray-900 mb-2">Tracking Order</h4>
+    <div className="space-y-2">
+      {selectedIndividualOrder.trackingDetails.map((track, index) => (
+        <div key={index} className="bg-gray-50 p-2 rounded">
+          <div className="flex justify-between items-center">
+            <span className={`font-medium ${getStatusColor(track.status)}`}>
+              {track.status}
+            </span>
+            <span className="text-sm text-gray-600">
+              {new Date(track.date).toLocaleString()}
+            </span>
+          </div>
+          {track.description && (
+            <p className="text-sm text-gray-600 mt-1">{track.description}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
                     </div>
                   </div>
                 )}
