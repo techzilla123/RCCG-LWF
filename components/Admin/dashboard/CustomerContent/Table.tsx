@@ -20,10 +20,15 @@ type User = {
   image?: string;  // Optional, based on your fallback logic
 };
 
+interface TableProps {
+  users: User[];
+  currentPage: number;
+  usersPerPage: number;
+}
 
-const Table = () => {
-const [users, setUsers] = useState<User[]>([]);
-    const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+const Table = ({ currentPage, usersPerPage }: TableProps) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [dropdownDirection, setDropdownDirection] = useState<"up" | "down">("down");
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -56,6 +61,10 @@ const [users, setUsers] = useState<User[]>([]);
     fetchUsers();
   }, []);
 
+  // ✅ Pagination slice
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const paginatedUsers = users.slice(startIndex, startIndex + usersPerPage);
+  
   const toggleDropdown = (index: number) => {
     if (openDropdownIndex === index) {
       setOpenDropdownIndex(null);
@@ -156,7 +165,7 @@ const [users, setUsers] = useState<User[]>([]);
           </tr>
         </thead>
         <tbody>
-          {users.map((user, idx) => {
+          {paginatedUsers.map((user, idx) => {
             const fullName = `${user.firstname} ${user.lastname}`;
             const initials = `${user.firstname?.[0] || ""}${user.lastname?.[0] || ""}`;
             const isLoading = loadingUserId === user.customerId;
