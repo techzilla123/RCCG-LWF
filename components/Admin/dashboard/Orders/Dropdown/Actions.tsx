@@ -55,10 +55,12 @@ const handleSubmitStatusChange = async () => {
       body: JSON.stringify(payload),
     });
 
-    if (response.ok) {
-      alert("Order status updated successfully!");
-      setIsStatusModalOpen(false);
-    } else {
+  if (response.ok) {
+  alert("Order status updated successfully!");
+  setIsStatusModalOpen(false);
+  window.location.reload(); // ⬅️ this forces a full page reload
+}
+ else {
       const errorText = await response.text();
       console.error("Server response:", errorText);
       alert("Failed to update order status.");
@@ -123,7 +125,7 @@ const handleSubmitStatusChange = async () => {
                 <option value="SHIPPED">SHIPPED</option>
                 <option value="DELIVERED">DELIVERED</option>
                 <option value="CANCELLED">CANCELLED</option>
-                <option value="PICKEDUP">PICKEDUP</option>
+                <option value="PICKED UP">PICKED UP</option>
                 <option value="RETURNED">RETURNED</option>
 
               </select>

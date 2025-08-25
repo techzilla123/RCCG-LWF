@@ -210,6 +210,10 @@ export default function ProfessionalOrderManagement() {
         return "bg-purple-50 text-purple-700 border-purple-200"
       case "approved":
         return "bg-green-50 text-green-700 border-green-200"
+        case "returned":
+        return "bg-purple-50 text-purple-700 border-purple-200"
+        case "picked up":
+         return "bg-teal-50 text-teal-700 border-teal-200"
       case "in-progress":
         return "bg-orange-50 text-orange-700 border-orange-200"
       case "delivered":

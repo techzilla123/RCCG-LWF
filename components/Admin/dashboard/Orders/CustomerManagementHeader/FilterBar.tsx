@@ -22,7 +22,7 @@ export const FilterBar = ({
   const [showCategory, setShowCategory] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
 
-  const categories = ["All", "Paid", "Pending", "Cancelled", "Failed"];
+  const categories = ["All", "Paid", "Cancelled", "Failed"];
   const statuses = [
     "All",
     "Approved",
