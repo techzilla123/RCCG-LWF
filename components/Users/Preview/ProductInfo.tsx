@@ -337,13 +337,16 @@ React.useEffect(() => {
       )}
       <aside className="flex-1 shrink bg-white rounded-lg basis-0 min-w-60 p-4 max-md:max-w-full">
         <div className="flex flex-col w-full leading-6 max-md:max-w-full">
-        <span
-  className={`px-2 py-0.5 text-xs w-[100px] rounded ${
-    !stock ? "bg-red-100 text-red-500" : "bg-[#E1F7E6] text-black"
-  }`}
->
-  {!stock ? "Not in stock" : `${stock} In-stock`}
-</span>
+        {/* Stock badge — only show if title does NOT start with PPR# */}
+{!title.startsWith("PPR#") && (
+  <span
+    className={`px-2 py-0.5 text-xs w-[100px] rounded ${
+      !stock ? "bg-red-100 text-red-500" : "bg-[#E1F7E6] text-black"
+    }`}
+  >
+    {!stock ? "Not in stock" : `${stock} In-stock`}
+  </span>
+)}
 
 
           <h1 className="mt-3 text-2xl font-semibold text-black">{title}</h1>
@@ -413,35 +416,38 @@ React.useEffect(() => {
               </div>
             </div>
           )}
-          <div className="flex flex-col mt-4">
-            <label className="text-sm font-medium text-black">Quantity</label>
-          <div className="flex items-center gap-2 mt-2">
-  <button
-    onClick={() => handleQuantityChange(quantity - 1)}
-    disabled={stock === 0}
-    className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    -
-  </button>
-  <input
-    type="number"
-    min="1"
-    max={stock}
-    value={quantity}
-    onChange={(e) => handleQuantityChange(Number.parseInt(e.target.value))}
-    disabled={stock === 0}
-    className="w-12 text-center border rounded disabled:opacity-50"
-  />
-  <button
-    onClick={() => handleQuantityChange(quantity + 1)}
-    disabled={stock === 0}
-    className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    +
-  </button>
-</div>
+          {/* Quantity selector — hide if title starts with PPR# */}
+{!title.startsWith("PPR#") && (
+  <div className="flex flex-col mt-4">
+    <label className="text-sm font-medium text-black">Quantity</label>
+    <div className="flex items-center gap-2 mt-2">
+      <button
+        onClick={() => handleQuantityChange(quantity - 1)}
+        disabled={stock === 0}
+        className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        -
+      </button>
+      <input
+        type="number"
+        min="1"
+        max={stock}
+        value={quantity}
+        onChange={(e) => handleQuantityChange(Number.parseInt(e.target.value))}
+        disabled={stock === 0}
+        className="w-12 text-center border rounded disabled:opacity-50"
+      />
+      <button
+        onClick={() => handleQuantityChange(quantity + 1)}
+        disabled={stock === 0}
+        className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        +
+      </button>
+    </div>
+  </div>
+)}
 
-          </div>
           {showInflatedOptions && (
             <div className="flex gap-4 mt-4">
               <label className="flex items-center gap-2 text-neutral-500">
