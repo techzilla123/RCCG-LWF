@@ -192,6 +192,7 @@ export const ProductGrid: React.FC = () => {
         const seenNames = new Set<string>()
         const formatted: ExtendedProduct[] = []
         for (const p of allProducts) {
+          if (p.productName?.toUpperCase().startsWith("PPG#")) continue
           if (!seenNames.has(p.productName)) {
             seenNames.add(p.productName)
             const imageOptions = [

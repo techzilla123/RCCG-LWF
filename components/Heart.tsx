@@ -235,6 +235,7 @@ interface Product extends ProductApiResponse {
 
   const formatted: Product[] = []
   for (const p of allProducts) {
+     if (p.productName.startsWith("PPG#")) continue
     if (!uniqueNames.has(p.productName)) {
       uniqueNames.add(p.productName)
   const imageOptions = [

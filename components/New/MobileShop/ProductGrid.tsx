@@ -173,6 +173,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 const mobileProducts: Product[] = []
 
 for (const p of formattedProducts) {
+  if (p.productName?.toUpperCase().startsWith("PPG#")) continue
   const nameKey = p.productName.trim().toLowerCase()
   if (seenNames.has(nameKey)) continue
   seenNames.add(nameKey)

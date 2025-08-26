@@ -162,82 +162,77 @@ export function New() {
   }
 
   useEffect(() => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
-    async function fetchProducts() {
-      try {
-        const token = localStorage.getItem("accessToken")
-        const headers = {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-          ...(token ? { Authorization: token } : {}),
-        }
+  async function fetchProducts() {
+    try {
+      const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+      const token = localStorage.getItem("accessToken")
 
-        const res = await fetch(url, {
-          method: "GET",
-          headers,
-        })
-
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`)
-        }
-
-        const json = await res.json()
-        if (json.statusCode === 200 && Array.isArray(json.data.product)) {
-          const seenNames = new Set<string>()
-const formattedProducts: Product[] = []
-
-for (const p of json.data.product) {
-  if (!seenNames.has(p.productName)) {
-    seenNames.add(p.productName)
-
-    const imageList = [
-      p.imageOne,
-      p.imageTwo,
-      p.imageThree,
-      p.imageFour,
-      p.imageFive,
-      p.imageSix,
-      p.imageSeven,
-      p.imageEight,
-      p.imageNine,
-      p.imageTen,
-      p.imageEleven,
-      p.imageTwelve,
-      p.imageThirteen,
-    ].filter(Boolean) // Remove undefined/null
-
-    formattedProducts.push({
-      ...p,
-      isAdded: false,
-      finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
-      imageList,
-      currentImageIndex: 0,
-    })
-  }
-}
-
-// Shuffle the products
-for (let i = formattedProducts.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [formattedProducts[i], formattedProducts[j]] = [formattedProducts[j], formattedProducts[i]];
-}
-
-setProducts(formattedProducts)
-
-
-        } else {
-          throw new Error("Unexpected response structure")
-        }
-      } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : "An unknown error occurred"
-        console.error("Fetch error:", e)
-        setError(message)
-      } finally {
-        setLoading(false)
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        ...(token ? { Authorization: token } : {}),
       }
+
+      // Always fetch newest pages: 1 and 2
+      const pagesToFetch = [1, 2]
+
+      // Fetch both pages in parallel
+      const results = await Promise.all(
+        pagesToFetch.map((p) =>
+          fetch(`${baseUrl}?page=${p}`, { method: "GET", headers }).then((r) => r.json())
+        )
+      )
+
+      // Merge products from both pages
+      const allProductsRaw = results.flatMap((res) => res.data?.product || [])
+
+      // Deduplicate by productName and format
+      const seenNames = new Set<string>()
+      const formattedProducts: Product[] = []
+
+      for (const p of allProductsRaw) {
+        if (p.productName?.toUpperCase().startsWith("PPG#")) continue
+        if (!seenNames.has(p.productName)) {
+          seenNames.add(p.productName)
+          const imageList = [
+            p.imageOne,
+            p.imageTwo,
+            p.imageThree,
+            p.imageFour,
+            p.imageFive,
+            p.imageSix,
+            p.imageSeven,
+            p.imageEight,
+            p.imageNine,
+            p.imageTen,
+            p.imageEleven,
+            p.imageTwelve,
+            p.imageThirteen,
+          ].filter(Boolean)
+
+          formattedProducts.push({
+            ...p,
+            isAdded: false,
+            finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
+            imageList,
+            currentImageIndex: 0,
+          })
+        }
+      }
+
+      setProducts(formattedProducts)
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "An unknown error occurred"
+      console.error("Fetch error:", e)
+      setError(message)
+    } finally {
+      setLoading(false)
     }
-    fetchProducts()
-  }, [])
+  }
+
+  fetchProducts()
+}, [])
+
 
   const handleAddToWishlist = async (productId: string) => {
     const token = localStorage.getItem("accessToken")

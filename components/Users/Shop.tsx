@@ -322,7 +322,10 @@ if (searchQuery) {
 const uniqueProductsMap = new Map<string, Product>()
 
 productList.forEach((p: ProductApiResponse) => {
+  
+  if (p.productName?.toUpperCase().startsWith("PPG#")) return
   const key = p.productName.toLowerCase().trim()
+  
   if (!uniqueProductsMap.has(key)) {
     const finalPrice = calculateFinalPrice(p.price, p.discountPrice || 0)
     const images = [
