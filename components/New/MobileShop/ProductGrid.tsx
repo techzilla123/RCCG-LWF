@@ -134,6 +134,15 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     }
   }
 
+  function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
   useEffect(() => {
     // If external products are provided, use them instead of fetching
     if (externalProducts) {
@@ -143,70 +152,74 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     }
 
     async function fetchProducts() {
-      try {
-        const token = localStorage.getItem("accessToken") || ""
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token ? { Authorization: token } : {}),
-          },
-        })
+  try {
+    const token = localStorage.getItem("accessToken") || ""
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+    const headers = {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+      ...(token ? { Authorization: token } : {}),
+    }
 
-        if (!res.ok) throw new Error(`Server error: ${res.status}`)
+    // Always fetch newest pages: 1 and 2
+    const pagesToFetch = [1, 2]
 
-        const { statusCode, data } = await res.json()
+    const results = await Promise.all(
+      pagesToFetch.map((p) =>
+        fetch(`${baseUrl}?page=${p}`, { method: "GET", headers }).then((r) => r.json())
+      )
+    )
 
-        if (statusCode !== 200 || !Array.isArray(data.product)) {
-          throw new Error("Invalid response format")
-        }
+    const allProductsRaw: ProductApiResponse[] = results.flatMap((res) => res.data?.product || [])
 
-        const formattedProducts: ExtendedProduct[] = data.product.map((p: ProductApiResponse) => ({
-          ...p,
-          isAdded: false,
-          finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
-        }))
+    const formattedProducts: ExtendedProduct[] = allProductsRaw.map((p) => ({
+      ...p,
+      isAdded: false,
+      finalPrice: calculateFinalPrice(p.price, p.discountPrice || 0),
+    }))
 
-        // Convert to mobile Product format
-     const seenNames = new Set<string>()
-const mobileProducts: Product[] = []
+    // Convert to mobile Product format
+    const seenNames = new Set<string>()
+    const mobileProducts: Product[] = []
 
-for (const p of formattedProducts) {
-  if (p.productName?.toUpperCase().startsWith("PPG#")) continue
-  const nameKey = p.productName.trim().toLowerCase()
-  if (seenNames.has(nameKey)) continue
-  seenNames.add(nameKey)
+    for (const p of formattedProducts) {
+      if (p.productName?.toUpperCase().startsWith("PPG#")) continue
+      const nameKey = p.productName.trim().toLowerCase()
+      if (seenNames.has(nameKey)) continue
+      seenNames.add(nameKey)
 
-  mobileProducts.push({
-    id: p.productId,
-    image: p.imageOne,
-    title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
-    price: p.finalPrice,
-    originalPrice:
-      (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
-        ? Number(p.price || 0)
-        : undefined,
-    discountPrice: typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice,
-    finalPrice: p.finalPrice,
-    isOutOfStock: p.quantity === 0,
-    isWishlisted: false,
-    isAdded: p.isAdded,
-  })
+      mobileProducts.push({
+        id: p.productId,
+        image: p.imageOne,
+        title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
+        price: p.finalPrice,
+        originalPrice:
+          (typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice) > 0
+            ? Number(p.price || 0)
+            : undefined,
+        discountPrice: typeof p.discountPrice === "string" ? Number.parseFloat(p.discountPrice) : p.discountPrice,
+        finalPrice: p.finalPrice,
+        isOutOfStock: p.quantity === 0,
+        isWishlisted: false,
+        isAdded: p.isAdded,
+      })
+    }
+
+    // Shuffle and only keep 10
+    const randomTen = shuffleArray(mobileProducts).slice(0, 10)
+    setProducts(randomTen)
+
+  } catch (e) {
+    if (e instanceof Error) {
+      setError(e.message)
+    } else {
+      setError("An unexpected error occurred")
+    }
+  } finally {
+    setLoading(false)
+  }
 }
 
-
-        setProducts(mobileProducts)
-      } catch (e) {
-        if (e instanceof Error) {
-          setError(e.message)
-        } else {
-          setError("An unexpected error occurred")
-        }
-      } finally {
-        setLoading(false)
-      }
-    }
 
     fetchProducts()
   }, [externalProducts])

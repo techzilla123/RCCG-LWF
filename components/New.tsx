@@ -160,8 +160,17 @@ export function New() {
       })
     }
   }
+// Utility: Shuffle array
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
 
-  useEffect(() => {
+useEffect(() => {
   async function fetchProducts() {
     try {
       const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
@@ -176,17 +185,14 @@ export function New() {
       // Always fetch newest pages: 1 and 2
       const pagesToFetch = [1, 2]
 
-      // Fetch both pages in parallel
       const results = await Promise.all(
         pagesToFetch.map((p) =>
           fetch(`${baseUrl}?page=${p}`, { method: "GET", headers }).then((r) => r.json())
         )
       )
 
-      // Merge products from both pages
       const allProductsRaw = results.flatMap((res) => res.data?.product || [])
 
-      // Deduplicate by productName and format
       const seenNames = new Set<string>()
       const formattedProducts: Product[] = []
 
@@ -220,7 +226,10 @@ export function New() {
         }
       }
 
-      setProducts(formattedProducts)
+      // Shuffle & take only 10
+      const randomTen = shuffleArray(formattedProducts).slice(0, 10)
+
+      setProducts(randomTen)
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "An unknown error occurred"
       console.error("Fetch error:", e)
@@ -232,6 +241,7 @@ export function New() {
 
   fetchProducts()
 }, [])
+
 
 
   const handleAddToWishlist = async (productId: string) => {
