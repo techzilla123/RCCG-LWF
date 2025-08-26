@@ -31,7 +31,7 @@ export const FilterBar = ({
     "Shipped",
     "Delivered",
     "Cancel",
-    "Pickedup",
+    "Picked up",
     "Returned",
   ];
 

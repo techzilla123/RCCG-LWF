@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import Offer from "@/components/Offer"
 import TopNavBar from "@/components/TopNavBar"
 import Footer from "@/components/Footer"
+import { LoginModal } from "@/components/Offer/LoginModal"
+import { SignUpModal } from "@/components/Offer/SignUpModal"
+import { SuccessModal } from "@/components/Offer/SuccessModal"
 
 // Types based on the API response
 interface OrderItem {
@@ -47,9 +50,10 @@ interface IndividualOrderDetail {
   deliveryDate: string | null
   productName: string
   productImage: string
-  trackingDetails: TrackingDetail[]   // <-- added
+  trackingDetails: TrackingDetail[]
 }
 
+type ModalState = "none" | "login" | "signup" | "success"
 
 export default function ProfessionalOrderManagement() {
   const [groupedOrders, setGroupedOrders] = useState<GroupedOrder[]>([])
@@ -61,6 +65,17 @@ export default function ProfessionalOrderManagement() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedIndividualOrder, setSelectedIndividualOrder] = useState<IndividualOrderDetail | null>(null)
   const [isIndividualLoading, setIsIndividualLoading] = useState(false)
+
+  // 🔑 Modal state
+  const [modalState, setModalState] = useState<ModalState>("none")
+
+  // ⬇️ Show login modal immediately if no token
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken")
+    if (!token) {
+      setModalState("login")
+    }
+  }, [])
 
   // API helper function
   const getApiHeaders = () => {
@@ -857,6 +872,22 @@ export default function ProfessionalOrderManagement() {
             </div>
           </div>
         )}
+
+         {/* 🔑 Auth Modals */}
+      {modalState === "login" && (
+        <LoginModal
+          onClose={() => setModalState("none")}
+          onOpenSignUp={() => setModalState("signup")}
+          onLoginSuccess={() => setModalState("success")}
+        />
+      )}
+      {modalState === "signup" && (
+        <SignUpModal
+          onClose={() => setModalState("none")}
+          onOpenLogin={() => setModalState("login")}
+        />
+      )}
+      {modalState === "success" && <SuccessModal onClose={() => setModalState("none")} />}
 
         <Footer />
       </div>
