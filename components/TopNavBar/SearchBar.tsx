@@ -49,13 +49,14 @@ export const SearchBar = () => {
           ? json.data
           : []
 
-       setSuggestions(
+      setSuggestions(
   productList.map((p: ApiProduct): ProductSuggestion => ({
     productId: p.productId,
-    productName: p.productName,
+    productName: p.productName.replace(/\//g, ""), // remove all '/'
     imageOne: p.imageOne,
   }))
 )
+
 
         setShowDropdown(true)
       } catch (err) {
@@ -78,12 +79,12 @@ export const SearchBar = () => {
     }
   }
 
-  // Handle clicking a suggestion
-  const handleSelect = (name: string) => {
-    setSearchTerm(name)
-    setShowDropdown(false)
-    router.push(`/shop?search=${encodeURIComponent(name)}`)
-  }
+const handleSelect = (name: string) => {
+  const cleanName = name.replace(/\//g, "") // remove '/'
+  setSearchTerm(cleanName)
+  setShowDropdown(false)
+  router.push(`/shop?search=${encodeURIComponent(cleanName)}`)
+}
 
   // Hide dropdown when clicking outside
   useEffect(() => {
