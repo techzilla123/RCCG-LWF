@@ -32,7 +32,11 @@ const faqItems: FaqItem[] = [
   },
   {
     question: "What is your return policy ?",
+<<<<<<< HEAD
    answer: "We want you to be thrilled with your party supplies, as such we only offer exchange. If you're not satisfied, please contact us within 10 days of receiving your order, and we'll assist you with the exchange process.",
+=======
+    answer: "We want you to be thrilled with your party supplies, as such we only offer exchange. If you're not satisfied, please contact us within 10 days of receiving your order, and we'll assist you with the exchange process.",
+>>>>>>> 6f506e55e462107fb187c47da7e88c1d441e01d5
   },
 ];
 
