@@ -76,7 +76,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ items, totalItems, t
   const [adjustedTotal, setAdjustedTotal] = useState<string>(total)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [, setRentalMultiplier] = useState(1)
-const [showGuestForm, setShowGuestForm] = useState(false)
+  const [showGuestForm, setShowGuestForm] = useState(false)
   // New state for signin modal
   const [isSigninModalOpen, setIsSigninModalOpen] = useState(false)
   const [guestEmail, setGuestEmail] = useState("")
@@ -86,25 +86,25 @@ const [showGuestForm, setShowGuestForm] = useState(false)
   const [emailError, setEmailError] = useState("")
   const [modalType, setModalType] = useState<"signup" | "login" | "success" | null>(null)
   const [hasProvidedGuestInfo, setHasProvidedGuestInfo] = useState(false)
- const [apiShippingCost, setApiShippingCost] = useState<number | null>(null)
- 
- useEffect(() => {
-  const handleShippingCostCalculated = (event: CustomEvent) => {
-    setApiShippingCost(event.detail.cost)
-  }
+  const [apiShippingCost, setApiShippingCost] = useState<number | null>(null)
 
-  window.addEventListener("shippingCostCalculated", handleShippingCostCalculated as EventListener)
-  
-  // Load existing shipping cost from localStorage
-  const savedShippingCost = localStorage.getItem("calculatedShippingCost")
-  if (savedShippingCost) {
-    setApiShippingCost(parseFloat(savedShippingCost))
-  }
+  useEffect(() => {
+    const handleShippingCostCalculated = (event: CustomEvent) => {
+      setApiShippingCost(event.detail.cost)
+    }
 
-  return () => {
-    window.removeEventListener("shippingCostCalculated", handleShippingCostCalculated as EventListener)
-  }
-}, [])
+    window.addEventListener("shippingCostCalculated", handleShippingCostCalculated as EventListener)
+
+    // Load existing shipping cost from localStorage
+    const savedShippingCost = localStorage.getItem("calculatedShippingCost")
+    if (savedShippingCost) {
+      setApiShippingCost(Number.parseFloat(savedShippingCost))
+    }
+
+    return () => {
+      window.removeEventListener("shippingCostCalculated", handleShippingCostCalculated as EventListener)
+    }
+  }, [])
   // Check if any product has "Rentals" in the name
   const hasRentalProducts = orders.some(
     (order) =>
@@ -303,24 +303,23 @@ const [showGuestForm, setShowGuestForm] = useState(false)
   }
 
   // Modified Logistics Price Calculation
-const calculateLogisticsPrice = (distance: number, hasRental: boolean): number => {
-  if (hasRental) {
-    // Rental rule
-    if (distance <= 15) {
-      return 75
+  const calculateLogisticsPrice = (distance: number, hasRental: boolean): number => {
+    if (hasRental) {
+      // Rental rule
+      if (distance <= 15) {
+        return 75
+      }
+      const additionalMiles = distance - 15
+      return 75 + Math.ceil(additionalMiles) * 5
+    } else {
+      // Non-rental rule (half of rental pricing)
+      if (distance <= 15) {
+        return 37.5
+      }
+      const additionalMiles = distance - 15
+      return 37.5 + Math.ceil(additionalMiles) * 2.5
     }
-    const additionalMiles = distance - 15
-    return 75 + Math.ceil(additionalMiles) * 5
-  } else {
-    // Non-rental rule (half of rental pricing)
-    if (distance <= 15) {
-      return 37.5
-    }
-    const additionalMiles = distance - 15
-    return 37.5 + Math.ceil(additionalMiles) * 2.5
   }
-}
-
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -449,8 +448,8 @@ const calculateLogisticsPrice = (distance: number, hasRental: boolean): number =
               return
             } else {
               const logisticsPrice = calculateLogisticsPrice(distanceData.distance, hasRentalProducts)
-setCalculatedShipping(logisticsPrice)
-setIsShippingCalculated(true)
+              setCalculatedShipping(logisticsPrice)
+              setIsShippingCalculated(true)
               console.log(`Distance: ${distanceData.distance} miles, Logistics Price: $${logisticsPrice}`)
               alert(
                 `✅ Delivery Confirmed!\n\nDistance: ${distanceData.distance} miles\nDelivery Cost: $${logisticsPrice}\n\nClick "Complete Order" to finalize your purchase.`,
@@ -471,16 +470,16 @@ setIsShippingCalculated(true)
         setIsCalculatingShipping(false)
       }
     } else {
-  let shippingCost = 0
+      let shippingCost = 0
 
-  if (currentMethod === "shipping") {
-    shippingCost = apiShippingCost ?? 0 // use API-provided shipping cost
-  }
+      if (currentMethod === "shipping") {
+        shippingCost = apiShippingCost ?? 0 // use API-provided shipping cost
+      }
 
-  setCalculatedShipping(shippingCost)
-  setIsShippingCalculated(true)
-  await createOrder(shippingCost, currentMethod)
-}
+      setCalculatedShipping(shippingCost)
+      setIsShippingCalculated(true)
+      await createOrder(shippingCost, currentMethod)
+    }
   }
 
   const closeModal = () => {
@@ -529,16 +528,16 @@ setIsShippingCalculated(true)
         if (deliveryDetails.phoneNumber) {
           deliveryAddressString += ` - Phone: ${deliveryDetails.phoneNumber}`
         }
-         if (deliveryDetails.specialInstructions) {
-    deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
-  }
-   
+        if (deliveryDetails.specialInstructions) {
+          deliveryAddressString += ` - Instructions: ${deliveryDetails.specialInstructions}`
+        }
+
         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
           deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
         if (hasRentalProducts && deliveryDetails.specialInstructionsr) {
-  deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
-}
+          deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
+        }
       } else if (finalDeliveryMethod === "local") {
         deliveryAddressString = `Local Delivery to: ${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.postalCode} on ${deliveryDetails.deliveryDate} at ${deliveryDetails.deliveryTime}`
         if (deliveryDetails.phoneNumber) {
@@ -550,9 +549,9 @@ setIsShippingCalculated(true)
         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
           deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
-         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.specialInstructionsr) {
-  deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
-}
+        if (hasRentalProducts && deliveryDetails.specialInstructionsr) {
+          deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
+        }
       } else if (finalDeliveryMethod === "shipping") {
         deliveryAddressString = `Ship to: ${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.postalCode}`
         if (deliveryDetails.phoneNumber) {
@@ -564,6 +563,14 @@ setIsShippingCalculated(true)
         if (hasRentalProducts && deliveryDetails.returnDate && deliveryDetails.returnTime) {
           deliveryAddressString += ` - Return: ${deliveryDetails.returnDate} at ${deliveryDetails.returnTime}`
         }
+        if (hasRentalProducts && deliveryDetails.specialInstructionsr) {
+          deliveryAddressString += ` - Return Instructions: ${deliveryDetails.specialInstructionsr}`
+        }
+      }
+
+      if (!deliveryAddressString || deliveryAddressString.trim() === "") {
+        console.error("Delivery address string is empty:", deliveryDetails)
+        throw new Error("Unable to construct delivery address. Please check your delivery information.")
       }
 
       // Use adjusted total for calculations
@@ -611,7 +618,7 @@ setIsShippingCalculated(true)
         lastname: isSignedIn ? userData.lastname : guestLastName,
         phone_number: deliveryDetails.phoneNumber,
         total_amount: totalAmount + (hasRentalProducts ? 50 : 0), // add deposit
-  refundable_deposit: hasRentalProducts ? 50 : 0,
+        refundable_deposit: hasRentalProducts ? 50 : 0,
         delivery_address: deliveryAddressString,
         logistics_price: logisticsPrice,
         delivery_type: finalDeliveryMethod,
@@ -663,40 +670,38 @@ setIsShippingCalculated(true)
   }
 
   const getShippingDisplay = () => {
-  if (deliveryMethod === "pickup") {
-    return "$0.00"
+    if (deliveryMethod === "pickup") {
+      return "$0.00"
+    }
+    if (deliveryMethod === "shipping" && apiShippingCost !== null) {
+      return `$${apiShippingCost.toFixed(2)}`
+    }
+    if (deliveryMethod === "local" && calculatedShipping !== null) {
+      return `$${calculatedShipping.toFixed(2)}`
+    }
+    return "Calculated at checkout"
   }
-  if (deliveryMethod === "shipping" && apiShippingCost !== null) {
-    return `$${apiShippingCost.toFixed(2)}`
+  const TAX_RATE = 0.0825
+
+  const getFinalTotal = () => {
+    const baseTotal = Number.parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
+    let shippingToAdd = 0
+
+    if (deliveryMethod === "local" && calculatedShipping !== null) {
+      shippingToAdd = calculatedShipping
+    } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
+      shippingToAdd = apiShippingCost
+    }
+
+    // ✅ Add refundable deposit if rentals exist
+    const depositToAdd = hasRentalProducts ? 50 : 0
+
+    const taxableAmount = baseTotal + shippingToAdd + depositToAdd
+    const taxes = taxableAmount * TAX_RATE
+    const finalTotal = taxableAmount + taxes
+
+    return `$${finalTotal.toFixed(2)}`
   }
-  if (deliveryMethod === "local" && calculatedShipping !== null) {
-    return `$${calculatedShipping.toFixed(2)}`
-  }
-  return "Calculated at checkout"
-}
- const TAX_RATE = 0.0825
-
-const getFinalTotal = () => {
-  const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
-  let shippingToAdd = 0
-  
-  if (deliveryMethod === "local" && calculatedShipping !== null) {
-    shippingToAdd = calculatedShipping
-  } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
-    shippingToAdd = apiShippingCost
-  }
-
-  // ✅ Add refundable deposit if rentals exist
-  const depositToAdd = hasRentalProducts ? 50 : 0
-
-  const taxableAmount = baseTotal + shippingToAdd + depositToAdd
-  const taxes = taxableAmount * TAX_RATE
-  const finalTotal = taxableAmount + taxes
-
-  return `$${finalTotal.toFixed(2)}`
-}
-
-
 
   const getButtonText = () => {
     if (isCalculatingShipping) {
@@ -723,44 +728,43 @@ const getFinalTotal = () => {
           </div>
         ))}
         {/* Refundable Deposit (for rentals) */}
-{hasRentalProducts && (
-  <div
-    className="flex gap-10 justify-between items-center mt-3 cursor-pointer"
-    onClick={() => alert("💰 Deposit will be refunded when items are returned.")}
-    title="Deposit will be refunded when items are returned."
-  >
-    <span className="self-stretch my-auto leading-6 text-neutral-500">
-      Refundable Deposit
-    </span>
-    <span className="self-stretch my-auto font-semibold leading-5 text-black">
-      $50.00
-    </span>
-  </div>
-)}
+        {hasRentalProducts && (
+          <div
+            className="flex gap-10 justify-between items-center mt-3 cursor-pointer"
+            onClick={() => alert("💰 Deposit will be refunded when items are returned.")}
+            title="Deposit will be refunded when items are returned."
+          >
+            <span className="self-stretch my-auto leading-6 text-neutral-500">Refundable Deposit</span>
+            <span className="self-stretch my-auto font-semibold leading-5 text-black">$50.00</span>
+          </div>
+        )}
 
         {taxes && (
           <div className="flex gap-10 justify-between items-center mt-2 w-full">
-  <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes</span>
-  <span className="text-base font-semibold tracking-normal leading-5 text-black">
-    {(() => {
-      const baseTotal = parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
-      let shippingToAdd = 0
-      if (deliveryMethod === "local" && calculatedShipping !== null) {
-        shippingToAdd = calculatedShipping
-      } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
-        shippingToAdd = apiShippingCost
-      }
-      const taxableAmount = baseTotal + shippingToAdd
-      return `$${(taxableAmount * TAX_RATE).toFixed(2)}`
-    })()}
-  </span>
-</div>
-
+            <span className="text-base tracking-normal leading-6 text-neutral-500">Taxes</span>
+            <span className="text-base font-semibold tracking-normal leading-5 text-black">
+              {(() => {
+                const baseTotal = Number.parseFloat(adjustedTotal.replace(/[$,]/g, "")) || 0
+                let shippingToAdd = 0
+                if (deliveryMethod === "local" && calculatedShipping !== null) {
+                  shippingToAdd = calculatedShipping
+                } else if (deliveryMethod === "shipping" && apiShippingCost !== null) {
+                  shippingToAdd = apiShippingCost
+                }
+                const taxableAmount = baseTotal + shippingToAdd
+                return `$${(taxableAmount * TAX_RATE).toFixed(2)}`
+              })()}
+            </span>
+          </div>
         )}
         <div className="flex gap-10 justify-between items-center mt-4 w-full">
           <div className="flex flex-col">
             <span className="text-base tracking-normal leading-6 whitespace-nowrap text-neutral-500">
-              {deliveryMethod === "pickup" ? "Store Pickup" : deliveryMethod === "local" ? "Local Delivery" : "Shipping"}
+              {deliveryMethod === "pickup"
+                ? "Store Pickup"
+                : deliveryMethod === "local"
+                  ? "Local Delivery"
+                  : "Shipping"}
             </span>
             {calculatedDistance && (
               <span className="text-xs text-gray-400">
@@ -776,10 +780,7 @@ const getFinalTotal = () => {
       </div>
       <div className="flex gap-10 justify-between items-center pt-6 mt-6 w-full text-base tracking-normal border-t border-solid border-t-[color:var(--colour-stroke-default,#D5D5D5)]">
         <span className="self-stretch my-auto leading-6 text-neutral-500">TOTAL ({totalItems} items)</span>
-        <span className="self-stretch my-auto font-semibold leading-5 text-black">
-  {getFinalTotal()}
-</span>
-
+        <span className="self-stretch my-auto font-semibold leading-5 text-black">{getFinalTotal()}</span>
       </div>
       <div className="flex gap-2 items-center mt-6 w-full">
         <button
@@ -802,137 +803,139 @@ const getFinalTotal = () => {
         </button>
       </div>
 
-     {/* Signin/Email Modal */}
-{isSigninModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
-      <button
-        onClick={closeSigninModal}
-        className="absolute top-4 right-4 text-black text-2xl font-bold"
-        style={{
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          zIndex: 1000,
-        }}
-      >
-        &times;
-      </button>
-
-      <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold mb-2">Continue Your Order</h3>
-      </div>
-
-      {/* Guest disclaimer vs form */}
-      {!showGuestForm ? (
-        <div className="space-y-6 text-center">
-          <p className="text-gray-600">
-  Continuing as a <b>guest</b>, we’ll send your order tracking ID directly to your email.  
-  For updates along the way, you can always reach out to us with your Order Number by message or call.  
-  <br /><br />
-  If you <b>sign in</b>, you’ll be able to view your order progress anytime and manage everything from your account.
-</p>
-
-          <button
-            onClick={() => setShowGuestForm(true)}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-          >
-            Continue as Guest
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="guest-firstname" className="block text-sm font-medium text-gray-700 mb-2">
-                First Name
-              </label>
-              <input
-                id="guest-firstname"
-                type="text"
-                value={guestFirstName}
-                onChange={(e) => {
-                  setGuestFirstName(e.target.value)
-                  setNameError("")
-                }}
-                placeholder="First name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label htmlFor="guest-lastname" className="block text-sm font-medium text-gray-700 mb-2">
-                Last Name
-              </label>
-              <input
-                id="guest-lastname"
-                type="text"
-                value={guestLastName}
-                onChange={(e) => {
-                  setGuestLastName(e.target.value)
-                  setNameError("")
-                }}
-                placeholder="Last name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-          {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
-          <div>
-            <label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              id="guest-email"
-              type="email"
-              value={guestEmail}
-              onChange={(e) => {
-                setGuestEmail(e.target.value)
-                setEmailError("")
+      {/* Signin/Email Modal */}
+      {isSigninModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={closeSigninModal}
+              className="absolute top-4 right-4 text-black text-2xl font-bold"
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                zIndex: 1000,
               }}
-              placeholder="Enter your email address"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+            >
+              &times;
+            </button>
+
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold mb-2">Continue Your Order</h3>
+            </div>
+
+            {/* Guest disclaimer vs form */}
+            {!showGuestForm ? (
+              <div className="space-y-6 text-center">
+                <p className="text-gray-600">
+                  Continuing as a <b>guest</b>, we’ll send your order tracking ID directly to your email. For updates
+                  along the way, you can always reach out to us with your Order Number by message or call.
+                  <br />
+                  <br />
+                  If you <b>sign in</b>, you’ll be able to view your order progress anytime and manage everything from
+                  your account.
+                </p>
+
+                <button
+                  onClick={() => setShowGuestForm(true)}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+                >
+                  Continue as Guest
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="guest-firstname" className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      id="guest-firstname"
+                      type="text"
+                      value={guestFirstName}
+                      onChange={(e) => {
+                        setGuestFirstName(e.target.value)
+                        setNameError("")
+                      }}
+                      placeholder="First name"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="guest-lastname" className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      id="guest-lastname"
+                      type="text"
+                      value={guestLastName}
+                      onChange={(e) => {
+                        setGuestLastName(e.target.value)
+                        setNameError("")
+                      }}
+                      placeholder="Last name"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                {nameError && <p className="text-red-500 text-sm">{nameError}</p>}
+                <div>
+                  <label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    id="guest-email"
+                    type="email"
+                    value={guestEmail}
+                    onChange={(e) => {
+                      setGuestEmail(e.target.value)
+                      setEmailError("")
+                    }}
+                    placeholder="Enter your email address"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                </div>
+                <button
+                  onClick={handleEmailSubmit}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+                >
+                  Submit as Guest
+                </button>
+              </div>
+            )}
+
+            {/* Divider */}
+            <div className="text-center mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">or</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sign in / Sign up */}
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <button
+                onClick={handleOpenLogin}
+                className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-[#10b988]"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={handleOpenSignUp}
+                className="w-full bg-[#10b981] text-white py-2 px-4 rounded-md hover:bg-blue-500"
+              >
+                Sign Up
+              </button>
+            </div>
           </div>
-          <button
-            onClick={handleEmailSubmit}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-          >
-            Submit as Guest
-          </button>
         </div>
       )}
-
-      {/* Divider */}
-      <div className="text-center mt-6">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">or</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Sign in / Sign up */}
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <button
-          onClick={handleOpenLogin}
-          className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-[#10b988]"
-        >
-          Sign In
-        </button>
-        <button
-          onClick={handleOpenSignUp}
-          className="w-full bg-[#10b981] text-white py-2 px-4 rounded-md hover:bg-blue-500"
-        >
-          Sign Up
-        </button>
-      </div>
-    </div>
-  </div>
-)}
       {/* Existing delivery modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

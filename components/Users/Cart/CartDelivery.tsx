@@ -82,26 +82,22 @@ const defaultLocations: Record<DeliveryMethod, LocationInfo> = {
 }
 
 // Helper function to validate if a time is within allowed hours
-const isTimeWithinAllowedHours = (
-  time: string,
-  date: string,
-  type: "delivery" | "pickup" | "return"
-): boolean => {
+const isTimeWithinAllowedHours = (time: string, date: string, type: "delivery" | "pickup" | "return"): boolean => {
   if (!time || !date) return false
 
   // const selectedDate = new Date(date)
 
   const getDayOfWeek = (dateStr: string): number => {
-  if (!dateStr) return -1
-  const [year, month, day] = dateStr.split("-").map(Number)
-  // new Date(year, monthIndex, day) is LOCAL without timezone shifting
-  const localDate = new Date(year, month - 1, day)
-  return localDate.getDay()
-}
+    if (!dateStr) return -1
+    const [year, month, day] = dateStr.split("-").map(Number)
+    // new Date(year, monthIndex, day) is LOCAL without timezone shifting
+    const localDate = new Date(year, month - 1, day)
+    return localDate.getDay()
+  }
 
- const dayOfWeek = getDayOfWeek(date)
+  const dayOfWeek = getDayOfWeek(date)
 
-const [hours, minutes] = time.split(":").map(Number)
+  const [hours, minutes] = time.split(":").map(Number)
   const timeInMinutes = hours * 60 + minutes
 
   if (type === "delivery") {
@@ -126,23 +122,19 @@ const [hours, minutes] = time.split(":").map(Number)
 }
 
 // Helper function to get time range text for display
-const getTimeRangeText = (
-  date: string,
-  type: "delivery" | "pickup" | "return"
-): string => {
+const getTimeRangeText = (date: string, type: "delivery" | "pickup" | "return"): string => {
   if (!date) return ""
 
   // const selectedDate = new Date(date)
-const getDayOfWeek = (dateStr: string): number => {
-  if (!dateStr) return -1
-  const [year, month, day] = dateStr.split("-").map(Number)
-  // new Date(year, monthIndex, day) is LOCAL without timezone shifting
-  const localDate = new Date(year, month - 1, day)
-  return localDate.getDay()
-}
-  
-  const dayOfWeek = getDayOfWeek(date)
+  const getDayOfWeek = (dateStr: string): number => {
+    if (!dateStr) return -1
+    const [year, month, day] = dateStr.split("-").map(Number)
+    // new Date(year, monthIndex, day) is LOCAL without timezone shifting
+    const localDate = new Date(year, month - 1, day)
+    return localDate.getDay()
+  }
 
+  const dayOfWeek = getDayOfWeek(date)
 
   if (type === "delivery") {
     return dayOfWeek === 0 ? "2:00 PM - 7:00 PM" : "10:00 AM - 9:00 PM"
@@ -156,7 +148,7 @@ const getDayOfWeek = (dateStr: string): number => {
 // Convert "2:00 PM - 7:00 PM" → { min: "14:00", max: "19:00" }
 const getTimeRangeValues = (
   date: string,
-  type: "delivery" | "pickup" | "return"
+  type: "delivery" | "pickup" | "return",
 ): { min: string; max: string } | null => {
   if (!date) return null
 
@@ -167,9 +159,8 @@ const getTimeRangeValues = (
 
   const to24Hour = (timeStr: string): string => {
     const [time, modifier] = timeStr.split(" ")
-  let [hours] = time.split(":").map(Number)        // hours = 12
-const [, minutes] = time.split(":").map(Number)  // minutes = 45
-
+    let [hours] = time.split(":").map(Number) // hours = 12
+    const [, minutes] = time.split(":").map(Number) // minutes = 45
 
     if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12
     if (modifier.toLowerCase() === "am" && hours === 12) hours = 0
@@ -184,11 +175,7 @@ const [, minutes] = time.split(":").map(Number)  // minutes = 45
 }
 
 // Generate array of time options in 15-min increments (filters past times)
-const generateTimeSlots = (
-  date: string,
-  type: "delivery" | "pickup" | "return",
-  interval: number = 15
-): string[] => {
+const generateTimeSlots = (date: string, type: "delivery" | "pickup" | "return", interval = 15): string[] => {
   if (!date) return []
 
   const range = getTimeRangeValues(date, type)
@@ -216,8 +203,6 @@ const generateTimeSlots = (
 
   return slots
 }
-
-
 
 // Helper function to calculate pricing multiplier based on days
 const calculateRentalMultiplier = (
@@ -255,14 +240,11 @@ interface DeliveryOptionsProps {
 const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
   // Check if any product has "Rentals" in the name
   const hasRentalProducts = orders.some(
-  (order) =>
-    order.product_name?.toLowerCase().includes("rentals") ||
-    order.product_name?.toLowerCase().includes("rental"),
-)
+    (order) =>
+      order.product_name?.toLowerCase().includes("rentals") || order.product_name?.toLowerCase().includes("rental"),
+  )
 
-const hasDecorProducts = orders.some(
-  (order) => order.product_name?.toLowerCase().includes("PPR#"),
-)
+  const hasDecorProducts = orders.some((order) => order.product_name?.toLowerCase().includes("PPR#"))
 
   const savedMethod =
     typeof window !== "undefined" ? (localStorage.getItem("deliveryMethod") as DeliveryMethod) || "pickup" : "pickup"
@@ -273,7 +255,7 @@ const hasDecorProducts = orders.some(
   const [showShippingRecommendation, setShowShippingRecommendation] = useState(false)
   const [shippingCost, setShippingCost] = useState<number | null>(null)
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false)
-const [estimatedDelivery, setEstimatedDelivery] = useState<string | null>(null)
+  const [estimatedDelivery, setEstimatedDelivery] = useState<string | null>(null)
   const savedLocation = typeof window !== "undefined" ? localStorage.getItem("deliveryLocation") : null
   const [location, setLocation] = useState<LocationInfo>(
     savedLocation ? JSON.parse(savedLocation) : defaultLocations[savedMethod],
@@ -289,14 +271,13 @@ const [estimatedDelivery, setEstimatedDelivery] = useState<string | null>(null)
 
     setIsCalculatingShipping(true)
     try {
-     // Calculate weight: 0.5g × quantity of all products
-const totalQuantity = orders.reduce((sum, order) => {
-  const qty = Number(order.quantity) || 0
-  return sum + qty
-}, 0)
+      // Calculate weight: 0.5g × quantity of all products
+      const totalQuantity = orders.reduce((sum, order) => {
+        const qty = Number(order.quantity) || 0
+        return sum + qty
+      }, 0)
 
-const weight = (totalQuantity * 0.5).toString()
-
+      const weight = (totalQuantity * 0.5).toString()
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}customer/get-shipping-cost`, {
         method: "POST",
@@ -312,23 +293,18 @@ const weight = (totalQuantity * 0.5).toString()
 
       const data = await response.json()
       if (response.ok && data.data && data.data.length > 0) {
-  const calculatedCost = data.data[0].price
-  const deliveryDate = data.data[0].estimatedDelivery
+        const calculatedCost = data.data[0].price
+        const deliveryDate = data.data[0].estimatedDelivery
 
-  setShippingCost(calculatedCost)
-  setEstimatedDelivery(deliveryDate) // ✅ Save delivery date
-  localStorage.setItem("calculatedShippingCost", calculatedCost.toString())
+        setShippingCost(calculatedCost)
+        setEstimatedDelivery(deliveryDate) // ✅ Save delivery date
+        localStorage.setItem("calculatedShippingCost", calculatedCost.toString())
 
-  // Notify OrderSummary component about the shipping cost
-  window.dispatchEvent(
-    new CustomEvent("shippingCostCalculated", { detail: { cost: calculatedCost } })
-  )
+        // Notify OrderSummary component about the shipping cost
+        window.dispatchEvent(new CustomEvent("shippingCostCalculated", { detail: { cost: calculatedCost } }))
 
-  console.log(
-    `Shipping cost calculated: $${calculatedCost} for ${weight}g to ${zipCode}, ETA: ${deliveryDate}`
-  )
-}
-else {
+        console.log(`Shipping cost calculated: $${calculatedCost} for ${weight}g to ${zipCode}, ETA: ${deliveryDate}`)
+      } else {
         console.error("Failed to get shipping cost", data)
         setShippingCost(null)
         localStorage.removeItem("calculatedShippingCost")
@@ -641,50 +617,49 @@ else {
         </div>
       )}
 
-    {deliveryMethod === "shipping" && !hasRentalProducts && (
-  <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-800 rounded">
-    <div className="flex items-center">
-      <span className="text-lg mr-2">📦</span>
-      <div>
-        <strong>Shipping Cost Calculation:</strong>
-        <br />
-        {orders.length > 0 && (
-          <div className="hidden">
-            Weight: {(orders.length * 0.5).toFixed(1)}g ({orders.length} items × 0.5g each)
-            <br />
-          </div>
-        )}
-        {isCalculatingShipping && "Calculating shipping cost..."}
-        {!isCalculatingShipping && shippingCost !== null && (
-          <>
-            Shipping cost: <strong>${shippingCost.toFixed(2)}</strong>
-            <p className="text-sm text-gray-700 mt-2">
-              Item ships within <strong>24hrs</strong> with the expected delivery <br/> of 
-              <strong> 3–7 Business days</strong>.
-            </p>
-            {/* Show estimated delivery date */}
-            {/*
+      {deliveryMethod === "shipping" && !hasRentalProducts && (
+        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-800 rounded">
+          <div className="flex items-center">
+            <span className="text-lg mr-2">📦</span>
+            <div>
+              <strong>Shipping Cost Calculation:</strong>
+              <br />
+              {orders.length > 0 && (
+                <div className="hidden">
+                  Weight: {(orders.length * 0.5).toFixed(1)}g ({orders.length} items × 0.5g each)
+                  <br />
+                </div>
+              )}
+              {isCalculatingShipping && "Calculating shipping cost..."}
+              {!isCalculatingShipping && shippingCost !== null && (
+                <>
+                  Shipping cost: <strong>${shippingCost.toFixed(2)}</strong>
+                  <p className="text-sm text-gray-700 mt-2">
+                    Item ships within <strong>24hrs</strong> with the expected delivery <br /> of
+                    <strong> 3–7 Business days</strong>.
+                  </p>
+                  {/* Show estimated delivery date */}
+                  {/*
               Suppose you save API response like:
               setEstimatedDelivery(data.data[0].estimatedDelivery)
             */}
-            {estimatedDelivery && (
-              <p className="text-sm text-gray-600 mt-1">
-                📅 Estimated Delivery Date:{" "}
-                <strong>{new Date(estimatedDelivery).toDateString()}</strong>
-              </p>
-            )}
-          </>
-        )}
-        {!isCalculatingShipping &&
-          shippingCost === null &&
-          location.postalCode &&
-          location.postalCode.length >= 5 &&
-          "Unable to calculate shipping cost"}
-        {!location.postalCode && "Enter zip code below to calculate shipping cost"}
-      </div>
-    </div>
-  </div>
-)}
+                  {estimatedDelivery && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      📅 Estimated Delivery Date: <strong>{new Date(estimatedDelivery).toDateString()}</strong>
+                    </p>
+                  )}
+                </>
+              )}
+              {!isCalculatingShipping &&
+                shippingCost === null &&
+                location.postalCode &&
+                location.postalCode.length >= 5 &&
+                "Unable to calculate shipping cost"}
+              {!location.postalCode && "Enter zip code below to calculate shipping cost"}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delivery Method Options */}
       <div className="flex justify-between gap-4">
@@ -718,31 +693,30 @@ else {
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Pickup Date *</label>
-           <input
-  type="date"
-  min={new Date().toISOString().split("T")[0]} // disables past dates
-  value={location.pickupDate}
-  onChange={(e) => handleLocationChange("pickupDate", e.target.value)}
-  className="p-2 border rounded-lg w-full"
-  required
-/>
-
+            <input
+              type="date"
+              min={new Date().toISOString().split("T")[0]} // disables past dates
+              value={location.pickupDate}
+              onChange={(e) => handleLocationChange("pickupDate", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              required
+            />
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Pickup Time *</label>
-          <select
-  value={location.pickupTime}
-  onChange={(e) => handleLocationChange("pickupTime", e.target.value)}
-  className="p-2 border rounded-lg w-full"
-  required
->
-  <option value="">Select a time</option>
-  {generateTimeSlots(location.pickupDate, "pickup").map((slot) => (
-    <option key={slot} value={slot}>
-      {slot}
-    </option>
-  ))}
-</select>
+            <select
+              value={location.pickupTime}
+              onChange={(e) => handleLocationChange("pickupTime", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              required
+            >
+              <option value="">Select a time</option>
+              {generateTimeSlots(location.pickupDate, "pickup").map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
 
             {location.pickupDate && (
               <p className="text-xs text-gray-500 mt-1">
@@ -769,16 +743,16 @@ else {
             />
           </div>
 
-           {/* 🔹 Special Instructions (added for Pickup) */}
-    <div className="mt-4">
-      <label className="block text-sm font-medium">Special Instructions</label>
-      <textarea
-        value={location.specialInstructions}
-        onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
-        className="p-2 border rounded-lg w-full"
-        placeholder="Any special instructions?"
-      />
-    </div>
+          {/* 🔹 Special Instructions (added for Pickup) */}
+          <div className="mt-4">
+            <label className="block text-sm font-medium">Special Instructions</label>
+            <textarea
+              value={location.specialInstructions}
+              onChange={(e) => handleLocationChange("specialInstructions", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Any special instructions?"
+            />
+          </div>
 
           {/* Return fields for rental products */}
           {hasRentalProducts && (
@@ -799,20 +773,19 @@ else {
               </div>
               <div className="mt-4">
                 <label className="block text-sm font-medium">Return Time *</label>
-              <select
-  value={location.returnTime}
-  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
-  className="p-2 border rounded-lg w-full"
-  required
->
-  <option value="">Select a time</option>
-  {generateTimeSlots(location.returnDate, "return").map((slot) => (
-    <option key={slot} value={slot}>
-      {slot}
-    </option>
-  ))}
-</select>
-
+                <select
+                  value={location.returnTime}
+                  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
+                  className="p-2 border rounded-lg w-full"
+                  required
+                >
+                  <option value="">Select a time</option>
+                  {generateTimeSlots(location.returnDate, "return").map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
+                </select>
 
                 {location.returnDate && (
                   <p className="text-xs text-gray-500 mt-1">
@@ -827,15 +800,15 @@ else {
                     </p>
                   )}
 
-                    <div className="mt-4">
-            <label className="block text-sm font-medium">Special Instructions</label>
-            <textarea
-              value={location.specialInstructionsr}
-              onChange={(e) => handleLocationChange("specialInstructionsr", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Any special instructions?"
-            />
-          </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium">Special Instructions</label>
+                  <textarea
+                    value={location.specialInstructionsr}
+                    onChange={(e) => handleLocationChange("specialInstructionsr", e.target.value)}
+                    className="p-2 border rounded-lg w-full"
+                    placeholder="Any special instructions?"
+                  />
+                </div>
               </div>
             </>
           )}
@@ -859,20 +832,19 @@ else {
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Delivery Time *</label>
-         <select
-  value={location.deliveryTime}
-  onChange={(e) => handleLocationChange("deliveryTime", e.target.value)}
-  className="p-2 border rounded-lg w-full"
-  required
->
-  <option value="">Select a time</option>
-  {generateTimeSlots(location.deliveryDate, "delivery").map((slot) => (
-    <option key={slot} value={slot}>
-      {slot}
-    </option>
-  ))}
-</select>
-
+            <select
+              value={location.deliveryTime}
+              onChange={(e) => handleLocationChange("deliveryTime", e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              required
+            >
+              <option value="">Select a time</option>
+              {generateTimeSlots(location.deliveryDate, "delivery").map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
 
             {location.deliveryDate && (
               <p className="text-xs text-gray-500 mt-1">
@@ -888,16 +860,15 @@ else {
               )}
           </div>
 
-            {/* ℹ️ Info under the times */}
-    <div className="mt-5 bg-purple-100 border border-purple-400 text-purple-800 rounded">
-      <div className="flex items-center">
-        <span className="text-lg mr-2">🚚</span>
-        <div>
-          Our <strong>earliest delivery time</strong> is{" "}
-          <strong>2hrs after checkout</strong>.
-        </div>
-      </div>
-    </div>
+          {/* ℹ️ Info under the times */}
+          <div className="mt-5 bg-purple-100 border border-purple-400 text-purple-800 rounded">
+            <div className="flex items-center">
+              <span className="text-lg mr-2">🚚</span>
+              <div>
+                Our <strong>earliest delivery time</strong> is <strong>2hrs after checkout</strong>.
+              </div>
+            </div>
+          </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Delivery Address *</label>
             <input
@@ -962,19 +933,19 @@ else {
               </div>
               <div className="mt-4">
                 <label className="block text-sm font-medium">Return Time *</label>
-               <select
-  value={location.returnTime}
-  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
-  className="p-2 border rounded-lg w-full"
-  required
->
-  <option value="">Select a return time</option>
-  {generateTimeSlots(location.returnDate, "delivery").map((slot) => (
-    <option key={slot} value={slot}>
-      {slot}
-    </option>
-  ))}
-</select>
+                <select
+                  value={location.returnTime}
+                  onChange={(e) => handleLocationChange("returnTime", e.target.value)}
+                  className="p-2 border rounded-lg w-full"
+                  required
+                >
+                  <option value="">Select a return time</option>
+                  {generateTimeSlots(location.returnDate, "delivery").map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
+                </select>
 
                 {location.returnDate && (
                   <p className="text-xs text-gray-500 mt-1">
@@ -989,15 +960,15 @@ else {
                     </p>
                   )}
 
-                    <div className="mt-4">
-            <label className="block text-sm font-medium">Special Instructions</label>
-            <textarea
-              value={location.specialInstructionsr}
-              onChange={(e) => handleLocationChange("specialInstructionsr", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Any special instructions?"
-            />
-          </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium">Special Instructions</label>
+                  <textarea
+                    value={location.specialInstructionsr}
+                    onChange={(e) => handleLocationChange("specialInstructionsr", e.target.value)}
+                    className="p-2 border rounded-lg w-full"
+                    placeholder="Any special instructions?"
+                  />
+                </div>
               </div>
             </>
           )}
