@@ -6,11 +6,8 @@ import { useRouter } from "next/navigation"
 interface ProductSuggestion {
   productId: string
   productName: string
+  imageOne: string
 }
-// interface Suggestion {
-//   productId: string;
-//   productName: string;
-// }
 
 export const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -45,12 +42,14 @@ export const SearchBar = () => {
           : Array.isArray(json.data)
           ? json.data
           : []
+
         setSuggestions(
-  productList.map((p: ProductSuggestion) => ({
-    productId: p.productId,
-    productName: p.productName,
-  }))
-)
+          productList.map((p: any) => ({
+            productId: p.productId,
+            productName: p.productName,
+            imageOne: p.imageOne, // ✅ include image
+          }))
+        )
 
         setShowDropdown(true)
       } catch (err) {
@@ -60,7 +59,7 @@ export const SearchBar = () => {
 
     const delayDebounce = setTimeout(() => {
       fetchSuggestions()
-    }, 300) // debounce typing
+    }, 300)
 
     return () => clearTimeout(delayDebounce)
   }, [searchTerm])
@@ -107,25 +106,29 @@ export const SearchBar = () => {
       </div>
 
       {/* Dropdown */}
-    {/* Dropdown */}
-{showDropdown && suggestions.length > 0 && (
-  <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-72 overflow-y-auto z-50">
-    <div className="flex flex-col">
-      {suggestions.map((s) => (
-        <button
-          key={s.productId}
-          onClick={() => handleSelect(s.productName)}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm truncate"
-          title={s.productName}
-        >
-          {s.productName}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
-
-
+      {showDropdown && suggestions.length > 0 && (
+        <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-72 overflow-y-auto z-50">
+          <div className="flex flex-col">
+            {suggestions.map((s) => (
+              <button
+                key={s.productId}
+                onClick={() => handleSelect(s.productName)}
+                className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-100 text-sm truncate"
+                title={s.productName}
+              >
+                {/* Product Image */}
+                <img
+                  src={s.imageOne}
+                  alt={s.productName}
+                  className="w-10 h-10 object-cover rounded"
+                />
+                {/* Product Name */}
+                <span className="truncate">{s.productName}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
