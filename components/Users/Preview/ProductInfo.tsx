@@ -479,12 +479,25 @@ React.useEffect(() => {
               className="w-5 h-5"
             />
           </div>
-      {detailsOpen && (
-  <div
-    className="mt-4 text-sm text-neutral-800 leading-6 [&_p]:mb-2"
-    dangerouslySetInnerHTML={{ __html: formatDescription(cleanedDescription) }}
-  />
-)}
+
+          
+       {detailsOpen && (
+    <div className="mt-4 text-sm text-neutral-800 leading-6 [&_p]:mb-2">
+      {/* Normal description */}
+      <div dangerouslySetInnerHTML={{ __html: formatDescription(cleanedDescription) }} />
+
+      {/* If product starts with PPR#, show custom gallery link UNDER description */}
+      {title.startsWith("PPR#") && (
+        <p className="mt-4 text-blue-600 underline cursor-pointer">
+          <a href="/balloon-gallery">
+            Click here to view our balloon art gallery page
+          </a>
+        </p>
+      )}
+    </div>
+  )}
+
+
 
 
 
