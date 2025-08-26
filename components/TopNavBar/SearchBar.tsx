@@ -9,6 +9,12 @@ interface ProductSuggestion {
   imageOne: string
 }
 
+interface ApiProduct {
+  productId: string
+  productName: string
+  imageOne: string
+}
+
 export const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState<ProductSuggestion[]>([])
@@ -43,13 +49,13 @@ export const SearchBar = () => {
           ? json.data
           : []
 
-        setSuggestions(
-          productList.map((p: any) => ({
-            productId: p.productId,
-            productName: p.productName,
-            imageOne: p.imageOne, // ✅ include image
-          }))
-        )
+       setSuggestions(
+  productList.map((p: ApiProduct): ProductSuggestion => ({
+    productId: p.productId,
+    productName: p.productName,
+    imageOne: p.imageOne,
+  }))
+)
 
         setShowDropdown(true)
       } catch (err) {
