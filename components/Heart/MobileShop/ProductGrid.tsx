@@ -225,20 +225,73 @@ export const ProductGrid: React.FC = () => {
         // Shuffle and limit to 16 products (matching desktop)
         const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
 
-        // Convert to mobile Product format
-        const mobileProducts: Product[] = shuffledAndLimited.map((p) => ({
-          id: p.productId,
-          image: p.imageOne, // This is the original image, not the rotating one
-          title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
-          price: p.finalPrice,
-          isOutOfStock: p.quantity === 0,
-          isWishlisted: false,
-          isAdded: p.isAdded,
-          selectedImage: p.selectedImage, // Pass the selected image
-          imageList: p.imageList, // Pass the list of images
-          currentImageIndex: p.currentImageIndex, // Pass the current index
-        }))
-        setProducts(mobileProducts)
+     // Force add the 2 balloons (mobile format)
+const forcedProducts: Product[] = [
+  {
+    id: "5aa7726b-8d72-4309-816d-31d078149eb4",
+    title: "11-inch Fashion White Latex Balloon w/ (Helium & Hi-Float) - 1 ct",
+    image: "https://api.partyplaceandrentals.com/storage/products/9eouhQczgSt5PARuvax7scv8DtaVt7I5xc54WYxV.webp",
+    price: 2.25,
+    isOutOfStock: false,
+    isWishlisted: false,
+    isAdded: false,
+    selectedImage: "https://api.partyplaceandrentals.com/storage/products/9eouhQczgSt5PARuvax7scv8DtaVt7I5xc54WYxV.webp",
+    imageList: [
+      "https://api.partyplaceandrentals.com/storage/products/9eouhQczgSt5PARuvax7scv8DtaVt7I5xc54WYxV.webp",
+    ],
+    currentImageIndex: 0,
+  },
+  {
+    id: "c54ab3d0-474b-49b5-8db8-59ce7da14d13",
+    title: "11-inch Bubble Gum Pink Latex Balloon w/ (Helium & Hi-Float) - 1 ct",
+    image: "https://api.partyplaceandrentals.com/storage/products/rQiu55phVmrDIwSy6CEF5n8uS0r4BB37FpeA6Mt1.webp",
+    price: 2.25,
+    isOutOfStock: false,
+    isWishlisted: false,
+    isAdded: false,
+    selectedImage: "https://api.partyplaceandrentals.com/storage/products/rQiu55phVmrDIwSy6CEF5n8uS0r4BB37FpeA6Mt1.webp",
+    imageList: [
+      "https://api.partyplaceandrentals.com/storage/products/rQiu55phVmrDIwSy6CEF5n8uS0r4BB37FpeA6Mt1.webp",
+    ],
+    currentImageIndex: 0,
+  },
+]
+
+// Convert to mobile Product format
+const mobileProducts: Product[] = formatted.map((p) => ({
+  id: p.productId,
+  image: p.imageOne,
+  title: p.productName.length > 26 ? p.productName.slice(0, 23) + "..." : p.productName,
+  price: p.finalPrice,
+  isOutOfStock: p.quantity === 0,
+  isWishlisted: false,
+  isAdded: p.isAdded,
+  selectedImage: p.selectedImage,
+  imageList: p.imageList,
+  currentImageIndex: p.currentImageIndex,
+}))
+
+// Merge forced + API products, remove duplicates
+const merged = [
+  ...forcedProducts,
+  ...mobileProducts.filter((p) => !forcedProducts.some(fp => fp.id === p.id)),
+]
+
+// Shuffle everything together
+const shuffledAll = shuffleArray(merged)
+
+// Ensure max 16, but forced ones stay included
+const finalProducts = shuffledAll.slice(0, 16)
+
+// Guarantee forced ones are not cut off
+forcedProducts.forEach(fp => {
+  if (!finalProducts.some(p => p.id === fp.id)) {
+    finalProducts.splice(Math.floor(Math.random() * finalProducts.length), 0, fp)
+    if (finalProducts.length > 16) finalProducts.pop()
+  }
+})
+
+setProducts(finalProducts)
       } catch (e: unknown) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred"
         console.error("Fetch error:", e)

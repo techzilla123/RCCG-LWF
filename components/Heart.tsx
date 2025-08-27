@@ -162,125 +162,138 @@ interface Product extends ProductApiResponse {
     }
 
     useEffect(() => {
-      const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
+  const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}customer/list-product`
 
-      async function fetchProducts() {
-        try {
-          const token = localStorage.getItem("accessToken")
-          const headers = {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
-            ...(token ? { Authorization: token } : {}),
-          }
+  async function fetchProducts() {
+    try {
+      const token = localStorage.getItem("accessToken")
+      const headers = {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+        ...(token ? { Authorization: token } : {}),
+      }
 
-          // First, fetch the first page to get pagination info
-          const firstPageRes = await fetch(baseUrl, {
-            method: "GET",
-            headers,
-          })
+      // First, fetch page 1
+      const firstPageRes = await fetch(baseUrl, { method: "GET", headers })
+      if (!firstPageRes.ok) throw new Error(`Server error: ${firstPageRes.status}`)
 
-          if (!firstPageRes.ok) {
-            throw new Error(`Server error: ${firstPageRes.status}`)
-          }
+      const firstPageJson = await firstPageRes.json()
+      if (firstPageJson.statusCode !== 200 || !Array.isArray(firstPageJson.data.product)) {
+        throw new Error("Unexpected response structure")
+      }
 
-          const firstPageJson = await firstPageRes.json()
+      const totalPages = firstPageJson.data.pagination.total_pages
+      let allProducts: ProductApiResponse[] = [...firstPageJson.data.product]
 
-          if (firstPageJson.statusCode !== 200 || !Array.isArray(firstPageJson.data.product)) {
-            throw new Error("Unexpected response structure")
-          }
+      // Fetch extra random pages if available
+      if (totalPages > 1) {
+        const pagesToFetch = Math.min(totalPages - 1, 2)
+        const randomPages: number[] = []
+        while (randomPages.length < pagesToFetch) {
+          const randomPage = Math.floor(Math.random() * (totalPages - 1)) + 2
+          if (!randomPages.includes(randomPage)) randomPages.push(randomPage)
+        }
 
-          const totalPages = firstPageJson.data.pagination.total_pages
-          let allProducts: ProductApiResponse[] = [...firstPageJson.data.product]
-
-          // If there are more pages, fetch from random pages
-          if (totalPages > 1) {
-            // Determine how many additional pages to fetch (fetch from 2-3 random pages)
-            const pagesToFetch = Math.min(totalPages - 1, 2)
-            const randomPages: number[] = []
-
-            // Generate random page numbers (excluding page 1 which we already fetched)
-            while (randomPages.length < pagesToFetch) {
-              const randomPage = Math.floor(Math.random() * (totalPages - 1)) + 2 // Pages 2 to totalPages
-              if (!randomPages.includes(randomPage)) {
-                randomPages.push(randomPage)
-              }
+        const pagePromises = randomPages.map(async (page) => {
+          const pageRes = await fetch(`${baseUrl}?page=${page}`, { method: "GET", headers })
+          if (pageRes.ok) {
+            const pageJson = await pageRes.json()
+            if (pageJson.statusCode === 200 && Array.isArray(pageJson.data.product)) {
+              return pageJson.data.product
             }
-
-            // Fetch products from random pages
-            const pagePromises = randomPages.map(async (page) => {
-              const pageRes = await fetch(`${baseUrl}?page=${page}`, {
-                method: "GET",
-                headers,
-              })
-
-              if (pageRes.ok) {
-                const pageJson = await pageRes.json()
-                if (pageJson.statusCode === 200 && Array.isArray(pageJson.data.product)) {
-                  return pageJson.data.product
-                }
-              }
-              return []
-            })
-
-            const additionalPages = await Promise.all(pagePromises)
-
-            // Combine all products from different pages
-            additionalPages.forEach((pageProducts) => {
-              allProducts = [...allProducts, ...pageProducts]
-            })
           }
+          return []
+        })
 
-          // Format all products
-        const uniqueNames = new Set<string>()
+        const additionalPages = await Promise.all(pagePromises)
+        additionalPages.forEach((pageProducts) => {
+          allProducts = [...allProducts, ...pageProducts]
+        })
+      }
 
-  const formatted: Product[] = []
-  for (const p of allProducts) {
-     if (p.productName.startsWith("PPG#")) continue
-    if (!uniqueNames.has(p.productName)) {
-      uniqueNames.add(p.productName)
-  const imageOptions = [
-  p.imageOne,
-  p.imageTwo,
-  p.imageThree,
-  p.imageFour,
-  p.imageFive,
-  p.imageSix,
-  p.imageSeven,
-  p.imageEight,
-  p.imageNine,
-  p.imageTen,
-  p.imageEleven,
-  p.imageTwelve,
-  p.imageThirtheen,
-].filter((img): img is string => Boolean(img)) // this filters out undefined and narrows type to string
+      // Format products
+      const uniqueNames = new Set<string>()
+      const formatted: Product[] = []
+      for (const p of allProducts) {
+        if (p.productName.startsWith("PPG#")) continue
+        if (!uniqueNames.has(p.productName)) {
+          uniqueNames.add(p.productName)
+          const imageOptions = [
+            p.imageOne, p.imageTwo, p.imageThree, p.imageFour, p.imageFive,
+            p.imageSix, p.imageSeven, p.imageEight, p.imageNine, p.imageTen,
+            p.imageEleven, p.imageTwelve, p.imageThirtheen,
+          ].filter((img): img is string => Boolean(img))
 
- formatted.push({
-  ...p,
-  isAdded: false,
-  finalPrice: calculateFinalPrice(p.price, p.discountPrice),
-  selectedImage: imageOptions[0] || p.imageOne,
-  imageList: imageOptions,
-  currentImageIndex: 0,
-})
-
-    }
-  }
-
-
-          // Shuffle and limit to 16 products
-          const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
-          setProducts(shuffledAndLimited)
-        } catch (e: unknown) {
-          const errorMessage = e instanceof Error ? e.message : "An unknown error occurred"
-          console.error("Fetch error:", e)
-          setError(errorMessage)
-        } finally {
-          setLoading(false)
+          formatted.push({
+            ...p,
+            isAdded: false,
+            finalPrice: calculateFinalPrice(p.price, p.discountPrice),
+            selectedImage: imageOptions[0] || p.imageOne,
+            imageList: imageOptions,
+            currentImageIndex: 0,
+          })
         }
       }
 
-      fetchProducts()
-    }, [])
+      // Force add the 2 balloons
+      const forcedProducts: Product[] = [
+        {
+          productId: "5aa7726b-8d72-4309-816d-31d078149eb4",
+          productName: "11-inch Fashion White Latex Balloon w/ (Helium & Hi-Float) - 1 ct",
+          imageOne: "https://api.partyplaceandrentals.com/storage/products/9eouhQczgSt5PARuvax7scv8DtaVt7I5xc54WYxV.webp",
+          price: 2.25,
+          discountPrice: 0,
+          quantity: 1100,
+          isAdded: false,
+          finalPrice: 2.25,
+          selectedImage: "https://api.partyplaceandrentals.com/storage/products/9eouhQczgSt5PARuvax7scv8DtaVt7I5xc54WYxV.webp",
+          imageList: ["https://api.partyplaceandrentals.com/storage/products/9eouhQczgSt5PARuvax7scv8DtaVt7I5xc54WYxV.webp"],
+          currentImageIndex: 0,
+        },
+        {
+          productId: "c54ab3d0-474b-49b5-8db8-59ce7da14d13",
+          productName: "11-inch Bubble Gum Pink Latex Balloon w/ (Helium & Hi-Float) - 1 ct",
+          imageOne: "https://api.partyplaceandrentals.com/storage/products/rQiu55phVmrDIwSy6CEF5n8uS0r4BB37FpeA6Mt1.webp",
+          price: 2.25,
+          discountPrice: 0,
+          quantity: 1100,
+          isAdded: false,
+          finalPrice: 2.25,
+          selectedImage: "https://api.partyplaceandrentals.com/storage/products/rQiu55phVmrDIwSy6CEF5n8uS0r4BB37FpeA6Mt1.webp",
+          imageList: ["https://api.partyplaceandrentals.com/storage/products/rQiu55phVmrDIwSy6CEF5n8uS0r4BB37FpeA6Mt1.webp"],
+          currentImageIndex: 0,
+        },
+      ]
+
+    // Separate forced + others
+const others = formatted.filter((p) => !forcedProducts.some(fp => fp.productId === p.productId))
+
+// Shuffle both forced and others together
+const shuffledAll = shuffleArray([...forcedProducts, ...others])
+
+// Ensure forced products always remain in final list
+const finalProducts = [
+  ...shuffledAll.filter(p => forcedProducts.some(fp => fp.productId === p.productId)), // keep forced
+  ...shuffledAll.filter(p => !forcedProducts.some(fp => fp.productId === p.productId)).slice(0, 16 - forcedProducts.length) // add others
+]
+
+// Shuffle again so forced aren't stuck at start
+const finalShuffled = shuffleArray(finalProducts)
+
+setProducts(finalShuffled)
+
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : "An unknown error occurred"
+      console.error("Fetch error:", e)
+      setError(errorMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchProducts()
+}, [])
+
 
     useEffect(() => {
   const interval = setInterval(() => {
