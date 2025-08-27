@@ -223,7 +223,7 @@ export const ProductGrid: React.FC = () => {
         }
 
         // Shuffle and limit to 16 products (matching desktop)
-        const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
+        // const shuffledAndLimited = shuffleArray(formatted).slice(0, 16)
 
      // Force add the 2 balloons (mobile format)
 const forcedProducts: Product[] = [
