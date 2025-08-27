@@ -50,12 +50,15 @@ export const SearchBar = () => {
           : []
 
       setSuggestions(
-  productList.map((p: ApiProduct): ProductSuggestion => ({
-    productId: p.productId,
-    productName: p.productName.replace(/\//g, ""), // remove all '/'
-    imageOne: p.imageOne,
-  }))
+  productList
+    .filter((p: ApiProduct) => !p.productName?.toUpperCase().startsWith("PPR#")) // exclude PPR#
+    .map((p: ApiProduct): ProductSuggestion => ({
+      productId: p.productId,
+      productName: p.productName.replace(/\//g, ""), // remove all '/'
+      imageOne: p.imageOne,
+    }))
 )
+
 
 
         setShowDropdown(true)

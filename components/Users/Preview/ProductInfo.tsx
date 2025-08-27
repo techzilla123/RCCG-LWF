@@ -380,20 +380,20 @@ React.useEffect(() => {
             <div className="flex flex-col">
               <label className="text-sm font-medium text-black">Select size</label>
               <div className="flex justify-between mt-2">
-                {sizes.map((size) => (
-                 <button
-  key={size}
-  onClick={() => {
-    setSelectedSize(size)
-  }}
-  className={`w-14 h-10 rounded-full ${
-    selectedSize === size ? "bg-black text-white" : "border border-black bg-transparent text-black"
-  }`}
->
-  {size}
-</button>
+               {sizes.map((size) => (
+  <button
+    key={size}
+    onClick={() => setSelectedSize(size)}
+    className={`px-4 py-2 rounded-full 
+      ${selectedSize === size 
+        ? "bg-black text-white" 
+        : "border border-black bg-transparent text-black"
+      }`}
+  >
+    {size}
+  </button>
+))}
 
-                ))}
               </div>
             </div>
           )}

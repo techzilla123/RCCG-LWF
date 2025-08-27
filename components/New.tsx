@@ -197,6 +197,7 @@ useEffect(() => {
       const formattedProducts: Product[] = []
 
       for (const p of allProductsRaw) {
+             if (p.productName.startsWith("PPG#")) continue
         if (p.productName?.toUpperCase().startsWith("PPG#")) continue
         if (!seenNames.has(p.productName)) {
           seenNames.add(p.productName)
