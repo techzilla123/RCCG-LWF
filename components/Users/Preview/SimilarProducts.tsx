@@ -378,7 +378,7 @@ useEffect(() => {
 
       <h3 className="text-xl font-semibold mb-6">All Similar Products</h3>
 
-     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 w-full">
+     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-4 w-full">
   {products.map((product) => (
     <ProductCard key={product.id} {...product} />
   ))}
