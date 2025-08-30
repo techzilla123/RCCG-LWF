@@ -5,6 +5,18 @@ interface OrderSummaryProps {
   orderId: string;
 }
 
+interface CustomerDetails {
+  customerId: string;
+  firstname: string;
+  lastname: string;
+  phoneNumber: string;
+  email: string;
+  location: string | null;
+  status: string;
+  userType: string;
+  registrationDate: string;
+}
+
 interface Order {
   quantity: number;
   amount: number;
@@ -13,25 +25,19 @@ interface Order {
   orderId: string;
   delivery_type: string;
   deliveryAddress: string;
-  paymentStatus: string; // ✅ Added paymentStatus
+  paymentStatus: string;
+  customerDetails?: CustomerDetails; // ✅ Added customer details
 }
 
 const parseDeliveryAddress = (fullAddress: string) => {
   if (!fullAddress) return {};
 
-  // Match "Pickup at: {address} on {date and time}"
   const addressTimeMatch = fullAddress.match(
     /Pickup at:\s*(.*?)\s*on\s*([\d]{4}-[\d]{2}-[\d]{2}\s+at\s+\d{2}:\d{2})/i
   );
-
   const phoneMatch = fullAddress.match(/Phone:\s*([^-]*)/i);
-
-  // ✅ Match return date/time
   const returnMatch = fullAddress.match(/Return:\s*([\d]{4}-[\d]{2}-[\d]{2}\s+at\s+\d{2}:\d{2})/i);
-
-  // ✅ Match return instructions if present
   const returnInstructionsMatch = fullAddress.match(/Return Instructions:\s*(.*)$/i);
-
   const instructionsMatch = fullAddress.match(/Instructions:\s*(.*)$/i);
 
   return {
@@ -47,6 +53,7 @@ const parseDeliveryAddress = (fullAddress: string) => {
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showCustomer, setShowCustomer] = useState(false); // ✅ toggle state
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -96,6 +103,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
 
   return (
     <section className="flex flex-col gap-4 p-6 w-full rounded-lg bg-stone-50">
+      {/* Order Info */}
       <div className="flex justify-between w-full">
         <span className="text-base text-neutral-500">Items:</span>
         <span className="text-base text-black">{order.quantity}</span>
@@ -144,19 +152,24 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
         </span>
       </div>
 
-      {/* Parsed Delivery Info */}
+      {/* ✅ Delivery Info */}
       {(details.address || details.time) && (
-        <p className="text-base text-black">
-          <span className="text-neutral-500">Delivery Address: </span>
-          {details.address}
-          {details.time && ` on ${details.time}`}
-        </p>
-      )}
+  <p className="text-base text-black">
+    <span className="text-neutral-500">
+      {details.address?.includes("1919 Faithon P Lucas Sr. Blvd, #135, Mesquite TX 75181")
+        ? "Store Pickup: "
+        : "Delivery Address: "}
+    </span>
+    {details.address}
+    {details.time && ` on ${details.time}`}
+  </p>
+)}
+
 
       {details.phone && (
         <div>
-          <span className="text-base text-neutral-500">Phone:</span>
-          <div className="text-base text-black">{details.phone}</div>
+          <span className="text-base hidden text-neutral-500">Phone:</span>
+          <div className="text-base hidden text-black">{details.phone}</div>
         </div>
       )}
 
@@ -165,9 +178,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
           <span className="text-base text-neutral-500">Instructions:</span>
           <div className="text-base text-black">{details.instructions}</div>
         </div>
-      )} 
-      
-      {/* ✅ Return Date */}
+      )}
+
       {details.returnDate && (
         <div>
           <span className="text-base text-neutral-500">Return Date:</span>
@@ -175,7 +187,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
         </div>
       )}
 
-      {/* ✅ Return Instructions */}
       {details.returnInstructions && (
         <div>
           <span className="text-base text-neutral-500">Return Instructions:</span>
@@ -183,6 +194,25 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ id, orderId }) => {
         </div>
       )}
 
+      {/* ✅ Customer Details Toggle */}
+      <button
+        onClick={() => setShowCustomer((prev) => !prev)}
+        className="px-4 py-2 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      >
+        {showCustomer ? "Hide Customer Details" : "Show Customer Details"}
+      </button>
+
+      {showCustomer && order.customerDetails && (
+        <div className="mt-4 p-4 border rounded-lg bg-white shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Customer Details</h3>
+          <p><strong>Name:</strong> {order.customerDetails.firstname} {order.customerDetails.lastname}</p>
+          <p><strong>Email:</strong> {order.customerDetails.email}</p>
+          <p><strong>Phone:</strong> {order.customerDetails.phoneNumber}</p>
+          <p><strong>Status:</strong> {order.customerDetails.status}</p>
+          <p><strong>User Type:</strong> {order.customerDetails.userType}</p>
+          <p><strong>Registered:</strong> {formatDateTime(order.customerDetails.registrationDate)}</p>
+        </div>
+      )}
     </section>
   );
 };

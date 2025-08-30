@@ -480,59 +480,77 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
       return newLocation
     })
   }
+  // ✅ Validate USA phone numbers
+const isValidUSPhoneNumber = (phone: string): boolean => {
+  // Remove spaces, dashes, parentheses
+  const cleaned = phone.replace(/\D/g, "")
 
-  const validateRequiredFields = (): boolean => {
-    const requiredFieldsMap: Record<DeliveryMethod, string[]> = {
-      pickup: hasRentalProducts
-        ? ["pickupDate", "pickupTime", "phoneNumber", "returnDate", "returnTime"]
-        : ["pickupDate", "pickupTime", "phoneNumber"],
-      local: hasRentalProducts
-        ? ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber", "returnDate", "returnTime"]
-        : ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber"],
-      shipping: hasRentalProducts
-        ? ["address", "postalCode", "phoneNumber", "returnDate", "returnTime"]
-        : ["address", "postalCode", "phoneNumber"],
-    }
+  // Must be 10 digits (without country code) OR 11 with leading "1"
+  if (/^1?\d{10}$/.test(cleaned)) {
+    return true
+  }
 
-    const requiredFields = requiredFieldsMap[deliveryMethod]
-    const basicValidation = requiredFields.every((field) => {
-      const value = location[field as keyof LocationInfo]
-      return value && value.toString().trim() !== ""
-    })
+  return false
+}
+ 
 
-    if (!basicValidation) return false
+ const validateRequiredFields = (): boolean => {
+  const requiredFieldsMap: Record<DeliveryMethod, string[]> = {
+    pickup: hasRentalProducts
+      ? ["pickupDate", "pickupTime", "phoneNumber", "returnDate", "returnTime"]
+      : ["pickupDate", "pickupTime", "phoneNumber"],
+    local: hasRentalProducts
+      ? ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber", "returnDate", "returnTime"]
+      : ["deliveryDate", "deliveryTime", "address", "postalCode", "phoneNumber"],
+    shipping: hasRentalProducts
+      ? ["address", "postalCode", "phoneNumber", "returnDate", "returnTime"]
+      : ["address", "postalCode", "phoneNumber"],
+  }
 
-    // Additional time validation
-    if (deliveryMethod === "pickup") {
-      if (
-        location.pickupTime &&
-        location.pickupDate &&
-        !isTimeWithinAllowedHours(location.pickupTime, location.pickupDate, "pickup")
-      ) {
-        return false
-      }
-    } else if (deliveryMethod === "local") {
-      if (
-        location.deliveryTime &&
-        location.deliveryDate &&
-        !isTimeWithinAllowedHours(location.deliveryTime, location.deliveryDate, "delivery")
-      ) {
-        return false
-      }
-    }
+  const requiredFields = requiredFieldsMap[deliveryMethod]
+  const basicValidation = requiredFields.every((field) => {
+    const value = location[field as keyof LocationInfo]
+    return value && value.toString().trim() !== ""
+  })
 
-    // Validate return time for rentals
+  if (!basicValidation) return false
+
+  // ✅ Extra validation: phone must be a valid U.S. number
+  if (!isValidUSPhoneNumber(location.phoneNumber)) {
+    return false
+  }
+
+  // Time validation stays the same...
+  if (deliveryMethod === "pickup") {
     if (
-      hasRentalProducts &&
-      location.returnTime &&
-      location.returnDate &&
-      !isTimeWithinAllowedHours(location.returnTime, location.returnDate, "return")
+      location.pickupTime &&
+      location.pickupDate &&
+      !isTimeWithinAllowedHours(location.pickupTime, location.pickupDate, "pickup")
     ) {
       return false
     }
-
-    return true
+  } else if (deliveryMethod === "local") {
+    if (
+      location.deliveryTime &&
+      location.deliveryDate &&
+      !isTimeWithinAllowedHours(location.deliveryTime, location.deliveryDate, "delivery")
+    ) {
+      return false
+    }
   }
+
+  if (
+    hasRentalProducts &&
+    location.returnTime &&
+    location.returnDate &&
+    !isTimeWithinAllowedHours(location.returnTime, location.returnDate, "return")
+  ) {
+    return false
+  }
+
+  return true
+}
+
 
   const handleSave = () => {
     if (validateRequiredFields()) {
@@ -731,17 +749,21 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
                 </p>
               )}
           </div>
-          <div className="mt-4">
-            <label className="block text-sm font-medium">Phone Number *</label>
-            <input
-              type="tel"
-              value={location.phoneNumber}
-              onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Enter phone number"
-              required
-            />
-          </div>
+         <div className="mt-4">
+  <label className="block text-sm font-medium">Phone Number *</label>
+  <input
+    type="tel"
+    value={location.phoneNumber}
+    onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
+    className="p-2 border rounded-lg w-full"
+    placeholder="Enter phone number"
+    required
+  />
+  {location.phoneNumber && !isValidUSPhoneNumber(location.phoneNumber) && (
+    <p className="text-xs text-red-500 mt-1">Please enter a valid U.S. phone number</p>
+  )}
+</div>
+
 
           {/* 🔹 Special Instructions (added for Pickup) */}
           <div className="mt-4">
@@ -883,16 +905,20 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
             <p className="text-xs text-gray-500 mt-1">Address suggestions will appear as you type</p>
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium">Phone Number *</label>
-            <input
-              type="tel"
-              value={location.phoneNumber}
-              onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Enter phone number"
-              required
-            />
-          </div>
+  <label className="block text-sm font-medium">Phone Number *</label>
+  <input
+    type="tel"
+    value={location.phoneNumber}
+    onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
+    className="p-2 border rounded-lg w-full"
+    placeholder="Enter phone number"
+    required
+  />
+  {location.phoneNumber && !isValidUSPhoneNumber(location.phoneNumber) && (
+    <p className="text-xs text-red-500 mt-1">Please enter a valid U.S. phone number</p>
+  )}
+</div>
+
           <div className="mt-4">
             <label className="block text-sm font-medium">Zip Code *</label>
             <input
@@ -1017,17 +1043,21 @@ const DeliveryOptions = ({ onSave, orders = [] }: DeliveryOptionsProps) => {
               </div>
             )}
           </div>
-          <div className="mt-4">
-            <label className="block text-sm font-medium">Phone Number *</label>
-            <input
-              type="tel"
-              value={location.phoneNumber}
-              onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Enter phone number"
-              required
-            />
-          </div>
+         <div className="mt-4">
+  <label className="block text-sm font-medium">Phone Number *</label>
+  <input
+    type="tel"
+    value={location.phoneNumber}
+    onChange={(e) => handleLocationChange("phoneNumber", e.target.value)}
+    className="p-2 border rounded-lg w-full"
+    placeholder="Enter phone number"
+    required
+  />
+  {location.phoneNumber && !isValidUSPhoneNumber(location.phoneNumber) && (
+    <p className="text-xs text-red-500 mt-1">Please enter a valid U.S. phone number</p>
+  )}
+</div>
+
           <div className="mt-4">
             <label className="block text-sm font-medium">Special Instructions</label>
             <textarea

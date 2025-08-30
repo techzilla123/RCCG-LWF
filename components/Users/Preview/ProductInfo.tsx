@@ -60,6 +60,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   const [detailsOpen, setDetailsOpen] = React.useState(true)
   const [selectedColor, setSelectedColor] = React.useState<string | null>(null)
   const [selectedColorIndex, setSelectedColorIndex] = React.useState<number | null>(null)
+// Inside component
+const isRental = /\brentals?\b/i.test(title) // matches rental / rentals (case-insensitive)
 
   // Parse inflated price from description
  const cleanedDescription = description
@@ -338,7 +340,8 @@ React.useEffect(() => {
       <aside className="flex-1 shrink bg-white rounded-lg basis-0 min-w-60 p-4 max-md:max-w-full">
         <div className="flex flex-col w-full leading-6 max-md:max-w-full">
         {/* Stock badge — only show if title does NOT start with PPR# */}
-{!title.startsWith("PPR#") && (
+{/* Stock badge — only show if NOT PPR# and NOT Rental */}
+{!title.startsWith("PPR#") && !isRental && (
   <span
     className={`px-2 py-0.5 text-xs w-[100px] rounded ${
       !stock ? "bg-red-100 text-red-500" : "bg-[#E1F7E6] text-black"
@@ -347,6 +350,7 @@ React.useEffect(() => {
     {!stock ? "Not in stock" : `${stock} In-stock`}
   </span>
 )}
+
 
 
           <h1 className="mt-3 text-2xl font-semibold text-black">{title}</h1>
@@ -417,13 +421,14 @@ React.useEffect(() => {
             </div>
           )}
           {/* Quantity selector — hide if title starts with PPR# */}
+{/* Quantity selector — hide if title starts with PPR# */}
 {!title.startsWith("PPR#") && (
   <div className="flex flex-col mt-4">
     <label className="text-sm font-medium text-black">Quantity</label>
     <div className="flex items-center gap-2 mt-2">
       <button
         onClick={() => handleQuantityChange(quantity - 1)}
-        disabled={stock === 0}
+        disabled={!isRental && stock === 0}
         className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
       >
         -
@@ -431,15 +436,15 @@ React.useEffect(() => {
       <input
         type="number"
         min="1"
-        max={stock}
+        max={isRental ? undefined : stock}   // unlimited if rental
         value={quantity}
         onChange={(e) => handleQuantityChange(Number.parseInt(e.target.value))}
-        disabled={stock === 0}
+        disabled={!isRental && stock === 0}
         className="w-12 text-center border rounded disabled:opacity-50"
       />
       <button
         onClick={() => handleQuantityChange(quantity + 1)}
-        disabled={stock === 0}
+        disabled={!isRental && stock === 0}
         className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
       >
         +
