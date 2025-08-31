@@ -1,4 +1,4 @@
-// next.config.js
+// next.config.mjs
 const nextConfig = {
   images: {
     domains: ["api.partyplaceandrentals.com"],
@@ -6,11 +6,20 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/favicon-v2.png",
+        source: "/favicon-v3.ico",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=0, must-revalidate",
+            // 🚫 absolutely no caching
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
           },
         ],
       },
