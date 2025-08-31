@@ -13,15 +13,14 @@ type User = {
   lastname: string;
   email: string;
   location: string | null;
-  status: "Active" | "Inactive" | string; // Extend if needed
+  status: "Active" | "Inactive" | string;
   userType: string;
   registrationDate: string;
-  orders?: number; // Optional, since it's not in your API
-  image?: string;  // Optional, based on your fallback logic
+  orders?: number; // total noOfItem count
+  image?: string;
 };
 
 interface TableProps {
-  users: User[];
   currentPage: number;
   usersPerPage: number;
 }
@@ -49,9 +48,50 @@ const Table = ({ currentPage, usersPerPage }: TableProps) => {
             },
           }
         );
+
         const result = await response.json();
         if (result.statusCode === 200) {
-          setUsers(result.data);
+          const customerList: User[] = result.data;
+
+        // inside fetchUsers useEffect
+const usersWithOrders = await Promise.all(
+  customerList.map(async (user: User) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}admin/fetch-customer/${user.customerId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY || "",
+            ...(token && { Authorization: token }),
+          },
+        }
+      );
+
+      const orderResult = await res.json();
+
+      if (
+        orderResult.statusCode === 200 &&
+        orderResult.data &&
+        Array.isArray(orderResult.data.orderList)
+      ) {
+        // ✅ sum up all noOfItem inside orderList
+        const totalOrders = orderResult.data.orderList.reduce(
+          (sum: number, order: any) => sum + (order.noOfItem || 0),
+          0
+        );
+        return { ...user, orders: totalOrders };
+      }
+    } catch (err) {
+      console.error("Failed to fetch customer orders:", err);
+    }
+    return { ...user, orders: 0 };
+  })
+);
+
+setUsers(usersWithOrders);
+
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -64,7 +104,7 @@ const Table = ({ currentPage, usersPerPage }: TableProps) => {
   // ✅ Pagination slice
   const startIndex = (currentPage - 1) * usersPerPage;
   const paginatedUsers = users.slice(startIndex, startIndex + usersPerPage);
-  
+
   const toggleDropdown = (index: number) => {
     if (openDropdownIndex === index) {
       setOpenDropdownIndex(null);
@@ -190,10 +230,23 @@ const Table = ({ currentPage, usersPerPage }: TableProps) => {
                   </div>
                 </td>
                 <td className="p-3">{user.location || "—"}</td>
-                <td className="p-3">
-                  {new Date(user.registrationDate).toLocaleDateString()}
-                </td>
-                <td className="p-3">{user.orders || 0}</td>
+              <td className="p-3">
+  {(() => {
+    const originalDate = new Date(user.registrationDate);
+    const today = new Date();
+
+    // if date is greater than today, subtract 1 day
+    const finalDate =
+      originalDate > today
+        ? new Date(originalDate.setDate(originalDate.getDate() - 1))
+        : originalDate;
+
+    return finalDate.toLocaleDateString();
+  })()}
+</td>
+
+
+                <td className="p-3">{user.orders ?? 0}</td>
                 <td className="p-3 flex items-center justify-between w-full">
                   <div className="flex items-center gap-2">
                     <span
@@ -220,20 +273,19 @@ const Table = ({ currentPage, usersPerPage }: TableProps) => {
 
                     {openDropdownIndex === idx && (
                       <div className="absolute right-0 z-50">
-                      <Actions
-  direction={dropdownDirection}
-  isLoading={isLoading}
-  onActivate={() =>
-    handleStatusChange(user.customerId, user.status)
-  }
-  onDeactivate={() =>
-    handleStatusChange(user.customerId, user.status)
-  }
-  onDelete={() => handleDelete(user.customerId)}
-  currentStatus={user.status}
-  customerId={user.customerId}
-/>
-
+                        <Actions
+                          direction={dropdownDirection}
+                          isLoading={isLoading}
+                          onActivate={() =>
+                            handleStatusChange(user.customerId, user.status)
+                          }
+                          onDeactivate={() =>
+                            handleStatusChange(user.customerId, user.status)
+                          }
+                          onDelete={() => handleDelete(user.customerId)}
+                          currentStatus={user.status}
+                          customerId={user.customerId}
+                        />
                       </div>
                     )}
                   </div>

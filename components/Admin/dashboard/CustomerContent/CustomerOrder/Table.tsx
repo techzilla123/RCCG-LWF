@@ -22,10 +22,10 @@ const statusColors: Record<string, string> = {
   Pending: "bg-orange-400",
   Returned: "bg-stone-400",
   Rejected: "bg-red-700",
-  pending: "bg-yellow-500", // for API status values
+  pending: "bg-yellow-500",
 };
 
-const Table = () => {
+const Table = ({ currentPage, itemsPerPage }: { currentPage: number; itemsPerPage: number }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
@@ -78,7 +78,6 @@ const Table = () => {
       setOpenDropdownIndex(null);
       return;
     }
-
     const rect = dropdownRefs.current[index]?.getBoundingClientRect();
     const spaceBelow = window.innerHeight - (rect?.bottom || 0);
     setDropdownDirection(spaceBelow < 100 ? "up" : "down");
@@ -95,10 +94,13 @@ const Table = () => {
         setOpenDropdownIndex(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdownIndex]);
+
+  // ✅ Pagination slicing
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedOrders = orders.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="mt-6 relative overflow-x-auto">
@@ -115,7 +117,7 @@ const Table = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order, idx) => (
+          {paginatedOrders.map((order, idx) => (
             <tr key={order.id} className="border-b">
               <td className="p-3">
                 <div className="flex items-center gap-2 relative">
@@ -152,11 +154,9 @@ const Table = () => {
                 </div>
                 <div
                   className="relative"
-                  ref={
-                    ((el: HTMLDivElement | null) => {
-                      dropdownRefs.current[idx] = el;
-                    }) as React.Ref<HTMLDivElement>
-                  }
+                  ref={((el: HTMLDivElement | null) => {
+                    dropdownRefs.current[idx] = el;
+                  }) as React.Ref<HTMLDivElement>}
                 >
                   <div
                     className="flex items-center gap-1 cursor-pointer pt-3"
