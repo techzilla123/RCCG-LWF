@@ -43,7 +43,7 @@ export const metadata = {
     images: ["/hero.png"],
   },
   icons: {
-    icon: "/favicon-v2.ico?v=3",
+    icon: "/favicon-v3.ico?v=5",
   },
 };
 
@@ -55,6 +55,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* ✅ Force favicon-v3.ico everywhere */}
+        <link rel="icon" href="/favicon-v3.ico?v=5" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon-v3.ico?v=5" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/favicon-v3.ico?v=5" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.ico?v=5" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-v3.ico?v=5" />
+        <link rel="manifest" href="/favicon-v3.ico?v=5" />
+
         {/* Google Ads Tag */}
         <Script
           async
