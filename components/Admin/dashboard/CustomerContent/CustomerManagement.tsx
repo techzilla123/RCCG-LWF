@@ -47,11 +47,8 @@ export const CustomerManagement = () => {
       <StatisticsGrid />
 
       {/* Table gets users + pagination props */}
-      <Table
-        users={users}
-        currentPage={currentPage}
-        usersPerPage={usersPerPage}
-      />
+    <Table currentPage={currentPage} usersPerPage={usersPerPage} />
+
 
       <Pagination
         currentPage={currentPage}
