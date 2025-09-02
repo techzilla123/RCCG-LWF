@@ -25,6 +25,10 @@ interface TableProps {
   usersPerPage: number;
 }
 
+type Order = {
+  noOfItem?: number;
+};
+
 const Table = ({ currentPage, usersPerPage }: TableProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
@@ -77,10 +81,11 @@ const usersWithOrders = await Promise.all(
         Array.isArray(orderResult.data.orderList)
       ) {
         // ✅ sum up all noOfItem inside orderList
-        const totalOrders = orderResult.data.orderList.reduce(
-          (sum: number, order: any) => sum + (order.noOfItem || 0),
-          0
-        );
+      const totalOrders = orderResult.data.orderList.reduce(
+  (sum: number, order: Order) => sum + (order.noOfItem ?? 0),
+  0
+);
+
         return { ...user, orders: totalOrders };
       }
     } catch (err) {
