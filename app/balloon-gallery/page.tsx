@@ -164,6 +164,8 @@
       // const [showOrderOptions, setShowOrderOptions] = useState(false)
       const [isChatModalOpen, setIsChatModalOpen] = useState(false)
       const [chatMessage, setChatMessage] = useState('')
+      const [currentPage, setCurrentPage] = useState(1);
+const [totalPages, setTotalPages] = useState(1);
       const fetchSubCategories = useCallback(async () => {
   setLoading(true)
   setError(null)
@@ -192,53 +194,59 @@
     setLoading(false)
   }
 }, [])
-     const fetchProducts = useCallback(async (subcategoryId: string) => {
-  setLoading(true)
-  setError(null)
-  try {
-    const token = localStorage.getItem("accessToken")
-    let url: string
-    if (subcategoryId === "all") {
-      // All products in the Decoration category
-      url = `${API_BASE_URL}customer/filter-product-category/PCT/${DECORATION_CATEGORY_ID}`
-    } else {
-      // Products for specific subcategory
-      url = `${API_BASE_URL}customer/filter-product-category/SCT/${subcategoryId}`
+    const fetchProducts = useCallback(
+  async (subcategoryId: string, page: number = 1) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem("accessToken");
+      let url: string;
+
+      if (subcategoryId === "all") {
+        url = `${API_BASE_URL}customer/filter-product-category/PCT/${DECORATION_CATEGORY_ID}?page=${page}`;
+      } else {
+        url = `${API_BASE_URL}customer/filter-product-category/SCT/${subcategoryId}?page=${page}`;
+      }
+
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY,
+      };
+      if (token) headers.Authorization = token;
+
+      const response = await fetch(url, { headers });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+      const result = await response.json();
+      if (result.statusCode === 200 && result.data?.product) {
+        setProducts(result.data.product);
+        setCurrentPage(result.data.pagination?.current_page || 1);
+        setTotalPages(result.data.pagination?.total_pages || 1);
+      } else {
+        setProducts([]);
+        setError(result.message || "No products found.");
+      }
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Unknown error fetching products.");
+    } finally {
+      setLoading(false);
     }
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      "x-api-key": API_KEY,
-    }
-    if (token) headers.Authorization = token
+  },
+  []
+);
 
-    const response = await fetch(url, { headers })
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+// Load subcategories on mount
+useEffect(() => {
+  fetchSubCategories();
+}, [fetchSubCategories]);
 
-    const result = await response.json()
-    if (result.statusCode === 200 && result.data?.product) {
-      setProducts(result.data.product)
-    } else {
-      setProducts([])
-      setError(result.message || "No products found.")
-    }
-  } catch (e: unknown) {
-    setError(e instanceof Error ? e.message : "Unknown error fetching products.")
-  } finally {
-    setLoading(false)
-  }
-}, [])
-
-   useEffect(() => {
-  fetchSubCategories()
-}, [fetchSubCategories])
-
+// Load products when category/page changes
 useEffect(() => {
   if (selectedCategory) {
-    fetchProducts(selectedCategory)
+    fetchProducts(selectedCategory, currentPage);
   }
-}, [selectedCategory, fetchProducts])
-
-      const handleImageClick = (product: Product) => {
+}, [selectedCategory, currentPage, fetchProducts]);
+ const handleImageClick = (product: Product) => {
         setSelectedProduct(product)
         setCurrentImageIndex(0) // Start with the first image
         setViewMode('image-preview')
@@ -530,18 +538,20 @@ useEffect(() => {
   {loading && <p>Loading subcategories...</p>}
   {error && <p className="text-red-500">{error}</p>}
   {!loading && !error && categories.map((subcategory) => (
-    <Button
-      key={subcategory.subCategoryId}
-      variant={selectedCategory === subcategory.subCategoryId ? "default" : "outline"}
-      onClick={() => setSelectedCategory(subcategory.subCategoryId)}
-      className={`rounded-full ${selectedCategory === subcategory.subCategoryId ? "bg-purple-600 text-white hover:bg-purple-700" : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"}`}
-    >
-      {subcategory.subCategoryName}
-    </Button>
-  ))}
-</div>
+   <Button
+  key={subcategory.subCategoryId}
+  variant={selectedCategory === subcategory.subCategoryId ? "default" : "outline"}
+  onClick={() => {
+    setSelectedCategory(subcategory.subCategoryId);
+    setCurrentPage(1); 
+  }}
+  className={`rounded-full ${selectedCategory === subcategory.subCategoryId ? "bg-purple-600 text-white hover:bg-purple-700" : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"}`}
+>
+  {subcategory.subCategoryName}
+</Button>
 
-              {/* Gallery Grid */}
+  ))}
+</div>              {/* Gallery Grid */}
               {loading && <p className="text-center">Loading products...</p>}
               {error && !loading && <p className="text-red-500 text-center">{error}</p>}
               {!loading && !error && products.length === 0 && <p className="text-center text-gray-600">No products found for this category.</p>}
@@ -571,6 +581,32 @@ useEffect(() => {
                   ))}
                 </div>
               )}
+{/* Pagination Controls */}
+{!loading && !error && products.length > 0 && (
+  <div className="flex justify-center items-center gap-4 mt-8">
+    <Button
+      variant="outline"
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+    >
+      <ChevronLeft className="w-4 h-4 mr-2" /> Prev
+    </Button>
+
+    <span className="text-gray-700">
+      Page {currentPage} of {totalPages}
+    </span>
+
+    <Button
+      variant="outline"
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+    >
+      Next <ChevronRight className="w-4 h-4 ml-2" />
+    </Button>
+  </div>
+)}
+
+              
               {/* Newsletter Signup */}
               <div className="mt-16 relative bg-gray-600 text-white rounded-lg p-8 text-center overflow-hidden shadow-md">
                 {/* Decorative Stars */}
@@ -594,6 +630,7 @@ useEffect(() => {
               </div>
             </div>
           </section>
+          
           <BotpressChat />
           <Footer />
         </>

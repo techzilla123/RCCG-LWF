@@ -49,12 +49,12 @@ export const SearchBar = () => {
           ? json.data
           : []
 
-      setSuggestions(
+   setSuggestions(
   productList
     .filter((p: ApiProduct) => !p.productName?.toUpperCase().startsWith("PPR#")) // exclude PPR#
     .map((p: ApiProduct): ProductSuggestion => ({
       productId: p.productId,
-      productName: p.productName.replace(/\//g, ""), // remove all '/'
+      productName: p.productName.replace(/[\/\\]/g, ""), // remove all '/' and '\'
       imageOne: p.imageOne,
     }))
 )
@@ -83,7 +83,7 @@ export const SearchBar = () => {
   }
 
 const handleSelect = (name: string) => {
-  const cleanName = name.replace(/\//g, "") // remove '/'
+  const cleanName = name.replace(/[\/\\]/g, "") // remove '/' and '\'
   setSearchTerm(cleanName)
   setShowDropdown(false)
   router.push(`/shop?search=${encodeURIComponent(cleanName)}`)
