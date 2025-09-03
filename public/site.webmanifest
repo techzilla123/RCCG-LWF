@@ -1,0 +1,21 @@
+{
+  "name": "Party Place and Rentals",
+  "short_name": "PartyPlace",
+  "description": "Shop the moments that keep You & Your kids smiling...",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png?v=6",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png?v=6",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

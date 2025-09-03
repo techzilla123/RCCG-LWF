@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
 import { ReactQueryClientProvider } from "@/providers";
-import Script from "next/script"; // 👈 import Script
+import Script from "next/script";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 
@@ -43,8 +43,14 @@ export const metadata = {
     images: ["/hero.png"],
   },
   icons: {
-    icon: "/favicon-v3.ico?v=5",
+    icon: [
+      { url: "/favicon-v3.ico?v=6" }, // 👈 bump version
+      { url: "/favicon-32x32.png?v=6", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png?v=6", sizes: "16x16", type: "image/png" },
+    ],
+    apple: { url: "/apple-touch-icon.png?v=6", sizes: "180x180" },
   },
+  manifest: "/site.webmanifest?v=6", // 👈 actual JSON manifest, not favicon
 };
 
 export default function RootLayout({
@@ -54,14 +60,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* ✅ Force favicon-v3.ico everywhere */}
-        <link rel="icon" href="/favicon-v3.ico?v=5" type="image/x-icon" />
-        <link rel="shortcut icon" href="/favicon-v3.ico?v=5" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="/favicon-v3.ico?v=5" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.ico?v=5" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-v3.ico?v=5" />
-        <link rel="manifest" href="/favicon-v3.ico?v=5" />
+      <body className={`${coiny.variable} ${inter.variable} antialiased`}>
+        <ReactQueryClientProvider>
+          <ClientLayout>{children}</ClientLayout>
+        </ReactQueryClientProvider>
 
         {/* Google Ads Tag */}
         <Script
@@ -76,11 +78,6 @@ export default function RootLayout({
             gtag('config', 'AW-17512936136');
           `}
         </Script>
-      </head>
-      <body className={`${coiny.variable} ${inter.variable} antialiased`}>
-        <ReactQueryClientProvider>
-          <ClientLayout>{children}</ClientLayout>
-        </ReactQueryClientProvider>
       </body>
     </html>
   );
