@@ -420,7 +420,7 @@ function getActiveOccasions(): Array<{ id: string; title: string; imageSrc: stri
   return uniqueOccasions.slice(0, 8)
 }
 
-function getNextUpcomingOccasions(count: number): Array<{ id: string; title: string; imageSrc: string }> {
+function getNextUpcomingOccasions(count: number): Array<{ id: string; title: string; imageSrc: string; link?: string }> {
   const now = new Date()
   const currentYear = now.getFullYear()
   const nextYear = currentYear + 1
@@ -433,22 +433,20 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
   occasions.forEach((occasion) => {
     const currentYearDate = occasion.getDate(currentYear)
     const nextYearDate = occasion.getDate(nextYear)
-    if (currentYearDate > now) {
-      upcomingOccasions.push({
-        occasion,
-        date: currentYearDate,
-        year: currentYear,
-      })
-    } else {
-      upcomingOccasions.push({
-        occasion,
-        date: nextYearDate,
-        year: nextYear,
-      })
+
+    // Only include if we are within the showDaysBefore window
+    const showFromCurrent = new Date(currentYearDate.getTime() - occasion.showDaysBefore * 24 * 60 * 60 * 1000)
+    if (now >= showFromCurrent && now <= currentYearDate) {
+      upcomingOccasions.push({ occasion, date: currentYearDate, year: currentYear })
+    }
+
+    const showFromNext = new Date(nextYearDate.getTime() - occasion.showDaysBefore * 24 * 60 * 60 * 1000)
+    if (now >= showFromNext && now <= nextYearDate) {
+      upcomingOccasions.push({ occasion, date: nextYearDate, year: nextYear })
     }
   })
 
-  // Sort by date
+  // Sort by soonest
   upcomingOccasions.sort((a, b) => a.date.getTime() - b.date.getTime())
 
   return upcomingOccasions.slice(0, count).map((item) => ({
@@ -458,6 +456,7 @@ function getNextUpcomingOccasions(count: number): Array<{ id: string; title: str
     link: item.occasion.link,
   }))
 }
+
 
 const ForAdults: React.FC = () => {
   const [activeOccasions, setActiveOccasions] = useState<Array<{ id: string; title: string; imageSrc: string; link?: string }>>([])
