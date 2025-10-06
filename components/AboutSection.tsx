@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
-import { AboutContent } from "./AboutSection/AboutContent";
-import { AboutImage } from "./AboutSection/AboutImage";
+import { AboutContent } from "./AboutSection/HeroSection";
+import { AboutImage } from "./AboutSection/BackgroundDecorations";
 
 export default function AboutSection() {
   return (

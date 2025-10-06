@@ -27,24 +27,28 @@ const inter = localFont({
 
 // ✅ Metadata
 export const metadata = {
-  title: "Party Place and Rentals",
-  description: "Shop the moments that keep You & Your kids smiling...",
-  keywords: "Party Place and Rentals, Shop, Balloon, Decor",
-  authors: [{ name: "Techzilla" }],
+  title: "RCCG Living Word Forney | A Place of Worship & Fellowship",
+  description:
+    "Welcome to RCCG Living Word Forney — a church dedicated to spreading the Gospel, worshipping together, and building strong families in Christ.",
+  keywords:
+    "RCCG Living Word Forney, Forney church, Christian fellowship, worship service, bible study, prayer, Jesus, community outreach",
+  authors: [{ name: "RCCG Living Word Forney Media Team" }],
   openGraph: {
-    title: "Party Place and Rentals",
-    description: "Shop the moments that keep You & Your kids smiling...",
-    images: ["https://partyplaceandrentals.com/favicon-v3.ico"], // 👈 use your new logo here
+    title: "RCCG Living Word Forney | A Place of Worship & Fellowship",
+    description:
+      "Join us at RCCG Living Word Forney to experience powerful worship, biblical teaching, and a loving church family.",
+    images: ["/LWF 2 Logo"], // 👈 replace with your church logo path
   },
   twitter: {
     card: "summary_large_image",
-    title: "Party Place and Rentals",
-    description: "Shop the moments that keep You & Your kids smiling...",
-   images: ["/hero.png"],
+    title: "RCCG Living Word Forney",
+    description:
+      "Experience the presence of God through worship, prayer, and fellowship at RCCG Living Word Forney.",
+    images: ["/LWF 2 Logo"], // 👈 replace with your church hero/banner image
   },
   icons: {
     icon: [
-      { url: "/favicon-v3.ico?v=6" },
+      { url: "/favicon.ico?v=6" },
       { url: "/favicon-32x32.png?v=6", sizes: "32x32", type: "image/png" },
       { url: "/favicon-16x16.png?v=6", sizes: "16x16", type: "image/png" },
     ],
@@ -66,11 +70,16 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
-"@context": "https://schema.org",
-"@type": "Organization",
-              url: "https://partyplaceandrentals.com/",
-              logo: "https://partyplaceandrentals.com/favicon-v3.ico", // 👈 exact logo URL
-              name: "Party Place and Rentals",
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              url: "https://rccglivingwordforney.org/", // 👈 update with your church domain
+              logo: "/church-logo.png", // 👈 exact logo URL
+              name: "RCCG Living Word Forney",
+              sameAs: [
+                "https://www.facebook.com/rccglivingwordforney",
+                "https://www.instagram.com/rccglivingwordforney",
+                "https://www.youtube.com/@rccglivingwordforney",
+              ],
             }),
           }}
         />
@@ -80,17 +89,17 @@ export default function RootLayout({
           <ClientLayout>{children}</ClientLayout>
         </ReactQueryClientProvider>
 
-        {/* Google Ads Tag */}
+        {/* Google Analytics / Ads Tag (optional, remove if not needed) */}
         <Script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17512936136"
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
         />
-        <Script id="google-ads-tag" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'AW-17512936136');
+            gtag('config', 'G-XXXXXXXXXX');
           `}
         </Script>
       </body>
