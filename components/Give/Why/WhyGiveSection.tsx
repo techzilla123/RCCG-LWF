@@ -52,7 +52,7 @@ export const WhyGiveSection: React.FC = () => {
       <article className="absolute text-xl leading-8 text-white h-[150px] left-[1056px] top-[105px] w-[295px]">
         <p className="text-xl text-white">
           Discover why giving at RCCG Living Word Forney is an act of worship, a
-          step of faith, and a way to impact lives for God's kingdom.
+          step of faith, and a way to impact lives for God&apos;s kingdom.
         </p>
       </article>
 

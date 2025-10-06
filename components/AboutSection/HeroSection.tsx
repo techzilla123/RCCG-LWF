@@ -22,7 +22,7 @@ export const HeroSection: React.FC = () => {
           Our mission is to guide people to live fully devoted to Christ.
         </h1>
         <p className="text-lg leading-relaxed text-gray-300 max-md:text-base max-sm:text-sm">
-          That's how we're able to make a difference. And it's the driving
+          That&apos;s how we&apos;re able to make a difference. And it&apos;s the driving
           force behind everything we do.
         </p>
       </div>

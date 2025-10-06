@@ -37,7 +37,7 @@ export const HeroSection: React.FC = () => {
         >
           RCCG LWF is full of diverse people, and God made each of us to serve
           in different ways. Whether you attend a location or entirely online,
-          there's a role out there for you! And don't worry, we offer
+          there&apos;s a role out there for you! And don&apos;t worry, we offer
           specialized training so you can always feel confident each time you
           serve.
         </p>

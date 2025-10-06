@@ -14,10 +14,10 @@ export const CallToActionSection: React.FC = () => {
         <h2
           className={`${montserrat.className} text-4xl font-extrabold tracking-tight`}
         >
-          It's time to get started!
+          It&apos;s time to get started!
         </h2>
         <p className="text-lg leading-relaxed">
-          Just tap the button below, fill out your information, and we'll help
+          Just tap the button below, fill out your information, and we&apos;ll help
           with the rest.
         </p>
         <div className="flex flex-wrap justify-center gap-4 mt-4">

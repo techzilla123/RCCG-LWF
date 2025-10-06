@@ -33,7 +33,7 @@ export function MinistryContent() {
           
           know, love and follow Jesus. This is a place where kids birth –
        
-          grade 5 can explore God's Word and experience His love each
+          grade 5 can explore God&apos;s Word and experience His love each
         
           week.
         </p>

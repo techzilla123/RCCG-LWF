@@ -10,7 +10,7 @@ const InternationalPayments: React.FC = () => {
 
   return (
     <section className="flex flex-col gap-6 p-8 bg-sky-800 rounded-3xl w-full h-auto max-md:p-6">
-      <h2 className="text-2xl font-bold text-white">Int'l Payments</h2>
+      <h2 className="text-2xl font-bold text-white">Int&apos;l Payments</h2>
 
       <div className="flex flex-wrap justify-between items-center gap-6">
         <div>

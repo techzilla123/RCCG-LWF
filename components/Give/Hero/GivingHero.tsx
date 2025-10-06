@@ -27,7 +27,7 @@ function GivingHero() {
 
       <HeroDescription>
         We believe in the power of generosity! Here at The Elevation Church,
-        tithing and offering are joyful ways to show our appreciation for God's
+        tithing and offering are joyful ways to show our appreciation for God&apos;s
         blessings in our lives. Explore the different ways you can contribute
         below.
       </HeroDescription>
