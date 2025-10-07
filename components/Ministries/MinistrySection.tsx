@@ -6,21 +6,29 @@ import { MinistryImage } from "./MinistryImage";
 
 export default function MinistrySection() {
   return (
-    <section className="flex flex-col rounded-none max-md:py-24">
-      {/* Top row with two images far left and far right */}
-      
-
-      {/* Main content */}
-      <div className="flex overflow-hidden relative flex-col px-64 pt-16 pb-14 mt-0 w-full max-w-[1600px] min-h-[804px] max-md:px-5 max-md:mt-0 max-md:max-w-full">
+    <section className="flex flex-col items-center w-full bg-white rounded-none max-md:py-24">
+      {/* Main content container */}
+      <div
+        className="
+          flex relative flex-col overflow-hidden 
+          pt-16 pb-14 mt-0 min-h-[804px] w-full 
+          px-8 sm:px-12 md:px-24 lg:px-48 xl:px-64 
+          max-w-[3000px] 2xl:max-w-[3000px]
+          mx-auto
+        "
+      >
+        {/* Background image */}
         <img
           src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/f10cab0e5abf36e41741d3fdea3d4c62fcfe9615?placeholderIfAbsent=true"
           alt="Background"
-          className="object-cover absolute inset-0 size-full"
+          className="absolute inset-0 object-cover w-full h-full"
         />
 
+        {/* Ministry heading */}
         <MinistryHeading />
 
-        <div className="flex relative flex-wrap gap-8 items-start pt-1 pb-4 max-w-full w-[1080px]">
+        {/* Content + Image side by side (stack on mobile) */}
+        <div className="flex relative flex-wrap gap-8 items-start pt-1 pb-4 w-full max-w-[1080px] mx-auto">
           <MinistryContent />
           <MinistryImage />
         </div>
