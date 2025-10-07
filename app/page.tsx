@@ -8,6 +8,7 @@ import MovementSection from "@/components/Hero/MovementSection"
 import GetConnected from "@/components/Connected/GetConnected" 
 import Background from "@/components/Learn/Background" 
 import MediaSection from "@/components/Media/MediaSection" 
+import Footer from "@/components/Footer/Footer"
 
 
 
@@ -25,7 +26,7 @@ export default function Home() {
       <GetConnected />
       <Background />
       <MediaSection />
-      
+      <Footer />
       
       
     </div>

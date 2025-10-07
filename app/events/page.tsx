@@ -5,6 +5,7 @@ import ChurchHeader from "@/components/Header/ChurchHeader"
 import HeroSection from "@/components/EventsPage/HeroSection"
 import NextEvent from "@/components/EventsPage/NextEvent"
 import Schedules from "@/components/EventsPage/Schedules"
+import EventBoasts from '@/components/MeetPastors/EventBoasts';
 
 
 
@@ -25,7 +26,9 @@ const ChurchWebsite: React.FC = () => {
        <ChurchHeader />
      
         <HeroSection />
-        <NextEvent />   
+        <NextEvent />
+        <EventBoasts />   
+        
         <Schedules />
 
         
