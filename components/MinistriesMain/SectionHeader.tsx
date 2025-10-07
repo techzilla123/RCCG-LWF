@@ -1,17 +1,22 @@
-import React from 'react';
+import React from "react";
 
 interface SectionHeaderProps {
   title: string;
+  accent?: string; // <-- allow optional accent prop
 }
 
-export const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
+export const SectionHeader: React.FC<SectionHeaderProps> = ({
+  title,
+  accent = "from-gray-700 to-gray-600", // fallback gradient
+}) => {
   return (
-    <header className="flex flex-col justify-center px-4 py-7 text-xl font-extrabold leading-tight text-center uppercase whitespace-nowrap bg-rose-100 min-h-[81px] text-stone-400 max-md:max-w-full">
-      <div className="pb-px w-full max-md:max-w-full">
-        <h2 className="text-xl font-extrabold leading-6 max-md:max-w-full">
-          {title}
-        </h2>
-      </div>
+    <header
+      className={`flex flex-col justify-center px-4 py-10 text-center text-white 
+      bg-gradient-to-r ${accent} rounded-t-2xl shadow-md`}
+    >
+      <h2 className="text-3xl md:text-4xl font-bold tracking-wide uppercase drop-shadow-sm">
+        {title}
+      </h2>
     </header>
   );
 };
