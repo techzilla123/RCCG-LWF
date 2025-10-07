@@ -1,4 +1,5 @@
 'use client'
+import Footer from "@/components/Footer/Footer"
 // import Footer from "@/components/Footer"
 import ChurchHeader from "@/components/Header/ChurchHeader"
 import FindYourFit from "@/components/MainMinistry/FindYourFit"
@@ -15,6 +16,7 @@ export default function ministries() {
 
       <ChurchHeader />
       <FindYourFit />
+      <Footer />
       
       
       

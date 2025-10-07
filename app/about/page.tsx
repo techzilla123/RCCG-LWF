@@ -7,6 +7,7 @@ import { WelcomeSection } from '@/components/AboutSection/WelcomeSection';
 import VisionMissionBeliefs from '@/components/AboutSection/VisionMissionBeliefs';
 import MinistrySection from '@/components/AboutSection/MinistrySection';
 import EventBoasts from '@/components/MeetPastors/EventBoasts';
+import Footer from '@/components/Footer/Footer';
 
 const ChurchWebsite: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const ChurchWebsite: React.FC = () => {
         <EventBoasts />
         <VisionMissionBeliefs />
         <MinistrySection />
+        <Footer />
       </div>
     </>
   );

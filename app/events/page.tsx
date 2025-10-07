@@ -6,6 +6,7 @@ import HeroSection from "@/components/EventsPage/HeroSection"
 import NextEvent from "@/components/EventsPage/NextEvent"
 import Schedules from "@/components/EventsPage/Schedules"
 import EventBoasts from '@/components/MeetPastors/EventBoasts';
+import Footer from '@/components/Footer/Footer';
 
 
 
@@ -30,6 +31,7 @@ const ChurchWebsite: React.FC = () => {
         <EventBoasts />   
         
         <Schedules />
+        <Footer />
 
         
      

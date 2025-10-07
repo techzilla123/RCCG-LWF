@@ -4,6 +4,7 @@ import ChurchHeader from "@/components/Header/ChurchHeader";
 import Background from "@/components/Give/Hero/Background";
 import PaymentContainer from "@/components/Give/Payment/PaymentContainer";
 import WhyGive from "@/components/Give/Why/WhyGive";
+import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
       <section className="relative z-10">
         <WhyGive />
       </section>
+      <Footer />
     </div>
   );
 }

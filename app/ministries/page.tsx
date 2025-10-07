@@ -4,7 +4,7 @@ import React from 'react';
 import ChurchHeader from "@/components/Header/ChurchHeader"
 import Header from "@/components/MinistriesMain/Header"
 import MinistryTabs from '@/components/MinistriesMain/MinistryTabs';
-
+import Footer from "@/components/Footer/Footer"
 // import { HeroSection } from '@/components/AboutSection/HeroSection';
 // import { WelcomeSection } from '@/components/AboutSection/WelcomeSection';
 // import VisionMissionBeliefs from '@/components/AboutSection/VisionMissionBeliefs';
@@ -22,7 +22,7 @@ const ChurchWebsite: React.FC = () => {
        <Header />
        <MinistryTabs />
        
-        
+        <Footer />
      
       </div>
     </>
