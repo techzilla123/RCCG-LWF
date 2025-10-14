@@ -11,12 +11,12 @@ interface ContentPanelProps {
   description: string
   buttonText: string
   buttonColor: string
-  iconSrc?: string
+ 
   showSchedule?: boolean
 }
 
 export const ContentPanel: React.FC<ContentPanelProps> = React.memo(
-  ({ imageSrc, title, subtitle, description, buttonText, buttonColor, iconSrc, showSchedule = false }) => {
+  ({ imageSrc, title, subtitle, description, buttonText, buttonColor, showSchedule = false }) => {
     return (
       <motion.article
         initial={{ opacity: 0, y: 30 }}
