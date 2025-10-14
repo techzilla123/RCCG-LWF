@@ -19,7 +19,7 @@ export default function NotFound() {
       {/* Floating Holy Orbs (Circles) */}
       <div className="flex space-x-6 mb-6">
         <motion.div animate={floatingAnimation}>
-          <Circle size={50} color="#ffd700" strokeWidth={3} />
+          <Circle size={50} color="#26185aff" strokeWidth={3} />
         </motion.div>
         <motion.div animate={floatingAnimation}>
           <Circle size={50} color="#87cefa" strokeWidth={3} />
@@ -31,7 +31,7 @@ export default function NotFound() {
 
       {/* Main Message */}
       <h1 className="text-4xl md:text-5xl font-bold text-[#ffd700] mb-2 flex items-center gap-2">
-        <Church color="#ffd700" /> 404 - Page Not Found
+        <Church color="#181035ff" /> 404 - Page Not Found
       </h1>
       <p className="text-lg text-gray-300 max-w-md text-center mb-6">
         The page you’re looking for seems to have taken a spiritual journey. Let’s guide you back home to RCCG LWF.
@@ -51,7 +51,7 @@ export default function NotFound() {
           <Cross size={48} color="#ffffff" strokeWidth={2.5} />
         </motion.div>
         <motion.div animate={floatingAnimation}>
-          <Cross size={48} color="#ffd700" strokeWidth={2.5} />
+          <Cross size={48} color="#271746ff" strokeWidth={2.5} />
         </motion.div>
       </div>
     </div>
