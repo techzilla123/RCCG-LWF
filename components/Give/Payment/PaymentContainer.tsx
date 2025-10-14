@@ -1,6 +1,8 @@
 import type React from "react"
 import LocalPayments from "./LocalPayments"
 import InternationalPayments from "./InternationalPayments"
+import PayWithCard from "./PayWithCard"
+import InternationalChurch from "./InternationalChurch"
 
 const PaymentContainer: React.FC = () => {
   return (
@@ -8,6 +10,8 @@ const PaymentContainer: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl w-full">
         <LocalPayments />
         <InternationalPayments />
+        <PayWithCard />
+        <InternationalChurch />
       </div>
     </main>
   )
