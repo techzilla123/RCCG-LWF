@@ -1,6 +1,6 @@
 'use client';
 
-import { PartyPopper, Package, Circle } from 'lucide-react';
+import { Cross, Church, Circle } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -15,43 +15,43 @@ export default function NotFound() {
   };
 
   return (
-    <div className="h-screen w-full bg-black text-white flex flex-col items-center justify-center overflow-hidden p-4">
-      {/* Animated Balloons (using Circles) */}
+    <div className="h-screen w-full bg-[#0a0a0a] text-white flex flex-col items-center justify-center overflow-hidden p-4">
+      {/* Floating Holy Orbs (Circles) */}
       <div className="flex space-x-6 mb-6">
         <motion.div animate={floatingAnimation}>
-          <Circle size={50} color="#ff66c4" strokeWidth={3} />
+          <Circle size={50} color="#ffd700" strokeWidth={3} />
         </motion.div>
         <motion.div animate={floatingAnimation}>
-          <Circle size={50} color="#66ffb3" strokeWidth={3} />
+          <Circle size={50} color="#87cefa" strokeWidth={3} />
         </motion.div>
         <motion.div animate={floatingAnimation}>
-          <Circle size={50} color="#ffc266" strokeWidth={3} />
+          <Circle size={50} color="#ff69b4" strokeWidth={3} />
         </motion.div>
       </div>
 
       {/* Main Message */}
-      <h1 className="text-4xl md:text-5xl font-bold text-pink-400 mb-2 flex items-center gap-2">
-        <PartyPopper color="#ff99cc" /> 404 - Party Not Found
+      <h1 className="text-4xl md:text-5xl font-bold text-[#ffd700] mb-2 flex items-center gap-2">
+        <Church color="#ffd700" /> 404 - Page Not Found
       </h1>
       <p className="text-lg text-gray-300 max-w-md text-center mb-6">
-      The page you&apos;re looking for isn&apos;t here. Maybe it got too excited and wandered off to a birthday bash!
+        The page you’re looking for seems to have taken a spiritual journey. Let’s guide you back home to RCCG LWF.
       </p>
 
-      {/* Back to home */}
+      {/* Back to Home */}
       <Link
         href="/"
-        className="bg-pink-600 hover:bg-pink-700 text-white py-2 px-5 rounded-full transition-all"
+        className="bg-[#ffd700] hover:bg-[#e6c200] text-black py-2 px-6 rounded-full font-semibold transition-all shadow-lg"
       >
-        🎉 Back to Home
+        ⛪ Return Home
       </Link>
 
-      {/* Floating Gifts (Packages) */}
+      {/* Floating Icons (Crosses) */}
       <div className="flex space-x-6 mt-10">
         <motion.div animate={floatingAnimation}>
-          <Package size={48} color="#ffcc00" strokeWidth={2.5} />
+          <Cross size={48} color="#ffffff" strokeWidth={2.5} />
         </motion.div>
         <motion.div animate={floatingAnimation}>
-          <Package size={48} color="#00ffff" strokeWidth={2.5} />
+          <Cross size={48} color="#ffd700" strokeWidth={2.5} />
         </motion.div>
       </div>
     </div>
