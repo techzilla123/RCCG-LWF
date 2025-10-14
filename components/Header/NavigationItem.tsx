@@ -1,17 +1,20 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
-import { DropdownIcon } from "./DropdownIcon";
+import * as React from "react"
+import { useRouter } from "next/navigation"
+import { DropdownIcon } from "./DropdownIcon"
+import { StartHereDropdown } from "./StartHereDropdown"
+import { MoreDropdown } from "./MoreDropdown"
+import { MinistriesDropdown } from "./MinistriesDropdown"
 
 interface NavigationItemProps {
-  label: string;
-  hasDropdown?: boolean;
-  isHighlighted?: boolean;
-  hasStartHereIcon?: boolean;
-  isMobile?: boolean;
-  link?: string; // Added link prop
-  onClick?: () => void;
+  label: string
+  hasDropdown?: boolean
+  isHighlighted?: boolean
+  hasStartHereIcon?: boolean
+  isMobile?: boolean
+  link?: string
+  onClick?: () => void
 }
 
 export const NavigationItem: React.FC<NavigationItemProps> = ({
@@ -23,28 +26,45 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
   link,
   onClick,
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const router = useRouter();
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
+  const router = useRouter()
+  const dropdownRef = React.useRef<HTMLLIElement>(null)
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isDropdownOpen])
 
   const containerClasses = isHighlighted
     ? "flex relative flex-wrap content-center items-center px-6 py-4 bg-gray-800 rounded hover:bg-gray-700 transition-colors cursor-pointer"
-    : "flex relative flex-wrap content-center items-center p-4 rounded hover:bg-gray-100 transition-colors cursor-pointer";
+    : "flex relative flex-wrap content-center items-center p-4 rounded hover:bg-gray-100 transition-colors cursor-pointer"
 
   const textClasses = isHighlighted
     ? "relative text-sm font-medium leading-4 text-white uppercase"
-    : "relative text-sm font-medium leading-4 uppercase text-zinc-800";
+    : "relative text-sm font-medium leading-4 uppercase text-zinc-800"
 
   const handleClick = () => {
     if (hasDropdown) {
-      setIsDropdownOpen(!isDropdownOpen);
+      setIsDropdownOpen(!isDropdownOpen)
     } else if (link) {
-      router.push(link); // Navigate to link
+      router.push(link)
     }
-    onClick?.();
-  };
+    onClick?.()
+  }
 
   return (
-    <li className={`flex relative flex-col items-start ${isMobile ? "w-full" : ""}`}>
+    <li ref={dropdownRef} className={`flex relative flex-col items-start ${isMobile ? "w-full" : ""}`}>
       <div className="flex relative flex-col items-start w-full">
         <div className={containerClasses} onClick={handleClick}>
           <div className="flex relative flex-col items-start">
@@ -65,7 +85,14 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
             </div>
           )}
         </div>
+        {hasDropdown && isDropdownOpen && !isMobile && (
+          <>
+            {label === "START HERE" && <StartHereDropdown />}
+            {label === "MINISTRIES" && <MinistriesDropdown />}
+            {label === "MORE" && <MoreDropdown />}
+          </>
+        )}
       </div>
     </li>
-  );
-};
+  )
+}

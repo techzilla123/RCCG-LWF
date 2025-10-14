@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
-import { Racing_Sans_One } from "next/font/google";
+import type * as React from "react"
+import { useRouter } from "next/navigation"
+import { Racing_Sans_One } from "next/font/google"
 
 const racingSansOne = Racing_Sans_One({
   weight: "400",
   subsets: ["latin"],
-});
+})
 
 export const Logo: React.FC = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleClick = () => {
-    router.push("/");
-  };
+    router.push("/")
+  }
 
   return (
     <section
@@ -39,5 +39,5 @@ export const Logo: React.FC = () => {
         className="absolute top-0 h-[50px] md:h-[67px] left-[35px] md:left-[52px] w-[54px] md:w-[72px]"
       />
     </section>
-  );
-};
+  )
+}

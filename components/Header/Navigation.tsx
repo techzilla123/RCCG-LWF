@@ -21,9 +21,9 @@ export const Navigation: React.FC = () => {
       <nav className="hidden md:flex absolute top-[31px] left-0 right-0 h-[70px] z-[15] justify-center">
         <div className="flex items-center h-[53px] max-w-screen-xl w-full px-4">
           <ul className="flex flex-wrap justify-center content-center items-center gap-1 w-full">
-            <NavigationItem label="START HERE" hasStartHereIcon={true} />
-            <NavigationItem label="MESSAGES" link="/contact" />
-            <NavigationItem label="EVENTS" link="/events"/>
+            <NavigationItem label="START HERE" hasDropdown={true} />
+            <NavigationItem label="CONTACT" link="/contact" />
+            <NavigationItem label="EVENTS" link="/events" />
             <NavigationItem label="GIVE" link="/give" isHighlighted={true} />
             <NavigationItem label="MINISTRIES" link="/ministries" hasDropdown={true} />
             <NavigationItem label="MORE" hasDropdown={true} />
@@ -51,15 +51,10 @@ export const Navigation: React.FC = () => {
           <ul className="flex flex-col gap-2">
             <NavigationItem label="START HERE" hasStartHereIcon={true} isMobile={true} onClick={closeMobileMenu} />
             <NavigationItem label="MESSAGES" isMobile={true} onClick={closeMobileMenu} />
-           <NavigationItem
-  label="EVENTS"
-  isMobile={true}
-  link="/events"
-  onClick={closeMobileMenu}
-/>
+            <NavigationItem label="EVENTS" isMobile={true} link="/events" onClick={closeMobileMenu} />
 
-            <NavigationItem label="GIVE" isHighlighted={true} isMobile={true}  link="/give" onClick={closeMobileMenu} />
-            <NavigationItem label="MINISTRIES" hasDropdown={true}  link="/ministries" isMobile={true} />
+            <NavigationItem label="GIVE" isHighlighted={true} isMobile={true} link="/give" onClick={closeMobileMenu} />
+            <NavigationItem label="MINISTRIES" hasDropdown={true} link="/ministries" isMobile={true} />
             <NavigationItem label="MORE" hasDropdown={true} isMobile={true} />
           </ul>
         </div>

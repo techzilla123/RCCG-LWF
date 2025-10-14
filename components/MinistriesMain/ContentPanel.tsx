@@ -1,99 +1,182 @@
-import React from 'react';
+"use client"
+
+import React from "react"
+import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
 
 interface ContentPanelProps {
-  imageSrc: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  buttonText: string;
-  buttonColor: string;
-  iconSrc: string;
-  showSchedule?: boolean;
+  imageSrc: string
+  title: string
+  subtitle?: string
+  description: string
+  buttonText: string
+  buttonColor: string
+  iconSrc?: string
+  showSchedule?: boolean
 }
 
-export const ContentPanel: React.FC<ContentPanelProps> = ({
-  imageSrc,
-  title,
-  subtitle,
-  description,
-  buttonText,
-  buttonColor,
-  iconSrc,
-  showSchedule = false
-}) => {
-  return (
-    <article className="flex flex-wrap justify-center items-start self-center mt-16 max-w-full w-[1376px] max-md:mt-10">
-      <div className="px-4 max-w-[675px] min-h-[526px] min-w-60 w-[487px] max-md:max-w-full">
-        <img
-          src={imageSrc}
-          alt={title}
-          className="object-contain w-full aspect-[1.24] max-md:max-w-full"
-        />
-      </div>
-      <div className="flex flex-col justify-center items-start max-w-[945px] min-h-[585px] min-w-60 w-[544px] max-md:max-w-full">
-        <div className="flex-1 px-4 pb-60 max-w-[810px] w-[445px] max-md:pb-24">
-          <h1 className="z-10 text-5xl font-black leading-none text-slate-800 max-md:text-4xl">
-            <div className="font-black leading-[68.4px] max-md:text-4xl">
-              {title}
-            </div>
-          </h1>
+export const ContentPanel: React.FC<ContentPanelProps> = React.memo(
+  ({ imageSrc, title, subtitle, description, buttonText, buttonColor, iconSrc, showSchedule = false }) => {
+    return (
+      <motion.article
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center justify-center 
+      max-w-7xl mx-auto p-6 lg:p-12"
+      >
+        {/* Image Section */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="w-full lg:w-1/2 relative group"
+        >
+          <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.6 }}
+              src={imageSrc}
+              alt={title}
+              className="w-full h-auto aspect-[4/3] object-cover"
+            />
+            {/* Gradient overlay */}
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
+          opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            />
+          </div>
 
-          {subtitle && (
-            <h3 className="mt-3.5 text-2xl leading-tight uppercase text-slate-800">
-              <div className="leading-8">
+          {/* Decorative elements */}
+          <motion.div
+            animate={{
+              scale: [1, 1.1, 1],
+              rotate: [0, 5, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+            }}
+            className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-orange-500/20 
+          rounded-full blur-2xl -z-10"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, -5, 0],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+            className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-500/20 
+          rounded-full blur-2xl -z-10"
+          />
+        </motion.div>
+
+        {/* Content Section */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="w-full lg:w-1/2 space-y-6"
+        >
+          <div className="space-y-3">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 leading-tight text-balance"
+            >
+              {title}
+            </motion.h1>
+
+            {subtitle && (
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="text-xl md:text-2xl font-semibold uppercase text-slate-600 tracking-wide"
+              >
                 {subtitle}
+              </motion.h3>
+            )}
+          </div>
+
+          {showSchedule && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="inline-block bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 shadow-lg 
+            border border-amber-200/50"
+            >
+              <div className="space-y-2">
+                <p className="text-sm font-bold text-amber-900 uppercase tracking-wider">When We Meet</p>
+                <div className="flex items-center gap-4 text-slate-700">
+                  <span className="font-semibold">Sundays</span>
+                  <span className="text-amber-600">•</span>
+                  <span className="font-semibold">9 & 10:30 AM</span>
+                </div>
               </div>
-            </h3>
+            </motion.div>
           )}
 
-          <div className="gap-8 mt-8">
-            {showSchedule && (
-              <div className="flex flex-col justify-center p-0.5 max-w-full text-sm leading-relaxed min-w-[243px] text-stone-400 w-[243px]">
-                <div className="gap-0.5 w-full">
-                  <div className="flex flex-col justify-center py-1 pr-1 pl-4 max-w-full font-bold w-[135px]">
-                    <div className="text-sm font-bold leading-5">
-                      WHEN WE MEET
-                    </div>
-                  </div>
-                  <div className="flex gap-0.5 justify-center items-start w-full">
-                    <div className="flex flex-col justify-center py-1 pr-1 pl-4 whitespace-nowrap w-[135px]">
-                      <div className="text-sm leading-5">
-                        Sundays
-                      </div>
-                    </div>
-                    <div className="flex flex-col justify-center py-1 pr-1 pl-4 w-[103px]">
-                      <div className="text-sm leading-5">
-                        9 & 10:30AM
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="text-lg md:text-xl leading-relaxed text-zinc-700 text-pretty"
+          >
+            {description}
+          </motion.p>
 
-            <p className={`${showSchedule ? 'mt-8' : ''} text-lg leading-7 text-zinc-900 max-md:max-w-full`}>
-              {description}
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
+              whileTap={{ scale: 0.98 }}
+              className={`group relative ${buttonColor} text-white px-8 py-4 rounded-full 
+            font-bold text-lg shadow-xl overflow-hidden transition-all duration-300`}
+            >
+              {/* Animated background */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                animate={{
+                  x: ["-100%", "200%"],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatDelay: 1,
+                }}
+              />
 
-          <div className="flex flex-col justify-center items-start py-2 mb-0 w-full max-md:mb-2.5">
-            <button className={`flex relative gap-7 justify-center items-start pt-2.5 pr-14 pb-3 pl-7 ${buttonColor} rounded max-md:px-5`}>
-              <div className="flex absolute top-3 right-5 z-0 flex-col items-center bottom-[13px] w-[11px]">
-                <div className="flex items-start w-[11px]">
-                  <img
-                    src={iconSrc}
-                    alt=""
-                    className="object-contain aspect-[0.65] w-[11px]"
-                  />
-                </div>
-              </div>
-              <span className="z-0 text-lg font-bold leading-5 text-center text-rose-100">
+              <span className="relative flex items-center gap-3">
                 {buttonText}
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </motion.div>
               </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-};
+            </motion.button>
+          </motion.div>
+        </motion.div>
+      </motion.article>
+    )
+  },
+)
+
+ContentPanel.displayName = "ContentPanel"

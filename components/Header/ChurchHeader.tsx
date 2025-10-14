@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { AnnouncementBar } from "./AnnouncementBar";
-import { Logo } from "./Logo";
-import { Navigation } from "./Navigation";
-import { LiveSection } from "./LiveSection";
+import type * as React from "react"
+import { useRouter, usePathname } from "next/navigation"
+import { AnnouncementBar } from "./AnnouncementBar"
+import { Logo } from "./Logo"
+import { Navigation } from "./Navigation"
+import { LiveSection } from "./LiveSection"
 
 export const ChurchHeader: React.FC = () => {
-  const router = useRouter();
-  const pathname = usePathname();
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleLogoClick = () => {
     if (pathname === "/") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" })
     } else {
-      router.push("/");
+      router.push("/")
     }
-  };
+  }
 
   return (
     <header className="relative w-full bg-white h-[90px] md:h-[101px]">
@@ -39,7 +39,7 @@ export const ChurchHeader: React.FC = () => {
       <Navigation />
       <LiveSection />
     </header>
-  );
-};
+  )
+}
 
-export default ChurchHeader;
+export default ChurchHeader
