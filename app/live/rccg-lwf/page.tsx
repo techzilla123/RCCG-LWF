@@ -66,7 +66,7 @@ export default function RCCGLFWLivePage() {
                         <span className="text-gray-400 text-xs">1m</span>
                       </div>
                       <p className="text-white text-sm mt-1">
-                        First time here? We'd love to get to know you and stay connected! Help us do that by filling out
+                        First time here? We&apos;d love to get to know you and stay connected! Help us do that by filling out
                         this quick form{" "}
                         <a href="https://www.life.church/hello" className="text-blue-400 hover:underline">
                           https://www.life.church/hello
