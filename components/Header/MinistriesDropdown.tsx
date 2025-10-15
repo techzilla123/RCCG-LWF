@@ -11,16 +11,10 @@ export const MinistriesDropdown: React.FC = () => {
         Ministries
       </Link>
       <Link
-        href="/ministries/groups"
+        href="/groups"
         className="block px-6 py-3 text-sm font-medium text-zinc-800 hover:bg-gray-100 transition-colors uppercase"
       >
-        Group
-      </Link>
-      <Link
-        href="/ministries/serve"
-        className="block px-6 py-3 text-sm font-medium text-zinc-800 hover:bg-gray-100 transition-colors uppercase"
-      >
-        Serve
+        Service Ministries
       </Link>
     </div>
   )

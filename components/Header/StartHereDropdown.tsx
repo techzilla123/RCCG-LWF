@@ -11,13 +11,13 @@ export const StartHereDropdown: React.FC = () => {
         ABOUT
       </Link>
       <Link
-        href="/plan-your-visit"
+        href="/plan-visit"
         className="block px-6 py-3 text-sm font-medium text-zinc-800 hover:bg-gray-100 transition-colors uppercase"
       >
         PLAN YOUR VISIT
       </Link>
       <Link
-        href="/what-we-believe"
+        href="/about#our-beliefs"
         className="block px-6 py-3 text-sm font-medium text-zinc-800 hover:bg-gray-100 transition-colors uppercase"
       >
         WHAT WE BELIEVE

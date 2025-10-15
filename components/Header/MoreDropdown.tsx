@@ -15,11 +15,11 @@ export const MoreDropdown: React.FC = () => {
               </svg>
               <span className="text-sm">Baptism</span>
             </Link>
-            <Link href="/groups" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Link href="/ministries" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
               </svg>
-              <span className="text-sm">Groups</span>
+              <span className="text-sm">Ministries</span>
             </Link>
             <Link href="/next-step-class" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@ export const MoreDropdown: React.FC = () => {
               </svg>
               <span className="text-sm">Next Step Class</span>
             </Link>
-            <Link href="/serve-teams" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Link href="/groups" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
               </svg>
@@ -39,6 +39,21 @@ export const MoreDropdown: React.FC = () => {
               </svg>
               <span className="text-sm">Give</span>
             </Link>
+             <Link href="/blog" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h9l7-7V5c0-1.1-.9-2-2-2zm-4 14H6V6h12v6h-5v5z" />
+  </svg>
+  <span className="text-sm">Blog</span>
+</Link>
+
+<Link href="/write-up" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
+  </svg>
+  <span className="text-sm">Write Up</span>
+</Link>
+
+
           </div>
           <div className="flex gap-2 mt-6 pt-4 border-t border-gray-600">
             <a

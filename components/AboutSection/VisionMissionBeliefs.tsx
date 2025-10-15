@@ -9,7 +9,7 @@ export const VisionMissionBeliefs: React.FC = () => {
     <main className="flex flex-col items-center px-4">
       <VisionMissionSection />
 
-      <section className="flex flex-col items-center gap-8 mt-20 w-full max-w-4xl text-center">
+      <section id="our-beliefs" className="flex flex-col items-center gap-8 mt-20 w-full max-w-4xl text-center">
         <h2 className="text-3xl md:text-4xl font-black">Our Beliefs</h2>
         <BeliefAccordion />
       </section>

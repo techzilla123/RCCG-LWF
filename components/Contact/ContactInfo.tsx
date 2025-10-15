@@ -10,9 +10,9 @@ function ContactInfo() {
           Address
         </h3>
         <address className="text-xl md:text-2xl font-bold tracking-tight text-gray-900 uppercase not-italic">
-          NH 234 Public Square
+           8485 Michael Talty Ave, 
           <br />
-          San Francisco 65368
+          Terrell, TX 75160, United States
         </address>
       </div>
 
@@ -26,8 +26,8 @@ function ContactInfo() {
           </a>
         </p>
         <p className="text-xl md:text-2xl font-bold text-gray-900 uppercase">
-          <a href="mailto:finsweet@example.com" className="hover:text-gray-700 transition-colors">
-            finsweet@example.com
+          <a href="mailto:info@rccglivingwordforney.org" className="hover:text-gray-700 transition-colors">
+            info@rccglivingwordforney.org
           </a>
         </p>
       </div>

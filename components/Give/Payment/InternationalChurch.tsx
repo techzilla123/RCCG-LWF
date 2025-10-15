@@ -8,7 +8,7 @@ const InternationalChurch: React.FC = () => {
       <div className="space-y-8">
         <div className="flex justify-between flex-wrap gap-4 items-center">
           <div>
-            <h3 className="font-bold text-lg text-slate-900">A/C Name: Pistis Life Church</h3>
+            <h3 className="font-bold text-lg text-slate-900">A/C Name: RCCG Living Word Forney</h3>
             <p className="text-xl font-semibold text-slate-900">
               Wells Fargo Bank<br />6188644220
             </p>
@@ -20,7 +20,7 @@ const InternationalChurch: React.FC = () => {
 
         <div className="flex justify-between flex-wrap gap-4 items-center">
           <div>
-            <h3 className="font-bold text-lg text-slate-900">A/C Name: The Elevation Church UK</h3>
+            <h3 className="font-bold text-lg text-slate-900">A/C Name: RCCG Living Word Forney</h3>
             <p className="text-xl font-semibold text-slate-900">
               Metro Bank<br />43126083
             </p>

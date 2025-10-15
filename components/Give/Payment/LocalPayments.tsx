@@ -1,41 +1,45 @@
-import type React from "react"
+import React, { useState } from "react"
 import BankInfo from "./BankInfo"
 
 const LocalPayments: React.FC = () => {
-  const bankData = [
+  const [selectedQR, setSelectedQR] = useState<string | null>(null)
+
+  const paymentData = [
     {
-      logo: "https://api.builder.io/api/v1/image/assets/TEMP/c44db0ac278693dfb622a6e06498d195a83a9493?width=300",
-      logoAlt: "GTCO Logo",
-      logoClass: "relative rounded-3xl h-[150px] max-w-[150px] w-[150px] max-sm:h-[120px] max-sm:w-[120px]",
+      logo: "https://www.citypng.com/public/uploads/preview/zelle-round-logo-icon-png-701751694968675lxmjumweha.png",
+      logoAlt: "Zelle Logo",
+      // ✅ Removed white background & fixed sizing
+        logoClass: "relative rounded-3xl h-[150px] max-w-[150px] w-[150px] max-sm:h-[120px] max-sm:w-[120px]",
       hasWhiteBackground: false,
       details: [
-        { label: "Offering:", value: "*737*32*Amount*2201#" },
-        { label: "Tithe:", value: "*737*32*Amount*2202#" },
-        { label: "A/C No:", value: "0019827596" },
-        { label: "A/C Name:", value: "The Elevation Church" },
+        { label: "Recipient Name:", value: "RCCG Living Word Forney" },
+        { label: "Zelle Email:", value: "give@rccglivingwordforney.org" },
+        { label: "Memo:", value: "Offering / Tithe / Donation" },
       ],
+      qrCode:
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=zelle%3Agive@rccglivingwordforney.org",
     },
     {
-      logo: "https://api.builder.io/api/v1/image/assets/TEMP/c6f135fdcf28aef797be918757c9a6c4194962f0?width=300",
-      logoAlt: "Zenith Bank Logo",
-      logoClass: "relative rounded-3xl h-[150px] max-w-[150px] w-[150px] max-sm:h-[120px] max-sm:w-[120px]",
-      hasWhiteBackground: true,
+      logo: "https://static.vecteezy.com/system/resources/previews/067/065/659/non_2x/cashapp-logo-square-rounded-cashapp-logo-free-download-cashapp-logo-free-png.png",
+      logoAlt: "Cash App Logo",
+        logoClass: "relative rounded-3xl h-[150px] max-w-[150px] w-[150px] max-sm:h-[120px] max-sm:w-[120px]",
+      hasWhiteBackground: false,
       details: [
-        { label: "Offering:", value: "*996*6*Amount 35381*2#" },
-        { label: "Tithe:", value: "*996*6*Amount 35381*1#" },
-        { label: "A/C No:", value: "1013464441" },
-        { label: "A/C Name:", value: "The Elevation Church" },
+        { label: "Cash Tag:", value: "$RCCGLWF" },
+        { label: "Purpose:", value: "Offering / Tithe / Donation" },
       ],
+      qrCode:
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=cashapp%3A$RCCGLWF",
     },
     {
-      logo: "https://api.builder.io/api/v1/image/assets/TEMP/541d1d4fa3d1d9d35ab5a4e3dbc5e147201d672e?width=300",
-      logoAlt: "Access Bank Logo",
-      logoClass: "relative rounded-3xl h-[200px] max-w-[150px] w-[150px] max-sm:h-[120px] max-sm:w-[120px]",
-      hasWhiteBackground: true,
+      logo: "https://cdn-icons-png.flaticon.com/512/2867/2867634.png",
+      logoAlt: "Cheque Icon",
+        logoClass: "relative rounded-3xl h-[150px] max-w-[150px] w-[150px] max-sm:h-[120px] max-sm:w-[120px]",
+      hasWhiteBackground: false,
       details: [
-        { label: "Offering & Tithe:", value: "*901*1*Amount*0705814476#" },
-        { label: "A/C No:", value: "0705814476" },
-        { label: "A/C Name:", value: "The Elevation Church" },
+        { label: "Payable To:", value: "RCCG Living Word Forney" },
+        { label: "Mail To:", value: "RCCG Living Word Forney, [Insert Church Address]" },
+        { label: "Memo:", value: "Offering / Tithe / Donation" },
       ],
     },
   ]
@@ -47,10 +51,43 @@ const LocalPayments: React.FC = () => {
       </header>
 
       <div className="flex flex-col gap-6 w-full">
-        {bankData.map((bank, index) => (
-          <BankInfo key={index} {...bank} />
+        {paymentData.map((method, index) => (
+          <div key={index} className="relative">
+            <BankInfo {...method} />
+
+            {/* Show QR code link for the first two methods */}
+            {method.qrCode && (
+              <button
+                onClick={() => setSelectedQR(method.qrCode)}
+                className="text-blue-400 text-sm mt-2 underline hover:text-blue-300"
+              >
+                View QR Code
+              </button>
+            )}
+          </div>
         ))}
       </div>
+
+      {/* Modal Overlay for QR Code */}
+      {selectedQR && (
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+          onClick={() => setSelectedQR(null)}
+        >
+          <div
+            className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img src={selectedQR} alt="Payment QR Code" className="w-48 h-48 mb-4" />
+            <button
+              onClick={() => setSelectedQR(null)}
+              className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

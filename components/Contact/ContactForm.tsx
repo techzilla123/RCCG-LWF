@@ -62,7 +62,7 @@ function ContactForm() {
         />
         <button
           type="submit"
-          className="px-6 py-4 mt-3 w-full text-base md:text-lg font-bold text-white uppercase rounded-lg bg-gray-400 hover:bg-gray-500 transition-colors"
+          className="px-6 py-4 mt-3 w-full text-base md:text-lg font-bold text-white uppercase rounded-lg bg-gray-400 hover:bg-[#333064] transition-colors"
         >
           Send Message
         </button>
