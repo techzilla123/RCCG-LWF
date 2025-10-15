@@ -64,14 +64,12 @@ const CardContent = ({ children, className = "" }: { children: React.ReactNode; 
 
 export default function PlanVisitPage() {
   const [userAddress, setUserAddress] = useState("")
-  const [showMap, setShowMap] = useState(false)
 
   const churchAddress = "8485 MICHAEL TALTY AVE, TERRELL, TX 75160, UNITED STATES"
   const churchAddressEncoded = encodeURIComponent(churchAddress)
 
   const handleGetDirections = () => {
     if (userAddress.trim()) {
-      setShowMap(true)
     }
   }
 
