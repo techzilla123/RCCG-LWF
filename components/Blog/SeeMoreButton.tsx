@@ -1,19 +1,20 @@
-"use client";
-import * as React from "react";
+"use client"
 
 interface SeeMoreButtonProps {
-  onClick?: () => void;
+  onClick?: () => void
+  isLoading?: boolean
 }
 
-export function SeeMoreButton({ onClick }: SeeMoreButtonProps) {
+export function SeeMoreButton({ onClick, isLoading }: SeeMoreButtonProps) {
   return (
     <div className="mt-16 text-center">
       <button
-        className="px-8 py-3 text-base font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+        className="px-8 py-3 text-base font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={onClick}
+        disabled={isLoading}
       >
-        See More
+        {isLoading ? "Loading..." : "See More"}
       </button>
     </div>
-  );
+  )
 }

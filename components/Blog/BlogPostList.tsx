@@ -1,20 +1,21 @@
-import * as React from "react";
-import { BlogPost } from "./BlogPost";
+"use client"
+import { BlogPost } from "./BlogPost"
 
 interface BlogPostData {
-  id: string;
-  image: string;
-  altText: string;
-  title: string;
-  readTime: string;
-  date: string;
+  id: string
+  image: string
+  altText: string
+  title: string
+  readTime: string
+  date: string
 }
 
 interface BlogPostListProps {
-  posts: BlogPostData[];
+  posts: BlogPostData[]
+  onPostClick?: (postId: string) => void
 }
 
-export function BlogPostList({ posts }: BlogPostListProps) {
+export function BlogPostList({ posts, onPostClick }: BlogPostListProps) {
   return (
     <section className="gap-y-12 space-y-12">
       {posts.map((post) => (
@@ -25,8 +26,9 @@ export function BlogPostList({ posts }: BlogPostListProps) {
           title={post.title}
           readTime={post.readTime}
           date={post.date}
+          onClick={() => onPostClick?.(post.id)}
         />
       ))}
     </section>
-  );
+  )
 }
