@@ -15,18 +15,13 @@ interface BlogPostData {
 export async function fetchBlogPosts(): Promise<BlogPostData[]> {
   try {
     const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL
-    const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY
 
-    if (!apiBase || !secretKey) {
+    if (!apiBase) {
       console.error("Missing API configuration")
       return []
     }
 
-    const response = await fetch(`${apiBase}/public/blog`, {
-      headers: {
-        Authorization: `Bearer ${secretKey}`,
-      },
-    })
+    const response = await fetch(`${apiBase}/public/blog`)
 
     if (!response.ok) {
       console.error("Failed to fetch blog posts:", response.statusText)
