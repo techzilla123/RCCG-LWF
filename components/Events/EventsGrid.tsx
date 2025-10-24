@@ -1,36 +1,73 @@
-import * as React from "react";
-import { EventImage } from "./EventImage";
+"use client"
+
+import * as React from "react"
+import { EventImage } from "./EventImage"
+import { EventModal } from "./EventModal"
+
+interface Event {
+  id: string
+  date: string
+  time: string
+  type: string
+  title: string
+  banner: string
+  location: string
+  attendees: number
+  description: string
+  recurring: boolean
+}
 
 export const EventsGrid: React.FC = () => {
-  return (
-    <div className="px-2.5 mt-12 max-w-[1280px] mx-auto">
-      <div className="grid grid-cols-2 gap-5 max-sm:grid-cols-2">
-        <EventImage
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/eb011ca80ac4ba4faffac74a94afa2c4eecd225f?placeholderIfAbsent=true"
-          alt="Church event 1"
-        />
-        <EventImage
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/abd73fef39e7832918e9cf4f81ff81c9d244156d?placeholderIfAbsent=true"
-          alt="Church event 2"
-        />
-        <EventImage
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/7614d1805b1e2c7f00ecd21da62f64b33c7b7a61?placeholderIfAbsent=true"
-          alt="Church event 3"
-        />
-        <EventImage
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/039c868bd326b64bca49cddd6c6903a2e3c2c496?placeholderIfAbsent=true"
-          alt="Church event 4"
-        />
-        <EventImage
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/22cc835758bf3a97c3d85fa4237cbda3d9ef713c?placeholderIfAbsent=true"
-          alt="Church event 5"
-          isRounded={true}
-        />
-        <EventImage
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/72a3e431492ed0acfed33bf7d112eb0fd70aeecd?placeholderIfAbsent=true"
-          alt="Church event 6"
-        />
+  const [events, setEvents] = React.useState<Event[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null)
+
+  React.useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+        const response = await fetch(`${baseUrl}/public/events`)
+        const data = await response.json()
+        setEvents(data.events || [])
+      } catch (error) {
+        console.error("Failed to fetch events:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="px-2.5 mt-12 max-w-[1280px] mx-auto">
+        <div className="grid grid-cols-2 gap-5 max-sm:grid-cols-2">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-gray-200 animate-pulse aspect-[1.78] rounded-lg" />
+          ))}
+        </div>
       </div>
-    </div>
-  );
-};
+    )
+  }
+
+  return (
+    <>
+      <div className="px-2.5 mt-12 max-w-[1280px] mx-auto">
+        <div className="grid grid-cols-2 gap-5 max-sm:grid-cols-2">
+          {events.slice(0, 6).map((event) => (
+            <button
+              key={event.id}
+              onClick={() => setSelectedEvent(event)}
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <EventImage src={event.banner} alt={event.title} isRounded={event.recurring} />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+    </>
+  )
+}

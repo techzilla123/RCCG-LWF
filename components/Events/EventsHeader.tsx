@@ -1,12 +1,12 @@
-import * as React from "react";
-import { Montserrat } from "next/font/google";
+import type * as React from "react"
+import { Montserrat } from "next/font/google"
 
 // Load Montserrat with weight 800 only
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["800"],
   display: "swap",
-});
+})
 
 export const EventsHeader: React.FC = () => {
   return (
@@ -17,5 +17,5 @@ export const EventsHeader: React.FC = () => {
         Happening at RCCG Living Word Forney !!!
       </h2>
     </header>
-  );
-};
+  )
+}

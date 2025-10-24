@@ -1,9 +1,14 @@
 "use client";
 import * as React from "react";
 
-export const DecorativeElements: React.FC = () => {
+// ✅ Accept `className` as a prop
+interface DecorativeElementsProps {
+  className?: string;
+}
+
+export const DecorativeElements: React.FC<DecorativeElementsProps> = ({ className = "" }) => {
   return (
-    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+    <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${className}`}>
       <svg
         width="1172"
         height="96"

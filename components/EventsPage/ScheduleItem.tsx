@@ -1,13 +1,14 @@
-"use client";
-import * as React from "react";
+"use client"
+import type * as React from "react"
 
 interface ScheduleItemProps {
-  title: string;
-  time: string;
-  date: string;
-  description: string;
-  imageUrl: string;
-  backgroundColor: string;
+  title: string
+  time: string
+  date: string
+  description: string
+  banner: string
+  type: string
+  backgroundColor?: string
 }
 
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({
@@ -15,35 +16,34 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   time,
   date,
   description,
-  imageUrl,
-  backgroundColor,
+  banner,
+  type,
+  backgroundColor = "bg-orange-100",
 }) => {
   return (
     <article
-      className={`flex flex-col md:flex-row gap-5 items-start p-4 w-full ${backgroundColor} rounded-2xl max-sm:p-3`}
+      className={`flex flex-col md:flex-row gap-6 items-start p-6 w-full ${backgroundColor} rounded-2xl max-sm:p-4 transition-transform hover:scale-105`}
     >
-      {/* Image Section */}
-      <div className="flex-shrink-0 w-full md:w-[180px] h-[135px] md:h-[135px] rounded-xl overflow-hidden relative max-sm:h-[180px]">
-        <img
-          src={imageUrl}
-          alt={title}
-          className="w-full h-full object-cover rounded-xl"
-        />
+      {/* Image Section - Left Side */}
+      <div className="flex-shrink-0 w-full md:w-[140px] h-[140px] rounded-xl overflow-hidden">
+        <img src={banner || "/placeholder.svg"} alt={title} className="w-full h-full object-cover" />
       </div>
 
-      {/* Content Section */}
-      <div className="flex flex-col flex-1 gap-4">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center w-full gap-2">
-          <h3 className="text-2xl md:text-2xl max-md:text-xl max-sm:text-lg font-semibold text-stone-950">
-            {title}
-          </h3>
-          <time className="text-base md:text-lg max-sm:text-sm text-stone-950">
-            {time}
-          </time>
-        </div>
-        <time className="text-sm md:text-base text-stone-950">{date}</time>
-        <p className="text-base max-sm:text-sm text-neutral-700">{description}</p>
+      {/* Content Section - Right Side */}
+      <div className="flex flex-col flex-1 gap-3 relative">
+        <div className="absolute top-0 right-0 text-sm md:text-base font-semibold text-stone-950">{time}</div>
+
+        {/* Title */}
+        <h3 className="text-xl md:text-2xl font-bold text-stone-950 pr-32 md:pr-40">{title}</h3>
+
+        {/* Date */}
+        <p className="text-sm md:text-base font-medium text-stone-700">{date}</p>
+
+        <p className="text-xs md:text-sm font-semibold text-stone-600 uppercase tracking-wide">{type}</p>
+
+        {/* Description */}
+        <p className="text-sm md:text-base text-neutral-700 leading-relaxed">{description}</p>
       </div>
     </article>
-  );
-};
+  )
+}

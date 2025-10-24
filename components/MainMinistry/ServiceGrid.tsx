@@ -1,6 +1,5 @@
-// ServiceGrid.tsx
-import React from "react";
-import { ServiceCard } from "./ServiceCard";
+import type React from "react"
+import { ServiceCard } from "./ServiceCard"
 
 const serviceData = [
   {
@@ -59,16 +58,20 @@ const serviceData = [
     description:
       "Serve digitally with Life.Church Online! Care for our global church family through live services, chat, email, and social media.",
   },
-];
+]
 
-export const ServiceGrid: React.FC = () => {
+interface ServiceGridProps {
+  onLearnMore?: (service: any) => void
+}
+
+export const ServiceGrid: React.FC<ServiceGridProps> = ({ onLearnMore }) => {
   return (
     <section className="px-6 py-16 md:px-12 lg:px-24 bg-white">
       <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-2 xl:gap-16 max-w-6xl mx-auto">
         {serviceData.map((service, idx) => (
-          <ServiceCard key={idx} {...service} />
+          <ServiceCard key={idx} {...service} onLearnMore={onLearnMore} />
         ))}
       </div>
     </section>
-  );
-};
+  )
+}

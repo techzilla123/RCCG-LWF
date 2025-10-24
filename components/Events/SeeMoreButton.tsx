@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
+import type * as React from "react"
+import { useRouter } from "next/navigation"
 
 export const SeeMoreButton: React.FC = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleClick = () => {
-    router.push("/events");
-  };
+    router.push("/events")
+  }
 
   return (
     <button
@@ -17,5 +17,5 @@ export const SeeMoreButton: React.FC = () => {
     >
       See More
     </button>
-  );
-};
+  )
+}
