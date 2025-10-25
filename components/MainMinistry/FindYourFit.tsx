@@ -67,7 +67,7 @@ export const FindYourFit: React.FC = () => {
       {showSuccessMessage && (
         <div className="fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg z-50 max-w-sm">
           <p className="text-green-700 font-semibold">Thank you for your interest, {successName}!</p>
-          <p className="text-green-600 text-sm mt-1">We'll be in touch soon with more information.</p>
+          <p className="text-green-600 text-sm mt-1">We&apos;ll be in touch soon with more information.</p>
         </div>
       )}
 

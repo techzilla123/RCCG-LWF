@@ -62,7 +62,7 @@ export const BenefitsModal: React.FC<BenefitsModalProps> = ({ isOpen, onClose, o
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
             <p className="text-gray-700 leading-relaxed">
-              Whether you attend a location or entirely online, there's a role out there for you! We offer specialized
+              Whether you attend a location or entirely online, there&apos;s a role out there for you! We offer specialized
               training so you can always feel confident each time you serve. Join our community of volunteers making a
               real difference.
             </p>

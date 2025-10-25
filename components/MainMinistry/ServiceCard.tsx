@@ -3,14 +3,23 @@
 import type React from "react"
 import { Button } from "./Button"
 
-interface ServiceCardProps {
+export interface ServiceCardProps {
   title?: string
   imageSrc: string
   description: string
-  onLearnMore?: (service: ServiceCardProps) => void
+  onLearnMore?: (service: { title?: string; imageSrc: string; description: string }) => void
 }
 
-export const ServiceCard: React.FC<ServiceCardProps> = ({ title, imageSrc, description, onLearnMore }) => {
+export const ServiceCard: React.FC<ServiceCardProps> = ({
+  title,
+  imageSrc,
+  description,
+  onLearnMore,
+}) => {
+  const handleLearnMore = () => {
+    onLearnMore?.({ title, imageSrc, description })
+  }
+
   return (
     <article className="flex flex-col items-start bg-white rounded-2xl overflow-hidden shadow-sm transition hover:shadow-md duration-300">
       <img
@@ -24,7 +33,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ title, imageSrc, descr
         <Button
           variant="outline"
           className="mt-4 self-start bg-transparent"
-          onClick={() => onLearnMore?.({ title, imageSrc, description, onLearnMore })}
+          onClick={handleLearnMore}
         >
           <span>Learn More</span>
           <img

@@ -1,7 +1,19 @@
 import type React from "react"
 import { ServiceCard } from "./ServiceCard"
 
-const serviceData = [
+//
+// Define the structure for each service item
+//
+export interface Service {
+  title: string
+  imageSrc: string
+  description: string
+}
+
+//
+// Sample service data
+//
+const serviceData: Service[] = [
   {
     title: "Host Team",
     imageSrc:
@@ -60,16 +72,28 @@ const serviceData = [
   },
 ]
 
+//
+// Props for the ServiceGrid component
+//
 interface ServiceGridProps {
-  onLearnMore?: (service: any) => void
+  onLearnMore?: (service: Service) => void
 }
 
+//
+// The main component
+//
 export const ServiceGrid: React.FC<ServiceGridProps> = ({ onLearnMore }) => {
   return (
     <section className="px-6 py-16 md:px-12 lg:px-24 bg-white">
       <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-2 xl:gap-16 max-w-6xl mx-auto">
         {serviceData.map((service, idx) => (
-          <ServiceCard key={idx} {...service} onLearnMore={onLearnMore} />
+          <ServiceCard
+            key={idx}
+            title={service.title}
+            imageSrc={service.imageSrc}
+            description={service.description}
+            onLearnMore={() => onLearnMore?.(service)}
+          />
         ))}
       </div>
     </section>
