@@ -40,7 +40,7 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ isOpen
           <p className="text-lg text-gray-700 leading-relaxed mb-8">{service.description}</p>
 
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">What You'll Do</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">What You&apos;ll Do</h3>
             <ul className="space-y-2 text-gray-700">
               <li className="flex gap-3">
                 <span className="text-blue-600 font-bold">•</span>
