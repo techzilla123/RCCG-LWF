@@ -3,19 +3,25 @@
 import * as React from "react"
 import { Calendar, MapPin, Users, Clock, X } from "lucide-react"
 
+// ✅ Type-safe reusable Button component
 function Button({
   children,
   className = "",
   size = "md",
   ...props
-}: { children: React.ReactNode; className?: string; size?: string; [key: string]: any }) {
+}: {
+  children: React.ReactNode
+  className?: string
+  size?: "md" | "lg"
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const sizeClasses = {
     lg: "px-6 py-3 text-base",
     md: "px-4 py-2 text-sm",
   }
+
   return (
     <button
-      className={`rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors ${sizeClasses[size as keyof typeof sizeClasses] || sizeClasses.md} ${className}`}
+      className={`rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors ${sizeClasses[size]} ${className}`}
       {...props}
     >
       {children}
@@ -46,11 +52,7 @@ function EventModal({
   event: Event
 }) {
   React.useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
+    document.body.style.overflow = isOpen ? "hidden" : "unset"
     return () => {
       document.body.style.overflow = "unset"
     }
@@ -81,13 +83,14 @@ function EventModal({
           className="relative bg-background rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close button */}
-          <button
+          {/* ✅ Close Button (uses reusable Button) */}
+          <Button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 rounded-md p-2 hover:bg-secondary transition-colors"
+            size="md"
+            className="absolute top-4 right-4 z-10 p-2 bg-secondary hover:bg-secondary/90 text-foreground rounded-md"
           >
             <X className="w-5 h-5" />
-          </button>
+          </Button>
 
           {/* Content */}
           <div className="p-6 space-y-6">

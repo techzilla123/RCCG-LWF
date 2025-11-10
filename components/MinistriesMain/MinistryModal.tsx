@@ -29,7 +29,7 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
     message: "",
   })
 
-  const [avatar, setAvatar] = useState<File | null>(null)
+
   const [preview, setPreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -42,8 +42,6 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0]
   if (!file) return
-
-  setAvatar(file)
 
   const reader = new FileReader()
   reader.onloadend = () => setPreview(reader.result as string)
@@ -63,7 +61,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       role: "Member",
       notes: formData.message,
       status: "Active",
-      ...(preview && { image: preview }) // ✅ Matches VolunteerForm
+      ...(preview && { image: preview }),
     }
 
     const response = await fetch(
@@ -79,8 +77,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     alert("Thank you for your interest! We'll be in touch soon.")
     onClose()
-
-  } catch (err) {
+  } catch {
     alert("Something went wrong. Please try again.")
   } finally {
     setIsSubmitting(false)
