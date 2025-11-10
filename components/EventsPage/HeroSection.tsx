@@ -1,12 +1,102 @@
-"use client";
-import * as React from "react";
-import { EventDetails } from "./EventDetails";
-import { ActionButtons } from "./ActionButtons";
-import { BrandStrip } from "./BrandStrip";
+"use client"
+import * as React from "react"
+import { EventDetails } from "./EventDetails"
+import { ActionButtons } from "./ActionButtons"
+import { EventDetailsModal } from "./EventDetailsModal"
+import { BrandStrip } from "./BrandStrip"
+
+interface Event {
+  id: string
+  date: string
+  time: string
+  type: string
+  title: string
+  banner: string
+  location: string
+  attendees: number
+  description: string
+}
 
 export function HeroSection() {
+  const [latestEvent, setLatestEvent] = React.useState<Event | null>(null)
+  const [loading, setLoading] = React.useState(true)
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+const fixDate = (dateString: string): string => {
+  try {
+    const [rawYear, rawMonth, rawDay] = dateString.split("-")
+
+    let year = rawYear
+
+    // Fix wrong 5-digit years like "20025" → "2025"
+    if (rawYear.length === 5 && rawYear.startsWith("20")) {
+      year = rawYear.slice(0, 2) + rawYear.slice(3) // "20" + "25"
+    }
+
+    const monthIndex = Number(rawMonth) - 1
+    const day = Number(rawDay)
+    const date = new Date(Number(year), monthIndex, day)
+
+    const month = date.toLocaleDateString("en-US", { month: "long" })
+    return `${month} ${day}, ${year}`
+  } catch {
+    return dateString
+  }
+}
+
+  React.useEffect(() => {
+    const fetchLatestEvent = async () => {
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+        const response = await fetch(`${apiBaseUrl}/public/events`)
+        const data = await response.json()
+        const events = data.events || []
+
+        // Get the latest event (first one in the array)
+        if (events.length > 0) {
+          setLatestEvent(events[0])
+        }
+      } catch (error) {
+        console.error("Failed to fetch latest event:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLatestEvent()
+  }, [])
+
+ const handleSeeSchedule = () => {
+  const schedulesSection = document.getElementById("schedules-section");
+  if (schedulesSection) {
+    schedulesSection.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
+
+  if (loading) {
+    return (
+      <main className="flex flex-col w-full">
+        <section className="relative flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 pt-16 pb-10 w-full min-h-[70vh]">
+          <div className="text-center text-muted-foreground">Loading event...</div>
+        </section>
+      </main>
+    )
+  }
+
+  if (!latestEvent) {
+    return (
+      <main className="flex flex-col w-full">
+        <section className="relative flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 pt-16 pb-10 w-full min-h-[70vh]">
+          <div className="text-center text-muted-foreground">No events available</div>
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className="flex flex-col w-full ">
+      <EventDetailsModal event={latestEvent} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
       <section className="relative flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 pt-16 pb-10 w-full min-h-[70vh]">
         {/* Background */}
         <img
@@ -19,12 +109,24 @@ export function HeroSection() {
         <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full max-w-7xl">
           {/* Text Section */}
           <article className="flex flex-col items-start justify-center w-full lg:w-1/2 text-center lg:text-left">
-            <EventDetails
-              date="15–17 November, Living Word Forney"
-              title="Living Word Conference 2025"
-              description="Living Word Conference 2025: Three days of powerful worship, inspiring messages, and life-transforming encounters with God."
-            />
-            <ActionButtons primaryText="View Details" secondaryText="See Schedule" />
+            {/** Format date properly */}
+           {(() => {
+  const formattedDate = latestEvent.date
+    ? fixDate(latestEvent.date) + ", Living Word Forney"
+    : ""
+
+  return (
+    <EventDetails date={formattedDate} title={latestEvent.title} description={latestEvent.description} />
+  )
+})()}
+
+
+           <ActionButtons
+  primaryText="View Details"
+  secondaryText="See Schedule"
+  onViewDetails={() => setIsModalOpen(true)}
+  onSeeSchedule={handleSeeSchedule}
+/>
           </article>
 
           {/* Image Section */}
@@ -52,7 +154,7 @@ export function HeroSection() {
 
       <BrandStrip />
     </main>
-  );
+  )
 }
 
-export default HeroSection;
+export default HeroSection

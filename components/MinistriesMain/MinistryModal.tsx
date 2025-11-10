@@ -29,19 +29,64 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
     message: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-    alert("Thank you for your interest! We'll be in touch soon.")
-    onClose()
+  const [avatar, setAvatar] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+
+  setAvatar(file)
+
+  const reader = new FileReader()
+  reader.onloadend = () => setPreview(reader.result as string)
+  reader.readAsDataURL(file)
+}
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setIsSubmitting(true)
+
+  try {
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      ministry: title,
+      role: "Member",
+      notes: formData.message,
+      status: "Active",
+      ...(preview && { image: preview }) // ✅ Matches VolunteerForm
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/public/member-applications`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    )
+
+    if (!response.ok) throw new Error("Submission failed")
+
+    alert("Thank you for your interest! We'll be in touch soon.")
+    onClose()
+
+  } catch (err) {
+    alert("Something went wrong. Please try again.")
+  } finally {
+    setIsSubmitting(false)
   }
+}
+
 
   return (
     <AnimatePresence>
@@ -65,7 +110,6 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
                 className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Close button */}
                 <button
                   onClick={onClose}
                   className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 hover:bg-white 
@@ -76,104 +120,87 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
                 </button>
 
                 <div className="overflow-y-auto max-h-[85vh] p-6 sm:p-8 md:p-12">
+                  
                   {/* Header */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="mb-6 md:mb-8"
-                  >
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 mb-3 md:mb-4 text-balance">
-                      {title}
-                    </h2>
-                    <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">{description}</p>
-                  </motion.div>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 mb-3 md:mb-4">
+                    {title}
+                  </h2>
+                  <p className="text-lg sm:text-xl text-slate-600">{description}</p>
 
                   {/* Full Details */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="mb-6 md:mb-8 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl"
-                  >
-                    <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-3 md:mb-4">About This Ministry</h3>
-                    <div className="text-base sm:text-lg text-slate-700 leading-relaxed whitespace-pre-line">
-                      {fullDetails}
-                    </div>
-                  </motion.div>
+                  <div className="mb-8 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl">
+                    <h3 className="text-2xl font-bold text-slate-800 mb-4">About This Ministry</h3>
+                    <p className="text-slate-700 whitespace-pre-line">{fullDetails}</p>
+                  </div>
 
-                  {/* Join Form */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="bg-white border-2 border-gray-200 rounded-2xl p-4 sm:p-6 md:p-8"
-                  >
-                    <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-4 md:mb-6">Join This Ministry</h3>
-                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-2">
-                          Full Name *
+                  {/* FORM */}
+                  <div className="bg-white border-2 border-gray-200 rounded-2xl p-8">
+                    <h3 className="text-2xl font-bold text-slate-800 mb-6">Join This Ministry</h3>
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                      
+                      {/* Upload Section */}
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-100 border border-gray-300 flex items-center justify-center">
+                          {preview ? (
+                            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-gray-400 text-4xl">+</span>
+                          )}
+                        </div>
+
+                        <label className="cursor-pointer px-4 py-2 border rounded-lg text-sm font-medium hover:bg-gray-100 transition">
+                          Upload Photo
+                          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
                         </label>
+
+                        <p className="text-xs text-gray-500">JPG, PNG or GIF. Max 10MB</p>
+                      </div>
+
+                      {/* Inputs */}
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Full Name *</label>
                         <input
                           type="text"
-                          id="name"
                           name="name"
                           required
                           value={formData.name}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 
-                          focus:outline-none transition-colors text-base"
-                          placeholder="Enter your full name"
+                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
-                          Email Address *
-                        </label>
+                        <label className="block text-sm font-semibold mb-2">Email *</label>
                         <input
                           type="email"
-                          id="email"
                           name="email"
                           required
                           value={formData.email}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 
-                          focus:outline-none transition-colors text-base"
-                          placeholder="your.email@example.com"
+                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-2">
-                          Phone Number
-                        </label>
+                        <label className="block text-sm font-semibold mb-2">Phone</label>
                         <input
                           type="tel"
-                          id="phone"
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 
-                          focus:outline-none transition-colors text-base"
-                          placeholder="(123) 456-7890"
+                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-2">
-                          Why do you want to join? (Optional)
-                        </label>
+                        <label className="block text-sm font-semibold mb-2">Why do you want to join?</label>
                         <textarea
-                          id="message"
                           name="message"
                           rows={4}
                           value={formData.message}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 
-                          focus:outline-none transition-colors resize-none text-base"
-                          placeholder="Tell us a bit about yourself..."
+                          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-colors resize-none"
                         />
                       </div>
 
@@ -181,13 +208,14 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
-                        className={`w-full ${buttonColor} text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full 
-                        font-bold text-base sm:text-lg shadow-xl transition-all duration-300`}
+                        disabled={isSubmitting}
+                        className={`w-full ${buttonColor} text-white py-4 rounded-full font-bold text-lg shadow-xl transition-all`}
                       >
-                        Submit Application
+                        {isSubmitting ? "Submitting..." : "Submit Application"}
                       </motion.button>
+
                     </form>
-                  </motion.div>
+                  </div>
                 </div>
               </motion.div>
             </div>

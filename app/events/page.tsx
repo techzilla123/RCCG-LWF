@@ -1,15 +1,12 @@
-'use client'
+"use client"
 
-import React from 'react';
+import type React from "react"
 import ChurchHeader from "@/components/Header/ChurchHeader"
 import HeroSection from "@/components/EventsPage/HeroSection"
 import NextEvent from "@/components/EventsPage/NextEvent"
 import Schedules from "@/components/EventsPage/Schedules"
-import EventBoasts from '@/components/MeetPastors/EventBoasts';
-import Footer from '@/components/Footer/Footer';
-
-
-
+import EventBoasts from "@/components/MeetPastors/EventBoasts"
+import Footer from "@/components/Footer/Footer"
 
 // import { HeroSection } from '@/components/AboutSection/HeroSection';
 // import { WelcomeSection } from '@/components/AboutSection/WelcomeSection';
@@ -19,25 +16,19 @@ import Footer from '@/components/Footer/Footer';
 const ChurchWebsite: React.FC = () => {
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
       <div className="w-full min-h-screen bg-gray-50">
-       <ChurchHeader />
-     
+        <ChurchHeader />
+
         <HeroSection />
         <NextEvent />
-        <EventBoasts />   
-        
+        <EventBoasts />
+
         <Schedules />
         <Footer />
-
-        
-     
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ChurchWebsite;
+export default ChurchWebsite

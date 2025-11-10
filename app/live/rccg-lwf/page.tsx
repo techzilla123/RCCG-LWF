@@ -1,7 +1,76 @@
 "use client"
+import { useEffect, useState } from "react"
 import ChurchHeader from "@/components/Header/ChurchHeader"
 
+interface LiveLink {
+  url: string
+  title: string
+  platform: string
+}
+
 export default function RCCGLFWLivePage() {
+  const [videoUrl, setVideoUrl] = useState<string>("")
+  const [videoTitle, setVideoTitle] = useState<string>("Sunday Service - RCCG Living Word Forney")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchLiveLinks = async () => {
+      try {
+        setLoading(true)
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+        const response = await fetch(`${apiBaseUrl}/public/live-links`)
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch live links")
+        }
+
+        const data = await response.json()
+
+        // Get the latest link (first one in the array)
+        if (data.links && data.links.length > 0) {
+          const latestLink = data.links[0] as LiveLink
+          setVideoUrl(latestLink.url)
+          setVideoTitle(latestLink.title)
+        }
+
+        setError(null)
+      } catch (err) {
+        console.error("Error fetching live links:", err)
+        setError("Failed to load live stream")
+        setVideoUrl("")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchLiveLinks()
+  }, [])
+
+  const getEmbedUrl = (url: string): string => {
+    if (!url) return ""
+
+    // Handle YouTube watch URLs
+    if (url.includes("youtube.com/watch")) {
+      const videoId = new URL(url).searchParams.get("v")
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+    }
+
+    // Handle YouTube shorts
+    if (url.includes("youtube.com/shorts")) {
+      const videoId = url.split("/shorts/")[1]?.split("?")[0]
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+    }
+
+    // Handle youtu.be short URLs
+    if (url.includes("youtu.be")) {
+      const videoId = url.split("/").pop()?.split("?")[0]
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+    }
+
+    return url
+  }
+
   return (
     <div className="min-h-screen bg-black">
       <ChurchHeader />
@@ -15,23 +84,36 @@ export default function RCCGLFWLivePage() {
                 className="relative w-full bg-gray-900 rounded-lg overflow-hidden"
                 style={{ paddingBottom: "56.25%" }}
               >
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full"
-                  src="https://www.youtube.com/embed/live_stream?channel=YOUR_CHANNEL_ID"
-                  title="RCCG LFW Live Stream"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                {loading && (
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800">
+                    <p className="text-white">Loading live stream...</p>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800">
+                    <p className="text-red-400">{error}</p>
+                  </div>
+                )}
+
+                {videoUrl && !loading && (
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={getEmbedUrl(videoUrl)}
+                    title={videoTitle}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
               </div>
 
               {/* Video Title and Info */}
               <div className="mt-4 text-white">
-                <h1 className="text-2xl md:text-3xl font-bold mb-2">Sunday Service - RCCG Living Word Forney</h1>
+                <h1 className="text-2xl md:text-3xl font-bold mb-2">{videoTitle}</h1>
                 <p className="text-gray-400 text-sm md:text-base">Join us for live worship and teaching</p>
               </div>
             </div>
 
-            {/* Chat/Interaction Panel */}
             <div className="lg:col-span-1">
               <div className="bg-gray-900 rounded-lg h-[600px] flex flex-col">
                 {/* Chat Header */}
@@ -66,8 +148,8 @@ export default function RCCGLFWLivePage() {
                         <span className="text-gray-400 text-xs">1m</span>
                       </div>
                       <p className="text-white text-sm mt-1">
-                        First time here? We&apos;d love to get to know you and stay connected! Help us do that by filling out
-                        this quick form{" "}
+                        First time here? We&apos;d love to get to know you and stay connected! Help us do that by
+                        filling out this quick form{" "}
                         <a href="https://www.life.church/hello" className="text-blue-400 hover:underline">
                           https://www.life.church/hello
                         </a>

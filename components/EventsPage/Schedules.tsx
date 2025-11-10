@@ -109,7 +109,7 @@ export const Schedules: React.FC = () => {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=ADLaM+Display:wght@400&family=Manrope:wght@400;500;600;700&family=Actor:wght@400&display=swap"
       />
-      <section className="flex relative flex-col gap-16 items-center px-32 py-32 mx-auto my-0 w-full bg-white max-w-[1440px] max-md:gap-12 max-md:px-10 max-md:py-20 max-sm:gap-8 max-sm:px-5 max-sm:py-16">
+      <section id="schedules-section" className="flex relative flex-col gap-16 items-center px-32 py-32 mx-auto my-0 w-full bg-white max-w-[1440px] max-md:gap-12 max-md:px-10 max-md:py-20 max-sm:gap-8 max-sm:px-5 max-sm:py-16">
         <header className="flex flex-col gap-4 items-center">
           <h1 className="text-5xl tracking-wider text-center leading-[50.6px] text-stone-950 max-md:text-4xl max-sm:text-3xl max-sm:tracking-wide">
             All Upcoming Events This 2025
