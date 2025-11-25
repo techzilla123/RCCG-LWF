@@ -10,11 +10,14 @@ export const HeroSection: React.FC = () => {
   return (
     <section className="relative w-full -mt-[18px] overflow-hidden">
       {/* Background Image */}
-      <img
-        src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/e586ae2f534758e44f492dec418a3845b1fda35a?placeholderIfAbsent=true"
-        alt="Cross on a mountain"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+     <video
+  src="/3499958-uhd_3840_2160_30fps.mp4"
+  autoPlay
+  loop
+  muted
+  playsInline
+  className="absolute inset-0 w-full h-full object-cover"
+></video>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/30" />

@@ -1,11 +1,10 @@
-import * as React from "react";
-import { CallToActionButton } from "./CallToActionButton";
-import { Montserrat } from "next/font/google";
+import { CallToActionButton } from "./CallToActionButton"
+import { Montserrat } from "next/font/google"
 
 const montserrat = Montserrat({
   weight: "300", // Light
   subsets: ["latin"],
-});
+})
 
 export function MinistryContent() {
   return (
@@ -18,24 +17,11 @@ export function MinistryContent() {
         />
       </div>
 
-      <div
-  className={`flex flex-col items-center mx-auto text-center text-zinc-800 ${montserrat.className} max-w-2xl`}
->
-        <p
-          className="max-md:max-w-full"
-          style={{ fontSize: "15px", lineHeight: "27px", fontWeight: 300 }}
-        >
-          Our kids ministry exists to help kids come to know Jesus as
-        
-          their Lord and Savior. We believe that if the church and family
-        
-          work together, a child has the best chance of growing to
-          
-          know, love and follow Jesus. This is a place where kids birth –
-       
-          grade 5 can explore God&apos;s Word and experience His love each
-        
-          week.
+      <div className={`flex flex-col items-center mx-auto text-center text-zinc-800 ${montserrat.className} max-w-2xl`}>
+        <p className="max-md:max-w-full" style={{ fontSize: "15px", lineHeight: "27px", fontWeight: 300 }}>
+          Our kids ministry exists to help kids come to know Jesus as their Lord and Savior. We believe that if the
+          church and family work together, a child has the best chance of growing to know, love and follow Jesus. This
+          is a place where kids birth – grade 5 can explore God&apos;s Word and experience His love each week.
         </p>
       </div>
 
@@ -43,5 +29,5 @@ export function MinistryContent() {
         <CallToActionButton>LEARN MORE</CallToActionButton>
       </div>
     </article>
-  );
+  )
 }

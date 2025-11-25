@@ -87,39 +87,39 @@ export const MoreDropdown: React.FC = () => {
         <div className="bg-white p-6 rounded-r-md">
           <h3 className="text-sm font-bold uppercase mb-4 border-b border-gray-300 pb-2 text-zinc-800">MINISTRIES</h3>
           <div className="space-y-3">
-            <Link href="/ministries/kids" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Kids</div>
               <div className="text-xs text-gray-600">Ages Birth - Grade 5</div>
             </Link>
-            <Link href="/ministries/students" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Students</div>
               <div className="text-xs text-gray-600">Grades 6 - 12</div>
             </Link>
-            <Link href="/ministries/special-needs" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Special Needs</div>
               <div className="text-xs text-gray-600">Specialized classes for all ages</div>
             </Link>
-            <Link href="/ministries/young-adults" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Young Adults</div>
               <div className="text-xs text-gray-600">All 18 - 30 year olds</div>
             </Link>
-            <Link href="/ministries/marriage" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministriese" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Marriage</div>
               <div className="text-xs text-gray-600">Groups, Resources, Weddings</div>
             </Link>
-            <Link href="/ministries/support-recovery" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Support & Recovery</div>
               <div className="text-xs text-gray-600">Resources and support for families</div>
             </Link>
-            <Link href="/ministries/missions" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Missions</div>
               <div className="text-xs text-gray-600">Local, National & International</div>
             </Link>
-            <Link href="/ministries/adoption-foster-care" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Adoption / Foster Care</div>
               <div className="text-xs text-gray-600">Resources for families</div>
             </Link>
-            <Link href="/ministries/resources" className="block hover:bg-gray-50 transition-colors">
+            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
               <div className="text-sm font-semibold text-zinc-800">Resources &gt;</div>
               <div className="text-xs text-gray-600">Additional resources and programs</div>
             </Link>

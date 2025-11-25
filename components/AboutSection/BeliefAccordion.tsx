@@ -57,7 +57,7 @@ export const BeliefAccordion: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="w-full max-w-2xl mx-auto bg-white rounded-lg mb-10 shadow-sm overflow-hidden">
       {beliefs.map((b) => (
         <BeliefItem
           key={b.id}

@@ -31,10 +31,8 @@ export const ChurchHeader: React.FC = () => {
         />
       </div>
 
-      {/* Clickable Logo */}
-      <div onClick={handleLogoClick} className="cursor-pointer hover:opacity-85 transition-opacity duration-200">
-        <Logo />
-      </div>
+      {/* Logo now receives the click handler directly */}
+      <Logo onClick={handleLogoClick} />
 
       <Navigation />
       <LiveSection />

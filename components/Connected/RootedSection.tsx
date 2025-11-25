@@ -17,14 +17,14 @@ export const RootedSection: React.FC = () => {
       <article className="flex relative flex-col gap-0 items-start self-stretch">
         <header className="flex relative flex-col items-start self-stretch pb-2.5">
           <h3 className="relative self-stretch text-base font-bold leading-4 uppercase text-zinc-800 max-sm:text-sm">
-            ROOTED 2025
+            Beliver's Class 2025
           </h3>
         </header>
         <div className="flex relative flex-col items-start self-stretch pb-4">
           <p className="relative self-stretch text-base font-light leading-6 text-zinc-800 max-sm:text-sm max-sm:leading-5">
-            Rooted is a 10-week discipleship experience that helps you grow
+            Beliver's Class is a 10-week discipleship experience that helps you grow
             closer to God, build meaningful relationships and discover the
-            purpose He has for your life. Rooted guides you to practice the
+            purpose He has for your life. Beliver's Class guides you to practice the
             seven rhythms of following Jesus to transform your faith from
             something you know into something you live out every day.
           </p>

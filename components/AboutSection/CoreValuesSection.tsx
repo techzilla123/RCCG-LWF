@@ -1,44 +1,90 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 export const CoreValuesSection: React.FC = () => {
+  const values = [
+    "R – Respect and Honor to God and His people. – 1st Samuel 2:30, Hebrews 12:28–29",
+    "E – Excellence: doing things with excellence to His glory. – 2nd Peter 1:3, Colossians 3:23",
+    "S – Stewardship: Accountability and faithfulness to God. – 1st Corinthians 4:1–2",
+    "P – Purity: Loving what God loves and hating what God hates. – Hebrews 1:9, Proverbs 22:11",
+    "E – Example of believers. – 1st Timothy 4:12",
+    "C – Compassion: Showing compassion, mercy, and bearing with one another. – Colossians 3:12",
+    "T – Trust: Our trust is only in God. – Psalm 20:7; 60:12",
+    "G – God: All the glory belongs to God alone. – Ephesians 3:21",
+  ];
+
+  // For modal
+  const [selectedValue, setSelectedValue] = useState<string | null>(null);
+
   return (
-    <footer className="flex mt-10 flex-col md:flex-row items-center justify-center gap-6 py-10 px-6 w-full text-center bg-slate-700 bg-opacity-30 overflow-hidden">
-      {/* Text */}
-      <h2 className="text-3xl md:text-4xl font-black text-black z-10">
-        OUR CORE VALUES
-      </h2>
+    <>
+      <footer className="flex flex-col items-center justify-center gap-6 py-6 px-2 w-full text-center bg-slate-700 bg-opacity-30 overflow-hidden">
+        
+        <h2 className="text-3xl md:text-4xl font-black text-black">
+          OUR CORE VALUES
+        </h2>
 
-      {/* Animated Image 1 */}
-      <motion.img
-        src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/5bb6129d03f588189dd7d5aa4e08c80b5297440f"
-        alt="Core values decoration"
-        className="w-32 md:w-40 object-contain"
-        initial={{ x: 200, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 6,
-          ease: "easeInOut",
-        }}
-      />
+        <div className="relative w-full overflow-hidden whitespace-nowrap py-4">
+          <motion.div
+            className="inline-flex gap-16 text-lg md:text-xl font-medium text-black"
+            initial={{ x: "0%" }}
+            animate={{ x: "-50%" }}
+            transition={{
+              duration: 43,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          >
+            {/* MAIN LIST */}
+            {values.map((value, index) => (
+              <span
+                key={index}
+                className="cursor-pointer hover:underline"
+                onClick={() => setSelectedValue(value)}
+              >
+                {value}
+              </span>
+            ))}
 
-      {/* Animated Image 2 */}
-      <motion.img
-        src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/334a9cc9d7aa0cb0ca948b66e5b7a11f8b716fb2"
-        alt="Core values banner"
-        className="w-full md:w-[600px] object-contain"
-        initial={{ x: 300, opacity: 0 }}
-        animate={{ x: -20, opacity: 1 }}
-        transition={{
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 8,
-          ease: "easeInOut",
-        }}
-      />
-    </footer>
+            {/* DUPLICATE LIST */}
+            {values.map((value, index) => (
+              <span
+                key={`dup-${index}`}
+                className="cursor-pointer hover:underline"
+                onClick={() => setSelectedValue(value)}
+              >
+                {value}
+              </span>
+            ))}
+          </motion.div>
+        </div>
+      </footer>
+
+      {/* MODAL */}
+      {selectedValue && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[999]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white rounded-xl p-6 max-w-lg w-[90%] text-center shadow-xl"
+          >
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Core Value</h3>
+
+            <p className="text-gray-800 text-lg leading-relaxed">
+              {selectedValue}
+            </p>
+
+            <button
+              onClick={() => setSelectedValue(null)}
+              className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-purple-700"
+            >
+              Close
+            </button>
+          </motion.div>
+        </div>
+      )}
+    </>
   );
 };

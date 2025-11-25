@@ -19,12 +19,14 @@ export const GetConnected: React.FC = () => {
           <RootedSection />
           <div className="flex flex-col gap-12 items-start flex-1 min-h-px max-md:gap-8">
             <ConnectItem
-              icon={<PlayIcon />}
-              title="WATCH THE LATEST MESSAGE"
-              description="Never miss a message! Watch the most recent teaching or explore our extensive media library to view or share past messages."
-              linkText="VIEW MESSAGES →"
-              hasBorder={true}
-            />
+  icon={<PlayIcon />}
+  title="WATCH THE LATEST MESSAGE"
+  description="Never miss a message! Watch the most recent teaching or explore our extensive media library to view or share past messages."
+  linkText="VIEW MESSAGES →"
+  hasBorder={true}
+  onClick={() => window.open("https://www.youtube.com/@rccgLWF/streams", "_blank")}
+/>
+
             <ConnectItem
               icon={<ComputerIcon />}
               title="EXPERIENCE CHURCH ONLINE"
@@ -32,13 +34,15 @@ export const GetConnected: React.FC = () => {
               linkText="RCCGLWF.LIVE →"
               hasBorder={true}
             />
-            <ConnectItem
-              icon={<PhoneIcon />}
-              title="RCCG Living Word Forney Blog"
-              description="Everything you need in one place, including events, live and past messages, prayer, a Bible reading plan, check-in, giving, and more."
-              linkText="VIEW BLOG →"
-              hasBorder={false}
-            />
+           <ConnectItem
+  icon={<PhoneIcon />}
+  title="RCCG Living Word Forney Blog"
+  description="Everything you need in one place, including events, live and past messages, prayer, a Bible reading plan, check-in, giving, and more."
+  linkText="VIEW BLOG →"
+  hasBorder={false}
+  onClick={() => window.location.href = "/blog"}   // ✅ navigate to /blog
+/>
+
           </div>
         </div>
       </div>
