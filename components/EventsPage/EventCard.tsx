@@ -166,6 +166,7 @@ interface Event {
   location: string
   attendees: number
   description: string
+  
 }
 
 interface EventCardProps {

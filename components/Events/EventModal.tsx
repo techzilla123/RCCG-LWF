@@ -14,6 +14,8 @@ interface Event {
   attendees: number
   description: string
   recurring: boolean
+  recurringDay?: string
+
 }
 
 interface EventModalProps {
@@ -87,10 +89,18 @@ export const EventModal: React.FC<EventModalProps> = ({ event, onClose }) => {
               <p className="text-lg font-semibold text-slate-900">{event.attendees}</p>
             </div>
 
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Recurring</p>
-              <p className="text-lg font-semibold text-slate-900">{event.recurring ? "Yes" : "No"}</p>
-            </div>
+          <div>
+  <p className="text-sm text-gray-600 font-medium">Recurring</p>
+  <p className="text-lg font-semibold text-slate-900">{event.recurring ? "Yes" : "No"}</p>
+</div>
+
+{event.recurring && event.recurringDay && (
+  <div>
+    <p className="text-sm text-gray-600 font-medium">Recurring Day</p>
+    <p className="text-lg font-semibold text-slate-900">{event.recurringDay}</p>
+  </div>
+)}
+
           </div>
 
           {/* Description */}

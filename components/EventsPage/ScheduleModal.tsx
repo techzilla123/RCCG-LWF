@@ -11,6 +11,7 @@ interface Event {
   type: string
   attendees: number
   recurring: boolean
+  recurringDay?: string
   banner: string
   createdAt?: string
   updatedAt?: string
@@ -96,11 +97,21 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({ event, onClose }) 
               <span className="text-sm font-semibold text-stone-950">Attendees:</span>
               <span className="text-sm text-neutral-700">{event.attendees}</span>
             </div>
-            {event.recurring && (
-              <div className="bg-green-100 px-3 py-1 rounded-full">
-                <span className="text-sm font-semibold text-green-800">Recurring Event</span>
-              </div>
-            )}
+          <div className="flex items-center gap-3">
+  {event.recurring && (
+    <div className="bg-green-100 px-3 py-1 rounded-full">
+      <span className="text-sm font-semibold text-green-800">Recurring Event</span>
+    </div>
+  )}
+
+  {event.recurring && event.recurringDay && (
+    <div className="text-sm font-medium text-gray-700 flex items-center">
+      Recurring Day:
+      <span className="ml-1 text-slate-900 font-semibold">{event.recurringDay}</span>
+    </div>
+  )}
+</div>
+
           </div>
 
           {/* Description */}

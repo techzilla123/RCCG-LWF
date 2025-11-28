@@ -17,6 +17,7 @@ export interface VolunteerFormData {
   phoneNumber: string
   serviceMinistry: string
   role: string
+  dateOfBirth: string
 }
 
 const ministries = [
@@ -43,6 +44,7 @@ export const VolunteerForm: React.FC<VolunteerFormProps> = ({
     phoneNumber: "",
     serviceMinistry: preselectedMinistry || "",
     role: "",
+    dateOfBirth: "",
   })
 
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -90,6 +92,7 @@ export const VolunteerForm: React.FC<VolunteerFormProps> = ({
           phone: formData.phoneNumber,
           preferredDepartment: formData.serviceMinistry,
           role: formData.role,
+          dateOfBirth: formData.dateOfBirth,
           ...(imagePreview && { image: imagePreview }),
         }),
       })
@@ -182,6 +185,21 @@ export const VolunteerForm: React.FC<VolunteerFormProps> = ({
           required
         />
       </div>
+
+      {/* Date of Birth */}
+<div>
+  <label className="block text-sm font-semibold text-gray-900 mb-2">Date of Birth *</label>
+  <input
+    type="date"
+    name="dateOfBirth"
+    value={formData.dateOfBirth}
+    onChange={handleChange}
+    disabled={isLoading}
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+    required
+  />
+</div>
+
 
       {/* Service Ministry */}
       <div>

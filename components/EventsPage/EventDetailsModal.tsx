@@ -11,6 +11,9 @@ interface Event {
   type: string
   attendees: number
   banner: string
+  recurring?: boolean
+  recurringDay?: string
+  recurringType?: string
 }
 
 interface ScheduleModalProps {
@@ -22,29 +25,27 @@ interface ScheduleModalProps {
 export const EventDetailsModal: React.FC<ScheduleModalProps> = ({ event, isOpen, onClose }) => {
   if (!isOpen || !event) return null
 
-const formatDate = (dateString: string): string => {
-  try {
-    const [rawYear, rawMonth, rawDay] = dateString.split("-")
+  const formatDate = (dateString: string): string => {
+    try {
+      const [rawYear, rawMonth, rawDay] = dateString.split("-")
 
-    let year = rawYear
+      let year = rawYear
 
-    // Fix 5-digit years like "20025" → "2025"
-    if (rawYear.length === 5 && rawYear.startsWith("20")) {
-      year = rawYear.slice(0, 2) + rawYear.slice(3) // "20" + "25"
+      // Fix 5-digit years like "20025" → "2025"
+      if (rawYear.length === 5 && rawYear.startsWith("20")) {
+        year = rawYear.slice(0, 2) + rawYear.slice(3)
+      }
+
+      const monthIndex = Number(rawMonth) - 1
+      const day = Number(rawDay)
+      const date = new Date(Number(year), monthIndex, day)
+      const month = date.toLocaleDateString("en-US", { month: "short" })
+
+      return `${month} ${day}, ${year}`
+    } catch {
+      return dateString
     }
-
-    const monthIndex = Number(rawMonth) - 1
-    const day = Number(rawDay)
-    const date = new Date(Number(year), monthIndex, day)
-
-    const month = date.toLocaleDateString("en-US", { month: "short" })
-
-    return `${month} ${day}, ${year}`
-  } catch {
-    return dateString
   }
-}
-
 
   const formatTime = (timeString: string): string => {
     try {
@@ -61,11 +62,15 @@ const formatDate = (dateString: string): string => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4"
+      onClick={onClose}
+    >
       <div
-        className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Button */}
         <div className="flex justify-end p-4 border-b">
           <button onClick={onClose} className="text-2xl font-bold text-stone-950 hover:text-stone-700">
             ✕
@@ -80,6 +85,24 @@ const formatDate = (dateString: string): string => {
 
           {/* Event Title */}
           <h2 className="text-3xl md:text-4xl font-bold text-stone-950 mb-4">{event.title}</h2>
+
+          {/* Recurring Info --- Straight Line */}
+          {(event.recurring || event.recurringDay) && (
+            <div className="flex items-center gap-3 mb-6">
+              {event.recurring && (
+                <div className="bg-green-100 px-3 py-1 rounded-full">
+                  <span className="text-sm font-semibold text-green-800">Recurring Event</span>
+                </div>
+              )}
+
+              {event.recurringDay && (
+                <div className="text-sm font-medium text-gray-700 flex items-center">
+                  Recurring Day:
+                  <span className="ml-1 text-slate-900 font-semibold">{event.recurringDay}</span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Event Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

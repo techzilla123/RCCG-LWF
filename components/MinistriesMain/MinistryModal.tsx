@@ -27,6 +27,7 @@ export const MinistryModal: React.FC<MinistryModalProps> = ({
     email: "",
     phone: "",
     message: "",
+    dateOfBirth: "",
   })
 
 
@@ -57,6 +58,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
+      dateOfBirth: "1992-08-10",
       ministry: title,
       role: "Member",
       notes: formData.message,
@@ -189,6 +191,19 @@ const handleSubmit = async (e: React.FormEvent) => {
                           className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
                         />
                       </div>
+
+                      <div>
+  <label className="block text-sm font-semibold mb-2">Date of Birth *</label>
+  <input
+    type="date"
+    name="dateOfBirth"
+    required
+    value={formData.dateOfBirth}
+    onChange={handleChange}
+    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-colors"
+  />
+</div>
+
 
                       <div>
                         <label className="block text-sm font-semibold mb-2">Why do you want to join?</label>

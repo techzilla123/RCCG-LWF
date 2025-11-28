@@ -15,6 +15,9 @@ interface Event {
   location: string
   attendees: number
   description: string
+    recurring?: boolean
+  recurringDay?: string
+  recurringType?: string
 }
 
 export function HeroSection() {
