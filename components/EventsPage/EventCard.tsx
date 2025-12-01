@@ -1,4 +1,5 @@
 "use client"
+import Portal from "./Portal"
 
 import * as React from "react"
 import { Calendar, MapPin, Users, Clock, X } from "lucide-react"
@@ -144,6 +145,14 @@ function EventModal({
               <Badge variant="default">{event.type}</Badge>
             </div>
 
+{/* Recurring info */}
+{event.recurring && event.recurringDay && (
+  <div>
+    <p className="text-sm text-muted-foreground mb-2">Recurring</p>
+    <p className="font-semibold">{`Every ${event.recurringDay}`}</p>
+  </div>
+)}
+
             {/* Description */}
             <div>
               <p className="text-sm text-muted-foreground mb-2">Description</p>
@@ -166,6 +175,8 @@ interface Event {
   location: string
   attendees: number
   description: string
+   recurring?: boolean
+  recurringDay?: string
   
 }
 
@@ -214,7 +225,10 @@ function EventCard({ event, isActive }: EventCardProps) {
         )}
       </article>
 
-      <EventModal isOpen={isOpen} onClose={() => setIsOpen(false)} event={event} />
+     <Portal>
+  <EventModal isOpen={isOpen} onClose={() => setIsOpen(false)} event={event} />
+</Portal>
+
     </>
   )
 }

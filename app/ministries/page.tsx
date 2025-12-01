@@ -19,7 +19,9 @@ const ChurchWebsite: React.FC = () => {
       />
       <div className="w-full min-h-screen bg-gray-50">
        <ChurchHeader />
+        <div className="-mt-5"> 
        <Header />
+       </div>
        <MinistryTabs />
        
         <Footer />

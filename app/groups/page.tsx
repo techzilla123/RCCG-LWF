@@ -15,7 +15,9 @@ export default function ministries() {
 
 
       <ChurchHeader />
+       <div className="-mt-5"> 
       <FindYourFit />
+      </div>
       <Footer />
       
       
