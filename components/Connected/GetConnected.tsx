@@ -33,6 +33,7 @@ export const GetConnected: React.FC = () => {
               description="Join us for Church Online and be part of a community of people from around the world. Join us on Facebook, YouTube or RCCGLWF.live this weekend."
               linkText="RCCGLWF.LIVE →"
               hasBorder={true}
+               onClick={() => window.location.href = "/live/rccg-lwf"}
             />
            <ConnectItem
   icon={<PhoneIcon />}
