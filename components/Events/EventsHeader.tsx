@@ -10,7 +10,7 @@ const montserrat = Montserrat({
 
 export const EventsHeader: React.FC = () => {
   return (
-    <header className="max-w-[1300px] text-slate-900 max-md:max-w-full">
+    <header className="max-w-[1300px] text-slate-900 max-md:max-w-full mb-10">
       <h2
         className={`${montserrat.className} text-[17px] sm:text-[24px] md:text-[28px] lg:text-[32px] leading-none font-normal whitespace-nowrap`}
       >

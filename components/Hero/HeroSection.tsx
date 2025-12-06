@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import { Montserrat } from "next/font/google";
-import { useEffect, useState } from "react";
+import { Montserrat } from "next/font/google"
+import { useEffect, useState } from "react"
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300"],
-});
+})
 
 export const HeroSection = () => {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     // Prevent hydration mismatch
-    setReady(true);
-  }, []);
+    setReady(true)
+  }, [])
 
-  if (!ready) return null;
+  if (!ready) return null
 
   return (
     <section className="relative w-full -mt-[18px] overflow-hidden">
@@ -43,5 +43,5 @@ export const HeroSection = () => {
         </h1>
       </div>
     </section>
-  );
-};
+  )
+}

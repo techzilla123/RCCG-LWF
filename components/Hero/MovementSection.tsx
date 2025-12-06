@@ -1,11 +1,14 @@
-"use client"
-import * as React from "react"
-import { HeroSection } from "./HeroSection"
-import { MovementCard } from "./MovementCard"
-import { WelcomeSection } from "./WelcomeSection"
+"use client";
+import * as React from "react";
+import { HeroSection } from "./HeroSection";
+import { MovementCard } from "./MovementCard";
+import { WelcomeSection } from "./WelcomeSection";
 
 export const MovementSection: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = React.useState(0)
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const scrollRef = React.useRef(0);
+  const animatedYRef = React.useRef(0);
+  const sectionRef = React.useRef<HTMLDivElement>(null);
 
   const movementCards = [
     {
@@ -32,30 +35,81 @@ export const MovementSection: React.FC = () => {
       title: "MAKE A",
       subtitle: "DIFFERENCE",
     },
-  ]
+  ];
+
+  // Smooth scroll effect with easing
+  React.useEffect(() => {
+    const handleScroll = () => {
+      scrollRef.current = window.scrollY;
+    };
+
+    const animate = () => {
+      // Ease animation
+      animatedYRef.current += (scrollRef.current - animatedYRef.current) * 0.1;
+
+      if (sectionRef.current) {
+        sectionRef.current.style.transform = `translateY(${animatedYRef.current * 0.3}px)`;
+      }
+
+      requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    requestAnimationFrame(animate);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Auto-rotate carousel on mobile
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 2) % movementCards.length)
-    }, 4000) // Rotate every 4 seconds
-
-    return () => clearInterval(interval)
-  }, [movementCards.length])
+      setCurrentIndex((prev) => (prev + 2) % movementCards.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [movementCards.length]);
 
   return (
-    <main className="rounded-none bg-white">
+    <main className="rounded-none bg-white relative">
       <HeroSection />
-      <section className="relative flex flex-col items-center px-5 md:px-10 lg:px-20 pb-5 w-full bg-white max-w-[1600px] mx-auto">
+
+      <section
+        ref={sectionRef}
+        className="relative flex flex-col items-center px-5 md:px-10 lg:px-20 pb-5 w-full bg-white max-w-[1600px] mx-auto"
+      >
         <div className="w-full max-w-[1080px]">
-          {/* Desktop: Show all 4 cards */}
+          {/* Desktop cards */}
           <div className="hidden md:flex flex-wrap gap-6 lg:gap-8 items-start -mt-12 pb-7 text-3xl font-semibold leading-8 text-white uppercase">
             {movementCards.map((card, index) => (
-              <MovementCard key={index} imageSrc={card.imageSrc} title={card.title} subtitle={card.subtitle} />
+              <div
+                key={index}
+                style={{
+                  animation: `slideUp 0.8s ease-out ${index * 0.15}s both`,
+                  opacity: 0,
+                }}
+              >
+                <style>{`
+                  @keyframes slideUp {
+                    from {
+                      opacity: 0;
+                      transform: translateY(40px);
+                    }
+                    to {
+                      opacity: 1;
+                      transform: translateY(0);
+                    }
+                  }
+                `}</style>
+                <MovementCard
+                  imageSrc={card.imageSrc}
+                  title={card.title}
+                  subtitle={card.subtitle}
+                  index={index}
+                />
+              </div>
             ))}
           </div>
 
-          {/* Mobile: Show 2 cards with auto-rotation */}
+          {/* Mobile carousel */}
           <div className="md:hidden -mt-12 pb-7">
             <div className="flex gap-4 transition-all duration-500 ease-in-out">
               {[currentIndex, (currentIndex + 1) % movementCards.length].map((index) => (
@@ -64,11 +118,11 @@ export const MovementSection: React.FC = () => {
                   imageSrc={movementCards[index].imageSrc}
                   title={movementCards[index].title}
                   subtitle={movementCards[index].subtitle}
+                  index={index}
                 />
               ))}
             </div>
 
-            {/* Carousel indicators */}
             <div className="flex justify-center gap-2 mt-4">
               {[0, 2].map((startIndex) => (
                 <button
@@ -87,7 +141,7 @@ export const MovementSection: React.FC = () => {
         </div>
       </section>
     </main>
-  )
-}
+  );
+};
 
-export default MovementSection
+export default MovementSection;

@@ -1,10 +1,15 @@
-import type * as React from "react"
-import { ReadStoryButton } from "./ReadStoryButton"
+import type * as React from "react";
+import { ReadStoryButton } from "./ReadStoryButton";
+import DecoratedBackground from "@/components/Events/DecoratedBackground";
 
 export const WelcomeSection: React.FC = () => {
   return (
-    <section className="flex flex-col justify-center py-7 mt-7 w-full">
-      <div className="flex flex-col gap-1 w-full">
+    <section className="relative flex flex-col justify-center py-7 mt-7 w-full overflow-hidden">
+      
+      {/* 🔵 Colorful decorative dots */}
+      <DecoratedBackground density={20} />
+
+      <div className="relative z-10 flex flex-col gap-1 w-full">
         <div className="pb-2.5 w-full text-3xl md:text-4xl font-bold leading-tight md:leading-none text-center uppercase text-zinc-800">
           <h2>YOU&apos;RE WELCOME HERE!</h2>
         </div>
@@ -15,13 +20,13 @@ export const WelcomeSection: React.FC = () => {
           <p className="text-pretty">
             RCCG Living Word Forney is a family of believers united in Christ, walking in love, peace, and faith as we
             grow together in Him. It is a place of hope, strength, and encouragement where lives are transformed and
-            God&apos;s Word is our foundation. No matter who you are or where you come from, you are welcome to find refuge,
-            community, and purpose here. At Living Word Forney, we press toward Christlikeness and live in the victory
-            of faith. Welcome Home!
+            God&apos;s Word is our foundation. No matter who you are or where you come from, you are welcome to find
+            refuge, community, and purpose here. At Living Word Forney, we press toward Christlikeness and live in the
+            victory of faith. Welcome Home!
           </p>
         </div>
         <ReadStoryButton />
       </div>
     </section>
-  )
-}
+  );
+};

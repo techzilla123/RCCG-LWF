@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
+import type * as React from "react"
+import { useRouter } from "next/navigation"
 
 export const ReadStoryButton: React.FC = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleClick = () => {
-    router.push("/about");
-  };
+    router.push("/about")
+  }
 
   return (
     <div className="flex flex-col items-center pt-2.5 mt-1 w-full text-sm font-medium tracking-normal leading-none text-white">
@@ -28,5 +28,5 @@ export const ReadStoryButton: React.FC = () => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}

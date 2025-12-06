@@ -1,34 +1,55 @@
-'use client'
-// import Footer from "@/components/Footer"
-import ChurchHeader from "@/components/Header/ChurchHeader"
-import MinistrySection from "@/components/Ministries/MinistrySection"
-import EventsSection from "@/components/Events/EventsSection"
-import MovementSection from "@/components/Hero/MovementSection"
+"use client";
+import * as React from "react";
 
-import GetConnected from "@/components/Connected/GetConnected" 
-import Background from "@/components/Learn/Background" 
-import MediaSection from "@/components/Media/MediaSection" 
-import Footer from "@/components/Footer/Footer"
-
-
+import ChurchHeader from "@/components/Header/ChurchHeader";
+import MovementSection from "@/components/Hero/MovementSection";
+import EventsSection from "@/components/Events/EventsSection";
+import MinistrySection from "@/components/Ministries/MinistrySection";
+import GetConnected from "@/components/Connected/GetConnected";
+import Background from "@/components/Learn/Background";
+import MediaSection from "@/components/Media/MediaSection";
+import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
+  return (
+    <div
+      className="
+        min-h-screen bg-white w-full overflow-y-auto overflow-x-hidden
+        scroll-smooth snap-y snap-mandatory
+      "
+      style={{ scrollBehavior: "smooth" }}
+    >
+      <div className="snap-start">
+        <ChurchHeader />
+      </div>
+
+     
+        <MovementSection />
   
 
-  return (
-   <div className="min-h-screen bg-white relative w-full max-w-full sm:max-w-none overflow-hidden">
+      <div className="snap-start">
+        <EventsSection />
+      </div>
 
+      <div className="snap-start">
+        <MinistrySection />
+      </div>
 
-      <ChurchHeader />
-      <MovementSection />
-      <EventsSection />
-      <MinistrySection />
-      <GetConnected />
-      <Background />
-      <MediaSection />
-      <Footer />
-      
-      
+      <div className="snap-start">
+        <GetConnected />
+      </div>
+
+      <div className="snap-start">
+        <Background />
+      </div>
+
+      <div className="snap-start">
+        <MediaSection />
+      </div>
+
+      <div className="snap-start">
+        <Footer />
+      </div>
     </div>
-  )
+  );
 }
