@@ -18,11 +18,10 @@ export const WelcomeSection: React.FC = () => {
         </div>
         <div className="flex flex-col items-center self-center mt-1 max-w-full text-base font-light leading-7 text-center text-zinc-800 w-full md:w-[880px] px-4 md:px-0">
           <p className="text-pretty">
-            RCCG Living Word Forney is a family of believers united in Christ, walking in love, peace, and faith as we
-            grow together in Him. It is a place of hope, strength, and encouragement where lives are transformed and
-            God&apos;s Word is our foundation. No matter who you are or where you come from, you are welcome to find
-            refuge, community, and purpose here. At Living Word Forney, we press toward Christlikeness and live in the
-            victory of faith. Welcome Home!
+            The Redeemed Christian Church of God, Living Word Forney (LWF) is the assembly of believers standing strong and standing together in Christ Jesus, imitating God as dear children, keeping the unity of the spirit in the bond of peace. 
+
+It is a place of hope for the hopeless, a place of refuge in times of trouble, a home for the needy and lonely, a shelter from the trouble storm, a school for the untaught. It is a place we are growing in the grace and knowledge of our Lord Jesus Christ and pressing towards the upward call of God unto Christlikeness. You are all welcome.
+
           </p>
         </div>
         <ReadStoryButton />

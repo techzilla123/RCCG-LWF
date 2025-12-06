@@ -7,31 +7,47 @@ import { ContentPanel } from "./ContentPanel"
 import { motion, AnimatePresence } from "framer-motion"
 
 export const MinistryTabs: React.FC = () => {
+  // CHILDREN
   const renderChildren = () => {
     return (
       <ContentPanel
         imageSrc="https://childrensministry.com/wp-content/upload/children/media/2014/04/How-to-Build-a-Childrens-Ministry-From-the-Ground-Up-1265x500.jpg"
-        title="Children's Ministry"
-        subtitle="Here for Moms, Dads & Kids"
-        description="We provide a fun, safe space for children to experience God's love through creative activities, storytelling, and worship."
-        fullDetails="Our Children's Ministry is designed to create a nurturing environment where children can grow in their faith. We offer age-appropriate lessons, engaging activities, and caring volunteers who are passionate about helping children discover God's love.\n\nWhat to expect:\n• Safe, clean, and welcoming environment\n• Trained and background-checked volunteers\n• Age-appropriate Bible lessons and activities\n• Fun worship songs and games\n• Snacks and refreshments\n\nWe believe that every child deserves to know they are loved by God, and our team is committed to making that happen!"
+        title="Children’s Ministry – God’s Heritage"
+        subtitle="Ages 1 - 12"
+        description="A joyful and nurturing place where children discover God’s love through engaging teachings and fun activities."
+        fullDetails={`The Children’s Ministry is a joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith.
+
+Our mission is to build a strong spiritual foundation through engaging Bible lessons, memory verses, quizzes, music, interactive activities, and age-appropriate teachings that inspire children to know Jesus personally.
+
+We believe every child is uniquely created with purpose, and we are committed to providing a safe, fun, and welcoming environment where they can learn, play, and thrive.
+
+Through passionate teachers and caregivers, we help children develop godly character, confidence, and a heart for others.
+
+Join us as we raise a generation of confident, compassionate, and Christ-centered children who shine brightly in their world.`}
         buttonText="Learn More"
         buttonColor="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-orange-500 hover:to-amber-500"
         showSchedule
         scheduleDay="Sundays"
-        scheduleTime="9 & 10:30 AM"
+        scheduleTime="9 AM & 10:30 AM"
       />
     )
   }
 
+  // YOUTH
   const renderYouth = () => {
     return (
       <ContentPanel
         imageSrc="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80"
-        title="Youth Ministry"
-        subtitle="Growing in Faith Together"
-        description="Our youth ministry provides a safe and fun environment where students can explore their faith, ask tough questions, and build meaningful friendships."
-        fullDetails="Our Youth Ministry engages middle and high school students in exciting lessons, small groups, and events that help them deepen their faith journey.\n\nWhat we offer:\n• Relevant Bible teaching\n• Small group discussions\n• Fun games and activities\n• Service projects\n• Special events and retreats\n• Leadership development\n\nWe meet every Sunday morning and Wednesday evening for youth group. Join us as we navigate faith, friendships, and the future together!"
+        title="Youth Ministry – Christ Ambassadors"
+        subtitle="Ages 13 - 17"
+        description="Empowering teenagers to grow spiritually, discover their identity, and walk boldly in God’s purpose."
+        fullDetails={`Our Youth Ministry is dedicated to raising Christ Ambassadors—guiding young people into a deeper relationship with Christ and helping them discover their identity, purpose, and God-given potential.
+
+Designed for ages 13–17, this ministry offers a vibrant, safe, and engaging environment where teenagers receive spiritual and mental transformation through The Holy Spirit.
+
+Through interactive Bible teachings, mentorship, worship, and practical life lessons, we equip youths to stand strong in their faith, make godly choices, and develop leadership skills.
+
+Here, every youth is valued, encouraged, and empowered to shine as a light in their world. Join us as we raise a generation passionate for Christ, grounded in truth, and bold in purpose.`}
         buttonText="Join Us"
         buttonColor="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-600 hover:to-blue-600"
         showSchedule
@@ -41,29 +57,45 @@ export const MinistryTabs: React.FC = () => {
     )
   }
 
-  const renderMen = () => {
+  // YOUNG ADULTS & SINGLES
+  const renderYoungAdults = () => {
     return (
       <ContentPanel
         imageSrc="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&q=80"
-        title="Men's Ministry"
-        description="Learn to follow Jesus deeply through mentorship, study, and spiritual discipline. Build meaningful relationships as you grow together in faith."
-        fullDetails="Our Men's Ministry is designed to help men grow in their relationship with Christ and become the spiritual leaders God has called them to be.\n\nWhat we focus on:\n• Biblical manhood and leadership\n• Accountability and brotherhood\n• Prayer and spiritual disciplines\n• Marriage and family guidance\n• Serving the church and community\n• Hands-on service opportunities\n\nJoin us as we challenge each other to live out our faith with courage and conviction. No matter where you are in your faith journey, there's a place for you here."
-        buttonText="Join Us"
-        buttonColor="bg-gradient-to-r from-cyan-900 to-blue-900 hover:from-blue-900 hover:to-cyan-900"
-        showSchedule
-        scheduleDay="Saturdays"
-        scheduleTime="7:00 AM"
+        title="Young Adult & Singles Ministry"
+        subtitle="Empowered for Purpose"
+        description="A vibrant community helping young adults build relationships, grow spiritually, and walk confidently in God’s purpose."
+        fullDetails={`The Young Adults & Singles Ministry empowers men and women to grow spiritually, build meaningful relationships, and walk confidently in God’s purpose.
+
+We provide a supportive environment for fellowship, mentorship, and personal development through purposeful gatherings, Bible studies, skill-building sessions, and outreach.
+
+Whether you’re a student, young professional, or exploring your path, this ministry helps you pursue Christ passionately while shining in your home, career, and community.
+
+This is a place to belong, grow, and thrive. Join us as we rise boldly in faith and impact our world for Christ.`}
+        buttonText="Get Connected"
+        buttonColor="bg-gradient-to-r from-purple-600 to-violet-700 hover:from-violet-700 hover:to-purple-600"
+        showSchedule={false}
       />
     )
   }
 
+  // WOMEN
   const renderWomen = () => {
     return (
       <ContentPanel
-        imageSrc="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80"
-        title="Women's Ministry"
-        description="Dive deep into God's Word with other women seeking to grow in faith and understanding. Connect through Bible study, prayer, and fellowship."
-        fullDetails="Our Women's Ministry provides a welcoming space for women to study Scripture together, share insights, and support one another in their spiritual journeys.\n\nWhat to expect:\n• In-depth Bible study\n• Small group discussions\n• Prayer and worship\n• Fellowship events and activities\n• Childcare available\n• Refreshments and community\n\nWhether you're new to Bible study or have been studying for years, you'll find encouragement and authentic Christian community here. Come as you are and discover the joy of growing together!"
+        imageSrc="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80"
+        title="Women’s Ministry – Women of Zion"
+        subtitle="Nurturing, Empowering, Uplifting"
+        description="A community where women grow spiritually, find support, and embrace their God-given purpose."
+        fullDetails={`The Women of Zion Ministry is dedicated to nurturing, empowering, and uplifting women in every stage of life.
+
+Through prayer, teachings, workshops, and outreach, we help women deepen their relationship with God while positively impacting their families and communities.
+
+Our ministry fosters a supportive environment where every woman can connect, grow, and thrive in faith.
+
+Whether through discipleship, service, or fellowship events, we equip women to reflect Christ’s love, strength, and wisdom in every area of life.
+
+Join us as we celebrate womanhood, build each other up, and make a lasting Kingdom impact.`}
         buttonText="Join Us"
         buttonColor="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-rose-600 hover:to-pink-600"
         showSchedule
@@ -73,14 +105,49 @@ export const MinistryTabs: React.FC = () => {
     )
   }
 
+  // MEN
+  const renderMen = () => {
+    return (
+      <ContentPanel
+        imageSrc="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80"
+        title="Men’s Ministry – Men of Valor"
+        subtitle="Strength • Integrity • Purpose"
+        description="Raising strong, spiritually grounded men who lead with courage, compassion, and Christlike character."
+        fullDetails={`The Men of Valor Ministry is dedicated to raising strong, spiritually grounded men who lead with integrity, courage, and compassion.
+
+We believe every man is called to be a pillar in his home, a servant in his church, and a light in his community.
+
+Through fellowship, prayer, mentorship, and practical empowerment, we help men grow in faith, character, and purpose.
+
+The ministry provides a supportive space where men are strengthened, encouraged, and equipped to face life’s challenges with God-given boldness.
+
+If you desire growth, connection, and meaningful impact, Men of Valor is your home. Join us as we rise to be the men God created us to be.`}
+        buttonText="Join Fellowship"
+        buttonColor="bg-gradient-to-r from-cyan-900 to-blue-900 hover:from-blue-900 hover:to-cyan-900"
+        showSchedule
+        scheduleDay="Saturdays"
+        scheduleTime="7:00 AM"
+      />
+    )
+  }
+
+  // WISE ONES (SENIORS)
   const renderWiseone = () => {
     return (
       <ContentPanel
-        imageSrc="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80"
-        title="Wiseone Ministry"
-        subtitle="Living with Purpose"
-        description="Connect with other seniors through regular fellowship gatherings, Bible studies, and meaningful conversations. Enjoy group trips, outings, and special events."
-        fullDetails="The Wiseone Ministry is a vibrant community of seniors who continue to grow in faith, serve others, and enjoy life together.\n\nWhat we offer:\n• Weekly Bible study and devotions\n• Fellowship meals and coffee times\n• Guest speakers and teaching\n• Prayer support and encouragement\n• Day trips and special outings\n• Support and care network\n• Intergenerational connections\n\nYour wisdom and experience are valued here. Come share your story, hear others, and join us for the next adventure - there's always room for one more!"
+        imageSrc="https://img.freepik.com/premium-photo/beautiful-people-concept-30s-mid-age-handsome-elderly-senior-model-man-with-grey-hair_585255-4362.jpg"
+        title="The Wise Ones Ministry"
+        subtitle="A Community of Wisdom & Grace"
+        description="A warm community of mature believers growing in faith, sharing wisdom, and supporting the church family."
+        fullDetails={`The Wise Ones Ministry is a vibrant community of mature men and women committed to growing in faith, sharing wisdom, and strengthening the church through their God-given gifts.
+
+We celebrate the beauty of spiritual maturity and the strength that comes from a life rooted in Christ.
+
+Through fellowship, discipleship, prayer, and service, the Wise Ones inspire younger generations and model steadfast devotion to God.
+
+Whether through teaching, mentoring, outreach, or prayer support, the Wise Ones Ministry stands as a pillar of wisdom, grace, and strength.
+
+Join us as we grow together, encourage one another, and shine with the enduring light of Christ.`}
         buttonText="Join Fellowship"
         buttonColor="bg-gradient-to-r from-teal-700 to-cyan-700 hover:from-cyan-700 hover:to-teal-700"
         showSchedule
@@ -90,6 +157,7 @@ export const MinistryTabs: React.FC = () => {
     )
   }
 
+  // Section wrapper
   const Section = React.memo(
     ({ title, accent, children }: { title: string; accent: string; children: ReactElement }) => (
       <motion.section
@@ -111,30 +179,34 @@ export const MinistryTabs: React.FC = () => {
           </div>
         </div>
       </motion.section>
-    ),
+    )
   )
 
   Section.displayName = "Section"
 
   return (
     <main className="flex flex-col gap-16 py-12 px-4 bg-gradient-to-b from-gray-50 to-white">
-      <Section title="Children" accent="bg-gradient-to-r from-amber-500 to-orange-500">
+      <Section title="Children's Ministry" accent="bg-gradient-to-r from-amber-500 to-orange-500">
         {renderChildren()}
       </Section>
 
-      <Section title="Youth" accent="bg-gradient-to-r from-blue-600 to-indigo-600">
+      <Section title="Youth Ministry" accent="bg-gradient-to-r from-blue-600 to-indigo-600">
         {renderYouth()}
       </Section>
 
-      <Section title="Men" accent="bg-gradient-to-r from-cyan-900 to-blue-900">
-        {renderMen()}
+      <Section title="Young Adults & Singles" accent="bg-gradient-to-r from-purple-600 to-violet-700">
+        {renderYoungAdults()}
       </Section>
 
-      <Section title="Women" accent="bg-gradient-to-r from-pink-600 to-rose-600">
+      <Section title="Women’s Ministry" accent="bg-gradient-to-r from-pink-600 to-rose-600">
         {renderWomen()}
       </Section>
 
-      <Section title="Wiseone" accent="bg-gradient-to-r from-teal-700 to-cyan-700">
+      <Section title="Men’s Ministry" accent="bg-gradient-to-r from-cyan-900 to-blue-900">
+        {renderMen()}
+      </Section>
+
+      <Section title="Wise Ones Ministry" accent="bg-gradient-to-r from-teal-700 to-cyan-700">
         {renderWiseone()}
       </Section>
     </main>

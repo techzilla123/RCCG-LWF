@@ -151,24 +151,45 @@ export default function PlanVisitPage() {
           {/* Service Times */}
           <Card className="shadow-lg">
             <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock className="w-6 h-6 text-blue-600" />
-                <h3 className="text-xl font-bold">Service Times</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                  <span className="font-semibold text-slate-700">Sunday Worship</span>
-                  <span className="text-slate-600">9:00 AM - 11:30 AM</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                  <span className="font-semibold text-slate-700">Bible Study</span>
-                  <span className="text-slate-600">Wednesday 7:00 PM</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="font-semibold text-slate-700">Prayer Meeting</span>
-                  <span className="text-slate-600">Friday 6:00 PM</span>
-                </div>
-              </div>
+             <div className="flex items-center gap-3 mb-4">
+  <Clock className="w-6 h-6 text-blue-600" />
+  <h3 className="text-xl font-bold">Service Times</h3>
+</div>
+
+<div className="space-y-3">
+
+  {/* Sunday Worship */}
+  <div className="flex justify-between items-center py-2 border-b border-slate-200">
+    <span className="font-semibold text-slate-700">Sunday Worship</span>
+    <span className="text-slate-600">9:00 AM - 12:00 PM CST</span>
+  </div>
+
+  {/* Bible Study */}
+  <div className="flex justify-between items-center py-2 border-b border-slate-200">
+    <span className="font-semibold text-slate-700">Bible Study</span>
+    <span className="text-slate-600">Every Wednesday - 7:00 PM</span>
+  </div>
+
+  {/* Commanding the Morning Prayer */}
+  <div className="flex justify-between items-center py-2 border-b border-slate-200">
+    <span className="font-semibold text-slate-700">Commanding the Morning Prayer</span>
+    <span className="text-slate-600">12:00 AM - 12:30 AM</span>
+  </div>
+
+  {/* Online Prayer (Sundays–Thursdays) */}
+  <div className="flex justify-between items-center py-2 border-b border-slate-200">
+    <span className="font-semibold text-slate-700">Online Prayer</span>
+    <span className="text-slate-600">Sun–Thu • 12:00 AM - 12:30 AM</span>
+  </div>
+
+  {/* Prayer Line */}
+  <div className="flex justify-between items-center py-2">
+    <span className="font-semibold text-slate-700">Prayer Line</span>
+    <span className="text-slate-600">469-447-9993</span>
+  </div>
+
+</div>
+
             </CardContent>
           </Card>
 
@@ -184,8 +205,8 @@ export default function PlanVisitPage() {
                   <Phone className="w-5 h-5 text-slate-600 mt-1" />
                   <div>
                     <p className="font-semibold text-slate-700">Phone</p>
-                    <a href="tel:+1234567890" className="text-blue-600 hover:underline">
-                      (123) 456-7890
+                    <a href="tel:+469 447 9993" className="text-blue-600 hover:underline">
+                      469 447 9993
                     </a>
                   </div>
                 </div>
@@ -194,7 +215,7 @@ export default function PlanVisitPage() {
                   <div>
                     <p className="font-semibold text-slate-700">Email</p>
                     <a href="mailto:info@rccglwf.org" className="text-blue-600 hover:underline">
-                      info@rccglwf.org
+                       info@rccglivingwordforney.org
                     </a>
                   </div>
                 </div>

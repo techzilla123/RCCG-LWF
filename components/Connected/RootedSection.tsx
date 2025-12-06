@@ -22,11 +22,8 @@ export const RootedSection: React.FC = () => {
         </header>
         <div className="flex relative flex-col items-start self-stretch pb-4">
           <p className="relative self-stretch text-base font-light leading-6 text-zinc-800 max-sm:text-sm max-sm:leading-5">
-            Beliver&apos;s Class is a 10-week discipleship experience that helps you grow
-            closer to God, build meaningful relationships and discover the
-            purpose He has for your life. Beliver&apos;s Class guides you to practice the
-            seven rhythms of following Jesus to transform your faith from
-            something you know into something you live out every day.
+           The Believer’s Class is designed to strengthen your faith, deepen your understanding of God’s Word, and equip you for victorious Christian living. Through teaching, discussion, and fellowship, members grow in knowledge, wisdom, and spiritual maturity, building a firm foundation to walk confidently in Christ every day.
+
           </p>
         </div>
         <div className="flex relative flex-col items-end self-stretch">

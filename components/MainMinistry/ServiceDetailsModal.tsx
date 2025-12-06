@@ -1,20 +1,26 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
 interface ServiceDetailsModalProps {
-  isOpen: boolean
+  isOpen: boolean;
   service: {
-    title: string
-    imageSrc: string
-    description: string
-  } | null
-  onClose: () => void
-  onJoin: () => void
+    title: string;
+    imageSrc: string;
+    description: string;
+    fullDescription: string;
+  } | null;
+  onClose: () => void;
+  onJoin: () => void;
 }
 
-export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ isOpen, service, onClose, onJoin }) => {
-  if (!isOpen || !service) return null
+export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
+  isOpen,
+  service,
+  onClose,
+  onJoin,
+}) => {
+  if (!isOpen || !service) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -37,7 +43,11 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ isOpen
 
         <div className="p-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">{service.title}</h2>
-          <p className="text-lg text-gray-700 leading-relaxed mb-8">{service.description}</p>
+
+          {/* Full description here */}
+          <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8">
+            {service.fullDescription}
+          </p>
 
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
             <h3 className="text-xl font-semibold text-gray-900 mb-3">What You&apos;ll Do</h3>
@@ -78,5 +88,5 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ isOpen
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -16,14 +16,15 @@ export const HeroSection: React.FC = () => {
           ABOUT US
         </p>
         <h1
-          className={`${adlam.className} mb-6 font-bold leading-tight text-white 
-          text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[55px]`}
-        >
-          Our mission is to guide people to live fully devoted to Christ.
-        </h1>
+  className={`${adlam.className} mb-6 font-bold leading-tight text-white
+  text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[40px]`}
+>
+  Our Mission is to preach the gospel of reconciliation through the
+  sacrifice of our Lord Jesus Christ — 2 Corinthians 5:17–21.
+</h1>
+
         <p className="text-lg leading-relaxed text-gray-300 max-md:text-base max-sm:text-sm">
-          That&apos;s how we&apos;re able to make a difference. And it&apos;s the driving
-          force behind everything we do.
+          To build word practitioners that will become examples of believers in word, conversation, charity, spirit, and purity. — James 1:22, 1 Timothy 4:12
         </p>
       </div>
     </section>

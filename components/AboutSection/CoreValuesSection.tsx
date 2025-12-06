@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 
 export const CoreValuesSection: React.FC = () => {
   const values = [
-    "R – Respect and Honor to God and His people. – 1st Samuel 2:30, Hebrews 12:28–29",
-    "E – Excellence: doing things with excellence to His glory. – 2nd Peter 1:3, Colossians 3:23",
-    "S – Stewardship: Accountability and faithfulness to God. – 1st Corinthians 4:1–2",
-    "P – Purity: Loving what God loves and hating what God hates. – Hebrews 1:9, Proverbs 22:11",
+    "R – Respect and Honor – 1st Samuel 2:30, Hebrews 12:28–29",
+    "E – Excellence:  – 2nd Peter 1:3, Colossians 3:23",
+    "S – Stewardship – 1st Corinthians 4:1–2",
+    "P – Purity – Hebrews 1:9, Proverbs 22:11",
     "E – Example of believers. – 1st Timothy 4:12",
-    "C – Compassion: Showing compassion, mercy, and bearing with one another. – Colossians 3:12",
-    "T – Trust: Our trust is only in God. – Psalm 20:7; 60:12",
-    "G – God: All the glory belongs to God alone. – Ephesians 3:21",
+    "C – Compassion – Colossians 3:12",
+    "T – Trust – Psalm 20:7; 60:12",
+    "G – God – Ephesians 3:21",
   ];
 
   // For modal

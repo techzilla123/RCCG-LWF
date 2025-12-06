@@ -18,41 +18,49 @@ interface MinistryData {
 
 const ministries: MinistryData[] = [
   {
-    title: "Children's Ministry",
+    title: "Children’s Ministry – God’s Heritage (Ages 1 - 12)",
     description:
-      "Our kids ministry exists to help kids come to know Jesus as their Lord and Savior. We believe that if the church and family work together, a child has the best chance of growing to know, love and follow Jesus. This is a place where kids birth – grade 5 can explore God's Word and experience His love each week.",
+      "A joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith. We build strong spiritual foundations through Bible lessons, memory verses, quizzes, music, and fun activities—all in a safe, welcoming environment.",
     image:
       "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
-    title: "Youth Ministry",
+    title: "Youth Ministry – Christ Ambassadors (Ages 13 - 17)",
     description:
-      "Our youth ministry is dedicated to empowering young people to grow in their faith, develop strong character, and become leaders in their communities. Through engaging activities, meaningful mentorship, and spiritual growth opportunities, we help teenagers discover their purpose in Christ and build lasting relationships with peers who share their values.",
+      "Dedicated to raising Christ Ambassadors by guiding teenagers into deeper relationship with Christ. Through interactive teachings, mentorship, worship, and life-building sessions, we help youths discover identity, purpose, and God-given potential.",
     image:
       "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
-    title: "Men's Ministry",
+    title: "Young Adult & Singles Ministry",
     description:
-      "The men's ministry provides a supportive environment for men to deepen their faith, build meaningful friendships, and grow as spiritual leaders in their families and communities. We focus on practical Bible study, accountability partnerships, and service opportunities that help men live out their faith with purpose and integrity.",
+      "A vibrant community that empowers young adults to grow spiritually, build meaningful relationships, and walk confidently in God’s purpose. Through fellowship, mentorship, Bible studies, and skill-building sessions, we equip young people to lead boldly in faith and influence their world for Christ.",
     image:
       "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
-    title: "Women's Ministry",
+    title: "Women’s Ministry – Women of Zion",
     description:
-      "Our women's ministry creates a welcoming community where women of all ages can connect, grow spiritually, and encourage one another. Through Bible studies, prayer groups, and fellowship events, we celebrate God's love and support each other as we navigate life's seasons with faith, hope, and sisterhood.",
+      "A community dedicated to nurturing, empowering, and uplifting women in all life stages. Through prayer, teaching, fellowship, and outreach, we help women grow spiritually, embrace their God-given purpose, and positively impact their families and communities.",
     image:
       "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
-    title: "Wisdom Ministry",
+    title: "Men’s Ministry – Men of Valor",
     description:
-      "The wisdom ministry honors and celebrates mature believers who possess years of spiritual experience and biblical knowledge. We provide platforms for mentorship, intergenerational learning, and opportunities for seasoned saints to share their wisdom and guide younger believers in their journey of faith and discipleship.",
+      "Focused on raising strong, spiritually grounded men who lead with integrity and courage. Through prayer, mentorship, fellowship, and practical empowerment, we equip men to grow in faith, character, and purpose while serving their homes, church, and community.",
     image:
       "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
-]
+  {
+    title: "The Wise Ones Ministry",
+    description:
+      "A vibrant community of mature believers committed to growing in faith, sharing wisdom, and strengthening the church. Through fellowship, discipleship, prayer, and service, the Wise Ones inspire younger generations and continue making meaningful Kingdom impact.",
+    image:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+  },
+];
+
 
 export default function MinistryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)

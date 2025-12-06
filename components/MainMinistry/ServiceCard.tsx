@@ -4,32 +4,49 @@ import type React from "react"
 import { Button } from "./Button"
 
 export interface ServiceCardProps {
-  title?: string
+  title: string
   imageSrc: string
   description: string
-  onLearnMore?: (service: { title?: string; imageSrc: string; description: string }) => void
+  fullDescription?: string
+  onLearnMore?: (service: {
+    title: string
+    imageSrc: string
+    description: string
+    fullDescription?: string
+  }) => void
 }
 
 export const ServiceCard: React.FC<ServiceCardProps> = ({
   title,
   imageSrc,
   description,
-  onLearnMore,
+  fullDescription,
+  onLearnMore
 }) => {
   const handleLearnMore = () => {
-    onLearnMore?.({ title, imageSrc, description })
+    onLearnMore?.({
+      title,
+      imageSrc,
+      description,
+      fullDescription
+    })
   }
 
   return (
-    <article className="flex flex-col items-start bg-white rounded-2xl overflow-hidden shadow-sm transition hover:shadow-md duration-300">
+    <article className="flex flex-col items-start bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition duration-300">
       <img
-        src={imageSrc || "/placeholder.svg"}
-        alt={title}
+        src={imageSrc}
+        alt={title || "Ministry image"}
         className="w-full object-cover aspect-[1.6/1] rounded-t-2xl"
       />
+
       <div className="flex flex-col gap-4 p-6">
-        {title && <h3 className="text-2xl font-semibold text-gray-900">{title}</h3>}
-        <p className="text-gray-700 leading-relaxed text-base">{description}</p>
+        <h3 className="text-2xl font-semibold text-gray-900">{title}</h3>
+
+        <p className="text-gray-700 leading-relaxed text-base">
+          {description}
+        </p>
+
         <Button
           variant="outline"
           className="mt-4 self-start bg-transparent"
