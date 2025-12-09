@@ -20,7 +20,7 @@ export const HeroSection: React.FC = () => {
   text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[40px]`}
 >
   Our Mission is to preach the gospel of reconciliation through the
-  sacrifice of our Lord Jesus Christ — 2 Corinthians 5:17–21.
+  sacrifice of our Lord Jesus Christ — 2 Cor. 5:17-21.
 </h1>
 
         <p className="text-lg leading-relaxed text-gray-300 max-md:text-base max-sm:text-sm">
