@@ -18,7 +18,7 @@ export const VisionMissionSection: React.FC = () => {
         </p>
         <p className="text-lg leading-relaxed">
           Our Mission is to preach the gospel of reconciliation through the
-          sacrifice of our Lord Jesus Christ — 2 Corinthians 5:17–21
+          sacrifice of our Lord Jesus Christ — 2 Cor. 5:17-21
         </p>
 
         <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition">
