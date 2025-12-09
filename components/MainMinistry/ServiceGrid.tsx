@@ -4,7 +4,7 @@ import type React from "react"
 import { ServiceCard } from "./ServiceCard"
 
 //
-// Define the structure for each service item
+// MAIN AND ONLY Service INTERFACE (exported for use everywhere else)
 //
 export interface Service {
   title: string
@@ -14,12 +14,13 @@ export interface Service {
 }
 
 //
-// Your array of services
+// Services Data (unchanged, corrected formatting)
 //
 export const services: Service[] = [
   {
     title: "Media Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/dc511c6bfdf25e19d833a03ab67e6e1d2ecfdfea?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/dc511c6bfdf25e19d833a03ab67e6e1d2ecfdfea?placeholderIfAbsent=true",
     description:
       "Handles cameras, livestream, sound, lighting, graphics and digital content.",
     fullDescription: `
@@ -35,7 +36,8 @@ If you love creativity, technology, storytelling, or digital ministry, this is y
 
   {
     title: "Choir Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/d879e72a968fa8bf5b145e8030c5568dd03735d2?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/d879e72a968fa8bf5b145e8030c5568dd03735d2?placeholderIfAbsent=true",
     description:
       "Leads the congregation in worship, praise, musical excellence and spiritual atmosphere.",
     fullDescription: `
@@ -49,7 +51,8 @@ Anyone with a passion for singing, music, or worship can join and grow.
 
   {
     title: "Ushering Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4cea52f5b9c03ab2dd5588790c0fc980f9a87c5a?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4cea52f5b9c03ab2dd5588790c0fc980f9a87c5a?placeholderIfAbsent=true",
     description:
       "Maintains order, welcomes members, manages seating, and assists during services.",
     fullDescription: `
@@ -63,7 +66,8 @@ If you enjoy serving people with a smile, this ministry is for you.
 
   {
     title: "Sanitation Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/b071b765fa90104b0d85abfe1cdc971d4fa2b216?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/b071b765fa90104b0d85abfe1cdc971d4fa2b216?placeholderIfAbsent=true",
     description:
       "Keeps the church clean, neat, hygienic, and welcoming for all members.",
     fullDescription: `
@@ -77,7 +81,8 @@ If you enjoy hands-on service and stewardship, this ministry welcomes you.
 
   {
     title: "Drama Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/a1f6d5e3c763fcf38c0118d332db114f9972244f?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/a1f6d5e3c763fcf38c0118d332db114f9972244f?placeholderIfAbsent=true",
     description:
       "Presents gospel-centered dramas, skits, stage plays, and visual storytelling.",
     fullDescription: `
@@ -91,7 +96,8 @@ If you enjoy acting, creativity, or stage performance, this team is perfect for 
 
   {
     title: "Evangelism Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4a4a1be1d2ebebafb2b7fd47504757bf3a508020?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4a4a1be1d2ebebafb2b7fd47504757bf3a508020?placeholderIfAbsent=true",
     description:
       "Preaches the Gospel through outreach, follow-up, missions, and soul-winning.",
     fullDescription: `
@@ -107,7 +113,8 @@ If you have a burning passion to share the Gospel, this ministry is for you.
 
   {
     title: "Welfare Ministry",
-    imageSrc: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/f78cf50f6f2266c8c93e0cd7b2f0e5aaf32f0e97?placeholderIfAbsent=true",
+    imageSrc:
+      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/f78cf50f6f2266c8c93e0cd7b2f0e5aaf32f0e97?placeholderIfAbsent=true",
     description:
       "Provides care, support, community aid, and help for members in need.",
     fullDescription: `
@@ -117,34 +124,18 @@ The ministry ensures that no member feels alone or unsupported. They serve with 
 
 If you love helping people and offering emotional or practical support, this team is for you.
 `
-  },
-
-//   {
-//     title: "Living Word Service Ministries",
-//     imageSrc: "/ministries/service.png",
-//     description:
-//       "A dedicated support unit assisting all other ministries and strengthening church operations.",
-//     fullDescription: `
-// The Living Word Service Ministries is a family of dedicated believers committed to supporting every department of the church and expanding the reach of God’s Kingdom.
-
-// We provide support in logistics, planning, administration, coordination, event setup, and general church operations. This ministry works quietly behind the scenes, ensuring excellence in every service and activity.
-
-// Our mission is to serve with humility, diligence, and excellence—helping to build a loving, organized, and spiritually vibrant church community.
-
-// Anyone who wants to serve God practically and support the entire church body is welcome.
-// `
-//   }
+  }
 ]
 
 //
-// Props for the ServiceGrid component
+// Props for ServiceGrid
 //
 interface ServiceGridProps {
   onLearnMore?: (service: Service) => void
 }
 
 //
-// The main component
+// The Component
 //
 export const ServiceGrid: React.FC<ServiceGridProps> = ({ onLearnMore }) => {
   return (
