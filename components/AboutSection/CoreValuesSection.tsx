@@ -70,7 +70,7 @@ export const CoreValuesSection: React.FC = () => {
             transition={{ duration: 0.2 }}
             className="bg-white rounded-xl p-6 max-w-lg w-[90%] text-center shadow-xl"
           >
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Core Value</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Core Value</h3>
 
             <p className="text-gray-800 text-lg leading-relaxed">
               {selectedValue}
