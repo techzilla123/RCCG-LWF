@@ -15,20 +15,20 @@ export const MovementSection: React.FC = () => {
     {
       imageSrc:
         "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/fe38e62631452c89cffcda70260ca3aa0d074dd7?placeholderIfAbsent=true",
-      title: "KNOW",
+      title: "ENCOUNTER",
       subtitle: "GOD",
     },
     {
       imageSrc:
         "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4809d0c5d68a8d39753e8997f200d6d5308e1d08?placeholderIfAbsent=true",
-      title: "FIND",
+      title: "EXPERIENCE",
       subtitle: "FREEDOM",
     },
     {
       imageSrc:
         "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/d8f38c6221f819ced14bc67928c8a189301bba41?placeholderIfAbsent=true",
       title: "DISCOVER",
-      subtitle: "CALLING",
+      subtitle: "PURPOSE",
     },
     {
       imageSrc:
