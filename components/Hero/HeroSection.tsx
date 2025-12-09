@@ -37,7 +37,7 @@ export const HeroSection = () => {
           text-[28px] sm:text-[40px] md:text-[55px]`}
         >
           <span>A </span>
-          <span className="font-bold">MOVEMENT</span>
+          <span className="font-bold">MISSION</span>
           <br />
           <span>FOR ALL PEOPLE TO</span>
         </h1>
