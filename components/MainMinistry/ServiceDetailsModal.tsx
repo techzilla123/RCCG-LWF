@@ -1,17 +1,13 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
+import type { Service } from "./ServiceGrid"   // <-- IMPORTANT FIX
 
 interface ServiceDetailsModalProps {
-  isOpen: boolean;
-  service: {
-    title: string;
-    imageSrc: string;
-    description: string;
-    fullDescription: string;
-  } | null;
-  onClose: () => void;
-  onJoin: () => void;
+  isOpen: boolean
+  service: Service | null   // <-- Use the real Service interface
+  onClose: () => void
+  onJoin: () => void
 }
 
 export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
@@ -20,7 +16,7 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
   onClose,
   onJoin,
 }) => {
-  if (!isOpen || !service) return null;
+  if (!isOpen || !service) return null
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -44,7 +40,6 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
         <div className="p-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">{service.title}</h2>
 
-          {/* Full description here */}
           <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-line mb-8">
             {service.fullDescription}
           </p>
@@ -88,5 +83,5 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
