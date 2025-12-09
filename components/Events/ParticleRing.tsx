@@ -1,82 +1,75 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-// Generate points in a ring
-const createPoints = (count: number, radius: number) => {
-  const colors = ["#ff7eb3", "#7afcff", "#e7ff7a", "#ffcb7a", "#d17aff"];
-  return Array.from({ length: count }).map((_, idx) => {
-    const angle = (idx / count) * Math.PI * 2;
-    return {
-      idx,
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-      color: colors[idx % colors.length],
-    };
-  });
+const SNOW_COUNT = 120;
+
+const createSnow = () => {
+  return Array.from({ length: SNOW_COUNT }).map((_, i) => ({
+    id: i,
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * -window.innerHeight,
+    size: Math.random() * 4 + 2,
+    speed: Math.random() * 0.7 + 0.3,
+    drift: Math.random() * 1 - 0.5,
+    opacity: Math.random() * 0.6 + 0.4,
+  }));
 };
 
-const pointsInner = createPoints(40, 100); // pixels
-const pointsOuter = createPoints(60, 160);
-
 const ParticleRing = () => {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const snowRef = useRef<HTMLDivElement>(null);
+  const snowflakes = useRef(createSnow());
 
-  // Animate rotation
   useEffect(() => {
-    let animationFrame: number;
     const animate = () => {
-      setRotation((prev) => ({
-        x: prev.x + 0.01 + mouse.y * 0.05,
-        y: prev.y + 0.02 + mouse.x * 0.05,
-      }));
-      animationFrame = requestAnimationFrame(animate);
+      const container = snowRef.current;
+      if (!container) return;
+
+      const children = container.children;
+
+      snowflakes.current.forEach((flake, i) => {
+        flake.y += flake.speed;
+        flake.x += flake.drift;
+
+        if (flake.y > window.innerHeight) {
+          flake.y = -10;
+          flake.x = Math.random() * window.innerWidth;
+        }
+
+        const el = children[i] as HTMLElement;
+        el.style.transform = `translate3d(${flake.x}px, ${flake.y}px, 0)`;
+      });
+
+      requestAnimationFrame(animate);
     };
+
     animate();
-    return () => cancelAnimationFrame(animationFrame);
-  }, [mouse]);
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-[80vh] flex items-center justify-center bg-black overflow-hidden"
-      onMouseMove={(e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        setMouse({ x, y });
-      }}
-    >
+    <div className="relative w-full h-[80vh] bg-black overflow-hidden flex items-center justify-center">
+      
+      {/* Snowfall container */}
       <div
-        className="absolute w-full h-full"
-        style={{
-          transform: `rotateX(${rotation.x}rad) rotateY(${rotation.y}rad)`,
-          transformStyle: "preserve-3d",
-        }}
+        ref={snowRef}
+        className="absolute inset-0 pointer-events-none"
+        style={{ transformStyle: "preserve-3d", willChange: "transform" }}
       >
-        {pointsInner.map((p) => (
+        {snowflakes.current.map((flake) => (
           <div
-            key={`inner-${p.idx}`}
-            className="absolute w-3 h-3 rounded-full"
+            key={flake.id}
+            className="absolute rounded-full bg-white"
             style={{
-              backgroundColor: p.color,
-              transform: `translate3d(${p.x}px, ${p.y}px, 0px)`,
-            }}
-          />
-        ))}
-        {pointsOuter.map((p) => (
-          <div
-            key={`outer-${p.idx}`}
-            className="absolute w-2 h-2 rounded-full"
-            style={{
-              backgroundColor: p.color,
-              transform: `translate3d(${p.x}px, ${p.y}px, 0px)`,
+              width: flake.size,
+              height: flake.size,
+              opacity: flake.opacity,
+              filter: "blur(1px)",
+              transform: `translate3d(${flake.x}px, ${flake.y}px, 0)`,
             }}
           />
         ))}
       </div>
 
-      <h1 className="absolute text-white font-bold text-3xl md:text-5xl pointer-events-none text-center">
+      <h1 className="absolute text-white font-bold text-3xl md:text-5xl text-center pointer-events-none drop-shadow-xl">
         Welcome Here!
       </h1>
     </div>

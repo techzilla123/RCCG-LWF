@@ -9,6 +9,7 @@ export const MovementSection: React.FC = () => {
   const scrollRef = React.useRef(0);
   const animatedYRef = React.useRef(0);
   const sectionRef = React.useRef<HTMLDivElement>(null);
+  const placeholderRef = React.useRef<HTMLDivElement>(null);
 
   const movementCards = [
     {
@@ -37,27 +38,33 @@ export const MovementSection: React.FC = () => {
     },
   ];
 
-  // Smooth scroll effect with easing
+  // Smooth, GPU-accelerated scroll animation
   React.useEffect(() => {
+    let rafId: number;
+
     const handleScroll = () => {
       scrollRef.current = window.scrollY;
     };
 
     const animate = () => {
-      // Ease animation
-      animatedYRef.current += (scrollRef.current - animatedYRef.current) * 0.1;
+      // Smooth easing
+      animatedYRef.current += (scrollRef.current - animatedYRef.current) * 0.08;
 
       if (sectionRef.current) {
-        sectionRef.current.style.transform = `translateY(${animatedYRef.current * 0.3}px)`;
+        sectionRef.current.style.transform = `translate3d(0, ${animatedYRef.current * 0.2}px, 0)`;
+        sectionRef.current.style.willChange = "transform";
       }
 
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
 
     window.addEventListener("scroll", handleScroll);
-    requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Auto-rotate carousel on mobile
@@ -72,40 +79,20 @@ export const MovementSection: React.FC = () => {
     <main className="rounded-none bg-white relative">
       <HeroSection />
 
-      <section
-        ref={sectionRef}
-        className="relative flex flex-col items-center px-5 md:px-10 lg:px-20 pb-5 w-full bg-white max-w-[1600px] mx-auto"
-      >
-        <div className="w-full max-w-[1080px]">
+      <div ref={placeholderRef}></div> {/* Keeps layout space */}
+
+      <section className="relative flex flex-col items-center px-5 md:px-10 lg:px-20 pb-5 w-full bg-white max-w-[1600px] mx-auto">
+        <div ref={sectionRef} className="will-change-transform w-full max-w-[1080px]">
           {/* Desktop cards */}
           <div className="hidden md:flex flex-wrap gap-6 lg:gap-8 items-start -mt-12 pb-7 text-3xl font-semibold leading-8 text-white uppercase">
             {movementCards.map((card, index) => (
-              <div
+              <MovementCard
                 key={index}
-                style={{
-                  animation: `slideUp 0.8s ease-out ${index * 0.15}s both`,
-                  opacity: 0,
-                }}
-              >
-                <style>{`
-                  @keyframes slideUp {
-                    from {
-                      opacity: 0;
-                      transform: translateY(40px);
-                    }
-                    to {
-                      opacity: 1;
-                      transform: translateY(0);
-                    }
-                  }
-                `}</style>
-                <MovementCard
-                  imageSrc={card.imageSrc}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  index={index}
-                />
-              </div>
+                imageSrc={card.imageSrc}
+                title={card.title}
+                subtitle={card.subtitle}
+                index={index}
+              />
             ))}
           </div>
 
