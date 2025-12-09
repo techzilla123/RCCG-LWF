@@ -28,7 +28,7 @@ export const MovementSection: React.FC = () => {
       imageSrc:
         "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/d8f38c6221f819ced14bc67928c8a189301bba41?placeholderIfAbsent=true",
       title: "DISCOVER",
-      subtitle: "PURPOSE",
+      subtitle: "IMPACT",
     },
     {
       imageSrc:
