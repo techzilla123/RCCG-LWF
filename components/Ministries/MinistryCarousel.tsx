@@ -22,7 +22,7 @@ const ministries: MinistryData[] = [
     description:
       "A joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith. We build strong spiritual foundations through Bible lessons, memory verses, quizzes, music, and fun activities—all in a safe, welcoming environment.",
     image:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+      "/Aaa.jpg",
   },
   {
     title: "Youth Ministry – Christ Ambassadors (Ages 13 - 17)",
@@ -128,17 +128,36 @@ export default function MinistryCarousel() {
     </article>
   )
 
-  const MinistryImage = () => (
-    <div className="flex-1 shrink basis-0 min-h-px min-w-60 max-md:max-w-full">
-      <div className="w-full max-md:max-w-full">
+ const MinistryImage = () => (
+  <div className="flex-1 shrink basis-0 min-h-px min-w-60 max-md:max-w-full">
+    <div className="relative flex justify-center w-full">
+
+      {/* IMAGE WITH BORDER THAT MATCHES THE EXACT DESIGN */}
+      <div
+        className="relative"
+        style={{
+          width: "500px",
+          height: "320px",
+          clipPath:
+            "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
+          border: "6px solid #2ea4b8",
+        }}
+      >
         <img
           src={currentMinistry.image || "/placeholder.svg"}
           alt={currentMinistry.title}
-          className="object-contain max-w-full aspect-[0.95] w-[524px]"
+          className="object-cover w-full h-full"
+          style={{
+            clipPath:
+              "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
+          }}
         />
       </div>
     </div>
-  )
+  </div>
+);
+
+
 
   return (
     <section className="flex flex-col items-center w-full bg-white rounded-none max-md:py-24">
