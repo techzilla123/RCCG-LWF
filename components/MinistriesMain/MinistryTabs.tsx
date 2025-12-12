@@ -99,8 +99,8 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
         buttonText="Join Us"
         buttonColor="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-rose-600 hover:to-pink-600"
         showSchedule
-        scheduleDay="Thursdays"
-        scheduleTime="10:00 AM"
+        scheduleDay="Every Friday"
+        scheduleTime="6pm - 6:30pm (ONLINE)"
       />
     )
   }
@@ -125,8 +125,8 @@ If you desire growth, connection, and meaningful impact, Men of Valor is your ho
         buttonText="Join Fellowship"
         buttonColor="bg-gradient-to-r from-cyan-900 to-blue-900 hover:from-blue-900 hover:to-cyan-900"
         showSchedule
-        scheduleDay="Saturdays"
-        scheduleTime="7:00 AM"
+        scheduleDay="Every 2nd Sundays"
+        scheduleTime="12pm"
       />
     )
   }
