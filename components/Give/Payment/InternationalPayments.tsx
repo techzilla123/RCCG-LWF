@@ -3,11 +3,31 @@ import CurrencyAccount from "./CurrencyAccount"
 
 const InternationalPayments: React.FC = () => {
   const currencyAccounts = [
-    { symbol: "$", label: "($) USD Account:", accountNumber: "770751110" },
-   { symbol: "🏦", label: "Routing Number (Direct Deposit & ACH):", accountNumber: "111000614" },
-{ symbol: "💳", label: "Routing Number (Wire Transfers):", accountNumber: "021000021" },
+  { symbol: "$", label: "($) USD Account:", accountNumber: "770751110" },
 
-  ]
+  { 
+    symbol: "🏦",
+    label: (
+      <>
+        Routing Number <br />
+        (Direct Deposit & ACH):
+      </>
+    ),
+    accountNumber: "111000614"
+  },
+
+  { 
+    symbol: "💳",
+    label: (
+      <>
+        Routing Number <br />
+        (Wire Transfers):
+      </>
+    ),
+    accountNumber: "021000021"
+  },
+]
+
 
   return (
     <section className="flex flex-col gap-6 p-8 bg-sky-800 rounded-3xl w-full h-auto max-md:p-6">

@@ -26,7 +26,7 @@ function GivingHero() {
       </h1>
 
       <HeroDescription>
-        We believe in the power of generosity! Here at The Elevation Church,
+        We believe in the power of generosity! Here at RCCG Living Word Forney,
         tithing and offering are joyful ways to show our appreciation for God&apos;s
         blessings in our lives. Explore the different ways you can contribute
         below.

@@ -34,7 +34,7 @@ const WhyGive: React.FC = () => {
       <div className="max-w-6xl mx-auto text-center md:text-left mb-12">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">WHY GIVE?</h2>
         <p className="text-base md:text-lg max-w-xl mx-auto md:mx-0 text-gray-200">
-          Discover why giving at RCCG Living Word Parley is an act of worship, a
+          Discover why giving at RCCG Living Word Forney is an act of worship, a
           step of faith, and a way to impact lives for God’s kingdom.
         </p>
       </div>
