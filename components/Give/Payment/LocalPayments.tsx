@@ -16,7 +16,7 @@ const LocalPayments: React.FC = () => {
       { label: "Email:", value: "livingwordforney@gmail.com" },
     ],
     qrCode:
-      "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=livingwordforney@gmail.com",
+       "/barcode-zele.jpg",
   },
   {
     logo:

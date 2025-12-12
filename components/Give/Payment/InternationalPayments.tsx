@@ -3,9 +3,9 @@ import CurrencyAccount from "./CurrencyAccount"
 
 const InternationalPayments: React.FC = () => {
   const currencyAccounts = [
-    { symbol: "$", label: "($) USD Account:", accountNumber: "0019827709" },
-   { symbol: "🏦", label: "Chase Bank Routing Number:", accountNumber: "021000021" },
-{ symbol: "💳", label: "Chase Bank SWIFT Code:", accountNumber: "CHASUS33" },
+    { symbol: "$", label: "($) USD Account:", accountNumber: "770751110" },
+   { symbol: "🏦", label: "Routing Number (Direct Deposit & ACH):", accountNumber: "111000614" },
+{ symbol: "💳", label: "Routing Number (Wire Transfers):", accountNumber: "021000021" },
 
   ]
 
@@ -15,7 +15,7 @@ const InternationalPayments: React.FC = () => {
 
       <div className="flex flex-wrap justify-between items-center gap-6">
         <div>
-          <h3 className="text-xl font-bold text-white">Swift Code:</h3>
+          <h3 className="text-xl font-bold text-white">Bank:</h3>
           <p className="text-3xl font-bold text-white">CHASE BANK</p>
         </div>
         <img
