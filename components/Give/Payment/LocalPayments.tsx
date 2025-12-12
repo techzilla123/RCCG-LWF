@@ -29,7 +29,7 @@ const LocalPayments: React.FC = () => {
       { label: "Cash Tag:", value: "$RCCGLWF" },
     ],
     qrCode:
-      "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%24RCCGLWF",
+      "/cashapp.svg",
   },
     {
       logo: "https://cdn-icons-png.flaticon.com/512/2867/2867634.png",
