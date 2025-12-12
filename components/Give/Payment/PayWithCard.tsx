@@ -1,54 +1,111 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import Script from "next/script";
+
+//
+// 1️⃣ Define Fully Typed PayPal Interfaces
+//
+interface PayPalPurchaseUnit {
+  amount: { value: string };
+  description: string;
+}
+
+interface PayPalOrderCreateRequest {
+  purchase_units: PayPalPurchaseUnit[];
+}
+
+interface PayPalActions {
+  order: {
+    create: (data: PayPalOrderCreateRequest) => Promise<string>;
+    capture: () => Promise<PayPalCaptureResult>;
+  };
+}
+
+interface PayPalCaptureResult {
+  id?: string;
+  status?: string;
+  payer?: {
+    name?: { given_name?: string; surname?: string };
+    email_address?: string;
+  };
+}
+
+interface PayPalButtonsRender {
+  render: (element: HTMLElement | null) => void;
+}
+
+interface PayPalButtonsConfig {
+  createOrder: (data: {}, actions: PayPalActions) => Promise<string>;
+  onApprove: (data: {}, actions: PayPalActions) => Promise<void>;
+  onError: (err: Error) => void;
+}
+
+interface PayPalNamespace {
+  Buttons: (config: PayPalButtonsConfig) => PayPalButtonsRender;
+}
 
 declare global {
   interface Window {
-    paypal: any;
+    paypal?: PayPalNamespace;
   }
 }
 
+//
+// 2️⃣ Component
+//
 const PayWithCard: React.FC = () => {
   const [showPayPalModal, setShowPayPalModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [showButton, setShowButton] = useState(false);
   const paypalRef = useRef<HTMLDivElement>(null);
 
-  // Load PayPal Button when amount is ready
+  // Initialize PayPal Buttons when amount is ready
   useEffect(() => {
     if (!showButton || !window.paypal) return;
 
-    window.paypal.Buttons({
-      createOrder: (data: any, actions: any) => {
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: { value: amount },
-              description: "Church Offering",
-            },
-          ],
-        });
-      },
+    const paypal = window.paypal;
 
-      onApprove: async (data: any, actions: any) => {
-        const details = await actions.order.capture();
-        alert("Offering received! Thank you ❤️");
-        console.log(details);
+    paypal
+      .Buttons({
+        createOrder: (_data, actions) => {
+          return actions.order.create({
+            purchase_units: [
+              {
+                amount: { value: amount },
+                description: "Church Offering",
+              },
+            ],
+          });
+        },
 
-        // close modal after payment
-        setShowPayPalModal(false);
-        setShowButton(false);
-        setAmount("");
-      },
+        onApprove: async (_data, actions) => {
+          const details = await actions.order.capture();
+          console.log("PAYMENT DETAILS:", details);
 
-      onError: (err: any) => {
-        console.error(err);
-        alert("Something went wrong. Try again.");
-      },
-    }).render(paypalRef.current);
-  }, [showButton]);
+          alert("Offering received! Thank you ❤️");
+
+          // Reset UI
+          setShowPayPalModal(false);
+          setShowButton(false);
+          setAmount("");
+        },
+
+        onError: (err: Error) => {
+          console.error("PayPal Error:", err);
+          alert("Unable to process payment. Please try again.");
+        },
+      })
+      .render(paypalRef.current);
+  }, [showButton, amount]);
 
   return (
     <>
+      {/* 1️⃣ Load PayPal SDK dynamically using your client ID */}
+      <Script
+        src={`https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&currency=USD`}
+        strategy="afterInteractive"
+      />
+
       {/* PAY WITH CARD SECTION */}
       <section className="flex flex-col gap-6 items-start p-8 bg-teal-100 rounded-3xl w-full h-auto max-md:p-6">
         <h2 className="text-2xl font-bold text-slate-900">Pay With Card</h2>
@@ -90,7 +147,7 @@ const PayWithCard: React.FC = () => {
               onChange={(e) => setAmount(e.target.value)}
             />
 
-            {/* Show PayPal Button */}
+            {/* PayPal Button */}
             {showButton ? (
               <div ref={paypalRef} />
             ) : (
