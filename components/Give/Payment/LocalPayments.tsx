@@ -38,7 +38,7 @@ const LocalPayments: React.FC = () => {
       hasWhiteBackground: false,
       details: [
         { label: "Payable To:", value: "RCCG Living Word Forney" },
-        { label: "Mail To:", value: "RCCG Living Word Forney, [Insert Church Address]" },
+        { label: "Mail To:", value: "RCCG Living Word Forney, 8485 Michael Talty Ave,Terrell, TX 75160, United States" },
         { label: "Memo:", value: "Offering / Tithe / Donation" },
       ],
     },
