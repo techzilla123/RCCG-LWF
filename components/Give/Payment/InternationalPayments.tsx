@@ -1,33 +1,32 @@
-import type React from "react"
-import CurrencyAccount from "./CurrencyAccount"
+import type React from "react";
+import CurrencyAccount from "./CurrencyAccount";
 
 const InternationalPayments: React.FC = () => {
   const currencyAccounts = [
-  { symbol: "$", label: "($) USD Account:", accountNumber: "770751110" },
+    { symbol: "$", label: "($) USD Account:", accountNumber: "770751110" },
 
-  { 
-    symbol: "🏦",
-    label: (
-      <>
-        Routing Number <br />
-        (Direct Deposit & ACH):
-      </>
-    ),
-    accountNumber: "111000614"
-  },
+    {
+      symbol: "🏦",
+      label: (
+        <>
+          Routing Number <br />
+          (Direct Deposit & ACH):
+        </>
+      ),
+      accountNumber: "111000614",
+    },
 
-  { 
-    symbol: "💳",
-    label: (
-      <>
-        Routing Number <br />
-        (Wire Transfers):
-      </>
-    ),
-    accountNumber: "021000021"
-  },
-]
-
+    {
+      symbol: "💳",
+      label: (
+        <>
+          Routing Number <br />
+          (Wire Transfers):
+        </>
+      ),
+      accountNumber: "021000021",
+    },
+  ];
 
   return (
     <section className="flex flex-col gap-6 p-8 bg-sky-800 rounded-3xl w-full h-auto max-md:p-6">
@@ -40,7 +39,7 @@ const InternationalPayments: React.FC = () => {
         </div>
         <img
           src="https://logos-world.net/wp-content/uploads/2020/11/Chase-Emblem.png"
-          alt="GTCO Logo"
+          alt="CHASE Logo"
           className="h-[90px] w-auto"
         />
       </div>
@@ -56,7 +55,7 @@ const InternationalPayments: React.FC = () => {
         ))}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default InternationalPayments
+export default InternationalPayments;

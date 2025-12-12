@@ -1,9 +1,9 @@
-import type React from "react"
+import type React from "react";
 
 interface CurrencyAccountProps {
-  symbol: string
-  label: string
-  accountNumber: string
+  symbol: string;
+  label: React.ReactNode; // ✅ updated to ReactNode
+  accountNumber: string;
 }
 
 const CurrencyAccount: React.FC<CurrencyAccountProps> = ({ symbol, label, accountNumber }) => {
@@ -12,7 +12,7 @@ const CurrencyAccount: React.FC<CurrencyAccountProps> = ({ symbol, label, accoun
       <div className="flex relative flex-col items-start flex-[1_0_0]">
         <div className="flex relative flex-col items-start self-stretch">
           <h4 className="relative self-stretch text-2xl font-bold leading-9 text-white max-sm:text-xl max-sm:leading-7">
-            {label}
+            {label} {/* ✅ now accepts JSX */}
           </h4>
         </div>
         <div className="flex relative flex-col items-start self-stretch pb-12">
@@ -36,7 +36,7 @@ const CurrencyAccount: React.FC<CurrencyAccountProps> = ({ symbol, label, accoun
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CurrencyAccount
+export default CurrencyAccount;
