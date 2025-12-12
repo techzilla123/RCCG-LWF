@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { MinistryHeading } from "./MinistryHeading"
 import { Montserrat } from "next/font/google"
@@ -21,8 +21,7 @@ const ministries: MinistryData[] = [
     title: "Children’s Ministry – God’s Heritage (Ages 1 - 12)",
     description:
       "A joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith. We build strong spiritual foundations through Bible lessons, memory verses, quizzes, music, and fun activities—all in a safe, welcoming environment.",
-    image:
-      "/Aaa.jpg",
+    image: "/Aaa.jpg",
   },
   {
     title: "Youth Ministry – Christ Ambassadors (Ages 13 - 17)",
@@ -59,22 +58,36 @@ const ministries: MinistryData[] = [
     image:
       "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
-];
-
+]
 
 export default function MinistryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const router = useRouter()
 
+  // ✅ Auto change ministry every 10 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === ministries.length - 1 ? 0 : prevIndex + 1
+      )
+    }, 10000)
+
+    return () => clearInterval(timer)
+  }, [])
+
   const currentMinistry = ministries[currentIndex]
   const isEvenIndex = currentIndex % 2 === 0
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? ministries.length - 1 : prevIndex - 1))
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? ministries.length - 1 : prevIndex - 1
+    )
   }
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === ministries.length - 1 ? 0 : prevIndex + 1))
+    setCurrentIndex((prevIndex) =>
+      prevIndex === ministries.length - 1 ? 0 : prevIndex + 1
+    )
   }
 
   const handleReadMore = () => {
@@ -91,8 +104,12 @@ export default function MinistryCarousel() {
         />
       </div>
 
-      <div className={`flex flex-col items-center mx-auto text-center text-zinc-800 ${montserrat.className} max-w-2xl`}>
-        <h2 className="text-2xl font-bold mb-4 text-zinc-800">{currentMinistry.title}</h2>
+      <div
+        className={`flex flex-col items-center mx-auto text-center text-zinc-800 ${montserrat.className} max-w-2xl`}
+      >
+        <h2 className="text-2xl font-bold mb-4 text-zinc-800">
+          {currentMinistry.title}
+        </h2>
         <p
           className="max-md:max-w-full"
           style={{
@@ -115,10 +132,12 @@ export default function MinistryCarousel() {
             fontWeight: 400,
           }}
           onMouseEnter={(e) => {
-            ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = "#444299"
+            ;(e.currentTarget as HTMLButtonElement).style.backgroundColor =
+              "#444299"
           }}
           onMouseLeave={(e) => {
-            ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = "#333064"
+            ;(e.currentTarget as HTMLButtonElement).style.backgroundColor =
+              "#333064"
           }}
           onClick={handleReadMore}
         >
@@ -128,36 +147,33 @@ export default function MinistryCarousel() {
     </article>
   )
 
- const MinistryImage = () => (
-  <div className="flex-1 shrink basis-0 min-h-px min-w-60 max-md:max-w-full">
-    <div className="relative flex justify-center w-full">
-
-      {/* IMAGE WITH BORDER THAT MATCHES THE EXACT DESIGN */}
-      <div
-        className="relative"
-        style={{
-          width: "500px",
-          height: "320px",
-          clipPath:
-            "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
-          border: "6px solid #2ea4b8",
-        }}
-      >
-        <img
-          src={currentMinistry.image || "/placeholder.svg"}
-          alt={currentMinistry.title}
-          className="object-cover w-full h-full"
+  const MinistryImage = () => (
+    <div className="flex-1 shrink basis-0 min-h-px min-w-60 max-md:max-w-full">
+      <div className="relative flex justify-center w-full">
+        {/* IMAGE FRAME WITH CLIP-PATH */}
+        <div
+          className="relative"
           style={{
+            width: "500px",
+            height: "320px",
             clipPath:
               "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
+            border: "6px solid #2ea4b8",
           }}
-        />
+        >
+          <img
+            src={currentMinistry.image || "/placeholder.svg"}
+            alt={currentMinistry.title}
+            className="object-cover w-full h-full"
+            style={{
+              clipPath:
+                "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
+            }}
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
-
-
+  )
 
   return (
     <section className="flex flex-col items-center w-full bg-white rounded-none max-md:py-24">
@@ -188,7 +204,7 @@ export default function MinistryCarousel() {
             <ChevronLeft size={32} className="text-zinc-800" />
           </button>
 
-          {/* Content and Image - Alternating Layout */}
+          {/* Alternating layout */}
           {isEvenIndex ? (
             <>
               <MinistryContent />
@@ -211,13 +227,16 @@ export default function MinistryCarousel() {
           </button>
         </div>
 
+        {/* Slide Dots */}
         <div className="flex justify-center gap-2 mt-8">
           {ministries.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentIndex ? "bg-zinc-800" : "bg-gray-300"
+                index === currentIndex
+                  ? "bg-zinc-800"
+                  : "bg-gray-300"
               }`}
               aria-label={`Go to ministry ${index + 1}`}
             />

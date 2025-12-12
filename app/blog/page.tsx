@@ -1,6 +1,6 @@
 'use client'
 // import Footer from "@/components/Footer"
-import ChurchHeaderb from "@/components/Header/ChurchHeaderb"
+import ChurchHeaderb from "@/components/Header/ChurchHeader"
 import BlogPage from "@/components/Blog/BlogPage"
 // import EventsSection from "@/components/Events/EventsSection"
 // import MovementSection from "@/components/Hero/MovementSection"
@@ -14,7 +14,7 @@ export default function Home() {
   
 
   return (
-   <div className="min-h-screen -mt[20px] bg-white relative w-full max-w-full sm:max-w-none overflow-hidden">
+   <div className="min-h-screen  bg-white relative w-full max-w-full sm:max-w-none overflow-hidden">
 
 
       <ChurchHeaderb />

@@ -122,7 +122,7 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen ">
       <div className="px-6 py-20 mx-auto max-w-[1100px]">
         <BlogHeader
           title="Our Blog"
