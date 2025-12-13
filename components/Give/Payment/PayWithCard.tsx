@@ -107,30 +107,27 @@ const PayWithCard: React.FC = () => {
       />
 
       {/* PAY WITH CARD SECTION */}
-      <section className="flex flex-col gap-6 items-start p-8 bg-teal-100 rounded-3xl w-full h-auto max-md:p-6">
-        <h2 className="text-2xl font-bold text-slate-900">Pay With Card</h2>
-        <p className="text-base text-neutral-600">
-          We offer convenient and secure ways to make credit and debit card
-          payments. Please select your preferred option below:
-        </p>
+     <section className="flex flex-col gap-6 items-start p-8 bg-teal-100 rounded-3xl w-full max-md:p-6">
+  <h2 className="text-2xl font-bold text-slate-900">
+    Pay With PayPal
+  </h2>
 
-        <div className="flex flex-row flex-wrap md:flex-nowrap justify-between items-center gap-8 w-full">
-          {/* Stripe Image */}
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/3823fe909b5d03a41b0649bb089b0e076823e333?width=536"
-            alt="Stripe"
-            className="rounded-xl w-full md:w-1/2 h-auto object-contain transition-transform duration-300 hover:scale-105 cursor-pointer"
-          />
+  <p className="text-base text-neutral-600">
+    We offer convenient and secure ways to make credit and debit card
+    payments. Please select your preferred option below:
+  </p>
 
-          {/* PayPal Image */}
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/1898b4c2d5dd27c6a9345d848d5997b8254e4a6e?width=536"
-            alt="PayPal"
-            className="rounded-xl w-full md:w-1/2 h-auto object-contain transition-transform duration-300 hover:scale-105 cursor-pointer"
-            onClick={() => setShowPayPalModal(true)}
-          />
-        </div>
-      </section>
+  <div className="flex justify-center items-center w-full">
+    {/* PayPal Image */}
+    <img
+      src="https://api.builder.io/api/v1/image/assets/TEMP/1898b4c2d5dd27c6a9345d848d5997b8254e4a6e?width=536"
+      alt="PayPal"
+      className="rounded-xl w-64 md:w-72 h-auto object-contain opacity-100 transition-transform duration-300 hover:scale-105 cursor-pointer"
+      onClick={() => setShowPayPalModal(true)}
+    />
+  </div>
+</section>
+
 
       {/* PAYPAL MODAL */}
       {showPayPalModal && (
