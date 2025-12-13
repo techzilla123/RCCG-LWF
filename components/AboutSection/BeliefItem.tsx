@@ -7,6 +7,7 @@ interface BeliefItemProps {
   references?: string[];
   isExpanded?: boolean;
   onToggle?: () => void;
+  borderColor: string;
 }
 
 export const BeliefItem: React.FC<BeliefItemProps> = ({
@@ -15,9 +16,10 @@ export const BeliefItem: React.FC<BeliefItemProps> = ({
   references = [],
   isExpanded = false,
   onToggle,
+  borderColor,
 }) => {
   return (
-    <div className="w-full border-b border-gray-200">
+    <div className={`w-full border-b-2 ${borderColor}`}>
       <button
         className={`flex justify-between items-center w-full px-4 py-4 text-lg font-semibold text-left transition-all ${
           isExpanded ? "bg-sky-50" : "bg-white hover:bg-gray-50"
@@ -33,7 +35,7 @@ export const BeliefItem: React.FC<BeliefItemProps> = ({
               : "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/af7f3631282d795e3e7a8f9698a572c0929e5cfb"
           }
           alt={isExpanded ? "Collapse" : "Expand"}
-          className="w-3 h-3 transition-transform duration-300 transform"
+          className="w-3 h-3 transition-transform duration-300"
         />
       </button>
 
