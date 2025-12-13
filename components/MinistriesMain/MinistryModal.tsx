@@ -8,7 +8,7 @@ import { X } from "lucide-react"
 interface MinistryModalProps {
   isOpen: boolean
   onClose: () => void
-  title: string
+  title: React.ReactNode
   description: string
   fullDetails: string
   buttonColor: string

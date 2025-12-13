@@ -12,7 +12,14 @@ export const MinistryTabs: React.FC = () => {
     return (
       <ContentPanel
         imageSrc="https://childrensministry.com/wp-content/upload/children/media/2014/04/How-to-Build-a-Childrens-Ministry-From-the-Ground-Up-1265x500.jpg"
-        title="Children’s Ministry – God’s Heritage"
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            <span>Children’s Ministry</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500 font-semibold">
+              God’s Heritage
+            </span>
+          </span>
+        }
         subtitle="Ages 1 - 12"
         description="A joyful and nurturing place where children discover God’s love through engaging teachings and fun activities."
         fullDetails={`The Children’s Ministry is a joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith.
@@ -38,7 +45,14 @@ Join us as we raise a generation of confident, compassionate, and Christ-centere
     return (
       <ContentPanel
         imageSrc="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80"
-        title="Youth Ministry – Christ Ambassadors"
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            <span>Youth Ministry</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-semibold">
+              Christ Ambassadors
+            </span>
+          </span>
+        }
         subtitle="Ages 13 - 17"
         description="Empowering teenagers to grow spiritually, discover their identity, and walk boldly in God’s purpose."
         fullDetails={`Our Youth Ministry is dedicated to raising Christ Ambassadors—guiding young people into a deeper relationship with Christ and helping them discover their identity, purpose, and God-given potential.
@@ -62,7 +76,14 @@ Here, every youth is valued, encouraged, and empowered to shine as a light in th
     return (
       <ContentPanel
         imageSrc="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&q=80"
-        title="Young Adult & Singles Ministry"
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            <span>Young Adults & Singles Ministry</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-violet-700 font-semibold">
+              YASM
+            </span>
+          </span>
+        }
         subtitle="Empowered for Purpose"
         description="A vibrant community helping young adults build relationships, grow spiritually, and walk confidently in God’s purpose."
         fullDetails={`The Young Adults & Singles Ministry empowers men and women to grow spiritually, build meaningful relationships, and walk confidently in God’s purpose.
@@ -84,7 +105,14 @@ This is a place to belong, grow, and thrive. Join us as we rise boldly in faith 
     return (
       <ContentPanel
         imageSrc="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80"
-        title="Women’s Ministry – Women of Zion"
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            <span>Women’s Ministry</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-rose-600 font-semibold">
+              Women of Zion
+            </span>
+          </span>
+        }
         subtitle="Nurturing, Empowering, Uplifting"
         description="A community where women grow spiritually, find support, and embrace their God-given purpose."
         fullDetails={`The Women of Zion Ministry is dedicated to nurturing, empowering, and uplifting women in every stage of life.
@@ -100,7 +128,7 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
         buttonColor="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-rose-600 hover:to-pink-600"
         showSchedule
         scheduleDay="Every Friday"
-        scheduleTime="6pm - 6:30pm (ONLINE)"
+        scheduleTime="6pm - 6:30pm (ONLINE)"
       />
     )
   }
@@ -110,7 +138,14 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
     return (
       <ContentPanel
         imageSrc="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80"
-        title="Men’s Ministry – Men of Valor"
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            <span>Men’s Ministry</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-900 to-blue-900 font-semibold">
+              Men of Valor
+            </span>
+          </span>
+        }
         subtitle="Strength • Integrity • Purpose"
         description="Raising strong, spiritually grounded men who lead with courage, compassion, and Christlike character."
         fullDetails={`The Men of Valor Ministry is dedicated to raising strong, spiritually grounded men who lead with integrity, courage, and compassion.
@@ -136,7 +171,14 @@ If you desire growth, connection, and meaningful impact, Men of Valor is your ho
     return (
       <ContentPanel
         imageSrc="https://img.freepik.com/premium-photo/beautiful-people-concept-30s-mid-age-handsome-elderly-senior-model-man-with-grey-hair_585255-4362.jpg"
-        title="The Wise Ones Ministry"
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            <span>Wise Ones Ministry</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-cyan-700 font-semibold">
+              Wisdom & Grace
+            </span>
+          </span>
+        }
         subtitle="A Community of Wisdom & Grace"
         description="A warm community of mature believers growing in faith, sharing wisdom, and supporting the church family."
         fullDetails={`The Wise Ones Ministry is a vibrant community of mature men and women committed to growing in faith, sharing wisdom, and strengthening the church through their God-given gifts.
@@ -165,8 +207,7 @@ Join us as we grow together, encourage one another, and shine with the enduring 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.7 }}
-        className="w-full bg-gradient-to-br from-white to-gray-50 py-12 rounded-3xl shadow-2xl 
-      border border-gray-100 overflow-hidden"
+        className="w-full bg-gradient-to-br from-white to-gray-50 py-12 rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
       >
         <SectionHeader title={title} accent={accent} />
         <div className="px-6 sm:px-10 lg:px-16">

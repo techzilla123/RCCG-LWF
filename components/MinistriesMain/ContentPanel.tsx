@@ -7,8 +7,8 @@ import { MinistryModal } from "./MinistryModal"
 
 interface ContentPanelProps {
   imageSrc: string
-  title: string
-  subtitle?: string
+  title: React.ReactNode 
+  subtitle?: React.ReactNode
   description: string
   fullDetails: string
   buttonText: string
@@ -17,6 +17,7 @@ interface ContentPanelProps {
   scheduleDay?: string
   scheduleTime?: string
 }
+
 
 export const ContentPanel: React.FC<ContentPanelProps> = React.memo(
   ({
@@ -54,7 +55,7 @@ export const ContentPanel: React.FC<ContentPanelProps> = React.memo(
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.6 }}
                 src={imageSrc}
-                alt={title}
+                alt={typeof title === "string" ? title : "Ministry Image"}
                 className="w-full h-auto aspect-[4/3] object-cover"
               />
               {/* Gradient overlay */}
