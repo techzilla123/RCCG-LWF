@@ -29,12 +29,6 @@ const ministryData = [
     description: "Empowering women to grow spiritually and in community.",
     altText: "Women's Ministry",
   },
-  {
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/9a02569f2348fee5b9a298c0bd2f7826d5333c46?width=560",
-    title: "Wiseones Ministry",
-    description: "Supporting and honoring our seniors with love and care.",
-    altText: "Wiseones Ministry",
-  },
 ];
 
 export const MinistrySection: React.FC = () => {
@@ -42,19 +36,15 @@ export const MinistrySection: React.FC = () => {
 
   return (
     <>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap"
-        rel="stylesheet"
-      />
       <SectionHeader title="There's a place for everyone at RCCG LWF" />
 
-      <main className="flex gap-8 items-start px-4 py-0 mx-auto mt-8 w-full max-w-[1232px] min-h-[409px] 
-        max-md:flex-col max-md:gap-6 max-md:px-6 max-sm:px-4">
-
+      <main
+        className="flex gap-8 items-start px-4 mx-auto mt-8 w-full max-w-[1232px]
+        max-md:flex-col max-md:gap-6"
+      >
         {/* 1st Column */}
-        <section className="flex flex-col items-start w-6/12 max-md:w-full">
-          <div className="flex gap-6 justify-center items-start w-full 
-            max-md:flex-col max-md:gap-6">
+        <section className="flex flex-col w-6/12 max-md:w-full">
+          <div className="flex gap-6 max-md:flex-col">
             <div onClick={() => router.push("/ministries")} className="cursor-pointer">
               <MinistryCard {...ministryData[0]} />
             </div>
@@ -65,9 +55,8 @@ export const MinistrySection: React.FC = () => {
         </section>
 
         {/* 2nd Column */}
-        <section className="flex flex-col items-start w-6/12 max-md:w-full">
-          <div className="flex gap-6 justify-center items-start w-full 
-            max-md:flex-col max-md:gap-6">
+        <section className="flex flex-col w-6/12 max-md:w-full">
+          <div className="flex gap-6 max-md:flex-col">
             <div onClick={() => router.push("/ministries")} className="cursor-pointer">
               <MinistryCard {...ministryData[2]} />
             </div>
@@ -75,16 +64,20 @@ export const MinistrySection: React.FC = () => {
               <MinistryCard {...ministryData[3]} />
             </div>
           </div>
-
-          {/* Wiseones at bottom (centered)
-          <div className="flex justify-center w-full mt-6">
-            <div onClick={() => router.push("/ministries")} className="cursor-pointer">
-              <MinistryCard {...ministryData[4]} />
-            </div>
-          </div> */}
         </section>
-
       </main>
+
+      {/* 🔹 MORE BUTTON */}
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={() => router.push("/ministries")}
+          className="px-8 py-3 text-sm font-semibold text-white
+          bg-[#333064] rounded-full hover:bg-blue-400 mb-10
+          transition-colors duration-300"
+        >
+          View All Ministries
+        </button>
+      </div>
     </>
   );
 };
