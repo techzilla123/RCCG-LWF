@@ -87,7 +87,7 @@ export default function MinistryCarousel() {
       setCurrentIndex((prevIndex) =>
         prevIndex === ministries.length - 1 ? 0 : prevIndex + 1
       )
-    }, 10000)
+    }, 20000)
 
     return () => clearInterval(timer)
   }, [])

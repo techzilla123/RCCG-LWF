@@ -29,23 +29,6 @@ export const EventsSection: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouse);
   }, []);
 
-  // Smooth scroll effect
-  const scrollRef = React.useRef(0);
-  const animatedYRef = React.useRef(0);
-  React.useEffect(() => {
-    const handleScroll = () => (scrollRef.current = window.scrollY);
-    const animate = () => {
-      animatedYRef.current += (scrollRef.current - animatedYRef.current) * 0.1;
-      if (sectionRef.current) {
-        sectionRef.current.style.marginTop = `${animatedYRef.current * 0.3}px`;
-      }
-      requestAnimationFrame(animate);
-    };
-    window.addEventListener("scroll", handleScroll);
-    requestAnimationFrame(animate);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <section
       id="events-section"
