@@ -21,7 +21,7 @@ export const MoreDropdown: React.FC = () => {
               </svg>
               <span className="text-sm">Ministries</span>
             </Link>
-            <Link href="/next-step-class" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Link href="/class" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
               </svg>
@@ -84,47 +84,56 @@ export const MoreDropdown: React.FC = () => {
         </div>
 
         {/* Right Column - Light Background */}
-        <div className="bg-white p-6 rounded-r-md">
-          <h3 className="text-sm font-bold uppercase mb-4 border-b border-gray-300 pb-2 text-zinc-800">MINISTRIES</h3>
-          <div className="space-y-3">
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Kids</div>
-              <div className="text-xs text-gray-600">Ages Birth - Grade 5</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Students</div>
-              <div className="text-xs text-gray-600">Grades 6 - 12</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Special Needs</div>
-              <div className="text-xs text-gray-600">Specialized classes for all ages</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Young Adults</div>
-              <div className="text-xs text-gray-600">All 18 - 30 year olds</div>
-            </Link>
-            <Link href="/ministriese" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Marriage</div>
-              <div className="text-xs text-gray-600">Groups, Resources, Weddings</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Support & Recovery</div>
-              <div className="text-xs text-gray-600">Resources and support for families</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Missions</div>
-              <div className="text-xs text-gray-600">Local, National & International</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Adoption / Foster Care</div>
-              <div className="text-xs text-gray-600">Resources for families</div>
-            </Link>
-            <Link href="/ministries" className="block hover:bg-gray-50 transition-colors">
-              <div className="text-sm font-semibold text-zinc-800">Resources &gt;</div>
-              <div className="text-xs text-gray-600">Additional resources and programs</div>
-            </Link>
-          </div>
-        </div>
+    <div className="bg-white p-4 rounded-r-md">
+  <h3 className="text-xs font-bold uppercase mb-3 border-b border-gray-300 pb-1 text-zinc-800">
+    MINISTRIES
+  </h3>
+
+  <div className="space-y-2">
+    <Link href="/ministries#children" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Children’s Ministry</div>
+      <div className="text-[11px] text-gray-600">Ages 1 – 12</div>
+    </Link>
+
+    <Link href="/ministries#youth" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Youth Ministry</div>
+      <div className="text-[11px] text-gray-600">Ages 13 – 17</div>
+    </Link>
+
+    <Link href="/ministries#yasm" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Young Adults & Singles</div>
+      <div className="text-[11px] text-gray-600">18+ Community & growth</div>
+    </Link>
+
+    <Link href="/ministries#women" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Women’s Ministry</div>
+      <div className="text-[11px] text-gray-600">Faith & fellowship</div>
+    </Link>
+
+    <Link href="/ministries#men" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Men’s Ministry</div>
+      <div className="text-[11px] text-gray-600">Leadership & service</div>
+    </Link>
+
+    <Link href="/ministries#wise" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Wise Ones Ministry</div>
+      <div className="text-[11px] text-gray-600">Seniors & mentors</div>
+    </Link>
+  </div>
+
+  {/* RESOURCES */}
+  <div className="mt-4 pt-3 border-t border-gray-200">
+    <h4 className="text-[10px] font-bold uppercase text-gray-500 mb-2">
+      RESOURCES
+    </h4>
+
+    <Link href="/ministries#resources" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+      <div className="text-sm font-semibold text-zinc-800">Resources →</div>
+      <div className="text-[11px] text-gray-600">Teachings & materials</div>
+    </Link>
+  </div>
+</div>
+
       </div>
     </div>
   )

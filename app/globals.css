@@ -151,3 +151,8 @@ html {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+.ministry-text-logo {
+  -webkit-text-stroke: 3px #ff4d00;
+  text-stroke: 3px #ff4d00;
+  paint-order: stroke fill;
+}

@@ -4,6 +4,12 @@ import { useRouter } from "next/navigation"
 import { MinistryHeading } from "./MinistryHeading"
 import { Montserrat } from "next/font/google"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Luckiest_Guy } from "next/font/google"
+
+const luckiestGuy = Luckiest_Guy({
+  weight: "400",
+  subsets: ["latin"],
+})
 
 const montserrat = Montserrat({
   weight: "300",
@@ -12,6 +18,8 @@ const montserrat = Montserrat({
 
 interface MinistryData {
   title: string
+  slogan: string
+  gradientClass: string
   description: string
   image: string
 }
@@ -19,46 +27,55 @@ interface MinistryData {
 const ministries: MinistryData[] = [
   {
     title: "Children’s Ministry – God’s Heritage (Ages 1 - 12)",
+    slogan: "God’s Heritage",
+    gradientClass: "bg-gradient-to-r from-amber-500 to-orange-500",
     description:
       "A joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith. We build strong spiritual foundations through Bible lessons, memory verses, quizzes, music, and fun activities—all in a safe, welcoming environment.",
     image: "/Aaa.jpg",
   },
   {
     title: "Youth Ministry – Christ Ambassadors (Ages 13 - 17)",
+    slogan: "Christ Ambassadors",
+    gradientClass: "bg-gradient-to-r from-blue-600 to-indigo-600",
     description:
       "Dedicated to raising Christ Ambassadors by guiding teenagers into deeper relationship with Christ. Through interactive teachings, mentorship, worship, and life-building sessions, we help youths discover identity, purpose, and God-given potential.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
     title: "Young Adult & Singles Ministry",
+    slogan: "YASM",
+    gradientClass:
+      "bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-violet-700",
     description:
       "A vibrant community that empowers young adults to grow spiritually, build meaningful relationships, and walk confidently in God’s purpose. Through fellowship, mentorship, Bible studies, and skill-building sessions, we equip young people to lead boldly in faith and influence their world for Christ.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
     title: "Women’s Ministry – Women of Zion",
+    slogan: "Women of Zion",
+    gradientClass: "bg-gradient-to-r from-pink-600 to-rose-600",
     description:
       "A community dedicated to nurturing, empowering, and uplifting women in all life stages. Through prayer, teaching, fellowship, and outreach, we help women grow spiritually, embrace their God-given purpose, and positively impact their families and communities.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
     title: "Men’s Ministry – Men of Valor",
+    slogan: "Men of Valor",
+    gradientClass: "bg-gradient-to-r from-cyan-900 to-blue-900",
     description:
       "Focused on raising strong, spiritually grounded men who lead with integrity and courage. Through prayer, mentorship, fellowship, and practical empowerment, we equip men to grow in faith, character, and purpose while serving their homes, church, and community.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
   {
     title: "The Wise Ones Ministry",
+    slogan: "Wisdom & Grace",
+    gradientClass: "bg-gradient-to-r from-teal-700 to-cyan-700",
     description:
       "A vibrant community of mature believers committed to growing in faith, sharing wisdom, and strengthening the church. Through fellowship, discipleship, prayer, and service, the Wise Ones inspire younger generations and continue making meaningful Kingdom impact.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
   },
 ]
+
 
 export default function MinistryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -97,11 +114,24 @@ export default function MinistryCarousel() {
   const MinistryContent = () => (
     <article className="flex flex-col flex-1 shrink pt-5 basis-0 min-h-px min-w-60 max-md:max-w-full">
       <div className="flex flex-col items-center self-center max-w-full w-[250px]">
-        <img
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/c6527fa8417a5c62aaf08fb374dd2e0bf7b0a7fc?placeholderIfAbsent=true"
-          alt="Ministry logo"
-          className="object-contain w-full aspect-[1.97]"
-        />
+       <div className="flex flex-col items-center self-center mb-4">
+  <div className="flex flex-col items-center self-center mb-6">
+  <span
+    className={`
+      ${luckiestGuy.className}
+      text-4xl sm:text-5xl md:text-6xl
+      uppercase tracking-wide
+      text-transparent bg-clip-text
+      ${currentMinistry.gradientClass}
+      ministry-text-logo
+    `}
+  >
+    {currentMinistry.slogan}
+  </span>
+</div>
+
+</div>
+
       </div>
 
       <div
@@ -148,32 +178,50 @@ export default function MinistryCarousel() {
   )
 
   const MinistryImage = () => (
-    <div className="flex-1 shrink basis-0 min-h-px min-w-60 max-md:max-w-full">
-      <div className="relative flex justify-center w-full">
-        {/* IMAGE FRAME WITH CLIP-PATH */}
+  <div className="flex-1 flex justify-center items-center w-full max-md:order-1">
+<div className="relative w-full max-w-[420px] sm:max-w-[460px] mt-8 md:mt-10 lg:mt-12">
+      
+      {/* OUTER DECORATIVE FRAME */}
+      <div
+        className="
+          relative
+          rounded-[22px]
+          p-[6px]
+          bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600
+          shadow-[0_18px_45px_rgba(0,0,0,0.2)]
+        "
+      >
+        {/* IMAGE CONTAINER */}
         <div
-          className="relative"
-          style={{
-            width: "500px",
-            height: "320px",
-            clipPath:
-              "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
-            border: "6px solid #2ea4b8",
-          }}
+          className="
+            relative
+            w-full
+            aspect-[4/3]              /* ✅ RESPONSIVE HEIGHT */
+            rounded-[18px]
+            overflow-hidden
+            bg-white
+            transition-transform duration-300
+            hover:scale-[1.01]
+          "
         >
           <img
             src={currentMinistry.image || "/placeholder.svg"}
             alt={currentMinistry.title}
-            className="object-cover w-full h-full"
-            style={{
-              clipPath:
-                "polygon(0 0, 87% 0, 100% 18%, 100% 100%, 13% 100%, 0% 82%)",
-            }}
+            className="w-full h-full object-cover"
           />
+
+          {/* SOFT OVERLAY */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
+
+          {/* SUBTLE CORNER ACCENTS */}
+          <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-white/60 rounded-tr-md" />
+          <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-white/60 rounded-bl-md" />
         </div>
       </div>
     </div>
-  )
+  </div>
+)
+
 
   return (
     <section className="flex flex-col items-center w-full bg-white rounded-none max-md:py-24">

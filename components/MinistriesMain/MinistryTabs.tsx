@@ -201,53 +201,75 @@ Join us as we grow together, encourage one another, and shine with the enduring 
 
   // Section wrapper
   const Section = React.memo(
-    ({ title, accent, children }: { title: string; accent: string; children: ReactElement }) => (
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.7 }}
-        className="w-full bg-gradient-to-br from-white to-gray-50 py-12 rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
-      >
-        <SectionHeader title={title} accent={accent} />
-        <div className="px-6 sm:px-10 lg:px-16">
-          <div className="mt-8">
-            <AnimatePresence mode="wait">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                {children}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+  ({
+    title,
+    accent,
+    id,
+    children,
+  }: {
+    title: string
+    accent: string
+    id: string
+    children: ReactElement
+  }) => (
+    <motion.section
+      id={id}   // ✅ attach id to the DOM element
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.7 }}
+      className="w-full bg-gradient-to-br from-white to-gray-50 py-12 rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
+    >
+      <SectionHeader title={title} accent={accent} />
+      <div className="px-6 sm:px-10 lg:px-16">
+        <div className="mt-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
-      </motion.section>
-    )
+      </div>
+    </motion.section>
   )
+)
+
 
   Section.displayName = "Section"
 
   return (
     <main className="flex flex-col gap-16 py-12 px-4 bg-gradient-to-b from-gray-50 to-white">
-      <Section title="Children's Ministry" accent="bg-gradient-to-r from-amber-500 to-orange-500">
+      <Section title="Children's Ministry" accent="bg-gradient-to-r from-amber-500 to-orange-500"
+      id="children">
         {renderChildren()}
       </Section>
 
-      <Section title="Youth Ministry" accent="bg-gradient-to-r from-blue-600 to-indigo-600">
+      <Section title="Youth Ministry" accent="bg-gradient-to-r from-blue-600 to-indigo-600"
+      id="youth">
         {renderYouth()}
       </Section>
 
-      <Section title="Young Adults & Singles" accent="bg-gradient-to-r from-purple-600 to-violet-700">
+      <Section title="Young Adults & Singles" accent="bg-gradient-to-r from-purple-600 to-violet-700"
+      id="yasm">
         {renderYoungAdults()}
       </Section>
 
-      <Section title="Women’s Ministry" accent="bg-gradient-to-r from-pink-600 to-rose-600">
+      <Section title="Women’s Ministry" accent="bg-gradient-to-r from-pink-600 to-rose-600"
+      id="women">
         {renderWomen()}
       </Section>
 
-      <Section title="Men’s Ministry" accent="bg-gradient-to-r from-cyan-900 to-blue-900">
+      <Section title="Men’s Ministry" accent="bg-gradient-to-r from-cyan-900 to-blue-900"
+      id="men">
         {renderMen()}
       </Section>
 
-      <Section title="Wise Ones Ministry" accent="bg-gradient-to-r from-teal-700 to-cyan-700">
+      <Section title="Wise Ones Ministry" accent="bg-gradient-to-r from-teal-700 to-cyan-700"
+      id="wise">
         {renderWiseone()}
       </Section>
     </main>
