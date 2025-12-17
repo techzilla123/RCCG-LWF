@@ -20,7 +20,7 @@ export const RootedSection: React.FC = () => {
       <article className="flex relative flex-col gap-0 items-start self-stretch">
         <header className="flex relative flex-col items-start self-stretch pb-2.5">
           <h3 className="relative self-stretch text-base font-bold leading-4 uppercase text-zinc-800 max-sm:text-sm">
-            Beliver&apos;s Class 2025
+            Beliver&apos;s Class
           </h3>
         </header>
         <div className="flex relative flex-col items-start self-stretch pb-4">
