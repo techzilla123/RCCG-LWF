@@ -10,7 +10,7 @@ export const RootedSection: React.FC = () => {
         <a href="/class" className="flex relative items-start pb-1">
           <div className="flex relative items-start rounded-sm max-w-[498px]">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/5f4a693ca653c660820069c08621fc0c80d92633?width=996"
+              src="/believe.jpg"
               alt="Rooted 2025 program"
               className="object-cover relative h-[332px] max-w-[498px] w-[498px] max-md:w-full max-md:max-w-full max-md:h-auto"
             />
