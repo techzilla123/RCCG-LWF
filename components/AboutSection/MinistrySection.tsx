@@ -6,7 +6,7 @@ import { MinistryCard } from "./MinistryCard";
 
 const ministryData = [
   {
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/824693b9d3ed35c7a76f0498eff548924faa155d?width=560",
+    image: "/child.jpg",
     title: "Children's Ministry",
     description: "Teaching and nurturing children in God's love.",
     altText: "Children's Ministry",
