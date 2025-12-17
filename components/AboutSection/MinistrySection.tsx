@@ -12,7 +12,7 @@ const ministryData = [
     altText: "Children's Ministry",
   },
   {
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/9c42a447e5f303b43e36122e9864dfa10446fdc3?width=560",
+    image: "/youth.jpg",
     title: "Youth Ministry",
     description: "Helping teenagers grow in faith and purpose.",
     altText: "Youth Ministry",
@@ -24,7 +24,7 @@ const ministryData = [
     altText: "Men's Ministry",
   },
   {
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/9a02569f2348fee5b9a298c0bd2f7826d5333c46?width=560",
+    image: "/women.jpg",
     title: "Women's Ministry",
     description: "Empowering women to grow spiritually and in community.",
     altText: "Women's Ministry",
