@@ -176,7 +176,7 @@ If you desire growth, connection, and meaningful impact, Men of Valor is your ho
           <span className="flex flex-wrap items-center gap-2">
             <span>Wise Ones Ministry</span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-cyan-700 font-semibold">
-              Wisdom & Grace
+              Seniors & Elders
             </span>
           </span>
         }

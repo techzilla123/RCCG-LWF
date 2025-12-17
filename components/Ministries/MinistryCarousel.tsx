@@ -68,7 +68,7 @@ const ministries: MinistryData[] = [
   },
   {
     title: "The Wise Ones Ministry",
-    slogan: "Wisdom & Grace",
+    slogan: "Seniors & Elders",
     gradientClass: "bg-gradient-to-r from-teal-700 to-cyan-700",
     description:
       "A vibrant community of mature believers committed to growing in faith, sharing wisdom, and strengthening the church. Through fellowship, discipleship, prayer, and service, the Wise Ones inspire younger generations and continue making meaningful Kingdom impact.",
