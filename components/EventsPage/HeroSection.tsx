@@ -21,6 +21,31 @@ interface Event {
 }
 
 export function HeroSection() {
+  const allImages = [
+  "/frame1.jpg",
+  "/frame2.jpg",
+  "/frame3.jpg",
+  "/frame4.jpg",
+  "/frame5.jpg",
+  "/frame6.jpg",
+  "/frame7.jpg",
+  "/frame8.jpg",
+];
+
+// Helper to pick random images for each column
+const getRandomColumns = () => {
+  // Shuffle all images
+  const shuffled = [...allImages].sort(() => 0.5 - Math.random());
+
+  return [
+    [shuffled[0], shuffled[1]], // Column 1
+    [shuffled[2], shuffled[3]], // Column 2 – dominant
+    [shuffled[4], shuffled[5]], // Column 3
+  ];
+};
+
+const [imageColumns, setImageColumns] = React.useState(getRandomColumns());
+
   const [latestEvent, setLatestEvent] = React.useState<Event | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [isModalOpen, setIsModalOpen] = React.useState(false)
@@ -45,6 +70,15 @@ const fixDate = (dateString: string): string => {
     return dateString
   }
 }
+React.useEffect(() => {
+  const interval = setInterval(() => {
+    setImageColumns(getRandomColumns());
+  }, 10000); // every 10 sec
+
+  return () => clearInterval(interval);
+}, []);
+
+
 
   React.useEffect(() => {
     const fetchLatestEvent = async () => {
@@ -133,13 +167,74 @@ const fixDate = (dateString: string): string => {
           </article>
 
           {/* Image Section */}
-          <div className="flex justify-center w-full lg:w-1/2">
-            <img
-              src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/6c9703e04c6218ec292eb9afbb4cbe5d2ecf9919?placeholderIfAbsent=true"
-              alt="Conference speaker or event imagery"
-              className="object-contain rounded-xl max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full"
-            />
-          </div>
+         <div className="flex justify-center w-full lg:w-1/2">
+  {/* Image Section */}
+
+{/* Image Section */}
+<div className="w-full">
+  {/* Desktop collage */}
+  <div className="hidden md:flex justify-center w-full">
+    <div className="relative w-full max-w-5xl">
+      <div className="grid grid-cols-3 gap-12">
+        {/* Column 1 */}
+        <div className="flex flex-col gap-12">
+          <img
+            src={imageColumns[0][0]}
+            alt="Moment 1"
+            className="h-[260px] w-full rounded-3xl object-cover rotate-[-3deg] shadow-2xl"
+          />
+          <img
+            src={imageColumns[0][1]}
+            alt="Moment 2"
+            className="h-[260px] w-full rounded-3xl object-cover rotate-[2deg] shadow-xl"
+          />
+        </div>
+
+        {/* Column 2 – dominant */}
+        <div className="flex flex-col gap-12 pt-16">
+          <img
+            src={imageColumns[1][0]}
+            alt="Main event"
+            className="h-[340px] w-full rounded-[44px] object-cover rotate-[1deg] shadow-2xl"
+          />
+          <img
+            src={imageColumns[1][1]}
+            alt="Moment 3"
+            className="h-[240px] w-full rounded-3xl object-cover rotate-[-2deg] shadow-xl"
+          />
+        </div>
+
+        {/* Column 3 */}
+        <div className="flex flex-col gap-12 pt-10">
+          <img
+            src={imageColumns[2][0]}
+            alt="Moment 4"
+            className="h-[260px] w-full rounded-3xl object-cover rotate-[3deg] shadow-2xl"
+          />
+          <img
+            src={imageColumns[2][1]}
+            alt="Moment 5"
+            className="h-[220px] w-full rounded-3xl object-cover rotate-[-1deg] shadow-xl"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Mobile background */}
+  <div
+    className="md:hidden w-full h-[300px] rounded-3xl bg-cover bg-center shadow-2xl"
+    style={{ backgroundImage: `url(${imageColumns[1][0]})` }}
+  >
+    {/* Optional: overlay for text readability */}
+    <div className="w-full h-full bg-black/20 rounded-3xl"></div>
+  </div>
+</div>
+
+
+
+</div>
+
         </div>
 
         {/* Decorative Elements */}

@@ -3,7 +3,7 @@
 import React from "react";
 import ChurchHeaderb from "@/components/Header/ChurchHeader";
 
-export default function BelieversClassPage() {
+export default function BaptismPage() {
   return (
     <div className="min-h-screen bg-white w-full overflow-hidden">
       {/* HEADER */}
@@ -12,8 +12,8 @@ export default function BelieversClassPage() {
       {/* HERO / BANNER */}
       <section className="relative w-full h-[70vh] flex items-center justify-center">
         <img
-          src="https://images.unsplash.com/photo-1529070538774-1843cb3265df"
-          alt="Believers Class"
+          src="https://th.bing.com/th/id/R.95a1d270a04fa2de238aa541543fb65c?rik=p34BkWFC1NFAkA&riu=http%3a%2f%2fimages.fineartamerica.com%2fimages-medium-large-5%2fabstract-art-bold-colorful-modern-art-original-painting-color-blast-by-madart-megan-duncanson.jpg&ehk=0wpwv8cZ1PQH81XDFSXckwwjEETAV%2fOZzDlAPXatbZ0%3d&risl=&pid=ImgRaw&r=0"
+          alt="Baptism"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
@@ -21,11 +21,10 @@ export default function BelieversClassPage() {
 
         <div className="relative z-10 max-w-4xl text-center px-6">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-            Believers’ Class
+            Baptism
           </h1>
           <p className="mt-6 text-lg md:text-xl text-gray-200">
-            A foundational class designed to establish new believers in Christ,
-            doctrine, and the values of RCCG.
+            A sacred ordinance symbolizing your new life in Christ, obedience, and public declaration of faith.
           </p>
         </div>
       </section>
@@ -36,31 +35,31 @@ export default function BelieversClassPage() {
           {/* LEFT CONTENT */}
           <div>
             <h2 className="text-3xl font-bold text-gray-900">
-              About the Believers’ Class
+              About Baptism
             </h2>
             <p className="mt-6 text-gray-700 leading-relaxed">
-              The Believers’ Class is designed for new converts and members who
-              desire a solid understanding of the Christian faith, salvation,
-              church doctrine, and the mission of RCCG Living Word Family.
+              Baptism is an important step of faith where believers publicly
+              identify with Christ, symbolizing the washing away of sin and
+              the start of a new life.
             </p>
 
             <p className="mt-4 text-gray-700 leading-relaxed">
-              This class lays the spiritual foundation needed to grow in faith,
-              serve effectively, and live a Christ-centered life.
+              Through baptism, you declare your commitment to follow Jesus, join
+              the body of Christ, and grow spiritually in the church community.
             </p>
 
-            {/* WHAT YOU WILL LEARN */}
+            {/* WHAT YOU WILL EXPERIENCE */}
             <div className="mt-10">
               <h3 className="text-xl font-semibold text-gray-900">
-                What You’ll Learn
+                What You Will Experience
               </h3>
 
               <ul className="mt-4 space-y-3 text-gray-700 list-disc list-inside">
-                <li>Salvation and Christian fundamentals</li>
-                <li>The Holy Spirit and spiritual growth</li>
-                <li>Prayer, faith, and Bible study</li>
-                <li>RCCG beliefs, values, and structure</li>
-                <li>Living a victorious Christian life</li>
+                <li>Public declaration of faith in Jesus Christ</li>
+                <li>Spiritual cleansing and renewal</li>
+                <li>Belonging to the church family</li>
+                <li>Guidance for living a Christ-centered life</li>
+                <li>Celebration with the community</li>
               </ul>
             </div>
           </div>
@@ -68,14 +67,14 @@ export default function BelieversClassPage() {
           {/* RIGHT CARD */}
           <div className="bg-sky-50 rounded-2xl shadow-lg p-8">
             <h3 className="text-2xl font-bold text-gray-900">
-              Next Class Details
+              Next Baptism Service
             </h3>
 
             <div className="mt-6 space-y-4">
-              <InfoRow label="Start Date" value="Sunday, 3rd March 2025" />
-              <InfoRow label="Time" value="8:30 AM – 10:00 AM" />
-              <InfoRow label="Venue" value="Church Auditorium (Class Room 2)" />
-              <InfoRow label="Duration" value="8 Weeks" />
+              <InfoRow label="Date" value="Sunday, 10th March 2025" />
+              <InfoRow label="Time" value="10:00 AM – 12:00 PM" />
+              <InfoRow label="Venue" value="Church Auditorium / Baptism Pool" />
+              <InfoRow label="Preparation Class" value="Saturday, 9th March 2025" />
             </div>
 
             {/* WHO SHOULD ATTEND */}
@@ -84,8 +83,9 @@ export default function BelieversClassPage() {
                 Who Should Attend?
               </h4>
               <p className="mt-3 text-gray-700">
-                New converts, members seeking a solid spiritual foundation, and
-                anyone preparing for baptism or church service.
+                Anyone who has accepted Jesus Christ as Lord and Savior,
+                completed a believers’ class or orientation, and desires to
+                publicly declare their faith.
               </p>
             </div>
 
@@ -94,7 +94,7 @@ export default function BelieversClassPage() {
               className="mt-8 w-full py-4 rounded-xl bg-sky-600 text-white
               font-semibold text-lg hover:bg-sky-700 transition-all duration-300"
             >
-              Register for Believers’ Class
+              Register for Baptism
             </button>
           </div>
         </div>
@@ -104,18 +104,19 @@ export default function BelieversClassPage() {
       <section className="bg-gray-50 py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-900">
-            Why Join the Believers’ Class?
+            Why Be Baptized?
           </h2>
 
           <p className="mt-6 text-gray-700 leading-relaxed">
-            Because growth is intentional. This class equips you with knowledge,
-            clarity, confidence, and a strong spiritual identity in Christ.
+            Baptism marks a transformative step in your spiritual journey. It
+            strengthens your faith, integrates you into the body of Christ, and
+            celebrates your new identity in Him.
           </p>
 
           <div className="mt-10 grid md:grid-cols-3 gap-6">
-            <Feature title="Strong Foundation" text="Build your faith on biblical truth." />
-            <Feature title="Spiritual Growth" text="Grow deeper in understanding and purpose." />
-            <Feature title="Church Integration" text="Understand our values and mission." />
+            <Feature title="Public Declaration" text="Confess your faith boldly." />
+            <Feature title="Spiritual Renewal" text="Experience cleansing and new beginnings." />
+            <Feature title="Church Integration" text="Become an active part of our faith family." />
           </div>
         </div>
       </section>

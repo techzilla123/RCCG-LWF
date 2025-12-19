@@ -7,7 +7,7 @@ export const WelcomeContent: React.FC = () => {
         Welcome
       </h2>
       <p className="mb-6 text-base leading-relaxed text-gray-600 max-sm:text-sm">
-        The Redeemed Christian Church of God Living Word Forney is the
+        The Redeemed Christian Church of God, Living Word Forney is the
         assembly of believers standing strong and standing together in
         Christ Jesus, imitating God as dear children, keeping the
         unity of the spirit in the bond of peace.

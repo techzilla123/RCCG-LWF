@@ -75,7 +75,7 @@ Here, every youth is valued, encouraged, and empowered to shine as a light in th
   const renderYoungAdults = () => {
     return (
       <ContentPanel
-        imageSrc="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&q=80"
+        imageSrc="/yasm.jpg"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Young Adults & Singles Ministry</span>

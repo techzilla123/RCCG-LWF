@@ -6,7 +6,7 @@ export const ChurchImageSection: React.FC = () => {
       {/* Hero Image */}
       <figure className="relative mb-14 w-full h-[320px] max-w-[440px] rounded-2xl overflow-hidden shadow-xl">
         <img
-          src="/Rectangle 1.png"
+          src="/aboutt.jpg"
           alt="Church cross silhouette"
           className="object-cover w-full h-full"
         />
