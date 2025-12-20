@@ -1,9 +1,53 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ChurchHeaderb from "@/components/Header/ChurchHeader";
+import emailjs from "@emailjs/browser";
 
 export default function BelieversClassPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          fullName: formData.fullName,
+          email: formData.email,
+          fieldLabel: "Phone Number",      // dynamic field
+          fieldValue: formData.phone,      // dynamic value
+          submissionType: "New Believers’ Class Registration",
+          message: formData.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
+      alert("Registration submitted successfully!");
+      setFormData({ fullName: "", email: "", phone: "", message: "" });
+      setShowModal(false);
+    } catch (error) {
+      alert("Failed to submit. Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white w-full overflow-hidden">
       {/* HEADER */}
@@ -16,16 +60,13 @@ export default function BelieversClassPage() {
           alt="Believers Class"
           className="absolute inset-0 w-full h-full object-cover"
         />
-
         <div className="absolute inset-0 bg-black/60" />
-
         <div className="relative z-10 max-w-4xl text-center px-6">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
             Believers’ Class
           </h1>
           <p className="mt-6 text-lg md:text-xl text-gray-200">
-            A foundational class designed to establish new believers in Christ,
-            doctrine, and the values of RCCG.
+            A foundational class designed to establish new believers in Christ, doctrine, and the values of RCCG.
           </p>
         </div>
       </section>
@@ -49,12 +90,10 @@ export default function BelieversClassPage() {
               serve effectively, and live a Christ-centered life.
             </p>
 
-            {/* WHAT YOU WILL LEARN */}
             <div className="mt-10">
               <h3 className="text-xl font-semibold text-gray-900">
                 What You’ll Learn
               </h3>
-
               <ul className="mt-4 space-y-3 text-gray-700 list-disc list-inside">
                 <li>Salvation and Christian fundamentals</li>
                 <li>The Holy Spirit and spiritual growth</li>
@@ -78,7 +117,6 @@ export default function BelieversClassPage() {
               <InfoRow label="Duration" value="8 Weeks" />
             </div>
 
-            {/* WHO SHOULD ATTEND */}
             <div className="mt-8">
               <h4 className="text-lg font-semibold text-gray-900">
                 Who Should Attend?
@@ -89,8 +127,9 @@ export default function BelieversClassPage() {
               </p>
             </div>
 
-            {/* CTA */}
+            {/* REGISTER BUTTON */}
             <button
+              onClick={() => setShowModal(true)}
               className="mt-8 w-full py-4 rounded-xl bg-sky-600 text-white
               font-semibold text-lg hover:bg-sky-700 transition-all duration-300"
             >
@@ -100,13 +139,74 @@ export default function BelieversClassPage() {
         </div>
       </section>
 
+      {/* REGISTRATION MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold text-lg"
+            >
+              ×
+            </button>
+
+            <h3 className="text-2xl font-bold mb-6 text-gray-900">
+              Believers’ Class Registration
+            </h3>
+
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                className="px-4 py-3 border rounded-lg"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="px-4 py-3 border rounded-lg"
+              />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="px-4 py-3 border rounded-lg"
+              />
+              <textarea
+                name="message"
+                placeholder="Message (optional)"
+                value={formData.message}
+                onChange={handleChange}
+                className="px-4 py-3 border rounded-lg min-h-[100px]"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-4 py-3 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 disabled:opacity-50"
+              >
+                {loading ? "Submitting..." : "Submit Registration"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* EXTRA SECTION */}
       <section className="bg-gray-50 py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-900">
             Why Join the Believers’ Class?
           </h2>
-
           <p className="mt-6 text-gray-700 leading-relaxed">
             Because growth is intentional. This class equips you with knowledge,
             clarity, confidence, and a strong spiritual identity in Christ.

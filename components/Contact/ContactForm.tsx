@@ -1,74 +1,115 @@
-// ContactForm.tsx
 "use client";
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
 
-function ContactForm() {
+export default function ContactForm() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    prayerPoint: '',
-    message: ''
+    fullName: "",
+    email: "",
+    prayerPoint: "",
+    message: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    await emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+      {
+        fullName: formData.fullName,
+        email: formData.email,
+        fieldLabel: "Prayer Point",       // dynamic label
+    fieldValue: formData.prayerPoint,
+        message: formData.message,
+        submissionType: "New Contact Form Submission",
+      },
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+    );
+
+    alert("Message sent successfully!");
+    setFormData({
+      fullName: "",
+      email: "",
+      prayerPoint: "",
+      message: "",
+    });
+  } catch (error: unknown) {
+    alert("Failed to send message. Try again.");
+    if (error instanceof Error) {
+      console.error("EmailJS error:", error.message);
+    } else {
+      console.error("EmailJS unknown error:", error);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex-1">
-      <h2 className="mb-8 text-lg md:text-xl font-bold tracking-tight text-gray-900 uppercase">
+      <h2 className="mb-8 text-lg md:text-xl font-bold uppercase">
         Contact Form:
       </h2>
+
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <input
           type="text"
           name="fullName"
           placeholder="Your Full Name"
           value={formData.fullName}
-          onChange={handleInputChange}
-          className="px-5 py-4 w-full text-base border-2 rounded-lg border-gray-200 focus:outline-none focus:border-gray-400"
+          onChange={handleChange}
+          required
+          className="px-5 py-4 border-2 rounded-lg"
         />
+
         <input
           type="email"
           name="email"
           placeholder="Your Email"
           value={formData.email}
-          onChange={handleInputChange}
-          className="px-5 py-4 w-full text-base border-2 rounded-lg border-gray-200 focus:outline-none focus:border-gray-400"
+          onChange={handleChange}
+          required
+          className="px-5 py-4 border-2 rounded-lg"
         />
+
         <input
           type="text"
           name="prayerPoint"
           placeholder="Prayer Point"
           value={formData.prayerPoint}
-          onChange={handleInputChange}
-          className="px-5 py-4 w-full text-base border-2 rounded-lg border-gray-200 focus:outline-none focus:border-gray-400"
+          onChange={handleChange}
+          className="px-5 py-4 border-2 rounded-lg"
         />
+
         <textarea
           name="message"
           placeholder="Message"
           value={formData.message}
-          onChange={handleInputChange}
-          className="px-5 py-4 w-full min-h-[120px] text-base border-2 rounded-lg border-gray-200 resize-none focus:outline-none focus:border-gray-400"
+          onChange={handleChange}
+          required
+          className="px-5 py-4 min-h-[120px] border-2 rounded-lg"
         />
+
         <button
           type="submit"
-          className="px-6 py-4 mt-3 w-full text-base md:text-lg font-bold text-white uppercase rounded-lg bg-gray-400 hover:bg-[#333064] transition-colors"
+          disabled={loading}
+          className="px-6 py-4 font-bold text-white uppercase rounded-lg bg-gray-400 hover:bg-[#333064] disabled:opacity-50"
         >
-          Send Message
+          {loading ? "Sending..." : "Send Message"}
         </button>
       </form>
     </div>
   );
 }
-
-export default ContactForm;
