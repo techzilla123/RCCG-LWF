@@ -88,9 +88,9 @@ function EventModal({
           <Button
             onClick={onClose}
             size="md"
-            className="absolute top-4 right-4 z-10 p-2 bg-secondary hover:bg-secondary/90 text-foreground rounded-md"
+            className="absolute top-4 right-4 z-10 p-2 bg-black-700 hover:bg-black-600 text-foreground rounded-md"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 bg-black" />
           </Button>
 
           {/* Content */}
