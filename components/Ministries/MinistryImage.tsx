@@ -1,15 +1,27 @@
-import * as React from "react";
+"use client"
 
-export function MinistryImage() {
+import React from "react"
+
+interface MinistryImageProps {
+  className?: string
+  image: string
+  title: string
+}
+
+export function MinistryImage({
+  className = "",
+  image,
+  title,
+}: MinistryImageProps) {
   return (
-    <div className="flex-1 shrink basis-0 min-h-px min-w-60 max-md:max-w-full">
-      <div className="w-full max-md:max-w-full">
+    <div className={`flex-1 flex justify-center ${className}`}>
+      <div className="relative max-w-[420px] rounded-xl overflow-hidden shadow-lg">
         <img
-          src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true"
-          alt="Ministry activities"
-          className="object-contain max-w-full aspect-[0.95] w-[524px]"
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover"
         />
       </div>
     </div>
-  );
+  )
 }

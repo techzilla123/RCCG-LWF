@@ -16,6 +16,11 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 })
 
+const montserratBold = Montserrat({
+  weight: "700",
+  subsets: ["latin"],
+})
+
 interface MinistryData {
   title: string
   slogan: string
@@ -117,17 +122,19 @@ export default function MinistryCarousel() {
        <div className="flex flex-col items-center self-center mb-4">
   <div className="flex flex-col items-center self-center mb-6">
   <span
-    className={`
-      ${luckiestGuy.className}
-      text-4xl sm:text-5xl md:text-6xl
-      uppercase tracking-wide
-      text-transparent bg-clip-text
-      ${currentMinistry.gradientClass}
-      ministry-text-logo
-    `}
-  >
-    {currentMinistry.slogan}
-  </span>
+  className={`
+    ${montserratBold.className}
+    text-2xl sm:text-3xl md:text-4xl
+    uppercase tracking-wide
+    text-transparent bg-clip-text
+    ${currentMinistry.gradientClass}
+    whitespace-nowrap
+    overflow-hidden
+  `}
+>
+  {currentMinistry.slogan}
+</span>
+
 </div>
 
 </div>
@@ -244,35 +251,65 @@ export default function MinistryCarousel() {
 
         <div className="flex relative flex-wrap gap-8 items-start pt-1 pb-4 w-full max-w-[1080px] mx-auto">
           {/* Left Arrow */}
-          <button
-            onClick={goToPrevious}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-16 z-10 p-2 rounded-full hover:bg-gray-200 transition-colors"
-            aria-label="Previous ministry"
-          >
-            <ChevronLeft size={32} className="text-zinc-800" />
-          </button>
+       <button
+  onClick={goToPrevious}
+  className="
+    absolute 
+    left-[-36px] sm:left-[-48px]  /* further apart */
+    md:-left-14 lg:-left-24 xl:-left-36
+    top-1/2 -translate-y-1/2 
+    z-30 
+    p-2 rounded-full          /* smaller clickable area */
+    bg-white/90 hover:bg-white 
+    shadow-lg transition
+  "
+  aria-label="Previous ministry"
+>
+  <ChevronLeft size={24} className="text-zinc-800" />  {/* smaller arrow */}
+</button>
 
           {/* Alternating layout */}
-          {isEvenIndex ? (
-            <>
-              <MinistryContent />
-              <MinistryImage />
-            </>
-          ) : (
-            <>
-              <MinistryImage />
-              <MinistryContent />
-            </>
-          )}
+          <div className="flex flex-col md:flex-row gap-8 w-full max-w-[1080px] mx-auto">
+  {/* IMAGE — always first on mobile */}
+  <div
+    className={`w-full md:w-1/2 ${
+      isEvenIndex ? "md:order-2" : "md:order-1"
+    } order-1`}
+  >
+    <MinistryImage />
+  </div>
+
+  {/* CONTENT */}
+  <div
+    className={`w-full md:w-1/2 ${
+      isEvenIndex ? "md:order-1" : "md:order-2"
+    } order-2`}
+  >
+    <MinistryContent />
+  </div>
+</div>
+
+
 
           {/* Right Arrow */}
-          <button
-            onClick={goToNext}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-16 z-10 p-2 rounded-full hover:bg-gray-200 transition-colors"
-            aria-label="Next ministry"
-          >
-            <ChevronRight size={32} className="text-zinc-800" />
-          </button>
+      <button
+  onClick={goToNext}
+  className="
+    absolute 
+    right-[-36px] sm:right-[-48px]  /* further apart */
+    md:-right-14 lg:-right-24 xl:-right-36
+    top-1/2 -translate-y-1/2 
+    z-30 
+    p-2 rounded-full          /* smaller clickable area */
+    bg-white/90 hover:bg-white 
+    shadow-lg transition
+  "
+  aria-label="Next ministry"
+>
+  <ChevronRight size={24} className="text-zinc-800" />  {/* smaller arrow */}
+</button>
+
+
         </div>
 
         {/* Slide Dots */}
@@ -290,6 +327,7 @@ export default function MinistryCarousel() {
             />
           ))}
         </div>
+        
       </div>
     </section>
   )
