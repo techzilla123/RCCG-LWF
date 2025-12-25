@@ -6,48 +6,46 @@ import { HamburgerIcon } from "./HamburgerIcon"
 import { StartHereDropdown } from "./StartHereDropdown"
 import { MinistriesDropdown } from "./MinistriesDropdown"
 import { MoreDropdown } from "./MoreDropdown"
+import { MobilePopup } from "./MobilePopup"
 
 export const Navigation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
-  const [openMobileDropdown, setOpenMobileDropdown] = React.useState<
+  const [openPopup, setOpenPopup] = React.useState<
     "start" | "ministries" | "more" | null
   >(null)
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-    setOpenMobileDropdown(null)
+    setIsMobileMenuOpen(prev => !prev)
+    setOpenPopup(null)
   }
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
-    setOpenMobileDropdown(null)
-  }
-
-  const toggleDropdown = (key: "start" | "ministries" | "more") => {
-    setOpenMobileDropdown(prev => (prev === key ? null : key))
+    setOpenPopup(null)
   }
 
   return (
     <>
-      {/* ================= DESKTOP (UNCHANGED) ================= */}
+      {/* ================= DESKTOP ================= */}
       <nav className="hidden md:flex absolute top-[31px] left-0 right-0 h-[70px] z-[15] justify-center">
         <div className="flex items-center h-[53px] max-w-screen-xl w-full px-4">
-          <ul className="flex flex-wrap justify-center content-center items-center gap-1 w-full">
+          <ul className="flex justify-center items-center gap-1 w-full">
             <NavigationItem label="START HERE" hasDropdown />
             <NavigationItem label="CONTACT" link="/contact" />
             <NavigationItem label="EVENTS" link="/events" />
             <NavigationItem label="GIVE" link="/give" isHighlighted />
-            <NavigationItem label="MINISTRIES" link="/ministries" hasDropdown />
+            <NavigationItem label="MINISTRIES" hasDropdown />
             <NavigationItem label="MORE" hasDropdown />
           </ul>
         </div>
       </nav>
 
-      {/* ================= MOBILE ================= */}
+      {/* ================= MOBILE HAMBURGER ================= */}
       <div className="md:hidden absolute right-4 top-[45px] z-50">
         <HamburgerIcon isOpen={isMobileMenuOpen} onClick={toggleMobileMenu} />
       </div>
 
+      {/* BACKDROP */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -55,26 +53,21 @@ export const Navigation: React.FC = () => {
         />
       )}
 
+      {/* ================= MOBILE DRAWER ================= */}
       <nav
         className={`fixed top-[33px] right-0 h-full w-[85vw] max-w-sm bg-white shadow-xl z-50 transform transition-transform duration-300 md:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex flex-col p-4 pt-8 overflow-y-auto">
-          <ul className="flex flex-col gap-2">
+        <div className="flex flex-col p-4 pt-8">
+          <ul className="flex flex-col gap-3">
 
-            {/* START HERE */}
             <NavigationItem
               label="START HERE"
               isMobile
               hasDropdown
-              onClick={() => toggleDropdown("start")}
+              onClick={() => setOpenPopup("start")}
             />
-            {openMobileDropdown === "start" && (
-              <div className="relative pl-3">
-                <StartHereDropdown />
-              </div>
-            )}
 
             <NavigationItem
               label="MESSAGES"
@@ -97,34 +90,41 @@ export const Navigation: React.FC = () => {
               onClick={closeMobileMenu}
             />
 
-            {/* MINISTRIES */}
             <NavigationItem
               label="MINISTRIES"
               isMobile
               hasDropdown
-              onClick={() => toggleDropdown("ministries")}
+              onClick={() => setOpenPopup("ministries")}
             />
-            {openMobileDropdown === "ministries" && (
-              <div className="relative pl-3">
-                <MinistriesDropdown />
-              </div>
-            )}
 
-            {/* MORE */}
             <NavigationItem
               label="MORE"
               isMobile
               hasDropdown
-              onClick={() => toggleDropdown("more")}
+              onClick={() => setOpenPopup("more")}
             />
-            {openMobileDropdown === "more" && (
-              <div className="relative pl-3 overflow-x-auto">
-                <MoreDropdown />
-              </div>
-            )}
           </ul>
         </div>
       </nav>
+
+      {/* ================= MOBILE POPUPS ================= */}
+      {openPopup === "start" && (
+        <MobilePopup title="Start Here" onClose={() => setOpenPopup(null)}>
+          <StartHereDropdown />
+        </MobilePopup>
+      )}
+
+      {openPopup === "ministries" && (
+        <MobilePopup title="Ministries" onClose={() => setOpenPopup(null)}>
+          <MinistriesDropdown />
+        </MobilePopup>
+      )}
+
+      {openPopup === "more" && (
+        <MobilePopup title="More" onClose={() => setOpenPopup(null)}>
+          <MoreDropdown />
+        </MobilePopup>
+      )}
     </>
   )
 }

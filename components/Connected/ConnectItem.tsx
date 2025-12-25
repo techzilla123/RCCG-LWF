@@ -6,7 +6,7 @@ interface ConnectItemProps {
   description: string;
   linkText: string;
   hasBorder?: boolean;
-  onClick?: () => void;        // ✅ ADD THIS
+  onClick?: () => void;
 }
 
 export const ConnectItem: React.FC<ConnectItemProps> = ({
@@ -19,34 +19,44 @@ export const ConnectItem: React.FC<ConnectItemProps> = ({
 }) => {
   return (
     <section
-      onClick={onClick}   // ✅ MAKE WHOLE ITEM CLICKABLE
-      className={`flex relative flex-col items-start self-stretch cursor-pointer hover:opacity-90 transition-opacity
-      ${hasBorder ? 'pb-3 border-b border-solid border-b-zinc-400' : ''}`}
+      onClick={onClick}
+      className={`cursor-pointer transition-opacity hover:opacity-90
+      ${hasBorder ? 'border-b border-zinc-400 pb-6' : ''}`}
     >
-      <div className="relative self-stretch h-[135px] max-w-[550px] max-md:relative max-md:h-auto">
-        <div className="flex absolute top-0 left-0 flex-col justify-center items-start w-8 h-[31px] max-md:relative max-md:mb-2.5">
-          {icon}
-        </div>
+      {/* DESKTOP */}
+      <div className="hidden md:block relative h-[135px] max-w-[550px]">
+        <div className="absolute top-0 left-0">{icon}</div>
 
-        <header className="flex absolute -top-0.5 flex-col items-start pb-2 h-8 left-[47px] w-[433px] max-md:relative max-md:top-0 max-md:left-0 max-md:mt-10 max-md:w-full">
-          <h3 className="relative px-0 py-0.5 text-xl font-medium leading-5 text-zinc-800 max-sm:text-lg max-sm:leading-6">
-            {title}
-          </h3>
-        </header>
+        <h3 className="absolute left-[47px] top-0 text-xl font-medium text-zinc-800">
+          {title}
+        </h3>
 
-        <div className="flex absolute flex-col gap-0 items-start h-[105px] left-[47px] top-[29px] w-[433px] max-md:relative max-md:top-0 max-md:left-0 max-md:w-full max-md:h-auto">
-          <div className="flex relative flex-col items-start self-stretch pb-4">
-            <p className="relative self-stretch text-base font-light leading-6 text-zinc-800 max-sm:text-sm max-sm:leading-5">
-              {description}
-            </p>
-          </div>
+        <div className="absolute left-[47px] top-[29px] w-[433px]">
+          <p className="text-base font-light leading-6 text-zinc-800">
+            {description}
+          </p>
 
-          <div className="flex relative flex-col items-end self-stretch">
-            <button className="relative text-base font-bold leading-6 text-right text-slate-700 max-sm:text-sm hover:text-slate-600 transition-colors">
-              {linkText}
-            </button>
+          <div className="flex justify-end mt-2">
+            <span className="font-bold text-slate-700">{linkText}</span>
           </div>
         </div>
+      </div>
+
+      {/* MOBILE */}
+      <div className="flex flex-col gap-3 md:hidden">
+        <div>{icon}</div>
+
+        <h3 className="text-lg font-medium text-zinc-800">
+          {title}
+        </h3>
+
+        <p className="text-sm font-light leading-5 text-zinc-800">
+          {description}
+        </p>
+
+        <span className="font-bold text-slate-700">
+          {linkText}
+        </span>
       </div>
     </section>
   );
