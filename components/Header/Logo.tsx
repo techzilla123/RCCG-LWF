@@ -12,7 +12,7 @@ export const Logo: React.FC<{ onClick?: () => void }> = ({ onClick }) => {
   return (
    <section
   onClick={onClick}
-  className="absolute left-4 md:left-8 h-[50px] md:h-[67px] top-[38px] md:top-[34px] w-[200px] md:w-[305px] z-[999] cursor-pointer hover:opacity-85 transition-opacity duration-200"
+  className="absolute left-4 md:left-8 h-[50px] md:h-[67px] top-[38px] md:top-[34px] w-[200px] md:w-[305px] z-[9] cursor-pointer hover:opacity-85 transition-opacity duration-200"
 >
 
       <div className="absolute left-0 top-2 md:top-2.5 h-[35px] md:h-[45px] w-full">

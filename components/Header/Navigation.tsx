@@ -27,7 +27,7 @@ export const Navigation: React.FC = () => {
   return (
     <>
       {/* ================= DESKTOP ================= */}
-      <nav className="hidden md:flex absolute top-[31px] left-0 right-0 h-[70px] z-[15] justify-center">
+<nav className="hidden md:flex absolute top-[31px] left-0 right-0 h-[70px] z-[100] justify-center">
         <div className="flex items-center h-[53px] max-w-screen-xl w-full px-4">
           <ul className="flex justify-center items-center gap-1 w-full">
             <NavigationItem label="START HERE" hasDropdown />
@@ -41,7 +41,7 @@ export const Navigation: React.FC = () => {
       </nav>
 
       {/* ================= MOBILE HAMBURGER ================= */}
-      <div className="md:hidden absolute right-4 top-[45px] z-50">
+      <div className="md:hidden absolute right-4 top-[45px] z-[1000]">
         <HamburgerIcon isOpen={isMobileMenuOpen} onClick={toggleMobileMenu} />
       </div>
 
@@ -108,23 +108,33 @@ export const Navigation: React.FC = () => {
       </nav>
 
       {/* ================= MOBILE POPUPS ================= */}
-      {openPopup === "start" && (
-        <MobilePopup title="Start Here" onClose={() => setOpenPopup(null)}>
-          <StartHereDropdown />
-        </MobilePopup>
-      )}
+{openPopup === "start" && (
+  <MobilePopup
+    title="Start Here"
+    position="middle"
+    onClose={() => setOpenPopup(null)}
+  >
+    <StartHereDropdown />
+  </MobilePopup>
+)}
 
-      {openPopup === "ministries" && (
-        <MobilePopup title="Ministries" onClose={() => setOpenPopup(null)}>
-          <MinistriesDropdown />
-        </MobilePopup>
-      )}
+{openPopup === "ministries" && (
+  <MobilePopup
+    title="Ministries"
+    position="middle"
+    onClose={() => setOpenPopup(null)}
+  >
+    <MinistriesDropdown />
+  </MobilePopup>
+)}
 
-      {openPopup === "more" && (
-        <MobilePopup title="More" onClose={() => setOpenPopup(null)}>
-          <MoreDropdown />
-        </MobilePopup>
-      )}
+{openPopup === "more" && (
+  <MobilePopup title="More" onClose={() => setOpenPopup(null)}>
+    <MoreDropdown />
+  </MobilePopup>
+)}
+
     </>
   )
 }
+    

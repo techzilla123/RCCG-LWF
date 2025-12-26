@@ -22,7 +22,16 @@ export const MobilePopup: React.FC<Props> = ({
       />
 
       {/* Bottom Sheet */}
-      <div className="fixed inset-x-0 bottom-0 z-[61] bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto animate-slide-up">
+      <div
+        className="
+          fixed inset-x-0 bottom-0 z-[61]
+          bg-white rounded-t-2xl
+          max-h-[90vh]
+          overflow-y-auto
+          animate-slide-up
+        "
+      >
+        {/* Header */}
         <div className="sticky top-0 bg-white border-b px-4 py-4 flex justify-between items-center">
           <span className="text-sm font-semibold uppercase">{title}</span>
           <button
@@ -33,7 +42,10 @@ export const MobilePopup: React.FC<Props> = ({
           </button>
         </div>
 
-        <div className="p-4">{children}</div>
+        {/* Content */}
+        <div className="p-4">
+          {children}
+        </div>
       </div>
     </>
   )
