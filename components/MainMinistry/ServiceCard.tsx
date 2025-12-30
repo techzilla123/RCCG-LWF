@@ -34,11 +34,21 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
   return (
     <article className="flex flex-col items-start bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition duration-300">
-      <img
-        src={imageSrc}
-        alt={title || "Ministry image"}
-        className="w-full object-cover aspect-[1.6/1] rounded-t-2xl"
-      />
+       <div className="relative w-full aspect-[1.6/1] rounded-t-2xl overflow-hidden">
+        <img
+          src={imageSrc}
+          alt={title || "Ministry image"}
+          className="w-full h-full object-cover"
+        />
+
+      
+
+        {/* Text on image (EXACT STYLE) */}
+        <h3 className="absolute bottom-4 left-4 text-white font-bold text-xl md:text-2xl">
+          {title}
+        </h3>
+      </div>
+      
 
       <div className="flex flex-col gap-4 p-6">
         <h3 className="text-2xl font-semibold text-gray-900">{title}</h3>

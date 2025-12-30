@@ -20,7 +20,7 @@ export const services: Service[] = [
   {
     title: "Media Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/dc511c6bfdf25e19d833a03ab67e6e1d2ecfdfea?placeholderIfAbsent=true",
+      "/media.jpeg",
     description:
       "Handles cameras, livestream, sound, lighting, graphics and digital content.",
     fullDescription: `
@@ -37,7 +37,7 @@ If you love creativity, technology, storytelling, or digital ministry, this is y
   {
     title: "Choir Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/d879e72a968fa8bf5b145e8030c5568dd03735d2?placeholderIfAbsent=true",
+      "/choir.jpeg",
     description:
       "Leads the congregation in worship, praise, musical excellence and spiritual atmosphere.",
     fullDescription: `
@@ -52,7 +52,7 @@ Anyone with a passion for singing, music, or worship can join and grow.
   {
     title: "Ushering Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4cea52f5b9c03ab2dd5588790c0fc980f9a87c5a?placeholderIfAbsent=true",
+      "/usher.jpeg",
     description:
       "Maintains order, welcomes members, manages seating, and assists during services.",
     fullDescription: `
@@ -67,7 +67,7 @@ If you enjoy serving people with a smile, this ministry is for you.
   {
     title: "Sanitation Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/b071b765fa90104b0d85abfe1cdc971d4fa2b216?placeholderIfAbsent=true",
+      "/san.jpeg",
     description:
       "Keeps the church clean, neat, hygienic, and welcoming for all members.",
     fullDescription: `
@@ -114,7 +114,7 @@ If you have a burning passion to share the Gospel, this ministry is for you.
   {
     title: "Welfare Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/f78cf50f6f2266c8c93e0cd7b2f0e5aaf32f0e97?placeholderIfAbsent=true",
+      "/wal.jpeg",
     description:
       "Provides care, support, community aid, and help for members in need.",
     fullDescription: `
