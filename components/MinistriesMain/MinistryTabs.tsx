@@ -44,7 +44,7 @@ Join us as we raise a generation of confident, compassionate, and Christ-centere
   const renderYouth = () => {
     return (
       <ContentPanel
-        imageSrc="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80"
+        imageSrc="/82.JPG"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Youth Ministry</span>
