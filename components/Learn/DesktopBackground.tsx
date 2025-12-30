@@ -18,13 +18,13 @@ function Background() {
               {/* First Image with GROUPS text */}
               <div className="relative overflow-visible">
                 <ImageSection
-                  src="/123e.jpg"
+                  src="/sss.jpeg"
                   aspectRatio="aspect-[0.8]"
                   className="self-end grayscale relative"
                 />
 
                 {/* GROUPS text responsive */}
-                <div className="absolute top-[2rem] right-[-1.2rem] h-full flex items-center pointer-events-none
+                <div className="absolute top-[1rem] right-[-3.2rem] h-full flex items-center pointer-events-none
                                 max-md:top-0 max-md:right-0 max-md:text-[3rem]">
                   <span className="text-transparent text-[5.7rem] font-extrabold tracking-widest
                                    [writing-mode:vertical-rl] [-webkit-text-stroke:2px_white]
