@@ -11,7 +11,7 @@ export const MinistryTabs: React.FC = () => {
   const renderChildren = () => {
     return (
       <ContentPanel
-        imageSrc="https://childrensministry.com/wp-content/upload/children/media/2014/04/How-to-Build-a-Childrens-Ministry-From-the-Ground-Up-1265x500.jpg"
+        imageSrc="/77.JPG"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Children’s Ministry</span>
