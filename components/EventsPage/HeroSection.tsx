@@ -23,7 +23,7 @@ interface Event {
 export function HeroSection() {
   const allImages = [
   "/frame1.jpg",
-  "/frame2.jpg",
+  "/frame2.jpeg",
   "/frame3.jpg",
   "/frame4.jpg",
   "/frame5.jpg",
