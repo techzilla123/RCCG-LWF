@@ -11,7 +11,7 @@ export const ChurchImageSection: React.FC = () => {
           className="object-cover w-full h-full"
         />
         {/* Gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/25 to-transparent" />
+        <div className="absolute inset-0  to-transparent" />
       </figure>
 
       {/* Logo & Info */}
