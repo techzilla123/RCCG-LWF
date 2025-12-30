@@ -137,7 +137,7 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
   const renderMen = () => {
     return (
       <ContentPanel
-        imageSrc="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80"
+        imageSrc="/new-99.JPG"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Men’s Ministry</span>
