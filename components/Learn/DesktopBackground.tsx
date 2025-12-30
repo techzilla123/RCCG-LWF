@@ -18,7 +18,7 @@ function Background() {
               {/* First Image with GROUPS text */}
               <div className="relative overflow-visible">
                 <ImageSection
-                  src="/wal.jpeg"
+                  src="/group22.jpeg"
                   aspectRatio="aspect-[0.8]"
                   className="self-end grayscale relative"
                 />
@@ -52,7 +52,7 @@ function Background() {
               {/* Second Image with EVENTS text */}
               <div className="relative overflow-visible mt-20 max-md:mt-10">
                 <ImageSection
-                  src="/wal.jpeg"
+                  src="/wal1.jpeg"
                   aspectRatio="aspect-[0.75]"
                   className="grayscale"
                 />

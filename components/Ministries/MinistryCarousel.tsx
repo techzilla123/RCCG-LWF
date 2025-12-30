@@ -44,7 +44,7 @@ const ministries: MinistryData[] = [
     gradientClass: "bg-gradient-to-r from-blue-600 to-indigo-600",
     description:
       "Dedicated to raising Christ Ambassadors by guiding teenagers into deeper relationship with Christ. Through interactive teachings, mentorship, worship, and life-building sessions, we help youths discover identity, purpose, and God-given potential.",
-    image: "/82.JPG",
+    image: "/youthh.jpeg",
   },
   {
     title: "Young Adult & Singles Ministry",
