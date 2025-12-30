@@ -21,7 +21,7 @@ export const HeroSection = () => {
   return (
     <section className="relative w-full -mt-[18px] overflow-hidden">
       <video
-        src="/3499958-uhd_3840_2160_30fps.mp4"
+        src="/about.mp4"
         autoPlay
         loop
         muted
