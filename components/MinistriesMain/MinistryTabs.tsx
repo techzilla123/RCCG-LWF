@@ -137,7 +137,7 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
   const renderMen = () => {
     return (
       <ContentPanel
-        imageSrc="/new-99.JPG"
+        imageSrc="/mencorrected.jpeg"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Men’s Ministry</span>
