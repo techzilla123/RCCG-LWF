@@ -111,7 +111,6 @@ export const Navigation: React.FC = () => {
 {openPopup === "start" && (
   <MobilePopup
     title="Start Here"
-    position="middle"
     onClose={() => setOpenPopup(null)}
   >
     <StartHereDropdown />
@@ -121,7 +120,6 @@ export const Navigation: React.FC = () => {
 {openPopup === "ministries" && (
   <MobilePopup
     title="Ministries"
-    position="middle"
     onClose={() => setOpenPopup(null)}
   >
     <MinistriesDropdown />
@@ -129,10 +127,14 @@ export const Navigation: React.FC = () => {
 )}
 
 {openPopup === "more" && (
-  <MobilePopup title="More" onClose={() => setOpenPopup(null)}>
+  <MobilePopup
+    title="More"
+    onClose={() => setOpenPopup(null)}
+  >
     <MoreDropdown />
   </MobilePopup>
 )}
+
 
     </>
   )
