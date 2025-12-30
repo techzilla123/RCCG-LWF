@@ -18,7 +18,7 @@ const ministryData = [
     altText: "Youth Ministry",
   },
   {
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/35fbd5221a3c966cf9bc18b06d910fce3bb8f11a?width=560",
+    image: "/mencorrected.jpeg",
     title: "Men's Ministry",
     description: "Equipping men to lead and serve like Christ.",
     altText: "Men's Ministry",
