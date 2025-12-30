@@ -44,7 +44,7 @@ const ministries: MinistryData[] = [
     gradientClass: "bg-gradient-to-r from-blue-600 to-indigo-600",
     description:
       "Dedicated to raising Christ Ambassadors by guiding teenagers into deeper relationship with Christ. Through interactive teachings, mentorship, worship, and life-building sessions, we help youths discover identity, purpose, and God-given potential.",
-    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "/82.JPG",
   },
   {
     title: "Young Adult & Singles Ministry",
@@ -53,7 +53,7 @@ const ministries: MinistryData[] = [
       "bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-violet-700",
     description:
       "A vibrant community that empowers young adults to grow spiritually, build meaningful relationships, and walk confidently in God’s purpose. Through fellowship, mentorship, Bible studies, and skill-building sessions, we equip young people to lead boldly in faith and influence their world for Christ.",
-    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "/yasm.jpg",
   },
   {
     title: "Women’s Ministry – Women of Zion",
@@ -61,7 +61,7 @@ const ministries: MinistryData[] = [
     gradientClass: "bg-gradient-to-r from-pink-600 to-rose-600",
     description:
       "A community dedicated to nurturing, empowering, and uplifting women in all life stages. Through prayer, teaching, fellowship, and outreach, we help women grow spiritually, embrace their God-given purpose, and positively impact their families and communities.",
-    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "/corrected.jpeg",
   },
   {
     title: "Men’s Ministry – Men of Valor",
@@ -69,7 +69,7 @@ const ministries: MinistryData[] = [
     gradientClass: "bg-gradient-to-r from-cyan-900 to-blue-900",
     description:
       "Focused on raising strong, spiritually grounded men who lead with integrity and courage. Through prayer, mentorship, fellowship, and practical empowerment, we equip men to grow in faith, character, and purpose while serving their homes, church, and community.",
-    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "/mencorrected.jpeg",
   },
   {
     title: "The Wise Ones Ministry",

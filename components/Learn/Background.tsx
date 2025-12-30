@@ -65,7 +65,7 @@ function Background() {
 
               {/* Third Image */}
               <ImageSection
-                src="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/f45734d07c11659104f503bf005bd90b2d93dae2?placeholderIfAbsent=true"
+                src="/wal.jpeg"
                 aspectRatio="aspect-[0.8]"
                 className="self-end mt-28 max-md:mt-10"
               />
