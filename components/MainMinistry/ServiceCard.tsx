@@ -43,10 +43,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
       
 
-        {/* Text on image (EXACT STYLE) */}
-        <h3 className="absolute bottom-4 left-4 text-white font-bold text-xl md:text-2xl">
-          {title}
-        </h3>
+      
       </div>
       
 
