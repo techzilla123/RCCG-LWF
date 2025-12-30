@@ -104,7 +104,7 @@ This is a place to belong, grow, and thrive. Join us as we rise boldly in faith 
   const renderWomen = () => {
     return (
       <ContentPanel
-        imageSrc="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80"
+        imageSrc="/11women.JPG"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Women’s Ministry</span>
