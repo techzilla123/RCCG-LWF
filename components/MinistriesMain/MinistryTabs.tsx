@@ -104,7 +104,7 @@ This is a place to belong, grow, and thrive. Join us as we rise boldly in faith 
   const renderWomen = () => {
     return (
       <ContentPanel
-        imageSrc="/11women.JPG"
+        imageSrc="/corrected.jpeg"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Women’s Ministry</span>
