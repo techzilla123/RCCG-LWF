@@ -18,7 +18,7 @@ function Background() {
               {/* First Image with GROUPS text */}
               <div className="relative overflow-visible">
                 <ImageSection
-                  src="/group22.jpeg"
+                  src="/123e.jpg"
                   aspectRatio="aspect-[0.8]"
                   className="self-end grayscale relative"
                 />
