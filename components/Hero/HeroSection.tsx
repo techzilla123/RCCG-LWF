@@ -20,14 +20,16 @@ export const HeroSection = () => {
 
   return (
     <section className="relative w-full -mt-[18px] overflow-hidden">
-      <video
-        src="/about.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-      ></video>
+     <video
+  src="/about.mp4"
+  autoPlay
+  loop
+  muted
+  playsInline
+  preload="auto"
+  disablePictureInPicture
+  className="absolute inset-0 w-full h-full object-cover"
+/>
 
       <div className="absolute inset-0 bg-black/30" />
 
