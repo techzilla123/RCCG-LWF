@@ -5,12 +5,17 @@ import { MinistryHeading } from "./MinistryHeading"
 import { Montserrat } from "next/font/google"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Luckiest_Guy } from "next/font/google"
+import { Coiny } from "next/font/google"
 
 const luckiestGuy = Luckiest_Guy({
   weight: "400",
   subsets: ["latin"],
 })
 
+const coiny = Coiny({
+  weight: "400",
+  subsets: ["latin"],
+})
 const montserrat = Montserrat({
   weight: "300",
   subsets: ["latin"],
@@ -20,6 +25,7 @@ const montserratBold = Montserrat({
   weight: "700",
   subsets: ["latin"],
 })
+
 
 interface MinistryData {
   title: string
@@ -33,7 +39,7 @@ const ministries: MinistryData[] = [
   {
     title: "Children’s Ministry – God’s Heritage (Ages 1 - 12)",
     slogan: "God’s Heritage",
-    gradientClass: "bg-gradient-to-r from-amber-500 to-orange-500",
+    gradientClass: "bg-gradient-to-r from-amber-500 to-orange-500 ",
     description:
       "A joyful, dynamic, and nurturing place where children ages 1–12 discover God’s love and grow in faith. We build strong spiritual foundations through Bible lessons, memory verses, quizzes, music, and fun activities—all in a safe, welcoming environment.",
     image: "/Aaa.jpg",
@@ -123,7 +129,7 @@ export default function MinistryCarousel() {
   <div className="flex flex-col items-center self-center mb-6">
   <span
   className={`
-    ${montserratBold.className}
+    ${coiny.className}
     text-2xl sm:text-3xl md:text-4xl
     uppercase tracking-wide
     text-transparent bg-clip-text
@@ -135,6 +141,7 @@ export default function MinistryCarousel() {
   {currentMinistry.slogan}
 </span>
 
+
 </div>
 
 </div>
@@ -144,7 +151,7 @@ export default function MinistryCarousel() {
       <div
         className={`flex flex-col items-center mx-auto text-center text-zinc-800 ${montserrat.className} max-w-2xl`}
       >
-        <h2 className="text-2xl font-bold mb-4 text-zinc-800">
+        <h2 className="text-2xl font-bold mb-4 text-zinc-800 -mt-3">
           {currentMinistry.title}
         </h2>
         <p
