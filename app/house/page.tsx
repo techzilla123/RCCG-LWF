@@ -142,7 +142,7 @@ export default function HouseFellowshipPage() {
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <HouseCard
               title="Forney House Fellowship"
-              venue="1212 Talladega Dr, Forney TX 75126"
+             
               date="Last Saturdays of Every Month"
               time="5:00 PM – 6:30 PM"
               active
@@ -150,28 +150,28 @@ export default function HouseFellowshipPage() {
 
             <HouseCard
               title="Heartland House Fellowship"
-              venue="To Be Announced"
+             
               date="To Be Announced"
               time="To Be Announced"
             />
 
             <HouseCard
               title="Crandall House Fellowship"
-              venue="To Be Announced"
+             
               date="To Be Announced"
               time="To Be Announced"
             />
 
             <HouseCard
               title="Terrell House Fellowship"
-              venue="To Be Announced"
+             
               date="To Be Announced"
               time="To Be Announced"
             />
 
             <HouseCard
               title="Heath House Fellowship"
-              venue="To Be Announced"
+             
               date="To Be Announced"
               time="To Be Announced"
             />
@@ -258,13 +258,13 @@ export default function HouseFellowshipPage() {
 /* HOUSE CARD */
 const HouseCard = ({
   title,
-  venue,
+  
   date,
   time,
   active,
 }: {
   title: string;
-  venue: string;
+  
   date: string;
   time: string;
   active?: boolean;
@@ -286,7 +286,7 @@ const HouseCard = ({
     </div>
 
     <div className="space-y-3 text-sm text-gray-700">
-      <p>📍 {venue}</p>
+      
       <p>📅 {date}</p>
       <p>⏰ {time}</p>
     </div>

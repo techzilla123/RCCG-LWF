@@ -10,13 +10,13 @@ export function MediaGrid() {
         <MediaItem
           icon="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/9b6d17b49071467040dec783ad99a40a08baded3?placeholderIfAbsent=true"
           title="SERMONS"
-          url="https://example.com/sermons"
+          url="https://rccgworld.org/rccg"
         />
         <div className="mt-7">
           <MediaItem
             icon="https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/3299f6399a620441c586956d2a59131aaa30bb32?placeholderIfAbsent=true"
             title="VIDEOS"
-            url="https://example.com/videos"
+            url="https://www.youtube.com/@rccgLWF/featured"
           />
         </div>
       </div>
@@ -25,7 +25,7 @@ export function MediaGrid() {
       <div className="flex-1 shrink text-white whitespace-nowrap basis-0 min-h-px min-w-60">
         <MediaItem icon="/Container.png" title="PODCAST" url="https://myrccgradio.mixlr.com/" />
         <div className="mt-7">
-          <MediaItem icon="/Component 10 (1).png" title="MUSIC" url="https://example.com/music" />
+          <MediaItem icon="/Component 10 (1).png" title="MUSIC" url="https://rccgnamc.org" />
         </div>
       </div>
 

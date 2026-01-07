@@ -65,7 +65,7 @@ If you enjoy serving people with a smile, this ministry is for you.
   },
 
   {
-    title: "Environnemental / Sanitation Ministry",
+    title: "Environmental / Sanitation Ministry",
     imageSrc:
       "/san.jpeg",
     description:
