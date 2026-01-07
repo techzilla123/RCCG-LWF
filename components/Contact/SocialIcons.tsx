@@ -16,7 +16,7 @@ function SocialIcons() {
 
       {/* Instagram */}
       <a
-        href="#"
+        href="https://www.instagram.com/rccglwf/"
         aria-label="Instagram"
         className="hover:opacity-70 transition-opacity duration-300"
       >

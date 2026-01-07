@@ -49,11 +49,16 @@ export const MoreDropdown: React.FC = () => {
                 </svg>
                 <span className="text-sm">Blog</span>
               </Link>
-              <Link href="/write-up" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
-                </svg>
-                <span className="text-sm">Write Up</span>
+              <Link href="/house" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <svg
+  className="w-5 h-5"
+  fill="currentColor"
+  viewBox="0 0 24 24"
+>
+  <path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z" />
+</svg>
+
+                <span className="text-sm">House Fellowship</span>
               </Link>
             </div>
 
@@ -108,7 +113,7 @@ export const MoreDropdown: React.FC = () => {
             {/* RESOURCES */}
             <div className="mt-4 pt-3 border-t border-gray-200">
               <h4 className="text-[10px] font-bold uppercase text-gray-500 mb-2">RESOURCES</h4>
-              <Link href="/ministries#resources" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
+              <Link href="https://rccg.org/" className="block hover:bg-gray-50 transition-colors px-2 py-1 rounded">
                 <div className="text-sm font-semibold text-zinc-800">Resources →</div>
                 <div className="text-[11px] text-gray-600">Teachings & materials</div>
               </Link>
@@ -146,7 +151,7 @@ export const MoreDropdown: React.FC = () => {
     {/* Mobile Socials */}
 <div className="flex justify-center gap-4 mt-6 pt-4 border-t border-gray-200">
   <SocialIcon href="https://www.facebook.com/RCCGLWF/" svgPath="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24h11.495v-9.294H9.691V11.01h3.13V8.309c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.464.099 2.795.143v3.24h-1.918c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.696h-3.12V24h6.116C23.403 24 24 23.403 24 22.674V1.326C24 .597 23.403 0 22.675 0z"/>
-  <SocialIcon href="https://instagram.com" svgPath="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.34 3.608 1.315.975.975 1.253 2.242 1.315 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.34 2.633-1.315 3.608-.975.975-2.242 1.253-3.608 1.315-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.34-3.608-1.315-.975-.975-1.253-2.242-1.315-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.34-2.633 1.315-3.608C4.523 2.573 5.79 2.295 7.156 2.233 8.422 2.175 8.802 2.163 12 2.163zm0 3.675a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/>
+  <SocialIcon href="https://www.instagram.com/rccglwf/" svgPath="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.34 3.608 1.315.975.975 1.253 2.242 1.315 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.34 2.633-1.315 3.608-.975.975-2.242 1.253-3.608 1.315-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.34-3.608-1.315-.975-.975-1.253-2.242-1.315-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.34-2.633 1.315-3.608C4.523 2.573 5.79 2.295 7.156 2.233 8.422 2.175 8.802 2.163 12 2.163zm0 3.675a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/>
   <SocialIcon href="https://www.youtube.com/@rccgLWF" svgPath="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.016 3.016 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.121 2.136c1.872.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.016 3.016 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
   <SocialIcon href="https://share.google/3c3JbVtzqxrvzMBcF" svgPath="M12.24 10.285v3.43h5.065c-.205 1.285-1.548 3.77-5.065 3.77-3.047 0-5.535-2.52-5.535-5.625s2.488-5.625 5.535-5.625c1.735 0 2.9.74 3.57 1.38l2.43-2.34C16.72 3.7 14.74 2.75 12.24 2.75 7.64 2.75 3.9 6.53 3.9 11.16s3.74 8.41 8.34 8.41c4.82 0 8.01-3.39 8.01-8.17 0-.55-.06-.97-.135-1.39H12.24z"/>
 </div>

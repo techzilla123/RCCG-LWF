@@ -35,7 +35,8 @@ Join us as we raise a generation of confident, compassionate, and Christ-centere
         buttonColor="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-orange-500 hover:to-amber-500"
         showSchedule
         scheduleDay="Sundays"
-        scheduleTime="9 AM & 10:30 AM"
+        scheduleTime="10:00 AM"
+        resourcesUrl="https://children.rccgna.org/"
       />
     )
   }
@@ -65,8 +66,9 @@ Here, every youth is valued, encouraged, and empowered to shine as a light in th
         buttonText="Join Us"
         buttonColor="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-600 hover:to-blue-600"
         showSchedule
-        scheduleDay="Sundays & Wednesdays"
-        scheduleTime="10:30 AM & 7 PM"
+       scheduleDay="2nd & 4th Sat. (Online) & Sundays"
+scheduleTime="7:00 PM & 10:00 AM"
+        resourcesUrl="https://youth.rccgna.org/"
       />
     )
   }
@@ -95,7 +97,10 @@ Whether you’re a student, young professional, or exploring your path, this min
 This is a place to belong, grow, and thrive. Join us as we rise boldly in faith and impact our world for Christ.`}
         buttonText="Get Connected"
         buttonColor="bg-gradient-to-r from-purple-600 to-violet-700 hover:from-violet-700 hover:to-purple-600"
-        showSchedule={false}
+        showSchedule
+       scheduleDay="2nd Saturday (Online)"
+  scheduleTime="6:00 – 6:30 PM"
+  resourcesUrl="https://yayausa.org/"
       />
     )
   }
@@ -129,6 +134,7 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
         showSchedule
         scheduleDay="Every Friday"
         scheduleTime="6pm - 6:30pm (ONLINE)"
+        resourcesUrl="https://wim.rccgna.org/"
       />
     )
   }
@@ -162,6 +168,7 @@ If you desire growth, connection, and meaningful impact, Men of Valor is your ho
         showSchedule
         scheduleDay="Every 2nd Sundays"
         scheduleTime="12pm"
+        resourcesUrl="https://www.rccgna.org/men-of-impact-virtual/"
       />
     )
   }
@@ -171,7 +178,7 @@ If you desire growth, connection, and meaningful impact, Men of Valor is your ho
   const renderWiseone = () => {
     return (
       <ContentPanel
-        imageSrc="https://img.freepik.com/premium-photo/beautiful-people-concept-30s-mid-age-handsome-elderly-senior-model-man-with-grey-hair_585255-4362.jpg"
+        imageSrc="wiseone.jpeg"
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>Wise Ones Ministry</span>
@@ -194,8 +201,9 @@ Join us as we grow together, encourage one another, and shine with the enduring 
         buttonText="Join Fellowship"
         buttonColor="bg-gradient-to-r from-teal-700 to-cyan-700 hover:from-cyan-700 hover:to-teal-700"
         showSchedule
-        scheduleDay="Wednesdays"
-        scheduleTime="10:00 AM"
+       scheduleDay="1st & Last Saturdays"
+  scheduleTime="6:00 – 6:30 PM"
+  resourcesUrl="https://rccgamericas.org/the-church/council-of-elders/"
       />
     )
   }

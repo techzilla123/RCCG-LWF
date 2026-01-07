@@ -65,7 +65,7 @@ If you enjoy serving people with a smile, this ministry is for you.
   },
 
   {
-    title: "Sanitation Ministry",
+    title: "Environnemental / Sanitation Ministry",
     imageSrc:
       "/san.jpeg",
     description:
@@ -82,7 +82,7 @@ If you enjoy hands-on service and stewardship, this ministry welcomes you.
   {
     title: "Drama Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/a1f6d5e3c763fcf38c0118d332db114f9972244f?placeholderIfAbsent=true",
+      "drama.jpeg",
     description:
       "Presents gospel-centered dramas, skits, stage plays, and visual storytelling.",
     fullDescription: `
@@ -97,7 +97,7 @@ If you enjoy acting, creativity, or stage performance, this team is perfect for 
   {
     title: "Evangelism Ministry",
     imageSrc:
-      "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/4a4a1be1d2ebebafb2b7fd47504757bf3a508020?placeholderIfAbsent=true",
+      "evan.jpeg",
     description:
       "Preaches the Gospel through outreach, follow-up, missions, and soul-winning.",
     fullDescription: `
@@ -112,7 +112,7 @@ If you have a burning passion to share the Gospel, this ministry is for you.
   },
 
   {
-    title: "Welfare Ministry",
+    title: "Welfare / Visitation Ministry",
     imageSrc:
       "/wal.jpeg",
     description:

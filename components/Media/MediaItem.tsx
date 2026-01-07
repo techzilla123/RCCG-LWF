@@ -4,18 +4,19 @@ import * as React from "react";
 interface MediaItemProps {
   icon?: string;
   title: string;
+  url?: string; // optional URL to make media clickable
 }
 
-export function MediaItem({ icon, title }: MediaItemProps) {
-  return (
-    <div className="flex gap-4 justify-center items-start w-full max-w-[550px]">
+export function MediaItem({ icon, title, url }: MediaItemProps) {
+  const content = (
+    <div className="flex gap-4 justify-center items-start w-full max-w-[550px] cursor-pointer hover:opacity-80 transition">
       <div className="flex flex-col justify-center w-8">
         <div className="w-full">
           <div className="flex items-start w-full">
             {icon ? (
               <img
                 src={icon}
-                alt=""
+                alt={title}
                 className="object-contain w-8 aspect-square"
               />
             ) : (
@@ -30,5 +31,14 @@ export function MediaItem({ icon, title }: MediaItemProps) {
         </div>
       </div>
     </div>
+  );
+
+  // Wrap in <a> if URL is provided
+  return url ? (
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      {content}
+    </a>
+  ) : (
+    content
   );
 }

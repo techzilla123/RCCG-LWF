@@ -111,10 +111,10 @@ export default function BelieversClassPage() {
             </h3>
 
             <div className="mt-6 space-y-4">
-              <InfoRow label="Start Date" value="Sunday, 3rd March 2025" />
-              <InfoRow label="Time" value="8:30 AM – 10:00 AM" />
-              <InfoRow label="Venue" value="Church Auditorium (Class Room 2)" />
-              <InfoRow label="Duration" value="8 Weeks" />
+              <InfoRow label="Start Date" value="To Be Announced" />
+              <InfoRow label="Time" value="To Be Announced" />
+              <InfoRow label="Venue" value="To Be Announced" />
+              <InfoRow label="Duration" value="To Be Announced" />
             </div>
 
             <div className="mt-8">

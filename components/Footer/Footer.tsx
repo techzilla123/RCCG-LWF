@@ -69,7 +69,7 @@ export default function Footer() {
 
   {/* Instagram */}
   <a
-    href="#"
+    href="https://www.instagram.com/rccglwf/"
     className="text-zinc-300 hover:text-white transition-colors duration-200"
     aria-label="Instagram"
   >

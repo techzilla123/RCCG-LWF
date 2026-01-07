@@ -7,12 +7,13 @@ import { MinistryModal } from "./MinistryModal"
 
 interface ContentPanelProps {
   imageSrc: string
-  title: React.ReactNode 
+  title: React.ReactNode
   subtitle?: React.ReactNode
   description: string
   fullDetails: string
   buttonText: string
   buttonColor: string
+  resourcesUrl?: string
   showSchedule?: boolean
   scheduleDay?: string
   scheduleTime?: string
@@ -26,6 +27,7 @@ export const ContentPanel: React.FC<ContentPanelProps> = React.memo(
     subtitle,
     description,
     fullDetails,
+    resourcesUrl,
     buttonText,
     buttonColor,
     showSchedule = true,
@@ -193,17 +195,23 @@ export const ContentPanel: React.FC<ContentPanelProps> = React.memo(
                 </span>
               </motion.button>
 
-              <motion.button
-                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full 
-            font-bold text-lg shadow-lg hover:border-gray-400 transition-all duration-300"
-              >
-                <span className="relative flex items-center gap-3">
-                  <BookOpen className="w-5 h-5" />
-                  Resources
-                </span>
-              </motion.button>
+            {resourcesUrl && (
+  <motion.a
+    href={resourcesUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}
+    whileTap={{ scale: 0.98 }}
+    className="group relative bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full 
+      font-bold text-lg shadow-lg hover:border-gray-400 transition-all duration-300"
+  >
+    <span className="relative flex items-center gap-3">
+      <BookOpen className="w-5 h-5" />
+      Resources
+    </span>
+  </motion.a>
+)}
+
             </motion.div>
           </motion.div>
         </motion.article>

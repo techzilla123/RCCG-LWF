@@ -32,7 +32,7 @@ export const StartHereDropdown: React.FC = () => {
         href="/about#our-beliefs"
         className="block px-6 py-4 md:py-3 text-sm font-medium text-zinc-800 hover:bg-gray-100 transition-colors uppercase"
       >
-        WHAT WE BELIEVE
+       Our Core Values
       </Link>
     </div>
   )

@@ -1,23 +1,23 @@
 "use client"
+
 import type React from "react"
 import { BackgroundGlow } from "./BackgroundGlow"
-import { LeftImageSection } from "./LeftImageSection"
-import { PastorInfo } from "./PastorInfo"
-import { RightImageSection } from "./RightImageSection"
 import { DecorativeGraphic } from "./DecorativeGraphic"
+import { LeaderImage } from "./LeaderImage"
+import { LeaderInfo } from "./LeaderInfo"
 
 export const EventBoasts: React.FC = () => {
   return (
-    <section className="relative flex flex-col items-center justify-center px-8 py-12 bg-stone-950 min-h-[615px] w-full overflow-hidden lg:px-32 lg:py-16 md:px-16 md:py-12 sm:px-6 sm:py-8">
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950 px-6 py-20 md:px-12 lg:px-24">
+      {/* Decorative Background */}
       <BackgroundGlow />
-
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 xl:gap-16 w-full max-w-[1400px]">
-        <LeftImageSection />
-        <PastorInfo />
-        <RightImageSection />
-      </div>
-
       <DecorativeGraphic />
+
+      {/* Content */}
+      <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center gap-16 lg:flex-row lg:gap-20">
+        <LeaderImage />
+        <LeaderInfo />
+      </div>
     </section>
   )
 }

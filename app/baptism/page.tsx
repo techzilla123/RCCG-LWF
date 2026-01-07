@@ -118,10 +118,10 @@ export default function BaptismPage() {
             </h3>
 
             <div className="mt-6 space-y-4">
-              <InfoRow label="Date" value="Sunday, 10th March 2025" />
-              <InfoRow label="Time" value="10:00 AM – 12:00 PM" />
-              <InfoRow label="Venue" value="Church Auditorium / Baptism Pool" />
-              <InfoRow label="Preparation Class" value="Saturday, 9th March 2025" />
+              <InfoRow label="Date" value="To Be Announced" />
+              <InfoRow label="Time" value="To Be Announced" />
+              <InfoRow label="Venue" value="To Be Announced" />
+              <InfoRow label="Preparation Class" value="To Be Announced" />
             </div>
 
             <div className="mt-8">

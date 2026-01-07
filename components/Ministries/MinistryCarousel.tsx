@@ -83,7 +83,7 @@ const ministries: MinistryData[] = [
     gradientClass: "bg-gradient-to-r from-teal-700 to-cyan-700",
     description:
       "A vibrant community of mature believers committed to growing in faith, sharing wisdom, and strengthening the church. Through fellowship, discipleship, prayer, and service, the Wise Ones inspire younger generations and continue making meaningful Kingdom impact.",
-    image: "https://api.builder.io/api/v1/image/assets/d246cf715b99493b8c80af048d853869/0870bebf0c60f63881dcaf35caf4c202fe0721da?placeholderIfAbsent=true",
+    image: "wiseone.jpeg",
   },
 ]
 
