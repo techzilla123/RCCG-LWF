@@ -66,8 +66,21 @@ Here, every youth is valued, encouraged, and empowered to shine as a light in th
         buttonText="Join Us"
         buttonColor="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-600 hover:to-blue-600"
         showSchedule
-       scheduleDay="2nd & 4th Sat. (Online) & Sundays"
-scheduleTime="7:00 PM & 10:00 AM"
+      scheduleDay={
+  <>
+    2nd & 4th Saturday (Online)
+    <br />
+    Sundays
+  </>
+}
+scheduleTime={
+  <>
+    7:00 PM
+    <br />
+    10:00 AM
+  </>
+}
+
         resourcesUrl="https://youth.rccgna.org/"
       />
     )
@@ -132,7 +145,7 @@ Join us as we celebrate womanhood, build each other up, and make a lasting Kingd
         buttonText="Join Us"
         buttonColor="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-rose-600 hover:to-pink-600"
         showSchedule
-        scheduleDay="Every Friday"
+        scheduleDay="Fridays"
         scheduleTime="6pm - 6:30pm (ONLINE)"
         resourcesUrl="https://wim.rccgna.org/"
       />

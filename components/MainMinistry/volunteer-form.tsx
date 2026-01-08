@@ -21,14 +21,14 @@ export interface VolunteerFormData {
 }
 
 const ministries = [
-  "Host Team",
-  "LifeKids",
-  "Operations Team",
-  "Tech & Worship Team",
-  "Switch",
-  "Community",
-  "Central Offices",
-  "Life.Church Online",
+  "Media Ministry",
+  "Choir Ministry",
+  "Ushering Ministry",
+  "Environmental / Sanitation Ministry",
+  "Drama Ministry",
+  "Evangelism Ministry",
+  "Welfare / Visitation Ministry",
+  "Special Events",
 ]
 
 export const VolunteerForm: React.FC<VolunteerFormProps> = ({

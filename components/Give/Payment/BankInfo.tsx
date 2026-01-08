@@ -2,7 +2,7 @@ import type React from "react"
 
 interface BankDetail {
   label: string
-  value: string
+  value: React.ReactNode
 }
 
 interface BankInfoProps {

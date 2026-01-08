@@ -15,8 +15,8 @@ interface ContentPanelProps {
   buttonColor: string
   resourcesUrl?: string
   showSchedule?: boolean
-  scheduleDay?: string
-  scheduleTime?: string
+  scheduleDay?: React.ReactNode
+  scheduleTime?: React.ReactNode
 }
 
 
