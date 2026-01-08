@@ -11,8 +11,8 @@ export interface Service {
   imageSrc: string
   description: string
   fullDescription: string
+  responsibilities: string[]
 }
-
 //
 // Services Data (unchanged, corrected formatting)
 //
@@ -31,8 +31,13 @@ We operate cameras, audio systems, lighting, projection, livestream, editing, gr
 The team welcomes both skilled and beginner volunteers, providing training in media operation, equipment handling, content creation, and broadcast production.
 
 If you love creativity, technology, storytelling, or digital ministry, this is your home to serve.
-`
-  },
+`,
+  responsibilities: [
+      "Communicate sermons, announcements, and church events",
+      "Manage livestreaming, audio, video, and visuals",
+      "Support worship services and outreach programs",
+      "Maintain quality, consistency, and media integrity",
+    ], },
 
   {
     title: "Choir Ministry",
@@ -46,7 +51,12 @@ The Choir Ministry leads the church into an atmosphere of worship through Spirit
 The choir includes vocalists, instrumentalists, worship leaders, sound technicians, and songwriters. The ministry emphasizes spiritual growth, discipline, teamwork, and excellence in worship.
 
 Anyone with a passion for singing, music, or worship can join and grow.
-`
+`,  responsibilities: [
+      "Lead worship through spirit-inspired music and song",
+      "Maintain unity, discipline, and musical excellence",
+      "Attend rehearsals and scheduled ministrations",
+      "Prepare music for services and special events",
+    ],
   },
 
   {
@@ -62,7 +72,12 @@ Ushers are the first point of contact for many, so they represent the love, warm
 
 If you enjoy serving people with a smile, this ministry is for you.
 `
-  },
+ ,  responsibilities: [
+     "Welcome and assist worshippers warmly",
+      "Maintain order during church services",
+      "Provide seating and directional guidance",
+      "Support a safe, reverent worship environment",
+    ], },
 
   {
     title: "Environmental / Sanitation Ministry",
@@ -77,7 +92,12 @@ The ministry plays an essential role in creating a welcoming space where people 
 
 If you enjoy hands-on service and stewardship, this ministry welcomes you.
 `
-  },
+ ,  responsibilities: [
+      "Maintain cleanliness of all church facilities",
+      "Prepare worship areas before services",
+      "Promote orderliness and healthy surroundings",
+      "Ensure hygienic and safe environments",
+    ], },
 
   {
     title: "Drama Ministry",
@@ -92,7 +112,12 @@ They perform during special services, events, outreaches, conventions, and youth
 
 If you enjoy acting, creativity, or stage performance, this team is perfect for you.
 `
-  },
+ ,  responsibilities: [
+      "Present biblical messages through drama and performance",
+      "Enhance worship with creative storytelling",
+      "Collaborate with other ministries for programs",
+      "Maintain costumes, props, and stage readiness",
+    ], },
 
   {
     title: "Evangelism Ministry",
@@ -109,7 +134,12 @@ Their passion is to see lives saved and added to the Kingdom, fulfilling the Gre
 
 If you have a burning passion to share the Gospel, this ministry is for you.
 `
-  },
+ ,  responsibilities: [
+       "Share the gospel within the community",
+      "Conduct outreach and evangelistic programs",
+      "Train members in witnessing effectively",
+      "Disciple new believers in faith",
+    ], },
 
   {
     title: "Welfare / Visitation Ministry",
@@ -123,7 +153,12 @@ The Welfare Ministry demonstrates Christlike love through practical acts of comp
 The ministry ensures that no member feels alone or unsupported. They serve with empathy, confidentiality, and genuine care.
 
 If you love helping people and offering emotional or practical support, this team is for you.
-`
+`,  responsibilities: [
+       "Provide emotional and spiritual encouragement",
+      "Assist needy and vulnerable congregants",
+      "Pray and care for church families",
+      "Deliver aid during crises or emergencies",
+    ],
   }
 ]
 
