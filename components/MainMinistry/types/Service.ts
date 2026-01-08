@@ -3,4 +3,5 @@ export interface Service {
   imageSrc: string;
   description: string;
   fullDescription: string;
+  responsibilities: string[];
 }
