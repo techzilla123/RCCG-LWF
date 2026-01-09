@@ -56,7 +56,7 @@ export default function HouseFellowshipPage() {
       {/* HERO */}
       <section className="relative h-[70vh] flex items-center justify-center">
         <img
-          src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
+          src="/IMG-20260108-WA0006.jpg"
           alt="House Fellowship"
           className="absolute inset-0 w-full h-full object-cover"
         />
