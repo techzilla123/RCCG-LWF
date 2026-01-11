@@ -17,14 +17,14 @@ export const MobilePopup: React.FC<Props> = ({
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 z-[60]"
+        className="fixed inset-0 bg-black/50 z-[10001]"
         onClick={onClose}
       />
 
       {/* Bottom Sheet */}
       <div
         className="
-          fixed inset-x-0 bottom-0 z-[61]
+          fixed inset-x-0 bottom-0 z-[10002]
           bg-white rounded-t-2xl
           max-h-[90vh]
           overflow-y-auto

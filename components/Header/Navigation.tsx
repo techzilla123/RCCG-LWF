@@ -54,58 +54,77 @@ export const Navigation: React.FC = () => {
       )}
 
       {/* ================= MOBILE DRAWER ================= */}
-      <nav
-        className={`fixed top-[33px] right-0 h-full w-[85vw] max-w-sm bg-white shadow-xl z-50 transform transition-transform duration-300 md:hidden ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+     <nav
+  className={`fixed top-[33px] right-0 h-full w-[85vw] max-w-sm bg-white shadow-xl z-[9999] transform transition-transform duration-300 md:hidden ${
+    isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+  }`}
+>
+  <div className="flex flex-col p-4 pt-8 relative">
+    {/* ================= CLOSE BUTTON ================= */}
+    <button
+      onClick={closeMobileMenu}
+      className="absolute top-4 right-4 text-gray-700 hover:text-gray-900"
+      aria-label="Close menu"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
       >
-        <div className="flex flex-col p-4 pt-8">
-          <ul className="flex flex-col gap-3">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
 
-            <NavigationItem
-              label="START HERE"
-              isMobile
-              hasDropdown
-              onClick={() => setOpenPopup("start")}
-            />
+    {/* ================= MENU ITEMS ================= */}
+    <ul className="flex flex-col gap-3 mt-6">
+      <NavigationItem
+        label="START HERE"
+        isMobile
+        hasDropdown
+        onClick={() => setOpenPopup("start")}
+      />
 
-            <NavigationItem
-              label="MESSAGES"
-              isMobile
-              onClick={closeMobileMenu}
-            />
+      <NavigationItem
+        label="MESSAGES"
+        isMobile
+        onClick={closeMobileMenu}
+      />
 
-            <NavigationItem
-              label="EVENTS"
-              link="/events"
-              isMobile
-              onClick={closeMobileMenu}
-            />
+      <NavigationItem
+        label="EVENTS"
+        link="/events"
+        isMobile
+        onClick={closeMobileMenu}
+      />
 
-            <NavigationItem
-              label="GIVE"
-              link="/give"
-              isHighlighted
-              isMobile
-              onClick={closeMobileMenu}
-            />
+      <NavigationItem
+        label="GIVE"
+        link="/give"
+        isHighlighted
+        isMobile
+        onClick={closeMobileMenu}
+      />
 
-            <NavigationItem
-              label="MINISTRIES"
-              isMobile
-              hasDropdown
-              onClick={() => setOpenPopup("ministries")}
-            />
+      <NavigationItem
+        label="MINISTRIES"
+        isMobile
+        hasDropdown
+        onClick={() => setOpenPopup("ministries")}
+      />
 
-            <NavigationItem
-              label="MORE"
-              isMobile
-              hasDropdown
-              onClick={() => setOpenPopup("more")}
-            />
-          </ul>
-        </div>
-      </nav>
+      <NavigationItem
+        label="MORE"
+        isMobile
+        hasDropdown
+        onClick={() => setOpenPopup("more")}
+      />
+    </ul>
+  </div>
+</nav>
+
 
       {/* ================= MOBILE POPUPS ================= */}
 {openPopup === "start" && (

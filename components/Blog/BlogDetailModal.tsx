@@ -28,7 +28,7 @@ export function BlogDetailModal({ isOpen, onClose, blog }: BlogDetailModalProps)
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 z-[10001]">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-900">{blog.title}</h2>
@@ -66,10 +66,11 @@ export function BlogDetailModal({ isOpen, onClose, blog }: BlogDetailModalProps)
 
           {/* Content */}
           <div className="prose prose-sm max-w-none">
-            <div
-  className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
+           <div
+  className="prose prose-lg max-w-none text-gray-800 leading-relaxed whitespace-pre-line break-words"
   dangerouslySetInnerHTML={{ __html: blog.content }}
 />
+
 
           </div>
 
