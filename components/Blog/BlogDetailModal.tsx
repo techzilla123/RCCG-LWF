@@ -66,7 +66,11 @@ export function BlogDetailModal({ isOpen, onClose, blog }: BlogDetailModalProps)
 
           {/* Content */}
           <div className="prose prose-sm max-w-none">
-            <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">{blog.content}</div>
+            <div
+  className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
+  dangerouslySetInnerHTML={{ __html: blog.content }}
+/>
+
           </div>
 
           {/* Last updated */}
