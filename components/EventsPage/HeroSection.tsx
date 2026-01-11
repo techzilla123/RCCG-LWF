@@ -81,26 +81,47 @@ React.useEffect(() => {
 
 
   React.useEffect(() => {
-    const fetchLatestEvent = async () => {
-      try {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
-        const response = await fetch(`${apiBaseUrl}/public/events`)
-        const data = await response.json()
-        const events = data.events || []
+  const fetchLatestEvent = async () => {
+    try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+      const response = await fetch(`${apiBaseUrl}/public/events`)
+      const data = await response.json()
+      const events: Event[] = data.events || []
 
-        // Get the latest event (first one in the array)
-        if (events.length > 0) {
-          setLatestEvent(events[0])
-        }
-      } catch (error) {
-        console.error("Failed to fetch latest event:", error)
-      } finally {
-        setLoading(false)
+      if (events.length > 0) {
+        // Get today's date at midnight
+        const now = new Date()
+        now.setHours(0, 0, 0, 0)
+
+        // Filter events that are today or in the future
+        const upcomingEvents = events
+          .filter(e => {
+            const [year, month, day] = e.date.split("-").map(Number)
+            const eventDate = new Date(year, month - 1, day)
+            return eventDate >= now
+          })
+          .sort((a, b) => {
+            // Sort ascending: earliest date first
+            const [ay, am, ad] = a.date.split("-").map(Number)
+            const [by, bm, bd] = b.date.split("-").map(Number)
+            const dateA = new Date(ay, am - 1, ad)
+            const dateB = new Date(by, bm - 1, bd)
+            return dateA.getTime() - dateB.getTime()
+          })
+
+        // Pick the next upcoming event, or fallback to last event
+        setLatestEvent(upcomingEvents[0] || events[events.length - 1])
       }
+    } catch (error) {
+      console.error("Failed to fetch latest event:", error)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    fetchLatestEvent()
-  }, [])
+  fetchLatestEvent()
+}, [])
+
 
  const handleSeeSchedule = () => {
   const schedulesSection = document.getElementById("schedules-section");

@@ -31,7 +31,7 @@ export function MediaGrid() {
 
       {/* Column 3 */}
       <div className="flex-1 shrink text-white basis-0 min-h-px min-w-60">
-        <MediaItem icon="/Component 10.png" title="READING PLAN" url="https://example.com/reading-plan" />
+        <MediaItem icon="/Component 10.png" title="READING PLAN" url="/read" />
         <div className="mt-7">
           <MediaItem icon="/Component 11.png" title="RESOURCES" url="https://www.rccgna.org/" />
         </div>

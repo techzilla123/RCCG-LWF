@@ -29,7 +29,23 @@ export const EventsGrid: React.FC = () => {
         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
         const response = await fetch(`${baseUrl}/public/events`)
         const data = await response.json()
-        setEvents(data.events || [])
+        const eventsArray: Event[] = data.events || []
+
+        // Sort events by closest upcoming date
+        const now = new Date()
+        now.setHours(0, 0, 0, 0)
+
+        const sortedEvents = eventsArray.sort((a, b) => {
+          const [ay, am, ad] = a.date.split("-").map(Number)
+          const [by, bm, bd] = b.date.split("-").map(Number)
+          const dateA = new Date(ay, am - 1, ad)
+          const dateB = new Date(by, bm - 1, bd)
+
+          // Put future events before past events
+          return dateA.getTime() - dateB.getTime()
+        })
+
+        setEvents(sortedEvents)
       } catch (error) {
         console.error("Failed to fetch events:", error)
       } finally {
@@ -79,14 +95,8 @@ export const EventsGrid: React.FC = () => {
             >
               <style>{`
                 @keyframes slideUp {
-                  from {
-                    opacity: 0;
-                    transform: translateY(40px);
-                  }
-                  to {
-                    opacity: 1;
-                    transform: translateY(0);
-                  }
+                  from { opacity: 0; transform: translateY(40px); }
+                  to { opacity: 1; transform: translateY(0); }
                 }
               `}</style>
               <EventImage src={event.banner} alt={event.title} isRounded={event.recurring} />

@@ -1,9 +1,7 @@
 "use client"
 
 import React from "react"
-
 import { Racing_Sans_One } from "next/font/google"
-import { useRouter } from "next/navigation"
 
 const racingSansOne = Racing_Sans_One({
   weight: "400",
@@ -12,7 +10,6 @@ const racingSansOne = Racing_Sans_One({
 
 export const LiveSection = () => {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
-  const router = useRouter()
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
@@ -32,16 +29,16 @@ export const LiveSection = () => {
   }, [isDropdownOpen])
 
   const handleLiveClick = () => {
-    setIsDropdownOpen(!isDropdownOpen)
+    setIsDropdownOpen(prev => !prev)
   }
 
   const handleRCCGLFWLiveClick = () => {
-    router.push("/live/rccg-lwf")
+    window.open("https://www.youtube.com/@rccgLWF/streams", "_blank")
     setIsDropdownOpen(false)
   }
 
   const handleRCCGLiveClick = () => {
-    router.push("/live/rccg")
+    window.open("https://www.youtube.com/@rccglive/streams", "_blank")
     setIsDropdownOpen(false)
   }
 
@@ -51,11 +48,16 @@ export const LiveSection = () => {
         onClick={handleLiveClick}
         className="flex items-center h-[30px] md:h-[38px] w-auto gap-1.5 md:gap-2 cursor-pointer hover:opacity-80 transition-opacity"
       >
-        <img src="/LWF 2 Logo 1.png" alt="Live streaming indicator" className="w-8 h-[30px] md:w-10 md:h-[38px]" />
-        <p className={`${racingSansOne.className} text-slate-700 text-sm md:text-lg`}>Live</p>
+        <img
+          src="/LWF 2 Logo 1.png"
+          alt="Live streaming indicator"
+          className="w-8 h-[30px] md:w-10 md:h-[38px]"
+        />
+        <p className={`${racingSansOne.className} text-slate-700 text-sm md:text-lg`}>
+          Live
+        </p>
       </section>
 
-      {/* Dropdown Menu */}
       {isDropdownOpen && (
         <div className="absolute top-full right-0 mt-2 bg-white shadow-lg border border-gray-200 rounded-md py-2 min-w-[200px] z-50">
           <button

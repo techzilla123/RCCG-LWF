@@ -13,38 +13,42 @@ export const HeroSection = () => {
 
   return (
     <section className="relative w-full -mt-[18px] overflow-hidden">
-      {/* VIDEO */}
+      {/* VIDEO: always displayed with poster */}
       <video
         src="/about.mp4"
+        poster="/about-placeholder.jpg" // shows immediately while loading
         autoPlay
         loop
         muted
         playsInline
         preload="auto"
         disablePictureInPicture
-        onCanPlayThrough={() => setVideoReady(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+        onLoadedData={() => setVideoReady(true)}
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      {/* DARK OVERLAY */}
+      <div
+        className={`absolute inset-0 bg-black/30 transition-opacity duration-500 ${
           videoReady ? "opacity-100" : "opacity-0"
         }`}
       />
 
-      {/* DARK OVERLAY */}
-      {videoReady && <div className="absolute inset-0 bg-black/30" />}
-
       {/* CONTENT */}
-      {videoReady && (
-        <div className="relative z-10 flex flex-col items-start px-6 md:px-24 lg:px-48 pt-48 md:pt-80 pb-48">
-          <h1
-            className={`${montserrat.className} text-white uppercase font-light
-            text-[28px] sm:text-[40px] md:text-[55px]`}
-          >
-            <span>A </span>
-            <span className="font-bold">MISSION</span>
-            <br />
-            <span>FOR ALL PEOPLE TO</span>
-          </h1>
-        </div>
-      )}
+      <div
+        className={`relative z-10 flex flex-col items-start px-6 md:px-24 lg:px-48 pt-48 md:pt-80 pb-48 transition-opacity duration-500 ${
+          videoReady ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <h1
+          className={`${montserrat.className} text-white uppercase font-light text-[28px] sm:text-[40px] md:text-[55px]`}
+        >
+          <span>A </span>
+          <span className="font-bold">MISSION</span>
+          <br />
+          <span>FOR ALL PEOPLE TO</span>
+        </h1>
+      </div>
     </section>
   )
 }

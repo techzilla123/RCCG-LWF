@@ -59,33 +59,51 @@ export const Schedules: React.FC = () => {
     }
   }
 
-  React.useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
-        const response = await fetch(`${baseUrl}/public/events`)
-        const data = await response.json()
+React.useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+      const response = await fetch(`${baseUrl}/public/events`)
+      const data = await response.json()
 
-        let eventsArray: Event[] = []
-        if (Array.isArray(data)) {
-          eventsArray = data
-        } else if (data?.data && Array.isArray(data.data)) {
-          eventsArray = data.data
-        } else if (data?.events && Array.isArray(data.events)) {
-          eventsArray = data.events
-        }
-
-        setEvents(eventsArray)
-      } catch (error) {
-        console.error("Failed to fetch events:", error)
-        setEvents([]) // Ensure events is always an array
-      } finally {
-        setLoading(false)
+      let eventsArray: Event[] = []
+      if (Array.isArray(data)) {
+        eventsArray = data
+      } else if (data?.data && Array.isArray(data.data)) {
+        eventsArray = data.data
+      } else if (data?.events && Array.isArray(data.events)) {
+        eventsArray = data.events
       }
-    }
 
-    fetchEvents()
-  }, [])
+      // Sort events by date ascending (closest to today first)
+      const now = new Date()
+      now.setHours(0, 0, 0, 0)
+
+      eventsArray.sort((a, b) => {
+        const [ay, am, ad] = a.date.split("-").map(Number)
+        const [by, bm, bd] = b.date.split("-").map(Number)
+        const dateA = new Date(ay, am - 1, ad)
+        const dateB = new Date(by, bm - 1, bd)
+
+        // Put future events before past events
+        const diffA = dateA.getTime() - now.getTime()
+        const diffB = dateB.getTime() - now.getTime()
+
+        return diffA - diffB
+      })
+
+      setEvents(eventsArray)
+    } catch (error) {
+      console.error("Failed to fetch events:", error)
+      setEvents([]) // Ensure events is always an array
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchEvents()
+}, [])
+
 
   const prevItem = () => {
     setMobileIndex((prev) => (prev === 0 ? events.length - 1 : prev - 1))
@@ -111,9 +129,10 @@ export const Schedules: React.FC = () => {
       />
       <section id="schedules-section" className="flex relative flex-col gap-16 items-center px-32 py-32 mx-auto my-0 w-full bg-white max-w-[1440px] max-md:gap-12 max-md:px-10 max-md:py-20 max-sm:gap-8 max-sm:px-5 max-sm:py-16">
         <header className="flex flex-col gap-4 items-center">
-          <h1 className="text-5xl tracking-wider text-center leading-[50.6px] text-stone-950 max-md:text-4xl max-sm:text-3xl max-sm:tracking-wide">
-            All Upcoming Events This 2025
-          </h1>
+        <h1 className="text-5xl tracking-wider text-center leading-[50.6px] text-stone-950 max-md:text-4xl max-sm:text-3xl max-sm:tracking-wide">
+  All Upcoming Events This {new Date().getFullYear()}
+</h1>
+
           <p className="text-base leading-6 text-center text-neutral-700 w-[507px] max-md:w-full max-md:max-w-[507px] max-sm:text-sm">
             Explore the complete event schedule to find sessions, speakers, and activities that match your interests and
             needs.
