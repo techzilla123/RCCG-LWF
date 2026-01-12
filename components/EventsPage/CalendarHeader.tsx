@@ -13,7 +13,7 @@ export const CalendarHeader: React.FC = () => {
           </h2>
         </div>
         <p className="text-2xl tracking-tight leading-7 text-center text-white max-sm:text-lg">
-          January - December 2025
+          January - December {new Date().getFullYear()}
         </p>
       </div>
       <p className="text-2xl tracking-tight leading-7 text-center text-white max-sm:text-lg">

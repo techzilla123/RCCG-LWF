@@ -107,9 +107,17 @@ export const EventDetailsModal: React.FC<ScheduleModalProps> = ({ event, isOpen,
           {/* Event Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="bg-orange-50 p-4 rounded-lg">
-              <p className="text-sm text-neutral-600 mb-1">Date</p>
-              <p className="text-lg font-semibold text-stone-950">{formatDate(event.date)}</p>
-            </div>
+  <p className="text-sm text-neutral-600 mb-1">
+    {event.recurring ? "Occurs On" : "Date"}
+  </p>
+
+  <p className="text-lg font-semibold text-stone-950 whitespace-normal break-words">
+    {event.recurring
+      ? event.recurringDay || "Recurring schedule"
+      : formatDate(event.date)}
+  </p>
+</div>
+
             <div className="bg-violet-50 p-4 rounded-lg">
               <p className="text-sm text-neutral-600 mb-1">Time</p>
               <p className="text-lg font-semibold text-stone-950">{formatTime(event.time)}</p>

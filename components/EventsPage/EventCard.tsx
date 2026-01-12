@@ -108,10 +108,18 @@ function EventModal({
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-start gap-3">
                 <Calendar className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Date</p>
-                  <p className="font-semibold">{formatDate(event.date)}</p>
-                </div>
+               <div>
+  <p className="text-sm text-muted-foreground">
+    {event.recurring ? "Occurs On" : "Date"}
+  </p>
+
+  <p className="font-semibold whitespace-normal break-words leading-snug">
+    {event.recurring
+      ? event.recurringDay || "Recurring schedule"
+      : formatDate(event.date)}
+  </p>
+</div>
+
               </div>
 
               <div className="flex items-start gap-3">

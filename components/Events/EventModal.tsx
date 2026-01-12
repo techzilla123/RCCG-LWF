@@ -58,16 +58,22 @@ export const EventModal: React.FC<EventModalProps> = ({ event, onClose }) => {
 
           {/* Event Details Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Date</p>
-              <p className="text-lg font-semibold text-slate-900">
-                {new Date(event.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-            </div>
+           <div>
+  <p className="text-sm text-gray-600 font-medium">
+    {event.recurring ? "Occurs On" : "Date"}
+  </p>
+
+  <p className="text-lg font-semibold text-slate-900">
+    {event.recurring
+      ? event.recurringDay || "Recurring schedule"
+      : new Date(event.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+  </p>
+</div>
+
 
             <div>
               <p className="text-sm text-gray-600 font-medium">Time</p>
