@@ -16,7 +16,7 @@ export const HeroSection = () => {
       {/* VIDEO: always displayed with poster */}
       <video
         src="/about.mp4"
-        poster="/about-placeholder.jpg" // shows immediately while loading
+        poster="/abb.jpg" // shows immediately while loading
         autoPlay
         loop
         muted
