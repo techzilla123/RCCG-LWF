@@ -89,6 +89,7 @@ export const Navigation: React.FC = () => {
 
       <NavigationItem
         label="MESSAGES"
+        link="/contact"
         isMobile
         onClick={closeMobileMenu}
       />

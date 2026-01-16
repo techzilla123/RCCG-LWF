@@ -134,7 +134,7 @@ export const MoreDropdown: React.FC = () => {
       <MobileItem href="/groups" label="Serve Teams" />
       <MobileItem href="/give" label="Give" />
       <MobileItem href="/blog" label="Blog" />
-      <MobileItem href="/write-up" label="Write Up" />
+      <MobileItem href="/house" label="House Fellowship" />
     </div>
   </div>
 
