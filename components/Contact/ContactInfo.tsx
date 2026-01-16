@@ -25,11 +25,15 @@ function ContactInfo() {
             (480) 555-0103
           </a>
         </p>
-        <p className="text-xl md:text-2xl font-bold text-gray-900 uppercase">
-          <a href="mailto:info@rccglivingwordforney.org" className="hover:text-gray-700 transition-colors">
-            info@rccglivingwordforney.org
-          </a>
-        </p>
+       <p className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 uppercase">
+  <a
+    href="mailto:info@rccglivingwordforney.org"
+    className="hover:text-gray-700 transition-colors"
+  >
+    info@rccglivingwordforney.org
+  </a>
+</p>
+
       </div>
 
       <div>
